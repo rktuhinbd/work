@@ -11,7 +11,9 @@ package="com.app.messagealarm">
     android:supportsRtl="true"
     android:theme="@style/AppTheme">
 
-    <activity android:name="com.app.messagealarm.ui.splash.SplashActivity">
+    <activity android:name="com.app.messagealarm.ui.splash.SplashActivity"
+        android:theme="@style/AppTheme.GradientStatusBar"
+        >
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
