@@ -34,4 +34,21 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    // Timber (Replacement of log)
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+    // App data storage
+    debugImplementation 'com.awesomedroidapps:inappstoragereader:1.0.2'
+    // RecyclerView
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
+    implementation "androidx.recyclerview:recyclerview-selection:1.0.0"
+
+    // Viewpager page indicator
+    implementation 'me.relex:circleindicator:2.1.4'
+
+    // CardView
+    implementation "androidx.cardview:cardview:1.0.0"
+    // MultiDex
+    implementation 'androidx.multidex:multidex:2.0.1'
+    // Stylish toast message
+    implementation 'com.github.GrenderG:Toasty:1.3.0'
 }

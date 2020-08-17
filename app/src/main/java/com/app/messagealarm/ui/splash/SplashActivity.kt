@@ -1,13 +1,13 @@
-package com.app.messagealarm
+package com.app.messagealarm.ui.splash
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.app.messagealarm.R
 
-class MainActivity : AppCompatActivity() {
+class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        //test
+        setContentView(R.layout.activity_splash)
     }
 }
