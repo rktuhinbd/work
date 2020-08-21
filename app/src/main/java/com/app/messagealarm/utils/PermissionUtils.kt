@@ -3,6 +3,7 @@ package com.app.messagealarm.utils
 import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
 import com.app.messagealarm.BaseApplication
 import java.util.*
@@ -119,5 +120,20 @@ object PermissionUtils {
 
         return BaseApplication.getBaseApplicationContext()
                 .checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
+    }
+
+    /**
+     * This function return the state of notification permission of app
+     */
+    fun isNotificationAllowed(): Boolean{
+        var isAllowed = false
+        val packageList =
+            NotificationManagerCompat.getEnabledListenerPackages(BaseApplication.getBaseApplicationContext())
+        for (s in packageList) {
+            if(s == BaseApplication.getBaseApplicationContext().packageName){
+                isAllowed = true
+            }
+        }
+        return isAllowed
     }
 }

@@ -1,33 +1,55 @@
 package com.app.messagealarm.ui.splash
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
-import androidx.transition.TransitionManager
 import com.app.messagealarm.R
-import com.app.messagealarm.utils.makeItVisible
+import com.app.messagealarm.utils.DialogUtils
+import com.app.messagealarm.utils.PermissionUtils
 import kotlinx.android.synthetic.main.activity_splash.*
 
 class SplashActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
     }
 
+    private fun handlePermission(){
+        if(PermissionUtils.isNotificationAllowed()){
+            val animation = AnimationUtils.loadAnimation(this, R.anim.bottom_to_top)
+            txt_title?.startAnimation(animation)
+            progress_bar_splash?.startAnimation(animation)
+            runProgressWithSteps()
+        }else{
+            DialogUtils.showDialog(
+                this,
+                getString(R.string.txt_notification_permission),
+                getString(R.string.txt_notification_permission_message),
+                object :DialogUtils.Callback{
+                    override fun onPositive() {
+                        val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+                        startActivity(intent)
+                    }
+                    override fun onNegative() {
+                      finish()
+                    }
+                }
+            )
+        }
+    }
+
     override fun onResume() {
         super.onResume()
-        val animation = AnimationUtils.loadAnimation(this, R.anim.bottom_to_top)
-        txt_title?.startAnimation(animation)
-        progress_bar_splash?.startAnimation(animation)
-        runProgressWithSteps()
+        handlePermission()
     }
 
     private fun runProgressWithSteps(){
         var progress = 0
-        val total = 3000
-        object : CountDownTimer(total.toLong(),25) {
+        val total = 2000
+        object : CountDownTimer(total.toLong(),15) {
             override fun onFinish() {
                 //take user to app
             }
