@@ -4,6 +4,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/layout_base_splash"
+    android:background="@color/colorPrimary"
     tools:context=".ui.splash.SplashActivity">
+
+    <com.app.messagealarm.ui.widget.CustomStatusBarView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/main_logo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/txt_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:fontFamily="@font/open_sans_bold"
+        android:text="@string/app_name"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="#ffffff"
+        android:textSize="25sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="1"
+        android:layout_marginBottom="100dp"
+     />
+
+    <ProgressBar
+        android:id="@+id/progress_bar_splash"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="34dp"
+        android:layout_marginEnd="34dp"
+        app:layout_constraintTop_toBottomOf="@id/txt_title"
+        app:layout_constraintStart_toStartOf="@id/txt_title"
+        app:layout_constraintEnd_toEndOf="@id/txt_title"
+        android:indeterminate="false"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:progress="45"
+        android:progressTint="@color/color_white"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
