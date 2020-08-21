@@ -12,14 +12,14 @@ package="com.app.messagealarm">
     android:theme="@style/AppTheme">
 
     <activity android:name="com.app.messagealarm.ui.splash.SplashActivity"
-        android:theme="@style/AppTheme.GradientStatusBar"
+        android:theme="@style/AppTheme.GradientStatusBar" android:excludeFromRecents="true"
         >
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
     </activity>
-    <activity android:name=".ui.main.MainActivity" />
+    <activity android:name=".ui.main.MainActivity"  android:excludeFromRecents="true"/>
 
 </application>
 
