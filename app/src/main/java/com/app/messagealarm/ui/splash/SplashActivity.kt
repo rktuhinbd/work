@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
+import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.R
+import com.app.messagealarm.ui.main.MainActivity
 import com.app.messagealarm.utils.DialogUtils
 import com.app.messagealarm.utils.PermissionUtils
 import kotlinx.android.synthetic.main.activity_splash.*
 
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,12 +48,19 @@ class SplashActivity : AppCompatActivity() {
         handlePermission()
     }
 
+    private fun takeUserToHome(){
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
     private fun runProgressWithSteps(){
         var progress = 0
         val total = 2000
         object : CountDownTimer(total.toLong(),15) {
             override fun onFinish() {
                 //take user to app
+                takeUserToHome()
             }
             override fun onTick(millisUntilFinished: Long) {
                 progress += 1
