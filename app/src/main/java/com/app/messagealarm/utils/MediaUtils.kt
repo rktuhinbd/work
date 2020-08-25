@@ -28,5 +28,9 @@ class MediaUtils {
                 mediaPlayer!!.stop()
             }
         }
+
+        fun isPlaying() : Boolean{
+            return mediaPlayer != null && mediaPlayer!!.isPlaying
+        }
     }
 }

@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.AudioAttributes
 import android.media.AudioManager
-import android.media.MediaPlayer
 import android.media.session.PlaybackState
 import android.net.Uri
 import android.os.Build
@@ -18,6 +17,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.app.messagealarm.ui.main.MainActivity
 import com.app.messagealarm.ui.service.NotificationListener
 import com.app.messagealarm.utils.MediaUtils
+import com.app.messagealarm.utils.VibratorUtils
 import java.util.*
 
 
@@ -29,6 +29,7 @@ class FloatingNotification {
         @RequiresApi(Build.VERSION_CODES.O)
         fun showFloatingNotification(context: Service) {
             MediaUtils.playAlarm(context)
+            VibratorUtils.startVibrate(context)
             // sending data to new activity
             val receiveCallAction =
                 Intent(context, MainActivity::class.java)

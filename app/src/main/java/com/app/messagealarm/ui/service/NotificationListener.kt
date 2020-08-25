@@ -21,6 +21,7 @@ import com.app.messagealarm.ui.main.MainActivity
 import com.app.messagealarm.ui.notifications.FloatingNotification
 import com.app.messagealarm.utils.AndroidUtils
 import com.app.messagealarm.utils.MediaUtils
+import com.app.messagealarm.utils.VibratorUtils
 import es.dmoral.toasty.Toasty
 
 
@@ -35,11 +36,13 @@ class NotificationListener : NotificationListenerService() {
         Log.e(TAG, "DESC " + sbn!!.notification.extras["android.text"])
         if (packageName == "com.facebook.orca") {
             if (sbn.notification.extras["android.title"]!! != "Chat heads active") {
-                Handler().postDelayed(
-                    Runnable {
-                        FloatingNotification.showFloatingNotification(this)
-                    }, 3000
-                )
+                if(!MediaUtils.isPlaying()){
+                    Handler().postDelayed(
+                        Runnable {
+                            FloatingNotification.showFloatingNotification(this)
+                        }, 3000
+                    )
+                }
             }
         }
     }
@@ -47,6 +50,7 @@ class NotificationListener : NotificationListenerService() {
     override fun onNotificationRemoved(sbn: StatusBarNotification?) {
         if (sbn!!.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
             MediaUtils.stopAlarm()
+            VibratorUtils.stopVibrate()
             Toasty.info(this, "Snoozed for 20 minutes!").show()
         }
     }
