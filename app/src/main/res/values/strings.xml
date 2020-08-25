@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Message Alarm</string>
+    <string name="txt_notification_permission">Notification Permission</string>
+    <string name="txt_notification_permission_message">This application need notification permission to handle works! please allow it to enjoy!</string>
 </resources>

@@ -8,7 +8,6 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import com.app.messagealarm.BaseApplication
-
 import kotlin.system.exitProcess
 
 /**
@@ -39,6 +38,24 @@ class AndroidUtils private constructor() {
             } else {
                 getPackageInfo()?.versionCode as Long? ?: 0
             }
+        }
+
+        fun isAppRunning(
+            context: Context,
+            packageName: String
+        ): Boolean {
+            val activityManager =
+                context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            val procInfos =
+                activityManager.runningAppProcesses
+            if (procInfos != null) {
+                for (processInfo in procInfos) {
+                    if (processInfo.processName == packageName) {
+                        return true
+                    }
+                }
+            }
+            return false
         }
 
         /**
