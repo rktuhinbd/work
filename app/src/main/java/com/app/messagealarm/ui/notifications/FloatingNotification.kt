@@ -2,11 +2,9 @@ package com.app.messagealarm.ui.notifications
 
 import android.R
 import android.app.*
-import android.app.Notification.DecoratedMediaCustomViewStyle
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.session.PlaybackState
@@ -181,7 +179,6 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
                 stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
             val chan =
                 NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
-            chan.lightColor = Color.BLUE
             chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
             val manager =
                 (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
@@ -198,11 +195,14 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
                 .setContentText("testing")
                 .setPriority(NotificationManager.IMPORTANCE_HIGH)
                 .setCategory(Notification.CATEGORY_SERVICE)
+                // Set Ticker Message
+                .setTicker("Noification is created")
                 .setContentIntent(resultPendingIntent) //intent
                 .setStyle(NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(remoteViews)
-                .setAutoCancel(false)
                 .build()
+            notification.flags =
+                notification.flags or Notification.FLAG_NO_CLEAR //Do not clear the notification
             context.startForeground(12, notification)
         }
 
