@@ -2,6 +2,7 @@ package com.app.messagealarm.ui.notifications
 
 import android.R
 import android.app.*
+import android.app.Notification.DecoratedMediaCustomViewStyle
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -11,6 +12,7 @@ import android.media.AudioManager
 import android.media.session.PlaybackState
 import android.net.Uri
 import android.os.Build
+import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -184,18 +186,24 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
             val manager =
                 (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
             manager.createNotificationChannel(chan)
+            val remoteViews = RemoteViews(
+                context.packageName,
+                com.app.messagealarm.R.layout.layout_foreground_notification
+            )
             val notificationBuilder =
                 NotificationCompat.Builder(context, channelId)
             val notification: Notification = notificationBuilder.setOngoing(true)
                 .setSmallIcon(android.R.drawable.sym_action_email)
                 .setContentTitle("App is running in background")
-                .setPriority(NotificationManager.IMPORTANCE_MIN)
+                .setContentText("testing")
+                .setPriority(NotificationManager.IMPORTANCE_HIGH)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .setContentIntent(resultPendingIntent) //intent
+                .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+                .setCustomContentView(remoteViews)
+                .setAutoCancel(false)
                 .build()
-            val notificationManager = NotificationManagerCompat.from(context)
-            notificationManager.notify(1, notificationBuilder.build())
-            context.startForeground(1, notification)
+            context.startForeground(12, notification)
         }
 
 
