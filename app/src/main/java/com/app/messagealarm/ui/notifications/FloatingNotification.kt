@@ -22,6 +22,7 @@ import java.util.*
 
 
 class FloatingNotification {
+
     companion object {
         private const val CHANNEL_ID = "alarm channel"
         private const val CHANNEL_NAME = "alarm app channel"
@@ -33,7 +34,6 @@ class FloatingNotification {
             // sending data to new activity
             val receiveCallAction =
                 Intent(context, MainActivity::class.java)
-
             val receiveCallPendingIntent = PendingIntent.getBroadcast(
                 context,
                 1200,
@@ -87,7 +87,7 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
                 val channel = NotificationChannel(
                     CHANNEL_ID,
                     CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_HIGH
                 )
                 channel.description = "Call Notifications"
                 channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC;
@@ -194,6 +194,7 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
                 .setCustomBigContentView(notificationLayoutExpanded)
                 .setPriority(NotificationManager.IMPORTANCE_HIGH)
                 .setCategory(Notification.CATEGORY_SERVICE)
+                .setContentIntent(resultPendingIntent)
                 .build()
             context.startForeground(12, notification)
         }

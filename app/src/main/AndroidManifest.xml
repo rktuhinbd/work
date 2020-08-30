@@ -1,40 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-package="com.app.messagealarm">
+    package="com.app.messagealarm">
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
-
-
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-    android:name=".BaseApplication"
-    android:allowBackup="true"
-    android:icon="@mipmap/ic_launcher"
-    android:label="@string/app_name"
-    android:roundIcon="@mipmap/ic_launcher_round"
-    android:supportsRtl="true"
-    android:theme="@style/AppTheme">
+        android:name=".BaseApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".ui.main.add_apps.AddApplicationActivity" android:launchMode="singleTop"/>
+        <activity
+            android:name=".ui.splash.SplashActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/AppTheme.GradientStatusBar" android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:excludeFromRecents="true" android:launchMode="singleTop" />
 
-    <activity android:name="com.app.messagealarm.ui.splash.SplashActivity"
-        android:theme="@style/AppTheme.GradientStatusBar" android:excludeFromRecents="true"
-        >
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>
-
-    <activity android:name=".ui.main.MainActivity"  android:excludeFromRecents="true"/>
-
-    <service android:name=".ui.service.NotificationListener" android:enabled="true"
-        android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
-        <intent-filter>
-            <action android:name="android.service.notification.NotificationListenerService" />
-        </intent-filter>
-    </service>
-
-</application>
+        <service
+            android:name=".ui.service.NotificationListener"
+            android:enabled="true"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+    </application>
 
 </manifest>
