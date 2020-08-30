@@ -183,26 +183,18 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
             val manager =
                 (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
             manager.createNotificationChannel(chan)
-            val remoteViews = RemoteViews(
-                context.packageName,
-                com.app.messagealarm.R.layout.layout_foreground_notification
-            )
+            // Get the layouts to use in the custom notification
+            val notificationLayout = RemoteViews(context.packageName, com.app.messagealarm.R.layout.layout_foreground_notification)
+            val notificationLayoutExpanded = RemoteViews(context.packageName, com.app.messagealarm.R.layout.layout_foreground_notification)
             val notificationBuilder =
                 NotificationCompat.Builder(context, channelId)
-            val notification: Notification = notificationBuilder.setOngoing(true)
-                .setSmallIcon(android.R.drawable.sym_action_email)
-                .setContentTitle("App is running in background")
-                .setContentText("testing")
+            val notification: Notification = notificationBuilder
+                .setSmallIcon(R.drawable.sym_call_missed)
+                .setCustomContentView(notificationLayout)
+                .setCustomBigContentView(notificationLayoutExpanded)
                 .setPriority(NotificationManager.IMPORTANCE_HIGH)
                 .setCategory(Notification.CATEGORY_SERVICE)
-                // Set Ticker Message
-                .setTicker("Noification is created")
-                .setContentIntent(resultPendingIntent) //intent
-                .setStyle(NotificationCompat.DecoratedCustomViewStyle())
-                .setCustomContentView(remoteViews)
                 .build()
-            notification.flags =
-                notification.flags or Notification.FLAG_NO_CLEAR //Do not clear the notification
             context.startForeground(12, notification)
         }
 
