@@ -26,6 +26,7 @@ import es.dmoral.toasty.Toasty
 
 
 class NotificationListener : NotificationListenerService() {
+
     val TAG: String = "LISTENER"
 
     @RequiresApi(Build.VERSION_CODES.O)
