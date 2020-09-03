@@ -36,8 +36,10 @@ class NotificationListener : NotificationListenerService() {
         Log.e(TAG, "TITLE " + sbn!!.notification.extras["android.title"])
         Log.e(TAG, "DESC " + sbn!!.notification.extras["android.text"])
         if (packageName == "com.facebook.orca") {
-            if (sbn.notification.extras["android.title"]!! != "Chat heads active") {
-                if(!MediaUtils.isPlaying()){
+            if (sbn.notification.extras["android.title"] != null ||
+                sbn.notification.extras["android.title"]!! != "Chat heads active"
+            ) {
+                if (!MediaUtils.isPlaying()) {
                     Handler().postDelayed(
                         Runnable {
                             FloatingNotification.showFloatingNotification(this)
