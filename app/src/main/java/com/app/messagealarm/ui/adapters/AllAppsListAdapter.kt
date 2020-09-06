@@ -28,7 +28,6 @@ class AllAppsListAdapter( private val appsList: ArrayList<InstalledApps>) :
     class AllAppsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             fun bindItems(installedApps: InstalledApps){
                 itemView.tv_app_name?.text = installedApps.appName
-                itemView.tv_app_version?.text = installedApps.versionName
                 itemView.iv_app_icon?.setImageDrawable(installedApps.drawableIcon)
             }
     }
