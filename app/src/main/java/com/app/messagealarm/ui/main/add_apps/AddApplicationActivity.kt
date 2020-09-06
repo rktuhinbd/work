@@ -7,16 +7,16 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView.SearchAutoComplete
-import androidx.core.view.MenuItemCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.ui.adapters.AllAppsListAdapter
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_add_application.*
+
 
 
 class AddApplicationActivity : AppCompatActivity(), AddApplicationView {
@@ -64,7 +64,8 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView {
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchView: SearchView? = searchItem?.actionView as SearchView
         searchView?.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-        searchView?.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener,
+        setSearchViewEditTextBackgroundColor(this, searchView!!)
+        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener,
             SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 (rv_apps_list?.adapter as AllAppsListAdapter).filter(query!!)
@@ -79,5 +80,16 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView {
         })
         return super.onCreateOptionsMenu(menu)
 
+    }
+
+    private fun setSearchViewEditTextBackgroundColor(
+        context: Context,
+        searchView: SearchView
+    ) {
+        val searchPlateId =
+            context.resources.getIdentifier("android:id/search_plate", null, null)
+        val viewGroup =
+            searchView.findViewById<View>(searchPlateId) as ViewGroup
+        viewGroup.setBackgroundColor(Color.TRANSPARENT)
     }
 }
