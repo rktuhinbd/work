@@ -2,6 +2,7 @@ package com.app.messagealarm.ui.main.add_apps
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.messagealarm.R
@@ -31,6 +32,8 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView {
 
     override fun onAllApplicationGetSuccess(list: ArrayList<InstalledApps>) {
        runOnUiThread {
+                progress_bar_add_app?.visibility = View.GONE
+                rv_apps_list?.visibility = View.VISIBLE
                 initAllAppsRecyclerView(list)
        }
     }
