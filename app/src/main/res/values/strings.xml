@@ -7,4 +7,5 @@
     <string name="add_application">Add Application</string>
     <string name="something_wrong">Something went wrong!</string>
     <string name="txt_add_app">Add Application</string>
+    <string name="txt_search">Search</string>
 </resources>

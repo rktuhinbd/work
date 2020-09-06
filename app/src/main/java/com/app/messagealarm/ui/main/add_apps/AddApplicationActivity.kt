@@ -1,15 +1,23 @@
 package com.app.messagealarm.ui.main.add_apps
 
-import androidx.appcompat.app.AppCompatActivity
+import android.app.SearchManager
+import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
-import android.widget.Toolbar
+import android.widget.SearchView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView.SearchAutoComplete
+import androidx.core.view.MenuItemCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.ui.adapters.AllAppsListAdapter
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_add_application.*
+
 
 class AddApplicationActivity : AppCompatActivity(), AddApplicationView {
 
@@ -47,5 +55,29 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView {
         runOnUiThread {
                 Toasty.info(this, message).show()
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        menuInflater.inflate(R.menu.menu_add_app, menu)
+        val searchItem: MenuItem? = menu?.findItem(R.id.mnu_search)
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchView: SearchView? = searchItem?.actionView as SearchView
+        searchView?.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+        searchView?.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener,
+            SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                (rv_apps_list?.adapter as AllAppsListAdapter).filter(query!!)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                (rv_apps_list?.adapter as AllAppsListAdapter).filter(newText!!)
+               return true
+            }
+
+        })
+        return super.onCreateOptionsMenu(menu)
+
     }
 }
