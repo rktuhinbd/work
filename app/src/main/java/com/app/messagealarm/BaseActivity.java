@@ -36,7 +36,7 @@ public class BaseActivity extends AppCompatActivity {
                         if (alarmManager != null) {
                             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, service);
                         }
-                        System.exit(2);
+                        //System.exit(2);
                     }
                 });
     }

@@ -5,12 +5,12 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.session.PlaybackState
 import android.net.Uri
 import android.os.Build
+import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -22,6 +22,7 @@ import java.util.*
 
 
 class FloatingNotification {
+
     companion object {
         private const val CHANNEL_ID = "alarm channel"
         private const val CHANNEL_NAME = "alarm app channel"
@@ -33,7 +34,6 @@ class FloatingNotification {
             // sending data to new activity
             val receiveCallAction =
                 Intent(context, MainActivity::class.java)
-
             val receiveCallPendingIntent = PendingIntent.getBroadcast(
                 context,
                 1200,
@@ -87,7 +87,7 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
                 val channel = NotificationChannel(
                     CHANNEL_ID,
                     CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_HIGH
                 )
                 channel.description = "Call Notifications"
                 channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC;
@@ -179,23 +179,24 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
                 stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
             val chan =
                 NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
-            chan.lightColor = Color.BLUE
             chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
             val manager =
                 (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
             manager.createNotificationChannel(chan)
+            // Get the layouts to use in the custom notification
+            val notificationLayout = RemoteViews(context.packageName, com.app.messagealarm.R.layout.layout_foreground_notification)
+            val notificationLayoutExpanded = RemoteViews(context.packageName, com.app.messagealarm.R.layout.layout_foreground_notification)
             val notificationBuilder =
                 NotificationCompat.Builder(context, channelId)
-            val notification: Notification = notificationBuilder.setOngoing(true)
-                .setSmallIcon(android.R.drawable.sym_action_email)
-                .setContentTitle("App is running in background")
-                .setPriority(NotificationManager.IMPORTANCE_MIN)
+            val notification: Notification = notificationBuilder
+                .setSmallIcon(R.drawable.sym_call_missed)
+                .setCustomContentView(notificationLayout)
+                .setCustomBigContentView(notificationLayoutExpanded)
+                .setPriority(NotificationManager.IMPORTANCE_HIGH)
                 .setCategory(Notification.CATEGORY_SERVICE)
-                .setContentIntent(resultPendingIntent) //intent
+                .setContentIntent(resultPendingIntent)
                 .build()
-            val notificationManager = NotificationManagerCompat.from(context)
-            notificationManager.notify(1, notificationBuilder.build())
-            context.startForeground(1, notification)
+            context.startForeground(12, notification)
         }
 
 

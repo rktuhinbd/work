@@ -1,5 +1,6 @@
 package com.app.messagealarm.utils
 
+import android.app.Notification.DecoratedMediaCustomViewStyle
 import timber.log.Timber
 import java.text.DateFormatSymbols
 import java.text.ParseException
@@ -26,6 +27,8 @@ class TimeUtils private constructor() {
          * */
         fun currentTime(): Long {
             return System.currentTimeMillis()
+
+
         }
 
         /**
