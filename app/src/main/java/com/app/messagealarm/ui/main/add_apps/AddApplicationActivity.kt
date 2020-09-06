@@ -2,6 +2,7 @@ package com.app.messagealarm.ui.main.add_apps
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
@@ -14,9 +15,12 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_application)
+        //setup toolbar
+        toolBarSetup()
         //setup presenter
         val addApplicationPresenter = AddApplicationPresenter(this, this)
         addApplicationPresenter.getAllApplicationList()
+
     }
 
     private fun initAllAppsRecyclerView(list:ArrayList<InstalledApps>) {
@@ -29,6 +33,11 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView {
        runOnUiThread {
                 initAllAppsRecyclerView(list)
        }
+    }
+
+    private fun toolBarSetup(){
+        supportActionBar?.title = getString(R.string.txt_add_app)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onAllApplicationGetError(message: String) {
