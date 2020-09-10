@@ -32,19 +32,12 @@ class NotificationListener : NotificationListenerService() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         val packageName = sbn?.packageName
-        Log.e(TAG, "Package name " + packageName)
-        Log.e(TAG, "TITLE " + sbn!!.notification.extras["android.title"])
-        Log.e(TAG, "DESC " + sbn!!.notification.extras["android.text"])
         if (packageName == "com.facebook.orca") {
-            if (sbn.notification.extras["android.title"] != null ||
-                sbn.notification.extras["android.title"]!! != "Chat heads active"
-            ) {
-                if (!MediaUtils.isPlaying()) {
-                    Handler().postDelayed(
-                        Runnable {
-                            FloatingNotification.showFloatingNotification(this)
-                        }, 3000
-                    )
+            if (sbn.notification.extras["android.title"] != null) {
+                if (sbn.notification.extras["android.title"]!! != "Chat heads active") {
+                    if (!MediaUtils.isPlaying()) {
+                        FloatingNotification.showFloatingNotification(this)
+                    }
                 }
             }
         }
