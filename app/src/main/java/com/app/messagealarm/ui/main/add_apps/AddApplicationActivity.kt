@@ -12,18 +12,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.SearchView
+import android.widget.Toast
 import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.ui.adapters.AllAppsListAdapter
+import com.app.messagealarm.ui.main.add_options.AddApplicationOption
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_add_application.*
 
 
 
-class AddApplicationActivity : AppCompatActivity(), AddApplicationView {
+class AddApplicationActivity : AppCompatActivity(), AddApplicationView, AllAppsListAdapter.ItemClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +41,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView {
     private fun initAllAppsRecyclerView(list:ArrayList<InstalledApps>) {
         rv_apps_list?.layoutManager = LinearLayoutManager(this)
         rv_apps_list?.setHasFixedSize(true)
-        rv_apps_list?.adapter = AllAppsListAdapter(list)
+        rv_apps_list?.adapter = AllAppsListAdapter(list, this)
     }
 
     override fun onAllApplicationGetSuccess(list: ArrayList<InstalledApps>) {
@@ -96,5 +98,16 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView {
         val viewGroup =
             searchView.findViewById<View>(searchPlateId) as ViewGroup
         viewGroup.setBackgroundColor(Color.TRANSPARENT)
+    }
+
+    override fun onItemClick(app: InstalledApps) {
+      val bottomSheetModel = AddApplicationOption()
+        if(!bottomSheetModel.isVisible){
+            bottomSheetModel.show(supportFragmentManager, "OPTIONS")
+        }
+    }
+
+    override fun onLongClick(app: InstalledApps) {
+        Toasty.info(this, app.appName).show()
     }
 }
