@@ -36,7 +36,7 @@
         android:id="@+id/txt_empty_state_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Application!"
+        android:text="@string/add_application"
         android:textColor="@color/colorTextRegular"
         app:layout_constraintStart_toStartOf="@id/img_empty_state"
         app:layout_constraintEnd_toEndOf="@id/img_empty_state"
@@ -51,7 +51,7 @@
         android:id="@+id/txt_empty_state_desc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Add application and watch for important messages"
+        android:text="@string/txt_empty_state_desc"
         android:textColor="@color/colorTextRegular"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -61,8 +61,8 @@
         app:layout_constraintTop_toBottomOf="@id/txt_empty_state_title"
         android:textAlignment="center"
         android:textSize="20sp"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/open_sans_semi_bold"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/open_sans_regular"
         />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

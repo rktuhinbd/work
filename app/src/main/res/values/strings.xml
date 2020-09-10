@@ -8,4 +8,5 @@
     <string name="something_wrong">Something went wrong!</string>
     <string name="txt_add_app">Add Application</string>
     <string name="txt_search">Search</string>
+    <string name="txt_empty_state_desc">Add application and watch for important messages</string>
 </resources>
