@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.MainActivity">
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:title="@string/app_name"
+        app:titleTextColor="@color/colorTextRegular" />
+
     <TextView
         android:id="@+id/txt_test"
         android:layout_width="wrap_content"

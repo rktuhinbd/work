@@ -13,7 +13,7 @@ class AddApplicationPresenter(private val addApplicationView: AddApplicationView
         Thread(Runnable {
             try{
                 addApplicationView.onAllApplicationGetSuccess(
-                    AppsReader.getInstalledApps(false, activity)!!
+                    AppsReader.getInstalledApps(true, activity)!!
                 )
             }catch (e:Exception){
                 addApplicationView.onAllApplicationGetError(DataUtils.getString(R.string.something_wrong))

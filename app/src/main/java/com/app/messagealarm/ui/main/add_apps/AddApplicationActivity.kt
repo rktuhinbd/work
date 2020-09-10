@@ -2,13 +2,17 @@ package com.app.messagealarm.ui.main.add_apps
 
 import android.app.SearchManager
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.SearchView
+import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.messagealarm.R
@@ -47,6 +51,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView {
     }
 
     private fun toolBarSetup(){
+       setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.title = getString(R.string.txt_add_app)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
@@ -74,7 +79,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 (rv_apps_list?.adapter as AllAppsListAdapter).filter(newText!!)
-               return true
+                return true
             }
 
         })
