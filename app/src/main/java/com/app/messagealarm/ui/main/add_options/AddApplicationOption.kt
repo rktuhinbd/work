@@ -7,12 +7,14 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import android.widget.FrameLayout
+import android.widget.RadioGroup
 import com.app.messagealarm.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-
+import kotlinx.android.synthetic.main.dialog_add_app_options.*
 
 
 class AddApplicationOption : BottomSheetDialogFragment(){
@@ -28,6 +30,11 @@ class AddApplicationOption : BottomSheetDialogFragment(){
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.dialog_add_app_options, container, false)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        setListener()
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -50,6 +57,27 @@ class AddApplicationOption : BottomSheetDialogFragment(){
         }
         bottomSheet.layoutParams = layoutParams
         behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun setListener(){
+       switch_custom_time?.setOnCheckedChangeListener { buttonView, isChecked ->
+            if(isChecked){
+                visibleCustomTimeLayout()
+            }else{
+                hideCustomTimeLayout()
+            }
+       }
+    }
+
+    private fun visibleCustomTimeLayout(){
+        layout_start_time?.visibility = View.VISIBLE
+        layout_end_time?.visibility = View.VISIBLE
+    }
+
+
+    private fun hideCustomTimeLayout(){
+        layout_start_time?.visibility = View.GONE
+        layout_end_time?.visibility = View.GONE
     }
 
     private fun getWindowHeight(): Int { // Calculate window height for fullscreen use
