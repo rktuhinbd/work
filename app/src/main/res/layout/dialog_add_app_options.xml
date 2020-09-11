@@ -126,6 +126,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Alarm Repeat"
+                    android:textColor="@color/colorTextRegular"
                     android:textSize="18sp"
                     android:layout_marginStart="16dp"
                     android:fontFamily="@font/open_sans_regular"
@@ -161,6 +162,83 @@
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!--Ringtone option-->
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="65dp"
+                    android:id="@+id/view_ringtone"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:foreground="?selectableItemBackground"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:targetApi="m" />
+
+                <ImageView
+                    android:id="@+id/img_ringtone"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:src="@drawable/ic_music"
+                    android:scaleType="fitCenter"
+                    android:padding="8dp"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintTop_toTopOf="@id/view_ringtone"
+                    app:layout_constraintBottom_toBottomOf="@id/view_ringtone"
+                    app:layout_constraintStart_toStartOf="@id/view_ringtone"
+                    app:layout_constraintEnd_toEndOf="@id/view_ringtone"
+                    app:layout_constraintHorizontal_bias="0"
+                    />
+
+
+                <TextView
+                    android:id="@+id/txt_ringtone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ringtone"
+                    android:textColor="@color/colorTextRegular"
+                    android:textSize="18sp"
+                    android:layout_marginStart="16dp"
+                    android:fontFamily="@font/open_sans_regular"
+                    app:layout_constraintTop_toTopOf="@id/view_ringtone"
+                    app:layout_constraintStart_toEndOf="@id/img_ringtone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/txt_ringtone_value"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    />
+
+                <TextView
+                    android:id="@+id/txt_ringtone_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Default"
+                    android:textSize="12sp"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/txt_ringtone"
+                    app:layout_constraintTop_toBottomOf="@id/txt_ringtone"
+                    app:layout_constraintBottom_toBottomOf="@id/view_ringtone"
+                    />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/view_ringtone"
+                    />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <!--Vibrate on alarm-->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -203,6 +281,7 @@
                     android:text="Vibrate on alarm"
                     android:layout_marginStart="16dp"
                     android:textSize="18sp"
+                    android:textColor="@color/colorTextRegular"
                     android:fontFamily="@font/open_sans_regular"
                     app:layout_constraintTop_toTopOf="@id/view_vibrate"
                     app:layout_constraintStart_toEndOf="@id/img_vibrate"
@@ -277,6 +356,7 @@
                     android:text="Custom Time"
                     android:layout_marginStart="16dp"
                     android:textSize="18sp"
+                    android:textColor="@color/colorTextRegular"
                     android:fontFamily="@font/open_sans_regular"
                     app:layout_constraintTop_toTopOf="@id/view_custom_time"
                     app:layout_constraintStart_toEndOf="@id/img_custom_time"
@@ -353,6 +433,7 @@
                     android:layout_height="wrap_content"
                     android:text="Start Time"
                     android:textSize="18sp"
+                    android:textColor="@color/colorTextRegular"
                     android:layout_marginStart="16dp"
                     android:fontFamily="@font/open_sans_regular"
                     app:layout_constraintTop_toTopOf="@id/view_start_time"
@@ -430,6 +511,7 @@
                     android:layout_height="wrap_content"
                     android:text="End Time"
                     android:textSize="18sp"
+                    android:textColor="@color/colorTextRegular"
                     android:layout_marginStart="16dp"
                     android:fontFamily="@font/open_sans_regular"
                     app:layout_constraintTop_toTopOf="@id/view_end_time"
@@ -489,7 +571,7 @@
                     android:id="@+id/img_number_of_play"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:src="@drawable/ic_music"
+                    android:src="@drawable/ic_refresh"
                     android:scaleType="fitCenter"
                     android:padding="8dp"
                     android:layout_marginStart="8dp"
@@ -507,6 +589,7 @@
                     android:layout_height="wrap_content"
                     android:text="Number of Play"
                     android:textSize="18sp"
+                    android:textColor="@color/colorTextRegular"
                     android:layout_marginStart="16dp"
                     android:fontFamily="@font/open_sans_regular"
                     app:layout_constraintTop_toTopOf="@id/view_number_of_play"
