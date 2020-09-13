@@ -1,9 +1,11 @@
 package com.app.messagealarm.ui.main.add_options
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +13,11 @@ import android.widget.CompoundButton
 import android.widget.FrameLayout
 import android.widget.RadioGroup
 import com.app.messagealarm.R
+import com.app.messagealarm.utils.DialogUtils
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 
 
@@ -73,6 +77,37 @@ class AddApplicationOption : BottomSheetDialogFragment(){
 
         view_vibrate?.setOnClickListener {
             switch_vibrate?.performClick()
+        }
+
+        view_repeat_bg?.setOnClickListener {
+            DialogUtils.showSimpleListDialog(activity!!, object : DialogUtils.RepeatCallBack {
+                override fun onClick(name: String) {
+                    txt_repeat_value?.text = name
+                    if(name.contains("Custom")){
+                        DialogUtils.showCheckedItemListDialog(
+                            activity!!,
+                            object : DialogUtils.CheckedListCallback {
+                                @SuppressLint("SetTextI18n")
+                                override fun onChecked(list: List<String>) {
+                                    list.forEach {
+                                      txt_repeat_value?.text = "${it } "
+                                    }
+                                }
+                            },
+                            object : DialogUtils.Callback {
+                                override fun onPositive() {
+
+                                }
+
+                                override fun onNegative() {
+
+                                }
+
+                            }
+                        )
+                    }
+                }
+            })
         }
     }
 
