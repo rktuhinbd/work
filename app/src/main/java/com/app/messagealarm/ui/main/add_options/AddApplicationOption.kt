@@ -102,7 +102,6 @@ class AddApplicationOption : BottomSheetDialogFragment(){
                                 override fun onNegative() {
 
                                 }
-
                             }
                         )
                     }
