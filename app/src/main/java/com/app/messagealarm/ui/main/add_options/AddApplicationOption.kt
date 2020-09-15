@@ -21,7 +21,7 @@ import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 
 
-class AddApplicationOption : BottomSheetDialogFragment(){
+class AddApplicationOption : BottomSheetDialogFragment() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,14 +64,14 @@ class AddApplicationOption : BottomSheetDialogFragment(){
         behavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    private fun setListener(){
-       switch_custom_time?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if(isChecked){
+    private fun setListener() {
+        switch_custom_time?.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
                 visibleCustomTimeLayout()
-            }else{
+            } else {
                 hideCustomTimeLayout()
             }
-       }
+        }
         view_custom_time?.setOnClickListener {
             switch_custom_time?.performClick()
         }
@@ -84,15 +84,20 @@ class AddApplicationOption : BottomSheetDialogFragment(){
             DialogUtils.showSimpleListDialog(activity!!, object : DialogUtils.RepeatCallBack {
                 override fun onClick(name: String) {
                     txt_repeat_value?.text = name
-                    if(name.contains("Custom")){
+                    if (name.contains("Custom")) {
                         DialogUtils.showCheckedItemListDialog(
                             activity!!,
                             object : DialogUtils.CheckedListCallback {
                                 @SuppressLint("SetTextI18n")
                                 override fun onChecked(list: List<String>) {
+                                    var selectedDays: String = ""
                                     list.forEach {
-                                      txt_repeat_value?.text = "${it } "
+                                        selectedDays += "${it.substring(0, 3)}, "
                                     }
+                                    txt_repeat_value?.text = selectedDays.substring(
+                                        0,
+                                        selectedDays.length - 2
+                                    )
                                 }
                             },
                             object : DialogUtils.Callback {
@@ -111,13 +116,13 @@ class AddApplicationOption : BottomSheetDialogFragment(){
         }
     }
 
-    private fun visibleCustomTimeLayout(){
+    private fun visibleCustomTimeLayout() {
         layout_start_time?.visibility = View.VISIBLE
         layout_end_time?.visibility = View.VISIBLE
     }
 
 
-    private fun hideCustomTimeLayout(){
+    private fun hideCustomTimeLayout() {
         layout_start_time?.visibility = View.GONE
         layout_end_time?.visibility = View.GONE
     }
