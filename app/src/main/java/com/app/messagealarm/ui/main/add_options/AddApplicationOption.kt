@@ -54,6 +54,7 @@ class AddApplicationOption : BottomSheetDialogFragment(){
         val bottomSheet =
             bottomSheetDialog.findViewById<View>(R.id.design_bottom_sheet) as FrameLayout?
         val behavior: BottomSheetBehavior<*> = BottomSheetBehavior.from<FrameLayout?>(bottomSheet!!)
+        behavior.isDraggable = false
         val layoutParams = bottomSheet.layoutParams
         val windowHeight = getWindowHeight()
         if (layoutParams != null) {

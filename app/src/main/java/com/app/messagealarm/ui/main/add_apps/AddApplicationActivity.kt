@@ -24,8 +24,8 @@ import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_add_application.*
 
 
-
-class AddApplicationActivity : AppCompatActivity(), AddApplicationView, AllAppsListAdapter.ItemClickListener {
+class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
+    AllAppsListAdapter.ItemClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,29 +38,29 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView, AllAppsL
 
     }
 
-    private fun initAllAppsRecyclerView(list:ArrayList<InstalledApps>) {
+    private fun initAllAppsRecyclerView(list: ArrayList<InstalledApps>) {
         rv_apps_list?.layoutManager = LinearLayoutManager(this)
         rv_apps_list?.setHasFixedSize(true)
         rv_apps_list?.adapter = AllAppsListAdapter(list, this)
     }
 
     override fun onAllApplicationGetSuccess(list: ArrayList<InstalledApps>) {
-       runOnUiThread {
-                progress_bar_add_app?.visibility = View.GONE
-                rv_apps_list?.visibility = View.VISIBLE
-                initAllAppsRecyclerView(list)
-       }
+        runOnUiThread {
+            progress_bar_add_app?.visibility = View.GONE
+            rv_apps_list?.visibility = View.VISIBLE
+            initAllAppsRecyclerView(list)
+        }
     }
 
-    private fun toolBarSetup(){
-       setSupportActionBar(findViewById(R.id.toolbar))
+    private fun toolBarSetup() {
+        setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.title = getString(R.string.txt_add_app)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onAllApplicationGetError(message: String) {
         runOnUiThread {
-                Toasty.info(this, message).show()
+            Toasty.info(this, message).show()
         }
     }
 
@@ -72,7 +72,8 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView, AllAppsL
         val searchView: SearchView? = searchItem?.actionView as SearchView
         searchView?.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         setSearchViewEditTextBackgroundColor(this, searchView!!)
-        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener,
+        searchView.setOnQueryTextListener(object :
+            androidx.appcompat.widget.SearchView.OnQueryTextListener,
             SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 (rv_apps_list?.adapter as AllAppsListAdapter).filter(query!!)
@@ -101,8 +102,8 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView, AllAppsL
     }
 
     override fun onItemClick(app: InstalledApps) {
-      val bottomSheetModel = AddApplicationOption()
-        if(!bottomSheetModel.isVisible){
+        val bottomSheetModel = AddApplicationOption()
+        if (!bottomSheetModel.isAdded) {
             bottomSheetModel.show(supportFragmentManager, "OPTIONS")
         }
     }

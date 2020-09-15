@@ -28,7 +28,6 @@
                 android:id="@+id/btn_close"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:tint="@android:color/background_dark"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +56,7 @@
                 android:id="@+id/btn_save"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:tint="@android:color/background_dark"
+
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -76,12 +75,15 @@
 
     <!--repeat section-->
 
-
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         >
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -107,7 +109,7 @@
 
                 <View
                     android:layout_width="0dp"
-                    android:layout_height="65dp"
+                    android:layout_height="60dp"
                     android:id="@+id/view_repeat_bg"
                     android:clickable="true"
                     android:focusable="true"
@@ -139,7 +141,7 @@
                     android:layout_height="wrap_content"
                     android:text="Alarm Repeat"
                     android:textColor="@color/colorTextRegular"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:layout_marginStart="16dp"
                     android:fontFamily="@font/open_sans_regular"
                     app:layout_constraintTop_toTopOf="@id/view_repeat_bg"
@@ -183,7 +185,7 @@
 
                 <View
                     android:layout_width="0dp"
-                    android:layout_height="65dp"
+                    android:layout_height="60dp"
                     android:id="@+id/view_ringtone"
                     android:clickable="true"
                     android:focusable="true"
@@ -215,7 +217,7 @@
                     android:layout_height="wrap_content"
                     android:text="Ringtone"
                     android:textColor="@color/colorTextRegular"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:layout_marginStart="16dp"
                     android:fontFamily="@font/open_sans_regular"
                     app:layout_constraintTop_toTopOf="@id/view_ringtone"
@@ -260,7 +262,7 @@
 
                 <View
                     android:layout_width="0dp"
-                    android:layout_height="65dp"
+                    android:layout_height="60dp"
                     android:id="@+id/view_vibrate"
                     android:clickable="true"
                     android:focusable="true"
@@ -292,7 +294,7 @@
                     android:layout_height="wrap_content"
                     android:text="Vibrate on alarm"
                     android:layout_marginStart="16dp"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textColor="@color/colorTextRegular"
                     android:fontFamily="@font/open_sans_regular"
                     app:layout_constraintTop_toTopOf="@id/view_vibrate"
@@ -335,7 +337,7 @@
 
                 <View
                     android:layout_width="0dp"
-                    android:layout_height="65dp"
+                    android:layout_height="60dp"
                     android:id="@+id/view_custom_time"
                     android:clickable="true"
                     android:focusable="true"
@@ -367,7 +369,7 @@
                     android:layout_height="wrap_content"
                     android:text="Custom Time"
                     android:layout_marginStart="16dp"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textColor="@color/colorTextRegular"
                     android:fontFamily="@font/open_sans_regular"
                     app:layout_constraintTop_toTopOf="@id/view_custom_time"
@@ -408,12 +410,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/layout_start_time"
-                android:visibility="visible"
+                android:visibility="gone"
                 >
 
                 <View
                     android:layout_width="0dp"
-                    android:layout_height="65dp"
+                    android:layout_height="60dp"
                     android:id="@+id/view_start_time"
                     android:clickable="true"
                     android:focusable="true"
@@ -444,7 +446,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Start Time"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textColor="@color/colorTextRegular"
                     android:layout_marginStart="16dp"
                     android:fontFamily="@font/open_sans_regular"
@@ -485,13 +487,13 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:id="@+id/layout_end_time"
                 >
 
                 <View
                     android:layout_width="0dp"
-                    android:layout_height="65dp"
+                    android:layout_height="60dp"
                     android:id="@+id/view_end_time"
                     android:clickable="true"
                     android:focusable="true"
@@ -522,7 +524,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="End Time"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textColor="@color/colorTextRegular"
                     android:layout_marginStart="16dp"
                     android:fontFamily="@font/open_sans_regular"
@@ -569,7 +571,7 @@
 
                 <View
                     android:layout_width="0dp"
-                    android:layout_height="65dp"
+                    android:layout_height="60dp"
                     android:id="@+id/view_number_of_play"
                     android:clickable="true"
                     android:focusable="true"
@@ -600,7 +602,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Number of Play"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textColor="@color/colorTextRegular"
                     android:layout_marginStart="16dp"
                     android:fontFamily="@font/open_sans_regular"
@@ -623,15 +625,6 @@
                     app:layout_constraintStart_toStartOf="@id/txt_number_of_play"
                     app:layout_constraintTop_toBottomOf="@id/txt_number_of_play"
                     app:layout_constraintBottom_toBottomOf="@id/view_number_of_play"
-                    />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/view_number_of_play"
                     />
 
 
@@ -660,7 +653,7 @@
 
                 <View
                     android:layout_width="0dp"
-                    android:layout_height="65dp"
+                    android:layout_height="60dp"
                     android:id="@+id/view_sender_name"
                     android:clickable="true"
                     android:focusable="true"
@@ -691,7 +684,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Sender Name"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textColor="@color/colorTextRegular"
                     android:layout_marginStart="16dp"
                     android:fontFamily="@font/open_sans_regular"
@@ -740,7 +733,7 @@
 
                 <View
                     android:layout_width="0dp"
-                    android:layout_height="65dp"
+                    android:layout_height="60dp"
                     android:id="@+id/view_message_body"
                     android:clickable="true"
                     android:focusable="true"
@@ -771,7 +764,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Message Body"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textColor="@color/colorTextRegular"
                     android:layout_marginStart="16dp"
                     android:fontFamily="@font/open_sans_regular"
@@ -796,21 +789,17 @@
                     app:layout_constraintBottom_toBottomOf="@id/view_message_body"
                     />
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/view_message_body"
-                    />
+
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="50dp"/>
 
+        </LinearLayout>
 
 
     </ScrollView>
