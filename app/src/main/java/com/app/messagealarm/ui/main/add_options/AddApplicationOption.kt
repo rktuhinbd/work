@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.dialog_add_app_options.*
 
 class AddApplicationOption : BottomSheetDialogFragment() {
 
+    var isDefault = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +79,19 @@ class AddApplicationOption : BottomSheetDialogFragment() {
 
         view_vibrate?.setOnClickListener {
             switch_vibrate?.performClick()
+        }
+
+        view_ringtone?.setOnClickListener {
+            DialogUtils.showRingToneSelectDialog(activity!!, object : DialogUtils.RepeatCallBack {
+                override fun onClick(name: String) {
+                    DialogUtils.showRingToneSelectDialog(activity!!,
+                        object : DialogUtils.RepeatCallBack {
+                            override fun onClick(name: String) {
+
+                            }
+                        })
+                }
+            })
         }
 
         view_repeat_bg?.setOnClickListener {

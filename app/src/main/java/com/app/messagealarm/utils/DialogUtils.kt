@@ -58,6 +58,30 @@ class DialogUtils {
             }
         }
 
+        fun showRingToneSelectDialog(context: Context, callBack: RepeatCallBack){
+            // setup the alert builder
+            val builder = AlertDialog.Builder(context)
+            builder.setTitle("Select Ringtone")
+            val animals = arrayOf("Default", "Select a song")
+            builder.setItems(animals) { dialog, which ->
+                when (which) {
+                    0 -> { /* Default */
+                        callBack.onClick("Default")
+                        dialog.dismiss()
+                    }
+                    1 -> { /* Select   */
+                        callBack.onClick("Select a song")
+                        dialog.dismiss()
+                    }
+                }
+            }
+            // create and show the alert dialog
+            val dialog = builder.create()
+            if (dialog != null && !dialog.isShowing) {
+                dialog.show()
+            }
+        }
+
         fun showCheckedItemListDialog(
             context: Context,
             checkedCallBack: CheckedListCallback,
