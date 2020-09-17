@@ -83,6 +83,7 @@ class AddApplicationOption : BottomSheetDialogFragment() {
                 hideCustomTimeLayout()
             }
         }
+
         view_custom_time?.setOnClickListener {
             switch_custom_time?.performClick()
         }
