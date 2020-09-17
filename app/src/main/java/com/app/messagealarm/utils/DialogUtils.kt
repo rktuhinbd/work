@@ -13,6 +13,8 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import com.awesomedroidapps.inappstoragereader.Utils
 import com.google.android.material.textfield.TextInputLayout
+import es.dmoral.toasty.Toasty
+import java.lang.NumberFormatException
 
 
 class DialogUtils {
@@ -66,7 +68,7 @@ class DialogUtils {
             }
         }
 
-        fun showRingToneSelectDialog(context: Context, callBack: RepeatCallBack){
+        fun showRingToneSelectDialog(context: Context, callBack: RepeatCallBack) {
             // setup the alert builder
             val builder = AlertDialog.Builder(context)
             builder.setTitle("Select Ringtone")
@@ -101,12 +103,14 @@ class DialogUtils {
             // user checked an item
             val list: MutableList<String> = ArrayList()
             // add a checkbox list
-            val days = arrayOf("Saturday", "Sunday", "Monday", "Wednesday", "Tuesday",
-                "Thursday", "Friday")
+            val days = arrayOf(
+                "Saturday", "Sunday", "Monday", "Wednesday", "Tuesday",
+                "Thursday", "Friday"
+            )
             val checkedItems = booleanArrayOf(false, false, false, false, false, false, false)
             builder.setMultiChoiceItems(days, checkedItems) { dialog, which, isChecked ->
                 // user checked or unchecked a box
-                if (isChecked){
+                if (isChecked) {
                     list.add(days[which])
                 }
             }
@@ -129,14 +133,20 @@ class DialogUtils {
 
         }
 
-        fun showInputDialog(context: Context, message: String, callBack: RepeatCallBack){
+        fun showInputDialog(
+            context: Context,
+            currentCount: String,
+            message: String,
+            callBack: RepeatCallBack
+        ) {
             val alert = AlertDialog.Builder(context)
+            alert.setCancelable(false)
             alert.setTitle(message)
             alert.setMessage("This number will indicate how much time the alarm music will play, range 1 to 10")
             // Set an EditText view to get user input
             // Set an EditText view to get user input
             val input = EditText(context)
-            input.setText("1")
+            input.setText(currentCount)
             input.isSingleLine = true
             input.inputType = InputType.TYPE_CLASS_NUMBER
             val container = FrameLayout(context)
@@ -153,6 +163,100 @@ class DialogUtils {
             container.addView(input)
             alert.setView(container)
 
+            alert.setPositiveButton("Ok",
+                DialogInterface.OnClickListener { dialog, whichButton ->
+                    val value = input.text.toString()
+                    try {
+                        if (value.toInt() in 1..10) {
+                            callBack.onClick(value)
+                        } else {
+                            callBack.onClick("10")
+                        }
+                    } catch (ex: NumberFormatException) {
+                        callBack.onClick("10")
+                    }
+                    return@OnClickListener
+                })
+
+            alert.setNegativeButton("Cancel",
+                DialogInterface.OnClickListener { dialog, which ->
+                    // TODO Auto-generated method stub
+                    return@OnClickListener
+                })
+            alert.show()
+        }
+
+        fun showSenderNameDialog(context: Context, currentName: String, callBack: RepeatCallBack) {
+            val alert = AlertDialog.Builder(context)
+            alert.setCancelable(false)
+            alert.setTitle("Select names")
+            alert.setMessage(
+                "Only messages from this names, will play alarm. Separate with" +
+                        " comma for multiple!"
+            )
+            // Set an EditText view to get user input
+            // Set an EditText view to get user input
+            val input = EditText(context)
+            if (currentName != "None") {
+                input.setText(currentName)
+            }
+            input.maxLines = 3
+            input.inputType = InputType.TYPE_TEXT_VARIATION_PERSON_NAME
+            val container = FrameLayout(context)
+            val params = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            val left_margin: Int = ViewUtils.dpToPx(20).toInt()
+            val top_margin: Int = ViewUtils.dpToPx(10).toInt()
+            val right_margin: Int = ViewUtils.dpToPx(20).toInt()
+            val bottom_margin: Int = ViewUtils.dpToPx(10).toInt()
+            params.setMargins(left_margin, top_margin, right_margin, bottom_margin)
+            input.layoutParams = params
+            container.addView(input)
+            alert.setView(container)
+            alert.setPositiveButton("Ok",
+                DialogInterface.OnClickListener { dialog, whichButton ->
+                    val value = input.text.toString()
+                    callBack.onClick(value)
+                    return@OnClickListener
+                })
+
+            alert.setNegativeButton("Cancel",
+                DialogInterface.OnClickListener { dialog, which ->
+                    // TODO Auto-generated method stub
+                    return@OnClickListener
+                })
+            alert.show()
+        }
+
+        fun showMessageBodyDialog(context: Context, currentName: String, callBack: RepeatCallBack) {
+            val alert = AlertDialog.Builder(context)
+            alert.setCancelable(false)
+            alert.setTitle("Select message body")
+            alert.setMessage(
+                "Only messages with this text will play alarm!")
+            // Set an EditText view to get user input
+            // Set an EditText view to get user input
+            val input = EditText(context)
+            if (currentName != "None") {
+                input.setText(currentName)
+            }
+            input.maxLines = 3
+            input.inputType = InputType.TYPE_TEXT_VARIATION_PERSON_NAME
+            val container = FrameLayout(context)
+            val params = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            val left_margin: Int = ViewUtils.dpToPx(20).toInt()
+            val top_margin: Int = ViewUtils.dpToPx(10).toInt()
+            val right_margin: Int = ViewUtils.dpToPx(20).toInt()
+            val bottom_margin: Int = ViewUtils.dpToPx(10).toInt()
+            params.setMargins(left_margin, top_margin, right_margin, bottom_margin)
+            input.layoutParams = params
+            container.addView(input)
+            alert.setView(container)
             alert.setPositiveButton("Ok",
                 DialogInterface.OnClickListener { dialog, whichButton ->
                     val value = input.text.toString()

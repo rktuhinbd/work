@@ -69,8 +69,9 @@ class AddApplicationOption : BottomSheetDialogFragment() {
         behavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    private fun pickAudioFromStorage(){
-        val intent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI)
+    private fun pickAudioFromStorage() {
+        val intent =
+            Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI)
         activity!!.startActivityForResult(intent, REQUEST_CODE_PICK_AUDIO)
     }
 
@@ -90,12 +91,49 @@ class AddApplicationOption : BottomSheetDialogFragment() {
             switch_vibrate?.performClick()
         }
 
+        view_sender_name?.setOnClickListener {
+            DialogUtils.showSenderNameDialog(
+                activity!!,
+                txt_sender_name_value?.text.toString(),
+                object : DialogUtils.RepeatCallBack {
+                    override fun onClick(name: String) {
+                        if (name.isNotEmpty()) {
+                            txt_sender_name_value?.text = name
+                            btn_sender_name_clear?.visibility = View.VISIBLE
+                        } else {
+                            btn_sender_name_clear?.visibility = View.GONE
+                            txt_sender_name_value?.text = "None"
+                        }
+                    }
+
+                })
+        }
+
+
+        view_message_body?.setOnClickListener {
+            DialogUtils.showMessageBodyDialog(
+                activity!!,
+                txt_message_body_value?.text.toString(),
+                object : DialogUtils.RepeatCallBack {
+                    override fun onClick(name: String) {
+                        if (name.isNotEmpty()) {
+                            txt_message_body_value?.text = name
+                            btn_message_body_clear?.visibility = View.VISIBLE
+                        } else {
+                            btn_message_body_clear?.visibility = View.GONE
+                            txt_message_body_value?.text = "None"
+                        }
+                    }
+
+                })
+        }
+
         view_ringtone?.setOnClickListener {
             DialogUtils.showRingToneSelectDialog(activity!!, object : DialogUtils.RepeatCallBack {
                 override fun onClick(name: String) {
-                    if(name.contains("Select a song")){
+                    if (name.contains("Select a song")) {
                         pickAudioFromStorage()
-                    }else{
+                    } else {
                         txt_ringtone_value?.text = name
                     }
                 }
@@ -107,8 +145,10 @@ class AddApplicationOption : BottomSheetDialogFragment() {
             val hour: Int = c.get(Calendar.HOUR_OF_DAY)
             val minute: Int = c.get(Calendar.MINUTE)
             val timePickerDialog =
-                TimePickerDialog(context,
-                    OnTimeSetListener { view, hourOfDay, min -> txt_start_time_value?.text = TimeUtils.getTimeWithAMOrPM(hourOfDay, min)
+                TimePickerDialog(
+                    context,
+                    OnTimeSetListener { view, hourOfDay, min ->
+                        txt_start_time_value?.text = TimeUtils.getTimeWithAMOrPM(hourOfDay, min)
                     }, hour, minute, false
                 )
             timePickerDialog.show()
@@ -120,9 +160,11 @@ class AddApplicationOption : BottomSheetDialogFragment() {
             val hour: Int = c.get(Calendar.HOUR_OF_DAY)
             val minute: Int = c.get(Calendar.MINUTE)
             val timePickerDialog =
-                TimePickerDialog(context,
+                TimePickerDialog(
+                    context,
                     OnTimeSetListener { view, hourOfDay, _min ->
-                        txt_end_time_value?.text = TimeUtils.getTimeWithAMOrPM(hourOfDay, _min)}, hour, minute, false
+                        txt_end_time_value?.text = TimeUtils.getTimeWithAMOrPM(hourOfDay, _min)
+                    }, hour, minute, false
 
                 )
             timePickerDialog.show()
@@ -130,7 +172,9 @@ class AddApplicationOption : BottomSheetDialogFragment() {
 
 
         view_number_of_play?.setOnClickListener {
-            DialogUtils.showInputDialog(activity!!, "Select number of play",
+            DialogUtils.showInputDialog(activity!!,
+                txt_number_of_play_value.text.toString().replace(" times", ""),
+                "Select number of play",
                 object : DialogUtils.RepeatCallBack {
                     @SuppressLint("SetTextI18n")
                     override fun onClick(name: String) {
