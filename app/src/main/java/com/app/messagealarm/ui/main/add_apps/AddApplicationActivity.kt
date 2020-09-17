@@ -1,31 +1,34 @@
 package com.app.messagealarm.ui.main.add_apps
 
+import android.app.Activity
 import android.app.SearchManager
 import android.content.Context
-import android.content.res.ColorStateList
+import android.content.Intent
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.SearchView
-import android.widget.Toast
-import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.ui.adapters.AllAppsListAdapter
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
+import com.app.messagealarm.utils.PathUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_add_application.*
+import kotlinx.android.synthetic.main.dialog_add_app_options.*
+import java.io.File
 
 
 class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     AllAppsListAdapter.ItemClickListener {
+
+    val bottomSheetModel = AddApplicationOption()
+    val REQUEST_CODE_PICK_AUDIO = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,6 +93,15 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(REQUEST_CODE_PICK_AUDIO == requestCode){
+            if(resultCode == Activity.RESULT_OK && data!!.data != null){
+                bottomSheetModel.txt_ringtone_value?.text = File(PathUtils.getPath(this, data.data!!)!!).name
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
     private fun setSearchViewEditTextBackgroundColor(
         context: Context,
         searchView: SearchView
@@ -102,7 +114,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     }
 
     override fun onItemClick(app: InstalledApps) {
-        val bottomSheetModel = AddApplicationOption()
         if (!bottomSheetModel.isAdded) {
             bottomSheetModel.show(supportFragmentManager, "OPTIONS")
         }

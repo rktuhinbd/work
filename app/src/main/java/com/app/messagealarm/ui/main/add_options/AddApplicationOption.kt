@@ -2,18 +2,22 @@ package com.app.messagealarm.ui.main.add_options
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.app.Dialog
+import android.content.ContentResolver
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import android.widget.FrameLayout
-import android.widget.RadioGroup
 import com.app.messagealarm.R
+import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.DialogUtils
+import com.app.messagealarm.utils.PathUtils
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -21,8 +25,10 @@ import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 
 
+
 class AddApplicationOption : BottomSheetDialogFragment() {
 
+    val REQUEST_CODE_PICK_AUDIO = 1
     var isDefault = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,6 +71,11 @@ class AddApplicationOption : BottomSheetDialogFragment() {
         behavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
+    private fun pickAudioFromStorage(){
+        val intent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI)
+        activity!!.startActivityForResult(intent, REQUEST_CODE_PICK_AUDIO)
+    }
+
     private fun setListener() {
         switch_custom_time?.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
@@ -84,12 +95,9 @@ class AddApplicationOption : BottomSheetDialogFragment() {
         view_ringtone?.setOnClickListener {
             DialogUtils.showRingToneSelectDialog(activity!!, object : DialogUtils.RepeatCallBack {
                 override fun onClick(name: String) {
-                    DialogUtils.showRingToneSelectDialog(activity!!,
-                        object : DialogUtils.RepeatCallBack {
-                            override fun onClick(name: String) {
-
-                            }
-                        })
+                    if(name.contains("Select a song")){
+                        pickAudioFromStorage()
+                    }
                 }
             })
         }

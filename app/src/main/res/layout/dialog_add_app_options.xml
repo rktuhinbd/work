@@ -234,6 +234,8 @@
                     android:layout_height="wrap_content"
                     android:text="Default"
                     android:textSize="12sp"
+                    android:maxLines="1"
+                    android:maxLength="30"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@id/txt_ringtone"
