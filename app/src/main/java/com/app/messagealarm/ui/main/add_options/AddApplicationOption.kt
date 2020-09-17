@@ -2,28 +2,26 @@ package com.app.messagealarm.ui.main.add_options
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.Activity.RESULT_OK
 import android.app.Dialog
-import android.content.ContentResolver
+import android.app.TimePickerDialog
+import android.app.TimePickerDialog.OnTimeSetListener
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.app.messagealarm.R
-import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.DialogUtils
-import com.app.messagealarm.utils.PathUtils
+import com.app.messagealarm.utils.TimeUtils
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 
+import java.util.*
+import kotlin.math.min
 
 
 class AddApplicationOption : BottomSheetDialogFragment() {
@@ -97,10 +95,40 @@ class AddApplicationOption : BottomSheetDialogFragment() {
                 override fun onClick(name: String) {
                     if(name.contains("Select a song")){
                         pickAudioFromStorage()
+                    }else{
+                        txt_ringtone_value?.text = name
                     }
                 }
             })
         }
+
+        view_start_time?.setOnClickListener {
+            val c: Calendar = Calendar.getInstance()
+            val hour: Int = c.get(Calendar.HOUR_OF_DAY)
+            val minute: Int = c.get(Calendar.MINUTE)
+            val timePickerDialog =
+                TimePickerDialog(context,
+                    OnTimeSetListener { view, hourOfDay, min ->  txt_start_time_value?.text = TimeUtils.getTimeWithAMOrPM(hourOfDay, min)
+                    }, hour, minute, false
+                )
+            timePickerDialog.show()
+        }
+
+
+        view_end_time?.setOnClickListener {
+            val c: Calendar = Calendar.getInstance()
+            val hour: Int = c.get(Calendar.HOUR_OF_DAY)
+            val minute: Int = c.get(Calendar.MINUTE)
+            val timePickerDialog =
+                TimePickerDialog(context,
+                    OnTimeSetListener { view, hourOfDay, _min ->
+                        txt_end_time_value?.text = TimeUtils.getTimeWithAMOrPM(hourOfDay, _min)}, hour, minute, false
+
+                )
+            timePickerDialog.show()
+        }
+
+
 
         view_repeat_bg?.setOnClickListener {
             DialogUtils.showSimpleListDialog(activity!!, object : DialogUtils.RepeatCallBack {

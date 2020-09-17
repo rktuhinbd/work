@@ -1,8 +1,9 @@
 package com.app.messagealarm.utils
 
-import android.app.Notification.DecoratedMediaCustomViewStyle
+import android.annotation.SuppressLint
 import timber.log.Timber
 import java.text.DateFormatSymbols
+import java.text.Format
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -307,6 +308,16 @@ class TimeUtils private constructor() {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = timeStamp
             return calendar.get(Calendar.DAY_OF_MONTH)
+        }
+
+        @SuppressLint("SimpleDateFormat")
+         fun getTimeWithAMOrPM(hr: Int, min: Int): String? {
+            val cal = Calendar.getInstance()
+            cal[Calendar.HOUR_OF_DAY] = hr
+            cal[Calendar.MINUTE] = min
+            val formatter: Format
+            formatter = SimpleDateFormat("h:mm a")
+            return formatter.format(cal.time)
         }
     }
 }
