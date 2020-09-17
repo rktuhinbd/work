@@ -1,10 +1,18 @@
 package com.app.messagealarm.utils
 
 import android.R
+import android.R.attr.inputType
+import android.R.attr.text
+import android.R.id
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.text.InputType
+import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.FrameLayout
+import com.awesomedroidapps.inappstoragereader.Utils
+import com.google.android.material.textfield.TextInputLayout
 
 
 class DialogUtils {
@@ -119,6 +127,45 @@ class DialogUtils {
                 dialog.show()
             }
 
+        }
+
+        fun showInputDialog(context: Context, message: String, callBack: RepeatCallBack){
+            val alert = AlertDialog.Builder(context)
+            alert.setTitle(message)
+            alert.setMessage("This number will indicate how much time the alarm music will play, range 1 to 10")
+            // Set an EditText view to get user input
+            // Set an EditText view to get user input
+            val input = EditText(context)
+            input.setText("1")
+            input.isSingleLine = true
+            input.inputType = InputType.TYPE_CLASS_NUMBER
+            val container = FrameLayout(context)
+            val params = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            val left_margin: Int = ViewUtils.dpToPx(20).toInt()
+            val top_margin: Int = ViewUtils.dpToPx(10).toInt()
+            val right_margin: Int = ViewUtils.dpToPx(20).toInt()
+            val bottom_margin: Int = ViewUtils.dpToPx(10).toInt()
+            params.setMargins(left_margin, top_margin, right_margin, bottom_margin)
+            input.layoutParams = params
+            container.addView(input)
+            alert.setView(container)
+
+            alert.setPositiveButton("Ok",
+                DialogInterface.OnClickListener { dialog, whichButton ->
+                    val value = input.text.toString()
+                    callBack.onClick(value)
+                    return@OnClickListener
+                })
+
+            alert.setNegativeButton("Cancel",
+                DialogInterface.OnClickListener { dialog, which ->
+                    // TODO Auto-generated method stub
+                    return@OnClickListener
+                })
+            alert.show()
         }
     }
 

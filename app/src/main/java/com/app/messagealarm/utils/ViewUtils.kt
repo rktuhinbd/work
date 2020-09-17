@@ -18,13 +18,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.recyclerview.selection.SelectionPredicates
-import androidx.recyclerview.selection.SelectionTracker
-import androidx.recyclerview.selection.StableIdKeyProvider
-import androidx.recyclerview.selection.StorageStrategy
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.BaseApplication
 import timber.log.Timber
 import kotlin.math.roundToInt
@@ -107,7 +100,7 @@ class ViewUtils {
          * @param px desired pixels
          * @return amount in dp
          * */
-        fun pxToDp(px: Float): Float {
+        fun pxToDp(px: Int): Float {
             val densityDpi = Resources.getSystem().displayMetrics.densityDpi.toFloat()
             return px / (densityDpi / 160f)
         }

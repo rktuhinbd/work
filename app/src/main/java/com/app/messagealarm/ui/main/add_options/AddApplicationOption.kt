@@ -108,7 +108,7 @@ class AddApplicationOption : BottomSheetDialogFragment() {
             val minute: Int = c.get(Calendar.MINUTE)
             val timePickerDialog =
                 TimePickerDialog(context,
-                    OnTimeSetListener { view, hourOfDay, min ->  txt_start_time_value?.text = TimeUtils.getTimeWithAMOrPM(hourOfDay, min)
+                    OnTimeSetListener { view, hourOfDay, min -> txt_start_time_value?.text = TimeUtils.getTimeWithAMOrPM(hourOfDay, min)
                     }, hour, minute, false
                 )
             timePickerDialog.show()
@@ -128,6 +128,16 @@ class AddApplicationOption : BottomSheetDialogFragment() {
             timePickerDialog.show()
         }
 
+
+        view_number_of_play?.setOnClickListener {
+            DialogUtils.showInputDialog(activity!!, "Select number of play",
+                object : DialogUtils.RepeatCallBack {
+                    @SuppressLint("SetTextI18n")
+                    override fun onClick(name: String) {
+                        txt_number_of_play_value?.text = """$name times"""
+                    }
+                })
+        }
 
 
         view_repeat_bg?.setOnClickListener {
