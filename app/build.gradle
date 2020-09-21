@@ -56,4 +56,8 @@ dependencies {
     implementation "androidx.transition:transition-ktx:1.4.0-beta01"
 
     implementation 'org.apache.commons:commons-lang3:3.4'
+
+    //room
+    implementation "androidx.room:room-runtime:2.2.3"
+    annotationProcessor "androidx.room:room-compiler:2.2.3"
 }
