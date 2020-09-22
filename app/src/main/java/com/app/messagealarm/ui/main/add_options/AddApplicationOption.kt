@@ -13,24 +13,29 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.app.messagealarm.R
+import com.app.messagealarm.model.entity.ApplicationEntity
+import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.DialogUtils
 import com.app.messagealarm.utils.TimeUtils
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 
 import java.util.*
-import kotlin.math.min
 
 
-class AddApplicationOption : BottomSheetDialogFragment() {
+class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionView {
 
+    private val addApplicationEntity = ApplicationEntity()
+    private var addApplicationOptionPresenter: AddApplicationOptionPresenter? = null
     val REQUEST_CODE_PICK_AUDIO = 1
     var isDefault = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        addApplicationOptionPresenter = AddApplicationOptionPresenter(this)
     }
 
     override fun onCreateView(
@@ -76,12 +81,28 @@ class AddApplicationOption : BottomSheetDialogFragment() {
     }
 
     private fun setListener() {
+
+        btn_save?.setOnClickListener {
+            saveApplication()
+        }
+
         switch_custom_time?.setOnCheckedChangeListener { buttonView, isChecked ->
+            /**
+             * set is custom time to data model
+             */
+            addApplicationEntity.isCustomTime = isChecked
             if (isChecked) {
                 visibleCustomTimeLayout()
             } else {
                 hideCustomTimeLayout()
             }
+        }
+
+        switch_vibrate?.setOnCheckedChangeListener { buttonView, isChecked ->
+            /**
+             * set vibrate option to data model
+             */
+            addApplicationEntity.isVibrateOnAlarm = isChecked
         }
 
         view_custom_time?.setOnClickListener {
@@ -101,9 +122,17 @@ class AddApplicationOption : BottomSheetDialogFragment() {
                         if (name.isNotEmpty()) {
                             txt_sender_name_value?.text = name
                             btn_sender_name_clear?.visibility = View.VISIBLE
+                            /**
+                             * set sender name to data model
+                             */
+                            addApplicationEntity.senderNames = name
                         } else {
                             btn_sender_name_clear?.visibility = View.GONE
                             txt_sender_name_value?.text = "None"
+                            /**
+                             * set None sender name to data model
+                             */
+                            addApplicationEntity.senderNames = "None"
                         }
                     }
 
@@ -120,9 +149,17 @@ class AddApplicationOption : BottomSheetDialogFragment() {
                         if (name.isNotEmpty()) {
                             txt_message_body_value?.text = name
                             btn_message_body_clear?.visibility = View.VISIBLE
+                            /**
+                             * set message body to data model
+                             */
+                            addApplicationEntity.messageBody = name
                         } else {
                             btn_message_body_clear?.visibility = View.GONE
                             txt_message_body_value?.text = "None"
+                            /**
+                             * set none to message body data model
+                             */
+                            addApplicationEntity.messageBody = "None"
                         }
                     }
 
@@ -134,8 +171,16 @@ class AddApplicationOption : BottomSheetDialogFragment() {
                 override fun onClick(name: String) {
                     if (name.contains("Select a song")) {
                         pickAudioFromStorage()
+                        /**
+                         * set custom alarm tone type to data model
+                         */
+                        addApplicationEntity.ringTone = "Custom"
                     } else {
                         txt_ringtone_value?.text = name
+                        /**
+                         * set default alarm tone type to data model
+                         */
+                        addApplicationEntity.ringTone = name
                     }
                 }
             })
@@ -150,6 +195,12 @@ class AddApplicationOption : BottomSheetDialogFragment() {
                     context,
                     OnTimeSetListener { view, hourOfDay, min ->
                         txt_start_time_value?.text = TimeUtils.getTimeWithAMOrPM(hourOfDay, min)
+                        /**
+                         * set start time to data model
+                         */
+                        if(addApplicationEntity.isCustomTime){
+                            addApplicationEntity.startTime = txt_start_time_value?.text.toString()
+                        }
                     }, hour, minute, false
                 )
             timePickerDialog.show()
@@ -165,6 +216,12 @@ class AddApplicationOption : BottomSheetDialogFragment() {
                     context,
                     OnTimeSetListener { view, hourOfDay, _min ->
                         txt_end_time_value?.text = TimeUtils.getTimeWithAMOrPM(hourOfDay, _min)
+                        /**
+                         * set end time to data model
+                         */
+                        if(addApplicationEntity.isCustomTime){
+                            addApplicationEntity.endTime = txt_end_time_value?.text.toString()
+                        }
                     }, hour, minute, false
 
                 )
@@ -179,6 +236,10 @@ class AddApplicationOption : BottomSheetDialogFragment() {
                 object : DialogUtils.RepeatCallBack {
                     @SuppressLint("SetTextI18n")
                     override fun onClick(name: String) {
+                        /**
+                         * set number of play to data model
+                         */
+                        addApplicationEntity.numberOfPlay = name.trim().toInt()
                         txt_number_of_play_value?.text = """$name times"""
                     }
                 })
@@ -189,6 +250,10 @@ class AddApplicationOption : BottomSheetDialogFragment() {
             DialogUtils.showSimpleListDialog(activity!!, object : DialogUtils.RepeatCallBack {
                 override fun onClick(name: String) {
                     txt_repeat_value?.text = name
+                    /**
+                     * set alarm repeat value to data model
+                     */
+                    addApplicationEntity.alarmRepeat = name
                     if (name.contains("Custom")) {
                         DialogUtils.showCheckedItemListDialog(
                             activity!!,
@@ -200,6 +265,13 @@ class AddApplicationOption : BottomSheetDialogFragment() {
                                         selectedDays += "${it.substring(0, 3)}, "
                                     }
                                     txt_repeat_value?.text = selectedDays.substring(
+                                        0,
+                                        selectedDays.length - 2
+                                    )
+                                    /**
+                                     * set alarm repeat days to data model
+                                     */
+                                    addApplicationEntity.repeatDays = selectedDays.substring(
                                         0,
                                         selectedDays.length - 2
                                     )
@@ -221,6 +293,20 @@ class AddApplicationOption : BottomSheetDialogFragment() {
         }
     }
 
+    private fun saveApplication(){
+        /**
+         * Populate Application entity from UI controller data
+         * with start of other values
+         */
+        addApplicationEntity.appName = arguments?.getString(Constants.BundleKeys.APP_NAME)
+        addApplicationEntity.packageName = arguments?.getString(Constants.BundleKeys.PACKAGE_NAME)
+        addApplicationEntity.isRunningStatus = true
+        /**
+         * End of other values
+         */
+        addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
+    }
+
     private fun visibleCustomTimeLayout() {
         layout_start_time?.visibility = View.VISIBLE
         layout_end_time?.visibility = View.VISIBLE
@@ -237,5 +323,19 @@ class AddApplicationOption : BottomSheetDialogFragment() {
         (context as Activity?)!!.windowManager.defaultDisplay
             .getMetrics(displayMetrics)
         return displayMetrics.heightPixels
+    }
+
+    override fun onApplicationSaveSuccess() {
+       activity!!.runOnUiThread {
+           Toasty.success(activity!!, getString(R.string.application_save_success)).show()
+           dismiss()
+           activity!!.finish()
+       }
+    }
+
+    override fun onApplicationSaveError(message: String) {
+     activity!!.runOnUiThread {
+         Toasty.error(activity!!, message).show()
+     }
     }
 }

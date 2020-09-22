@@ -6,7 +6,10 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {}, exportSchema = false, version = 1)
+import com.app.messagealarm.model.dao.ApplicationDao;
+import com.app.messagealarm.model.entity.ApplicationEntity;
+
+@Database(entities = {ApplicationEntity.class}, exportSchema = false, version = 1)
 
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -24,8 +27,9 @@ public abstract class AppDatabase extends RoomDatabase {
         return appDatabase;
     }
 
-    /*
-    *dao list like this
-    public abstract TestPlanDao testPlanDao();*/
-
+    /**
+     * DAO of application table
+     * @return
+     */
+    public abstract ApplicationDao applicationDao();
 }

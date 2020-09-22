@@ -2,7 +2,7 @@
     <string name="app_name">Message Alarm</string>
     <string name="txt_notification_permission">Notification Permission</string>
     <string name="txt_notification_permission_message">This application need notification permission to handle works! please allow it to enjoy!</string>
-    <string name="waiting_for_messages">Waiting for messages...</string>
+    <string name="waiting_for_messages">Waiting for messages…</string>
     <string name="no_application_found">No Application Found!</string>
     <string name="add_application">Add Application</string>
     <string name="something_wrong">Something went wrong!</string>
@@ -10,4 +10,6 @@
     <string name="txt_search">Search</string>
     <string name="txt_empty_state_desc">Add application and watch for important messages</string>
     <string name="txt_play_number_out_of_range">Out of range, Should be between 1 to 10!</string>
+    <string name="application_save_success">Application saved successfully!</string>
+    <string name="txt_application_exists">Application already added!</string>
 </resources>

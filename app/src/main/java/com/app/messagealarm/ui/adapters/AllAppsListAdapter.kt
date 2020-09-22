@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
-import com.app.messagealarm.ui.main.add_options.AddApplicationOption
 import kotlinx.android.synthetic.main.item_all_apps.view.*
 import java.util.*
 import kotlin.collections.ArrayList

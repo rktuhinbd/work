@@ -17,6 +17,7 @@ import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.ui.adapters.AllAppsListAdapter
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
+import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.PathUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_add_application.*
@@ -115,6 +116,10 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
     override fun onItemClick(app: InstalledApps) {
         if (!bottomSheetModel.isAdded) {
+            val bundle = Bundle()
+            bundle.putString(Constants.BundleKeys.APP_NAME, app.appName)
+            bundle.putString(Constants.BundleKeys.PACKAGE_NAME, app.packageName)
+            bottomSheetModel.arguments = bundle
             bottomSheetModel.show(supportFragmentManager, "OPTIONS")
         }
     }

@@ -3,9 +3,10 @@ package com.app.messagealarm.model.entity;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "applications")
+@Entity(tableName = "applications", indices = {@Index(value = {"package_name", "app_name"}, unique = true)})
 public class ApplicationEntity {
 
     /**
@@ -111,9 +112,14 @@ public class ApplicationEntity {
         return tone_path;
     }
 
+
     /**
      * Setter methods
      */
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public void setRunningStatus(boolean runningStatus) {
         this.runningStatus = runningStatus;
