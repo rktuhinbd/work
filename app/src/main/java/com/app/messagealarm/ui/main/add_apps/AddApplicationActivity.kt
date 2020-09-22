@@ -98,6 +98,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         if(REQUEST_CODE_PICK_AUDIO == requestCode){
             if(resultCode == Activity.RESULT_OK && data!!.data != null){
                 bottomSheetModel.txt_ringtone_value?.text = File(PathUtils.getPath(this, data.data!!)!!).name
+                bottomSheetModel.alarmTonePath = PathUtils.getPath(this, data.data!!)!!
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -127,4 +128,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     override fun onLongClick(app: InstalledApps) {
         Toasty.info(this, app.appName).show()
     }
+
+
 }

@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.app.TimePickerDialog.OnTimeSetListener
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -28,6 +29,7 @@ import java.util.*
 
 class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionView {
 
+    public var alarmTonePath:String? = null
     private val addApplicationEntity = ApplicationEntity()
     private var addApplicationOptionPresenter: AddApplicationOptionPresenter? = null
     val REQUEST_CODE_PICK_AUDIO = 1
@@ -36,6 +38,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addApplicationOptionPresenter = AddApplicationOptionPresenter(this)
+        defaultValuesToDataModel()
     }
 
     override fun onCreateView(
@@ -293,6 +296,17 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
     }
 
+    private fun defaultValuesToDataModel(){
+        addApplicationEntity.alarmRepeat = "Once"
+        addApplicationEntity.ringTone = "Default"
+        addApplicationEntity.isVibrateOnAlarm = false
+        addApplicationEntity.isCustomTime = false
+        addApplicationEntity.numberOfPlay = 2
+        addApplicationEntity.senderNames = "None"
+        addApplicationEntity.messageBody = "None"
+        addApplicationEntity.isRunningStatus = true
+    }
+
     private fun saveApplication(){
         /**
          * Populate Application entity from UI controller data
@@ -300,7 +314,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
          */
         addApplicationEntity.appName = arguments?.getString(Constants.BundleKeys.APP_NAME)
         addApplicationEntity.packageName = arguments?.getString(Constants.BundleKeys.PACKAGE_NAME)
-        addApplicationEntity.isRunningStatus = true
+        addApplicationEntity.tone_path = alarmTonePath
         /**
          * End of other values
          */
@@ -338,4 +352,5 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
          Toasty.error(activity!!, message).show()
      }
     }
+
 }
