@@ -6,17 +6,64 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.MainActivity">
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:title="@string/app_name"
+        app:titleTextColor="@color/colorTextRegular" />
+
+    <ImageView
+        android:id="@+id/img_empty_state"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:src="@drawable/ic_robo_clear"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintBottom_toTopOf="@id/txt_empty_state_title"
+        />
+
     <TextView
-        android:id="@+id/txt_test"
+        android:id="@+id/txt_empty_state_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/no_application_found"
+        android:text="@string/add_application"
+        android:textColor="@color/colorTextRegular"
+        app:layout_constraintStart_toStartOf="@id/img_empty_state"
+        app:layout_constraintEnd_toEndOf="@id/img_empty_state"
+        app:layout_constraintTop_toBottomOf="@id/img_empty_state"
+        app:layout_constraintBottom_toTopOf="@id/txt_empty_state_desc"
+        android:textAlignment="center"
+        android:textSize="25sp"
+        android:fontFamily="@font/open_sans_semi_bold"
+        />
+
+    <TextView
+        android:id="@+id/txt_empty_state_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/txt_empty_state_desc"
+        android:textColor="@color/colorTextRegular"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
+        app:layout_constraintTop_toBottomOf="@id/txt_empty_state_title"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/open_sans_regular"
+        />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_button_add_application"

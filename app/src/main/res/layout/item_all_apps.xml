@@ -7,14 +7,16 @@
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="0dp"
-        android:layout_height="84dp"
+        android:layout_height="70dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:cardCornerRadius="8dp"
-        android:layout_margin="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         app:cardElevation="2dp"
+        app:cardUseCompatPadding="true"
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,38 +25,34 @@
 
             <ImageView
                 android:id="@+id/iv_app_icon"
-                android:layout_width="64dp"
+                android:layout_width="50dp"
                 android:layout_height="0dp"
+                app:layout_constraintEnd_toStartOf="@id/tv_app_name"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 tool:src="@mipmap/ic_launcher"
                 android:layout_margin="8dp"
-                android:scaleType="centerCrop"
+                android:scaleType="fitCenter"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintHorizontal_bias="0"
                 />
 
             <TextView
                 android:id="@+id/tv_app_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                tool:text="Mi Remote"
-                android:fontFamily="@font/open_sans_semi_bold"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="12dp"
+                android:fontFamily="@font/open_sans_regular"
                 android:textSize="18sp"
+                android:maxLines="1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/iv_app_icon"
-                app:layout_constraintTop_toTopOf="@id/iv_app_icon"
-                android:layout_marginStart="16dp"
-                />
-
-            <TextView
-                android:id="@+id/tv_app_version"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tool:text="Version name: 2.2.4"
-                android:textSize="14sp"
-                android:fontFamily="@font/open_sans_light"
-                app:layout_constraintStart_toStartOf="@id/tv_app_name"
-                app:layout_constraintTop_toBottomOf="@id/tv_app_name"
-                />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                tool:text="Mi Remote" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

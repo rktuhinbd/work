@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.app.messagealarm">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -14,7 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.main.add_apps.AddApplicationActivity" android:launchMode="singleTop"/>
+        <activity android:name=".ui.main.add_apps.AddApplicationActivity" android:parentActivityName=".ui.main.MainActivity"
+            android:launchMode="singleTop"/>
         <activity
             android:name=".ui.splash.SplashActivity"
             android:excludeFromRecents="true"

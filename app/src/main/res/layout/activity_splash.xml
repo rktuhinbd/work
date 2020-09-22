@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/layout_base_splash"
-    android:background="@color/colorPrimary"
+    android:background="@drawable/splash_background_gradient"
     tools:context=".ui.splash.SplashActivity">
 
     <com.app.messagealarm.ui.widget.CustomStatusBarView
@@ -16,9 +16,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:src="@drawable/main_logo"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/splash_base"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

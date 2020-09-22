@@ -6,4 +6,8 @@
     <string name="no_application_found">No Application Found!</string>
     <string name="add_application">Add Application</string>
     <string name="something_wrong">Something went wrong!</string>
+    <string name="txt_add_app">Add Application</string>
+    <string name="txt_search">Search</string>
+    <string name="txt_empty_state_desc">Add application and watch for important messages</string>
+    <string name="txt_play_number_out_of_range">Out of range, Should be between 1 to 10!</string>
 </resources>

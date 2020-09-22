@@ -7,6 +7,7 @@ import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.service.NotificationListener
+import com.app.messagealarm.utils.PermissionUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
@@ -20,6 +21,11 @@ class MainActivity : BaseActivity() {
             startService(Intent(this, NotificationListener::class.java))
         }
         setListener()
+        askForPermission()
+    }
+
+    private fun askForPermission(){
+        PermissionUtils.requestPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
     }
 
 
