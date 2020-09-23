@@ -13,6 +13,8 @@ class AlarmService() {
 
         private const val MESSENGER_PKG = ""
         private const val WHATSAPP_PKG = ""
+        private const val VIBER_PKG = ""
+        private const val IMO_PKG = ""
 
         fun playAlarmOnNotification(sbn: StatusBarNotification?, appsList:List<ApplicationEntity>, service: Service){
             appsList.forEach {
@@ -22,6 +24,7 @@ class AlarmService() {
                             when(sbn.packageName){
                                 MESSENGER_PKG -> messengerFilter(sbn.notification.extras["android.title"].toString())
                                 WHATSAPP_PKG -> whatsAppFilter()
+                                IMO_PKG -> imoFilter()
                             }
                             messengerFilter(sbn.notification.extras["android.title"].toString())
                                 if(!MediaUtils.isPlaying()){
@@ -58,6 +61,10 @@ class AlarmService() {
         }
 
         private fun freelancerFilter(){
+
+        }
+
+        private fun imoFilter(){
 
         }
     }

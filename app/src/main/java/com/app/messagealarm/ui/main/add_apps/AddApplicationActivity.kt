@@ -130,4 +130,12 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     }
 
 
+    override fun onBackPressed() {
+        if(bottomSheetModel.isAdded){
+            bottomSheetModel.btn_close?.performClick()
+        }else{
+            super.onBackPressed()
+        }
+    }
+
 }

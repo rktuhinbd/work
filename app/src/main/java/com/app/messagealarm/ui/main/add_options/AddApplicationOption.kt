@@ -9,6 +9,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +34,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     private val addApplicationEntity = ApplicationEntity()
     private var addApplicationOptionPresenter: AddApplicationOptionPresenter? = null
     val REQUEST_CODE_PICK_AUDIO = 1
-    var isDefault = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,6 +84,14 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     private fun setListener() {
+        btn_close?.setOnClickListener {
+            Log.e("CHECK", checkForDefault().toString())
+            if(checkForDefault()){
+                dismiss()
+            }else{
+                Toasty.info(activity!!, "Show dialog").show()
+            }
+        }
 
         btn_save?.setOnClickListener {
             saveApplication()
@@ -321,6 +329,27 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
     }
 
+    private fun checkForDefault():Boolean{
+        var isDefault = false
+            if(txt_repeat_value?.text.toString().trim() == addApplicationEntity.alarmRepeat){
+                if(txt_ringtone_value?.text.toString().trim() == addApplicationEntity.ringTone){
+                    if(switch_vibrate?.isChecked == addApplicationEntity.isVibrateOnAlarm){
+                        if(switch_custom_time?.isChecked == addApplicationEntity.isCustomTime){
+                            if(txt_number_of_play_value?.text.toString().trim()[0].toString() ==
+                                addApplicationEntity.numberOfPlay.toString()){
+                                if(txt_sender_name_value?.text.toString() == addApplicationEntity.senderNames){
+                                    if(txt_message_body_value?.text.toString() == addApplicationEntity.messageBody){
+                                        isDefault = true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        return isDefault
+    }
+
     private fun visibleCustomTimeLayout() {
         layout_start_time?.visibility = View.VISIBLE
         layout_end_time?.visibility = View.VISIBLE
@@ -352,5 +381,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
          Toasty.error(activity!!, message).show()
      }
     }
+
+
+
 
 }

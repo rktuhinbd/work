@@ -31,6 +31,7 @@ class NotificationListener : NotificationListenerService(),
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification?) {
+        //NOTE: Music not getting off on notification removed
         if (sbn!!.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
             MediaUtils.stopAlarm()
             VibratorUtils.stopVibrate()
