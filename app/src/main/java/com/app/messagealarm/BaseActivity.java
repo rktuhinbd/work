@@ -10,7 +10,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.app.messagealarm.ui.service.NotificationListener;
+import com.app.messagealarm.service.notification_service.NotificationListener;
 
 @SuppressLint("Registered")
 public class BaseActivity extends AppCompatActivity {

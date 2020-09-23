@@ -15,7 +15,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.app.messagealarm.ui.main.MainActivity
-import com.app.messagealarm.ui.service.NotificationListener
+import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.utils.MediaUtils
 import com.app.messagealarm.utils.VibratorUtils
 import java.util.*
@@ -27,7 +27,6 @@ class FloatingNotification {
         private const val CHANNEL_ID = "alarm channel"
         private const val CHANNEL_NAME = "alarm app channel"
 
-        @RequiresApi(Build.VERSION_CODES.O)
         fun showFloatingNotification(context: Service) {
             MediaUtils.playAlarm(context)
             VibratorUtils.startVibrate(context)

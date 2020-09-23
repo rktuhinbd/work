@@ -6,7 +6,7 @@ import android.os.Bundle
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
-import com.app.messagealarm.ui.service.NotificationListener
+import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.utils.PermissionUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
