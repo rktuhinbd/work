@@ -118,11 +118,7 @@ class Constants {
 
     class PreferenceKeys {
         companion object {
-            const val ACCESS_TOKEN = "access_token"
-            const val USER_FULL_NAME = "user_full_name"
-            const val USER_EMAIL = "user_email"
-            const val USER_ID = "user_id"
-            const val LOGGED_IN = "logged_in"
+            const val IS_SERVICE_STOPPED = "service_stopped"
         }
     }
 

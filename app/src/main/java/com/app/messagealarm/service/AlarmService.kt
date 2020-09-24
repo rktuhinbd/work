@@ -29,7 +29,12 @@ class AlarmService() {
                             messengerFilter(sbn.notification.extras["android.title"].toString())
                                 if(!MediaUtils.isPlaying()){
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                        FloatingNotification.showFloatingNotification(service)
+                                        if(it.ringTone != "Default"){
+                                            FloatingNotification.showFloatingNotification(service, it.tone_path)
+                                        }else{
+                                            FloatingNotification.showFloatingNotification(service, null)
+                                        }
+
                                     }
                                 }
                         }

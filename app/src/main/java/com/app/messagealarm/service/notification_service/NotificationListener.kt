@@ -12,19 +12,18 @@ import androidx.annotation.RequiresApi
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.service.AlarmService
 import com.app.messagealarm.ui.notifications.FloatingNotification
-import com.app.messagealarm.utils.AndroidUtils
-import com.app.messagealarm.utils.MediaUtils
-import com.app.messagealarm.utils.VibratorUtils
+import com.app.messagealarm.utils.*
 import es.dmoral.toasty.Toasty
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class NotificationListener : NotificationListenerService(),
     NotificationListenerView {
 
     companion object{
-        val ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE"
+        const val ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE"
     }
-    val TAG: String = "LISTENER"
+    private val TAG: String = "LISTENER"
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         val packageName = sbn?.packageName
@@ -40,7 +39,7 @@ class NotificationListener : NotificationListenerService(),
             MediaUtils.stopAlarm()
             VibratorUtils.stopVibrate()
             Toasty.info(this, "Snoozed for 20 minutes!").show()
-        }else{
+        }else if(sbn!!.packageName == AndroidUtils.getPackageInfo()!!.packageName){
             Toasty.info(this, "Alarm Service Stopped!").show()
         }
     }
@@ -52,7 +51,6 @@ class NotificationListener : NotificationListenerService(),
                 else -> FloatingNotification.startForegroundService(this)
             }
         }
-
         return Service.START_STICKY
     }
 
@@ -60,16 +58,31 @@ class NotificationListener : NotificationListenerService(),
         stopForeground(true)
         stopSelf()
         onDestroy()
+        SharedPrefUtils.write(Constants.PreferenceKeys.IS_SERVICE_STOPPED, true)
     }
 
     override fun onCreate() {
         super.onCreate()
-        FloatingNotification.startForegroundService(this)
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         //send broadcast to activity to restart this service
-       /* val service = PendingIntent.getService(
+        restartService()
+    }
+
+    private fun restartService(){
+        val isServiceStopped = SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)
+        if(SharedPrefUtils.contains(Constants.PreferenceKeys.IS_SERVICE_STOPPED)){
+            if(!isServiceStopped){
+                scheduleService()
+            }
+        }else{
+            scheduleService()
+        }
+    }
+
+    private fun scheduleService(){
+        val service = PendingIntent.getService(
             applicationContext,
             1001,
             Intent(applicationContext, NotificationListener::class.java),
@@ -77,7 +90,7 @@ class NotificationListener : NotificationListenerService(),
         )
         val alarmManager =
             getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager[AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000] = service*/
+        alarmManager[AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000] = service
     }
 
     override fun onApplicationListGetSuccess(

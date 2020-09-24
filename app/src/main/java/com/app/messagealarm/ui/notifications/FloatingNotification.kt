@@ -16,7 +16,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.app.messagealarm.ui.main.MainActivity
 import com.app.messagealarm.service.notification_service.NotificationListener
+import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.MediaUtils
+import com.app.messagealarm.utils.SharedPrefUtils
 import com.app.messagealarm.utils.VibratorUtils
 import java.util.*
 
@@ -27,8 +29,8 @@ class FloatingNotification {
         private const val CHANNEL_ID = "alarm channel"
         private const val CHANNEL_NAME = "alarm app channel"
 
-        fun showFloatingNotification(context: Service) {
-            MediaUtils.playAlarm(context)
+        fun showFloatingNotification(context: Service, mediaPath:String?) {
+            MediaUtils.playAlarm(context, mediaPath)
             VibratorUtils.startVibrate(context)
             // sending data to new activity
             val receiveCallAction =
@@ -109,6 +111,7 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
 
         /* Used to build and start foreground service. */
         fun startForegroundService(context: Service) {
+            SharedPrefUtils.write(Constants.PreferenceKeys.IS_SERVICE_STOPPED, false)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 createNotificationChannel("my_service", "My Background Service", context)
             } else { // Create notification default intent.

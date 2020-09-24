@@ -10,7 +10,9 @@ import com.app.messagealarm.R
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.utils.AndroidUtils
+import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.PermissionUtils
+import com.app.messagealarm.utils.SharedPrefUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
@@ -20,7 +22,21 @@ class MainActivity : BaseActivity() {
         setContentView(R.layout.activity_main)
         setListener()
         askForPermission()
-        startMagicService()
+        handleService()
+    }
+
+    private fun handleService(){
+        val isServiceStopped = SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)
+        if(SharedPrefUtils.contains(Constants.PreferenceKeys.IS_SERVICE_STOPPED)){
+            if(isServiceStopped){
+                switch_alarm_status?.isChecked = false
+            }else{
+                switch_alarm_status?.isChecked = true
+                startMagicService()
+            }
+        }else{
+            startMagicService()
+        }
     }
 
     private fun askForPermission(){
@@ -37,7 +53,6 @@ class MainActivity : BaseActivity() {
     }
 
     private fun startMagicService(){
-            Log.e("COMMAND", "YES")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val intent = Intent(this, NotificationListener::class.java)
                 startForegroundService(intent)
