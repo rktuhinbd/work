@@ -60,11 +60,11 @@
                 app:layout_constraintStart_toEndOf="@id/txt_alarm_status"
                 android:layout_marginStart="5dp"
                 android:scaleType="fitCenter"
-                android:padding="5dp"
+                android:padding="4dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
-                android:layout_marginTop="5dp"
-                android:src="@drawable/ic_off_button"
+                android:layout_marginTop="3dp"
+                android:src="@drawable/ic_on_button"
                 />
 
 
@@ -78,6 +78,7 @@
                 app:layout_constraintStart_toEndOf="@id/ic_alarm_status"
                 app:layout_constraintHorizontal_bias="1"
                 android:layout_marginEnd="16dp"
+                android:checked="true"
                 />
 
 

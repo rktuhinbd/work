@@ -27,7 +27,7 @@ public class BaseActivity extends AppCompatActivity {
                             Thread paramThread,
                             Throwable paramThrowable
                     ) {
-                        PendingIntent service = PendingIntent.getService(
+                        /*PendingIntent service = PendingIntent.getService(
                                 getApplicationContext(),
                                 1001,
                                 new Intent(getApplicationContext(), NotificationListener.class),
@@ -35,7 +35,7 @@ public class BaseActivity extends AppCompatActivity {
                         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                         if (alarmManager != null) {
                             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, service);
-                        }
+                        }*/
                         //System.exit(2);
                     }
                 });
