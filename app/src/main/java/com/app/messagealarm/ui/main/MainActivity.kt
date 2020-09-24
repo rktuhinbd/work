@@ -22,6 +22,7 @@ class MainActivity : BaseActivity() {
         }
         setListener()
         askForPermission()
+        switch_alarm_status?.isChecked = true
     }
 
     private fun askForPermission(){
@@ -32,6 +33,14 @@ class MainActivity : BaseActivity() {
     private fun setListener(){
         fab_button_add_application?.setOnClickListener {
             startActivity(Intent(this, AddApplicationActivity::class.java))
+        }
+
+        switch_alarm_status?.setOnCheckedChangeListener { buttonView, isChecked ->
+            if(isChecked){
+               ic_alarm_status?.setImageResource(R.drawable.ic_on_button)
+            }else{
+                ic_alarm_status?.setImageResource(R.drawable.ic_off_button)
+            }
         }
     }
 
