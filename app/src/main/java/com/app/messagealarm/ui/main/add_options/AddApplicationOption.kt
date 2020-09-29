@@ -8,6 +8,7 @@ import android.app.TimePickerDialog.OnTimeSetListener
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
@@ -370,9 +371,9 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
     override fun onApplicationSaveSuccess() {
        activity!!.runOnUiThread {
-           Toasty.success(activity!!, getString(R.string.application_save_success)).show()
-           dismiss()
-           activity!!.finish()
+               Toasty.success(activity!!, getString(R.string.application_save_success)).show()
+               dismiss()
+               activity!!.finish()
        }
     }
 

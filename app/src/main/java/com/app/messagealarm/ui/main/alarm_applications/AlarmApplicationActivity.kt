@@ -1,21 +1,24 @@
-package com.app.messagealarm.ui.main
+package com.app.messagealarm.ui.main.alarm_applications
 
-import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.R
+import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.service.notification_service.NotificationListener
+import com.app.messagealarm.ui.adapters.AddedAppsListAdapter
 import com.app.messagealarm.utils.AndroidUtils
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.PermissionUtils
 import com.app.messagealarm.utils.SharedPrefUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : BaseActivity() {
+class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView {
+
+    private val alarmAppPresenter = AlarmApplicationPresenter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +26,16 @@ class MainActivity : BaseActivity() {
         setListener()
         askForPermission()
         handleService()
+
+    }
+
+    private fun lookForAlarmApplication(){
+        alarmAppPresenter.getApplicationList()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        lookForAlarmApplication()
     }
 
     private fun handleService(){
@@ -78,6 +91,23 @@ class MainActivity : BaseActivity() {
                 stopService()
             }
         }
+    }
+
+    private fun setupAppsRecyclerView(appsList:List<ApplicationEntity>){
+        rv_application_list?.layoutManager = LinearLayoutManager(this)
+        rv_application_list?.setHasFixedSize(true)
+        rv_application_list?.adapter = AddedAppsListAdapter(appsList)
+    }
+
+
+    override fun onGetAlarmApplicationSuccess(appsList: List<ApplicationEntity>) {
+        runOnUiThread {
+            setupAppsRecyclerView(appsList)
+        }
+    }
+
+    override fun onGetAlarmApplicationError() {
+
     }
 
 }

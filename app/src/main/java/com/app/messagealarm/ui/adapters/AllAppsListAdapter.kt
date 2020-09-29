@@ -64,6 +64,7 @@ class AllAppsListAdapter ( private val appsList: ArrayList<InstalledApps>,
         init {
             itemView.setOnClickListener(this)
         }
+
             fun bindItems(installedApps: InstalledApps){
                 itemView.tv_app_name?.text = installedApps.appName
                 itemView.iv_app_icon?.setImageDrawable(installedApps.drawableIcon)

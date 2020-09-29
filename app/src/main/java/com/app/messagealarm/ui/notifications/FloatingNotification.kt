@@ -14,7 +14,7 @@ import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.app.messagealarm.ui.main.MainActivity
+import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.MediaUtils
@@ -34,7 +34,7 @@ class FloatingNotification {
             VibratorUtils.startVibrate(context)
             // sending data to new activity
             val receiveCallAction =
-                Intent(context, MainActivity::class.java)
+                Intent(context, AlarmApplicationActivity::class.java)
             val receiveCallPendingIntent = PendingIntent.getBroadcast(
                 context,
                 1200,
@@ -173,7 +173,7 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
             channelName: String,
             context: Service
         ) {
-            val resultIntent = Intent(context, MainActivity::class.java)
+            val resultIntent = Intent(context, AlarmApplicationActivity::class.java)
             // Create the TaskStackBuilder and add the intent, which inflates the back stack
             val stackBuilder: TaskStackBuilder = TaskStackBuilder.create(context)
             stackBuilder.addNextIntentWithParentStack(resultIntent)
