@@ -131,8 +131,10 @@ class Constants {
 
     class BundleKeys{
         companion object{
+            const val APP = "app"
             const val APP_NAME = "app_name"
             const val PACKAGE_NAME = "package_name"
+            const val BITMAP = "bitmap"
         }
     }
 

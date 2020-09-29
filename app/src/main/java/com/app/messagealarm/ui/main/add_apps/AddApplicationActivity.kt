@@ -23,6 +23,7 @@ import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_add_application.*
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import java.io.File
+import java.io.Serializable
 
 
 class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
@@ -118,8 +119,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     override fun onItemClick(app: InstalledApps) {
         if (!bottomSheetModel.isAdded) {
             val bundle = Bundle()
-            bundle.putString(Constants.BundleKeys.APP_NAME, app.appName)
-            bundle.putString(Constants.BundleKeys.PACKAGE_NAME, app.packageName)
+            bundle.putSerializable(Constants.BundleKeys.APP, app as Serializable)
             bottomSheetModel.arguments = bundle
             bottomSheetModel.show(supportFragmentManager, "OPTIONS")
         }

@@ -44,13 +44,17 @@ public class ApplicationEntity {
     private String repeatDays;
     @ColumnInfo(name = "tone_path")
     private String tone_path;
-
-
+    @ColumnInfo(name = "bitmap_path")
+    private String bitmapPath;
 
     /**
      * Getter methods
      * @return
      */
+
+    public String getBitmapPath() {
+        return bitmapPath;
+    }
 
     public int getId() {
         return id;
@@ -116,6 +120,10 @@ public class ApplicationEntity {
     /**
      * Setter methods
      */
+
+    public void setBitmapPath(String bitmapPath) {
+        this.bitmapPath = bitmapPath;
+    }
 
     public void setId(int id) {
         this.id = id;

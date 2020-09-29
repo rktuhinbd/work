@@ -7,6 +7,8 @@ import android.app.TimePickerDialog
 import android.app.TimePickerDialog.OnTimeSetListener
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.util.DisplayMetrics
@@ -15,10 +17,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.core.graphics.drawable.toBitmap
 import com.app.messagealarm.R
+import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.DialogUtils
+import com.app.messagealarm.utils.FileUtils
 import com.app.messagealarm.utils.TimeUtils
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -213,7 +218,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         if(addApplicationEntity.isCustomTime){
                             addApplicationEntity.startTime = txt_start_time_value?.text.toString()
                         }
-                    }, hour, minute, false
+                    }, hour, minute, true
                 )
             timePickerDialog.show()
         }
@@ -234,7 +239,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         if(addApplicationEntity.isCustomTime){
                             addApplicationEntity.endTime = txt_end_time_value?.text.toString()
                         }
-                    }, hour, minute, false
+                    }, hour, minute, true
 
                 )
             timePickerDialog.show()
@@ -321,13 +326,14 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
          * Populate Application entity from UI controller data
          * with start of other values
          */
-        addApplicationEntity.appName = arguments?.getString(Constants.BundleKeys.APP_NAME)
-        addApplicationEntity.packageName = arguments?.getString(Constants.BundleKeys.PACKAGE_NAME)
+        val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
+        addApplicationEntity.appName = app.appName
+        addApplicationEntity.packageName = app.packageName
         addApplicationEntity.tone_path = alarmTonePath
-        /**
-         * End of other values
-         */
-        addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
+        Thread(Runnable {
+            val bitmap = app.drawableIcon
+            addApplicationOptionPresenter?.saveBitmapToFile(bitmap.toBitmap())
+        }).start()
     }
 
     private fun checkForDefault():Boolean{
@@ -383,7 +389,13 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
      }
     }
 
-
+    override fun onBitmapSaveSuccess(path: String) {
+        addApplicationEntity.bitmapPath = path
+        /**
+         * End of other values
+         */
+        addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
+    }
 
 
 }

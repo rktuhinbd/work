@@ -1,5 +1,6 @@
 package com.app.messagealarm.ui.adapters
 
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.R
 import com.app.messagealarm.model.entity.ApplicationEntity
 import kotlinx.android.synthetic.main.item_added_applications.view.*
+import java.io.File
 
 class AddedAppsListAdapter(private val appsList:List<ApplicationEntity>) :
     RecyclerView.Adapter<AddedAppsListAdapter.AddedAppsViewHolder>() {
@@ -33,6 +35,11 @@ class AddedAppsListAdapter(private val appsList:List<ApplicationEntity>) :
 
         fun bindItems(app:ApplicationEntity){
             itemView.tv_app_name?.text = app.appName
+            itemView.iv_app_icon?.setImageBitmap(
+                BitmapFactory.decodeFile(
+                    File(app.bitmapPath)
+                        .absolutePath
+                ))
         }
 
         override fun onClick(v: View?) {

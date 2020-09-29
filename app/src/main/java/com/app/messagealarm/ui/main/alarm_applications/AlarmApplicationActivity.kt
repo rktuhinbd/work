@@ -53,7 +53,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView {
     }
 
     private fun askForPermission(){
-        PermissionUtils.requestPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+        PermissionUtils.requestPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
     }
 
 
@@ -95,7 +97,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView {
 
     private fun setupAppsRecyclerView(appsList:List<ApplicationEntity>){
         rv_application_list?.layoutManager = LinearLayoutManager(this)
-        rv_application_list?.setHasFixedSize(true)
+        rv_application_list?.isVerticalScrollBarEnabled = true
         rv_application_list?.adapter = AddedAppsListAdapter(appsList)
     }
 

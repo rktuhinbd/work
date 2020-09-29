@@ -47,6 +47,7 @@
                 android:fontFamily="@font/open_sans_regular"
                 android:textSize="18sp"
                 android:maxLines="1"
+                android:textColor="@color/colorTextRegular"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/switch_app_status"
                 app:layout_constraintStart_toEndOf="@id/iv_app_icon"

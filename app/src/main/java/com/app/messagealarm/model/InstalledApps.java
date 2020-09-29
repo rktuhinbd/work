@@ -2,7 +2,9 @@ package com.app.messagealarm.model;
 
 import android.graphics.drawable.Drawable;
 
-public class InstalledApps {
+import java.io.Serializable;
+
+public class InstalledApps implements Serializable {
 
     private String appName;
     private String packageName;
