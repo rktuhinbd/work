@@ -10,7 +10,7 @@ import com.app.messagealarm.model.entity.ApplicationEntity
 import kotlinx.android.synthetic.main.item_added_applications.view.*
 import java.io.File
 
-class AddedAppsListAdapter(private val appsList:List<ApplicationEntity>) :
+class AddedAppsListAdapter(private val appsList:ArrayList<ApplicationEntity>) :
     RecyclerView.Adapter<AddedAppsListAdapter.AddedAppsViewHolder>() {
 
 
@@ -21,6 +21,11 @@ class AddedAppsListAdapter(private val appsList:List<ApplicationEntity>) :
 
     override fun getItemCount(): Int {
        return appsList.size
+    }
+
+    fun deleteItem(position: Int){
+        appsList.removeAt(position)
+        notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: AddedAppsViewHolder, position: Int) {

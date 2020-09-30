@@ -152,7 +152,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                             addApplicationEntity.senderNames = "None"
                         }
                     }
-
                 })
         }
 

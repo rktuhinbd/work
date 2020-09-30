@@ -48,7 +48,7 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
             if (!dir.exists()) {
                 dir.mkdirs()
             }
-            Thread.sleep(2000)
+            Thread.sleep(1000)
             val image = System.currentTimeMillis().toString()
             imageName = "$image.png"
             val file = File(dir, imageName)

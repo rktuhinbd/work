@@ -6,6 +6,7 @@ import androidx.room.Query;
 
 import com.app.messagealarm.model.entity.ApplicationEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Dao

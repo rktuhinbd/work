@@ -3,6 +3,7 @@ package com.app.messagealarm.ui.main.alarm_applications
 import android.database.sqlite.SQLiteException
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.local_database.AppDatabase
+import com.app.messagealarm.model.entity.ApplicationEntity
 import java.lang.NullPointerException
 
 class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicationView){
@@ -10,7 +11,7 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread(Runnable {
             try{
-                alarmApplicationView.onGetAlarmApplicationSuccess(appDatabase.applicationDao().allApplicationList)
+                alarmApplicationView.onGetAlarmApplicationSuccess(appDatabase.applicationDao().allApplicationList as ArrayList<ApplicationEntity>)
             }catch (e:NullPointerException){
                 alarmApplicationView.onGetAlarmApplicationError()
             }catch (e:SQLiteException){
