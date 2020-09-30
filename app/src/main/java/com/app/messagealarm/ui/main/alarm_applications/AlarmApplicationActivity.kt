@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Canvas
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,10 +15,8 @@ import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.ui.adapters.AddedAppsListAdapter
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
-import com.app.messagealarm.utils.AndroidUtils
-import com.app.messagealarm.utils.Constants
-import com.app.messagealarm.utils.PermissionUtils
-import com.app.messagealarm.utils.SharedPrefUtils
+import com.app.messagealarm.utils.*
+import es.dmoral.toasty.Toasty
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -113,7 +112,20 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView {
                 viewHolder: RecyclerView.ViewHolder,
                 direction: Int
             ) { // Take action for the swiped item
-                (rv_application_list?.adapter as AddedAppsListAdapter).deleteItem(viewHolder.adapterPosition)
+                DialogUtils.showDialog(this@AlarmApplicationActivity, getString(R.string.delete_app_title),
+                    getString(R.string.delete_app_message), object :DialogUtils.Callback{
+                        override fun onPositive() {
+                            alarmAppPresenter.deleteApplication(
+                                (rv_application_list?.adapter as AddedAppsListAdapter).getItem(viewHolder.adapterPosition),
+                                viewHolder.adapterPosition
+                            )
+                        }
+                        override fun onNegative() {
+                            rv_application_list?.adapter?.notifyDataSetChanged()
+                        }
+
+                    })
+
             }
         }
         val itemTouchHelper = ItemTouchHelper(callback)
@@ -166,13 +178,49 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView {
 
     override fun onGetAlarmApplicationSuccess(appsList: ArrayList<ApplicationEntity>) {
         runOnUiThread {
-            setupAppsRecyclerView(appsList)
-            recyclerViewSwipeHandler()
+            if(appsList.isNotEmpty()){
+                setupAppsRecyclerView(appsList)
+                recyclerViewSwipeHandler()
+                dataState()
+            }else{
+                emptyState()
+            }
         }
+    }
+
+    private fun emptyState(){
+        rv_application_list?.visibility = View.GONE
+        img_empty_state?.visibility = View.VISIBLE
+        txt_empty_state_title?.visibility = View.VISIBLE
+        txt_empty_state_desc?.visibility = View.VISIBLE
+    }
+
+    private fun dataState(){
+        rv_application_list?.visibility = View.VISIBLE
+        img_empty_state?.visibility = View.GONE
+        txt_empty_state_title?.visibility = View.GONE
+        txt_empty_state_desc?.visibility = View.GONE
     }
 
     override fun onGetAlarmApplicationError() {
 
+    }
+
+    override fun onApplicationDeleteSuccess(position:Int) {
+        runOnUiThread {
+            (rv_application_list?.adapter as AddedAppsListAdapter).deleteItem(position)
+            Toasty.success(this, getString(R.string.app_delete_success)).show()
+            if((rv_application_list?.adapter as AddedAppsListAdapter).itemCount == 0){
+                emptyState()
+            }
+        }
+    }
+
+    override fun onApplicationDeleteError() {
+       runOnUiThread {
+           Toasty.error(this, getString(R.string.app_delete_error)).show()
+           rv_application_list?.adapter?.notifyDataSetChanged()
+       }
     }
 
 }

@@ -19,4 +19,18 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
             }
         }).start()
     }
+
+    fun  deleteApplication(applicationEntity: ApplicationEntity, position:Int){
+        val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
+        Thread(Runnable {
+            try{
+                appDatabase.applicationDao().deleteApplication(applicationEntity)
+                alarmApplicationView.onApplicationDeleteSuccess(position)
+            }catch (e:NullPointerException){
+                alarmApplicationView.onApplicationDeleteError()
+            }catch (e:SQLiteException){
+                alarmApplicationView.onApplicationDeleteError()
+            }
+        }).start()
+    }
 }

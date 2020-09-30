@@ -28,6 +28,10 @@ class AddedAppsListAdapter(private val appsList:ArrayList<ApplicationEntity>) :
         notifyDataSetChanged()
     }
 
+    fun getItem(position: Int):ApplicationEntity{
+        return appsList[position]
+    }
+
     override fun onBindViewHolder(holder: AddedAppsViewHolder, position: Int) {
        holder.bindItems(appsList[position])
     }

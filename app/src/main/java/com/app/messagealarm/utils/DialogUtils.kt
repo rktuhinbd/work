@@ -34,6 +34,7 @@ class DialogUtils {
                 .setNegativeButton(
                     R.string.no
                 ) { dialog, which ->
+                    dialog.dismiss()
                     callback.onNegative()
                 }
                 .setCancelable(false)

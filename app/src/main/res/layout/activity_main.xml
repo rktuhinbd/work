@@ -107,6 +107,7 @@
         android:id="@+id/rv_application_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:visibility="gone"
         android:scrollbars="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -123,11 +124,11 @@
 
     <ImageView
         android:id="@+id/img_empty_state"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:visibility="gone"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:visibility="visible"
         android:src="@drawable/ic_robo_clear"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_view_alarm_status"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
@@ -138,7 +139,7 @@
         android:id="@+id/txt_empty_state_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="visible"
         android:text="@string/add_application"
         android:textColor="@color/colorTextRegular"
         app:layout_constraintStart_toStartOf="@id/img_empty_state"
@@ -146,7 +147,7 @@
         app:layout_constraintTop_toBottomOf="@id/img_empty_state"
         app:layout_constraintBottom_toTopOf="@id/txt_empty_state_desc"
         android:textAlignment="center"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:fontFamily="@font/open_sans_semi_bold"
         />
 
@@ -160,17 +161,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:visibility="gone"
+        android:layout_marginBottom="64dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_empty_state_title"
         android:textAlignment="center"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/open_sans_regular"
         />
 
     <!--end of placeholder layouts-->
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_button_add_application"
         android:layout_width="wrap_content"
