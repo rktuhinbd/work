@@ -40,6 +40,7 @@ class AddedAppsListAdapter(private val appsList:List<ApplicationEntity>) :
                     File(app.bitmapPath)
                         .absolutePath
                 ))
+            itemView.switch_app_status?.isChecked = app.isRunningStatus
         }
 
         override fun onClick(v: View?) {

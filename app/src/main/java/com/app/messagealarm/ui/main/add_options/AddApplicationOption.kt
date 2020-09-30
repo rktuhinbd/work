@@ -3,6 +3,7 @@ package com.app.messagealarm.ui.main.add_options
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
+import android.app.ProgressDialog
 import android.app.TimePickerDialog
 import android.app.TimePickerDialog.OnTimeSetListener
 import android.content.DialogInterface
@@ -17,19 +18,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ProgressBar
 import androidx.core.graphics.drawable.toBitmap
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
-import com.app.messagealarm.utils.Constants
-import com.app.messagealarm.utils.DialogUtils
-import com.app.messagealarm.utils.FileUtils
-import com.app.messagealarm.utils.TimeUtils
+import com.app.messagealarm.utils.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
+import java.lang.Exception
 
 import java.util.*
 
@@ -330,10 +330,25 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         addApplicationEntity.appName = app.appName
         addApplicationEntity.packageName = app.packageName
         addApplicationEntity.tone_path = alarmTonePath
+        //start progress bar
+        showProgressBar()
         Thread(Runnable {
-            val bitmap = app.drawableIcon
-            addApplicationOptionPresenter?.saveBitmapToFile(bitmap.toBitmap())
+            try {
+                val bitmap = app.drawableIcon
+                    addApplicationOptionPresenter?.saveBitmapToFile(bitmap.toBitmap())
+            }catch (e:Exception){
+                hideProgressBar()
+                Toasty.error(activity!!, DataUtils.getString(R.string.something_wrong)).show()
+            }
         }).start()
+    }
+
+    private fun showProgressBar(){
+        progress_bar_option?.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressBar(){
+        progress_bar_option?.visibility = View.INVISIBLE
     }
 
     private fun checkForDefault():Boolean{
@@ -395,6 +410,16 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
          * End of other values
          */
         addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
+        activity!!.runOnUiThread {
+            hideProgressBar()
+        }
+    }
+
+    override fun onBitmapSaveError() {
+        activity!!.runOnUiThread {
+            Toasty.error(activity!!, DataUtils.getString(R.string.something_wrong)).show()
+            hideProgressBar()
+        }
     }
 
 

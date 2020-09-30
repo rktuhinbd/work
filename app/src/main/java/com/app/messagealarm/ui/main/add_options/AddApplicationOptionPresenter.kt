@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteException
 import android.graphics.Bitmap
 import android.os.Environment
+import android.os.Handler
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.app.messagealarm.local_database.AppDatabase
@@ -12,6 +13,7 @@ import com.app.messagealarm.utils.DataUtils
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.lang.Exception
 import java.lang.NullPointerException
 
 class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApplicationOptionView) {
@@ -46,6 +48,7 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
             if (!dir.exists()) {
                 dir.mkdirs()
             }
+            Thread.sleep(2000)
             val image = System.currentTimeMillis().toString()
             imageName = "$image.png"
             val file = File(dir, imageName)
@@ -57,6 +60,9 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
             }
         } catch (e: IOException) {
             e.printStackTrace()
+            addApplicationOptionView.onBitmapSaveError()
+        }catch (ex:NullPointerException){
+            addApplicationOptionView.onBitmapSaveError()
         }
         addApplicationOptionView.onBitmapSaveSuccess("$file_path/$imageName")
     }

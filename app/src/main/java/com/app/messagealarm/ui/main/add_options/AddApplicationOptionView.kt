@@ -4,4 +4,5 @@ interface AddApplicationOptionView{
     fun onApplicationSaveSuccess()
     fun onApplicationSaveError(message:String)
     fun onBitmapSaveSuccess(path:String)
+    fun onBitmapSaveError()
 }
