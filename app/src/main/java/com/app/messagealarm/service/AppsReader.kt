@@ -1,4 +1,4 @@
-package com.app.messagealarm.ui.service
+package com.app.messagealarm.service
 
 import android.content.Context
 import android.content.pm.PackageInfo

@@ -14,9 +14,11 @@ import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.app.messagealarm.ui.main.MainActivity
-import com.app.messagealarm.ui.service.NotificationListener
+import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
+import com.app.messagealarm.service.notification_service.NotificationListener
+import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.MediaUtils
+import com.app.messagealarm.utils.SharedPrefUtils
 import com.app.messagealarm.utils.VibratorUtils
 import java.util.*
 
@@ -27,13 +29,12 @@ class FloatingNotification {
         private const val CHANNEL_ID = "alarm channel"
         private const val CHANNEL_NAME = "alarm app channel"
 
-        @RequiresApi(Build.VERSION_CODES.O)
-        fun showFloatingNotification(context: Service) {
-            MediaUtils.playAlarm(context)
+        fun showFloatingNotification(context: Service, mediaPath:String?) {
+            MediaUtils.playAlarm(context, mediaPath)
             VibratorUtils.startVibrate(context)
             // sending data to new activity
             val receiveCallAction =
-                Intent(context, MainActivity::class.java)
+                Intent(context, AlarmApplicationActivity::class.java)
             val receiveCallPendingIntent = PendingIntent.getBroadcast(
                 context,
                 1200,
@@ -110,6 +111,7 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
 
         /* Used to build and start foreground service. */
         fun startForegroundService(context: Service) {
+            SharedPrefUtils.write(Constants.PreferenceKeys.IS_SERVICE_STOPPED, false)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 createNotificationChannel("my_service", "My Background Service", context)
             } else { // Create notification default intent.
@@ -171,7 +173,7 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
             channelName: String,
             context: Service
         ) {
-            val resultIntent = Intent(context, MainActivity::class.java)
+            val resultIntent = Intent(context, AlarmApplicationActivity::class.java)
             // Create the TaskStackBuilder and add the intent, which inflates the back stack
             val stackBuilder: TaskStackBuilder = TaskStackBuilder.create(context)
             stackBuilder.addNextIntentWithParentStack(resultIntent)

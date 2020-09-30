@@ -2,8 +2,7 @@ package com.app.messagealarm.ui.main.add_apps
 
 import android.app.Activity
 import com.app.messagealarm.R
-import com.app.messagealarm.model.InstalledApps
-import com.app.messagealarm.ui.service.AppsReader
+import com.app.messagealarm.service.AppsReader
 import com.app.messagealarm.utils.DataUtils
 
 class AddApplicationPresenter(private val addApplicationView: AddApplicationView,

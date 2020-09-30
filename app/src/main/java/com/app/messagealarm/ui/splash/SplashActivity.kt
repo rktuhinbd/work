@@ -4,10 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.animation.AnimationUtils
-import androidx.appcompat.app.AppCompatActivity
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.R
-import com.app.messagealarm.ui.main.MainActivity
+import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.DialogUtils
 import com.app.messagealarm.utils.PermissionUtils
 import kotlinx.android.synthetic.main.activity_splash.*
@@ -49,7 +48,7 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun takeUserToHome(){
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, AlarmApplicationActivity::class.java)
         startActivity(intent)
         finish()
     }

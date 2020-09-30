@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/toolbar"
         android:layout_width="0dp"
@@ -81,13 +83,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <ProgressBar
+                android:id="@+id/progress_bar_option"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                android:indeterminate="true"
+                android:max="100"
+                style="?android:attr/progressBarStyleHorizontal"
+                />
+
             <!--Option area-->
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+
                 android:text="Main Options"
                 android:textColor="@color/colorTextRegular"
                 android:textSize="14sp" />

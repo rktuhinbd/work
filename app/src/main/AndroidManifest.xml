@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.app.messagealarm">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
@@ -15,7 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.main.add_apps.AddApplicationActivity" android:parentActivityName=".ui.main.MainActivity"
+        <activity android:name=".ui.main.add_apps.AddApplicationActivity" android:parentActivityName=".ui.main.alarm_applications.AlarmApplicationActivity"
             android:launchMode="singleTop"/>
         <activity
             android:name=".ui.splash.SplashActivity"
@@ -27,11 +28,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name=".ui.main.alarm_applications.AlarmApplicationActivity"
             android:excludeFromRecents="true" android:launchMode="singleTop" />
 
         <service
-            android:name=".ui.service.NotificationListener"
+            android:name="com.app.messagealarm.service.notification_service.NotificationListener"
             android:enabled="true"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>

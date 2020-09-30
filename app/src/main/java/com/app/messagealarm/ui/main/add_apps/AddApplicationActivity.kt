@@ -17,11 +17,13 @@ import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.ui.adapters.AllAppsListAdapter
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
+import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.PathUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_add_application.*
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import java.io.File
+import java.io.Serializable
 
 
 class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
@@ -97,6 +99,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         if(REQUEST_CODE_PICK_AUDIO == requestCode){
             if(resultCode == Activity.RESULT_OK && data!!.data != null){
                 bottomSheetModel.txt_ringtone_value?.text = File(PathUtils.getPath(this, data.data!!)!!).name
+                bottomSheetModel.alarmTonePath = PathUtils.getPath(this, data.data!!)!!
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -115,6 +118,9 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
     override fun onItemClick(app: InstalledApps) {
         if (!bottomSheetModel.isAdded) {
+            val bundle = Bundle()
+            bundle.putSerializable(Constants.BundleKeys.APP, app as Serializable)
+            bottomSheetModel.arguments = bundle
             bottomSheetModel.show(supportFragmentManager, "OPTIONS")
         }
     }
@@ -122,4 +128,14 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     override fun onLongClick(app: InstalledApps) {
         Toasty.info(this, app.appName).show()
     }
+
+
+    override fun onBackPressed() {
+        if(bottomSheetModel.isAdded){
+            bottomSheetModel.btn_close?.performClick()
+        }else{
+            super.onBackPressed()
+        }
+    }
+
 }

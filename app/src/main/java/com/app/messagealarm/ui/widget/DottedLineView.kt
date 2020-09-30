@@ -17,6 +17,7 @@ import com.app.messagealarm.utils.ViewUtils
  * @author Al. Mujahid Khan
  * */
 class DottedLineView : View {
+
     private var mPaint: Paint? = null
     private var mPath: Path? = null
     private var mWidth: Int = 0
