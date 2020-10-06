@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.app.messagealarm">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -17,20 +17,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.main.add_apps.AddApplicationActivity" android:parentActivityName=".ui.main.alarm_applications.AlarmApplicationActivity"
-            android:launchMode="singleTop"/>
+
+        <activity
+            android:name=".ui.main.add_apps.AddApplicationActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.main.alarm_applications.AlarmApplicationActivity" />
+
         <activity
             android:name=".ui.splash.SplashActivity"
             android:excludeFromRecents="true"
-            android:theme="@style/AppTheme.GradientStatusBar" android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.GradientStatusBar">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+
         <activity
             android:name=".ui.main.alarm_applications.AlarmApplicationActivity"
-            android:excludeFromRecents="true" android:launchMode="singleTop" />
+            android:excludeFromRecents="true"
+            android:launchMode="singleTop" />
 
         <service
             android:name="com.app.messagealarm.service.notification_service.NotificationListener"
@@ -40,6 +49,7 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
+
     </application>
 
 </manifest>
