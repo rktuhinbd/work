@@ -6,17 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.R
+import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
 import kotlinx.android.synthetic.main.item_added_applications.view.*
 import java.io.File
 
-class AddedAppsListAdapter(private val appsList:ArrayList<ApplicationEntity>) :
+class AddedAppsListAdapter(private val appsList:ArrayList<ApplicationEntity>,
+                           val mItemClickListener: ItemClickListener) :
     RecyclerView.Adapter<AddedAppsListAdapter.AddedAppsViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddedAppsViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_added_applications, parent, false)
         return AddedAppsViewHolder(view)
+    }
+
+    interface ItemClickListener{
+        fun onItemClick(app: ApplicationEntity)
+        fun onLongClick(app: ApplicationEntity)
     }
 
     override fun getItemCount(): Int {
@@ -39,7 +46,7 @@ class AddedAppsListAdapter(private val appsList:ArrayList<ApplicationEntity>) :
     inner class AddedAppsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
         init {
-            itemView.setOnClickListener { this }
+            itemView.setOnClickListener(this)
         }
 
         fun bindItems(app:ApplicationEntity){
@@ -53,7 +60,7 @@ class AddedAppsListAdapter(private val appsList:ArrayList<ApplicationEntity>) :
         }
 
         override fun onClick(v: View?) {
-
+            mItemClickListener.onItemClick(appsList[adapterPosition])
         }
 
     }

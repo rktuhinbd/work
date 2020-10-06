@@ -1,5 +1,6 @@
 package com.app.messagealarm.ui.main.alarm_applications
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Canvas
 import android.os.Build
@@ -15,14 +16,20 @@ import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.ui.adapters.AddedAppsListAdapter
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
+import com.app.messagealarm.ui.main.add_options.AddApplicationOption
 import com.app.messagealarm.utils.*
 import es.dmoral.toasty.Toasty
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.dialog_add_app_options.*
+import java.io.File
+import java.io.Serializable
 
 
-class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView {
+class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, AddedAppsListAdapter.ItemClickListener {
 
+    val bottomSheetModel = AddApplicationOption()
+    val REQUEST_CODE_PICK_AUDIO = 1
     private val alarmAppPresenter = AlarmApplicationPresenter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +48,20 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView {
         super.onResume()
         lookForAlarmApplication()
     }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(REQUEST_CODE_PICK_AUDIO == requestCode){
+            if(resultCode == Activity.RESULT_OK && data!!.data != null){
+                val fileName = File(PathUtils.getPath(this, data.data!!)!!).name
+                bottomSheetModel.txt_ringtone_value?.text = fileName
+                bottomSheetModel.setToneName(fileName)
+                bottomSheetModel.alarmTonePath = PathUtils.getPath(this, data.data!!)!!
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
 
     private fun handleService(){
         val isServiceStopped = SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)
@@ -172,7 +193,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView {
     private fun setupAppsRecyclerView(appsList:ArrayList<ApplicationEntity>){
         rv_application_list?.layoutManager = LinearLayoutManager(this)
         rv_application_list?.isVerticalScrollBarEnabled = true
-        rv_application_list?.adapter = AddedAppsListAdapter(appsList)
+        rv_application_list?.adapter = AddedAppsListAdapter(appsList, this)
     }
 
 
@@ -221,6 +242,19 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView {
            Toasty.error(this, getString(R.string.app_delete_error)).show()
            rv_application_list?.adapter?.notifyDataSetChanged()
        }
+    }
+
+    override fun onItemClick(app: ApplicationEntity) {
+        if (!bottomSheetModel.isAdded) {
+            val bundle = Bundle()
+            bundle.putBoolean(Constants.BundleKeys.IS_EDIT_MODE, true)
+            bundle.putSerializable(Constants.BundleKeys.APP, app as Serializable)
+            bottomSheetModel.arguments = bundle
+            bottomSheetModel.show(supportFragmentManager, "MAIN")
+        }
+    }
+
+    override fun onLongClick(app: ApplicationEntity) {
     }
 
 }

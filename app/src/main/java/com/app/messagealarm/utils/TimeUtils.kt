@@ -316,7 +316,7 @@ class TimeUtils private constructor() {
             cal[Calendar.HOUR_OF_DAY] = hr
             cal[Calendar.MINUTE] = min
             val formatter: Format
-            formatter = SimpleDateFormat("h:mm a")
+            formatter = SimpleDateFormat("HH:mm")
             return formatter.format(cal.time)
         }
     }

@@ -67,6 +67,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 (arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps).packageName)
         }else{
             //edit mode from home
+            addApplicationEntity = arguments?.getSerializable(Constants.BundleKeys.APP) as ApplicationEntity
+            setPresetValueToUi(addApplicationEntity)
         }
     }
 
@@ -226,7 +228,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         if(addApplicationEntity.isCustomTime){
                             addApplicationEntity.startTime = txt_start_time_value?.text.toString()
                         }
-                    }, hour, minute, false
+                    }, hour, minute, true
                 )
             timePickerDialog.show()
         }
@@ -247,7 +249,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         if(addApplicationEntity.isCustomTime){
                             addApplicationEntity.endTime = txt_end_time_value?.text.toString()
                         }
-                    }, hour, minute, false
+                    }, hour, minute, true
 
                 )
             timePickerDialog.show()
@@ -325,7 +327,11 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
     @SuppressLint("SimpleDateFormat")
     fun startTimeCalender():Calendar{
-        val dfDate  = SimpleDateFormat("hh:mm a")
+        /**
+         * User will be doing in 12 hours
+         * Background works will be in 24 hours
+         */
+        val dfDate  = SimpleDateFormat("HH:mm")
         val cal = Calendar.getInstance()
         cal.time = dfDate.parse(txt_start_time_value?.text.toString())!!
         return cal
@@ -333,7 +339,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
     @SuppressLint("SimpleDateFormat")
     fun endTimeCalender():Calendar{
-        val dfDate  = SimpleDateFormat("hh:mm a")
+        val dfDate  = SimpleDateFormat("HH:mm")
         val cal = Calendar.getInstance()
         cal.time = dfDate.parse(txt_end_time_value?.text.toString())!!
         return cal
@@ -346,8 +352,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         addApplicationEntity.isVibrateOnAlarm = false
         addApplicationEntity.isCustomTime = false
         addApplicationEntity.numberOfPlay = 2
-        addApplicationEntity.startTime = "6:00 AM"
-        addApplicationEntity.endTime = "12:00 AM"
+        addApplicationEntity.startTime = "1:00"
+        addApplicationEntity.endTime = "24:00"
         addApplicationEntity.senderNames = "None"
         addApplicationEntity.messageBody = "None"
         addApplicationEntity.isRunningStatus = true
@@ -358,21 +364,25 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
          * Populate Application entity from UI controller data
          * with start of other values
          */
-        val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
-        addApplicationEntity.appName = app.appName
-        addApplicationEntity.packageName = app.packageName
-        addApplicationEntity.tone_path = alarmTonePath
         //start progress bar
         showProgressBar()
-        Thread(Runnable {
-            try {
-                val bitmap = app.drawableIcon
+        if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
+            val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
+            addApplicationEntity.appName = app.appName
+            addApplicationEntity.packageName = app.packageName
+            addApplicationEntity.tone_path = alarmTonePath
+            Thread(Runnable {
+                try {
+                    val bitmap = app.drawableIcon
                     addApplicationOptionPresenter?.saveBitmapToFile(bitmap.toBitmap())
-            }catch (e:Exception){
-                hideProgressBar()
-                Toasty.error(activity!!, DataUtils.getString(R.string.something_wrong)).show()
-            }
-        }).start()
+                }catch (e:Exception){
+                    hideProgressBar()
+                    Toasty.error(activity!!, DataUtils.getString(R.string.something_wrong)).show()
+                }
+            }).start()
+        }else{
+            saveWithTimeConstrain()
+        }
     }
 
     private fun showProgressBar(){
@@ -386,7 +396,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
     @SuppressLint("SimpleDateFormat")
     private fun isTimeConstrained(startTime:String, endTime:String):Boolean{
-        val dfDate  = SimpleDateFormat("hh:mm a")
+        val dfDate  = SimpleDateFormat("HH:mm")
         return dfDate.parse(startTime)!!.before(dfDate.parse(endTime))
     }
 
@@ -446,8 +456,12 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     override fun onApplicationUpdateSuccess() {
        activity!!.runOnUiThread {
            Toasty.success(activity!!, getString(R.string.update_successful)).show()
-           dismiss()
-           activity!!.finish()
+           if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
+               dismiss()
+               activity!!.finish()
+           }else{
+               dismiss()
+           }
        }
     }
 
@@ -462,11 +476,18 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         /**
          * End of other values
          */
+        saveWithTimeConstrain()
+        activity!!.runOnUiThread {
+            hideProgressBar()
+        }
+    }
+
+    private fun saveWithTimeConstrain(){
         //if start time and end time constrained
         if(switch_custom_time?.isChecked!!){
             if(isTimeConstrained(txt_start_time_value?.text.toString(),
                     txt_end_time_value?.text.toString()
-                    )){
+                )){
                 addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
             }else{
                 activity!!.runOnUiThread {
@@ -475,9 +496,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             }
         }else{
             addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
-        }
-        activity!!.runOnUiThread {
-            hideProgressBar()
         }
     }
 

@@ -6,8 +6,10 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
 @Entity(tableName = "applications", indices = {@Index(value = {"package_name", "app_name"}, unique = true)})
-public class ApplicationEntity {
+public class ApplicationEntity implements Serializable {
 
     /**
      * Entity fields
