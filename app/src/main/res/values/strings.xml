@@ -16,4 +16,6 @@
     <string name="app_delete_error">Can\'t delete application, Try again!</string>
     <string name="delete_app_message">Do you want to delete this app?</string>
     <string name="delete_app_title">Delete Application</string>
+    <string name="update_successful">Application updated successfully!</string>
+    <string name="update_error">Can\'t update Application!</string>
 </resources>

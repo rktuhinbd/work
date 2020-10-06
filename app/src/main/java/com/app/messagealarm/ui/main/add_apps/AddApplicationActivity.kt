@@ -98,7 +98,9 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(REQUEST_CODE_PICK_AUDIO == requestCode){
             if(resultCode == Activity.RESULT_OK && data!!.data != null){
-                bottomSheetModel.txt_ringtone_value?.text = File(PathUtils.getPath(this, data.data!!)!!).name
+                val fileName = File(PathUtils.getPath(this, data.data!!)!!).name
+                bottomSheetModel.txt_ringtone_value?.text = fileName
+                bottomSheetModel.setToneName(fileName)
                 bottomSheetModel.alarmTonePath = PathUtils.getPath(this, data.data!!)!!
             }
         }
@@ -119,6 +121,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     override fun onItemClick(app: InstalledApps) {
         if (!bottomSheetModel.isAdded) {
             val bundle = Bundle()
+            bundle.putBoolean(Constants.BundleKeys.IS_EDIT_MODE, false)
             bundle.putSerializable(Constants.BundleKeys.APP, app as Serializable)
             bottomSheetModel.arguments = bundle
             bottomSheetModel.show(supportFragmentManager, "OPTIONS")

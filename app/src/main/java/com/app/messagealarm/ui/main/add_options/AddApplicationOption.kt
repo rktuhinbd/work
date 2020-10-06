@@ -37,14 +37,14 @@ import java.util.*
 class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionView {
 
     public var alarmTonePath:String? = null
-    private val addApplicationEntity = ApplicationEntity()
+    var ringtoneName:String? = null
+    private var addApplicationEntity = ApplicationEntity()
     private var addApplicationOptionPresenter: AddApplicationOptionPresenter? = null
     val REQUEST_CODE_PICK_AUDIO = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addApplicationOptionPresenter = AddApplicationOptionPresenter(this)
-        defaultValuesToDataModel()
     }
 
     override fun onCreateView(
@@ -58,6 +58,13 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setListener()
+        defaultValuesToDataModel()
+        if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
+            addApplicationOptionPresenter?.getAppByPackageName(
+                (arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps).packageName)
+        }else{
+            //edit mode from home
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -91,7 +98,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
     private fun setListener() {
         btn_close?.setOnClickListener {
-            Log.e("CHECK", checkForDefault().toString())
             if(checkForDefault()){
                 dismiss()
             }else{
@@ -190,7 +196,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         /**
                          * set custom alarm tone type to data model
                          */
-                        addApplicationEntity.ringTone = "Custom"
+                        addApplicationEntity.ringTone = "Default"
                     } else {
                         txt_ringtone_value?.text = name
                         /**
@@ -309,6 +315,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
     }
 
+   fun setToneName(name:String){
+        addApplicationEntity.ringTone = name
+    }
+
     private fun defaultValuesToDataModel(){
         addApplicationEntity.alarmRepeat = "Once"
         addApplicationEntity.ringTone = "Default"
@@ -403,6 +413,20 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
      }
     }
 
+    override fun onApplicationUpdateSuccess() {
+       activity!!.runOnUiThread {
+           Toasty.success(activity!!, getString(R.string.update_successful)).show()
+           dismiss()
+           activity!!.finish()
+       }
+    }
+
+    override fun onApplicationUpdateError(message: String) {
+      activity!!.runOnUiThread {
+          Toasty.error(activity!!, getString(R.string.update_error)).show()
+      }
+    }
+
     override fun onBitmapSaveSuccess(path: String) {
         addApplicationEntity.bitmapPath = path
         /**
@@ -419,6 +443,32 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             Toasty.error(activity!!, DataUtils.getString(R.string.something_wrong)).show()
             hideProgressBar()
         }
+    }
+
+    private fun setPresetValueToUi(app: ApplicationEntity){
+        if(app.alarmRepeat == "Custom"){
+            txt_repeat_value?.text = app.repeatDays
+        }else{
+            txt_repeat_value?.text = app.alarmRepeat
+        }
+        txt_ringtone_value?.text = app.ringTone
+        switch_vibrate?.isChecked = app.isVibrateOnAlarm
+        switch_custom_time?.isChecked = app.isCustomTime
+        txt_number_of_play_value?.text = String.format("%d times", app.numberOfPlay)
+        txt_sender_name_value?.text = app.senderNames
+        txt_message_body_value?.text = app.messageBody
+    }
+
+    override fun onApplicationGetSuccess(app: ApplicationEntity) {
+        //show edited value to
+        addApplicationEntity = app
+        activity!!.runOnUiThread {
+            setPresetValueToUi(app)
+        }
+    }
+
+    override fun onApplicationGetError(message: String) {
+        defaultValuesToDataModel()
     }
 
 

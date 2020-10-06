@@ -28,13 +28,47 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
                }catch (e:NullPointerException){
                    addApplicationOptionView.onApplicationSaveError(DataUtils.getString(R.string.something_wrong))
                }catch (e:SQLiteConstraintException){
-                   addApplicationOptionView.onApplicationSaveError(DataUtils.getString(R.string.txt_application_exists))
+                   /**
+                    * If the app is already in database then just update it
+                    */
+                  updateApplication(addApplicationEntity)
                }catch (e:SQLiteException){
                    addApplicationOptionView.onApplicationSaveError(DataUtils.getString(R.string.something_wrong))
                }
             }
         ).start()
     }
+
+
+    fun getAppByPackageName(packageName:String){
+        val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
+        Thread(Runnable {
+            try {
+                addApplicationOptionView.onApplicationGetSuccess(
+                    appDatabase.applicationDao().getAppByPackageName(packageName)
+                )
+            }catch (ex:NullPointerException){
+                addApplicationOptionView.onApplicationGetError(DataUtils.getString(R.string.something_wrong))
+            }catch (ex:SQLiteException){
+                addApplicationOptionView.onApplicationGetError(DataUtils.getString(R.string.something_wrong))
+            }
+        }).start()
+    }
+
+   private fun updateApplication(app:ApplicationEntity){
+        val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
+        Thread(Runnable {
+            try{
+                appDatabase.applicationDao().updateApplication(app)
+                addApplicationOptionView.onApplicationUpdateSuccess()
+            }catch (ex:NullPointerException){
+                addApplicationOptionView.onApplicationUpdateError(DataUtils.getString(R.string.something_wrong))
+            }catch (ex:SQLiteException){
+                addApplicationOptionView.onApplicationUpdateError(DataUtils.getString(R.string.something_wrong))
+            }
+        }).start()
+    }
+
     /*
       * this method save a bitmap to file
       * */
