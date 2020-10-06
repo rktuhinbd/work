@@ -62,9 +62,9 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
                 appDatabase.applicationDao().updateApplication(app)
                 addApplicationOptionView.onApplicationUpdateSuccess()
             }catch (ex:NullPointerException){
-                addApplicationOptionView.onApplicationUpdateError(DataUtils.getString(R.string.something_wrong))
+                addApplicationOptionView.onApplicationUpdateError(DataUtils.getString(R.string.update_error))
             }catch (ex:SQLiteException){
-                addApplicationOptionView.onApplicationUpdateError(DataUtils.getString(R.string.something_wrong))
+                addApplicationOptionView.onApplicationUpdateError(DataUtils.getString(R.string.update_error))
             }
         }).start()
     }

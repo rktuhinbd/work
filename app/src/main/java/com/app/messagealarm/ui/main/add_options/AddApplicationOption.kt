@@ -30,6 +30,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import java.lang.Exception
+import java.text.SimpleDateFormat
 
 import java.util.*
 
@@ -223,7 +224,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         if(addApplicationEntity.isCustomTime){
                             addApplicationEntity.startTime = txt_start_time_value?.text.toString()
                         }
-                    }, hour, minute, true
+                    }, hour, minute, false
                 )
             timePickerDialog.show()
         }
@@ -244,7 +245,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         if(addApplicationEntity.isCustomTime){
                             addApplicationEntity.endTime = txt_end_time_value?.text.toString()
                         }
-                    }, hour, minute, true
+                    }, hour, minute, false
 
                 )
             timePickerDialog.show()
@@ -360,6 +361,13 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         progress_bar_option?.visibility = View.INVISIBLE
     }
 
+
+    @SuppressLint("SimpleDateFormat")
+    private fun isTimeConstrained(startTime:String, endTime:String):Boolean{
+        val dfDate  = SimpleDateFormat("hh:mm a")
+        return dfDate.parse(startTime)!!.before(dfDate.parse(endTime))
+    }
+
     private fun checkForDefault():Boolean{
         var isDefault = false
             if(txt_repeat_value?.text.toString().trim() == addApplicationEntity.alarmRepeat){
@@ -423,7 +431,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
     override fun onApplicationUpdateError(message: String) {
       activity!!.runOnUiThread {
-          Toasty.error(activity!!, getString(R.string.update_error)).show()
+          Toasty.error(activity!!, message).show()
       }
     }
 
@@ -432,7 +440,20 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         /**
          * End of other values
          */
-        addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
+        //if start time and end time constrained
+        if(switch_custom_time?.isChecked!!){
+            if(isTimeConstrained(txt_start_time_value?.text.toString(),
+                    txt_end_time_value?.text.toString()
+                    )){
+                addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
+            }else{
+                activity!!.runOnUiThread {
+                    Toasty.info(activity!!, getString(R.string.time_constrain_error)).show()
+                }
+            }
+        }else{
+            addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
+        }
         activity!!.runOnUiThread {
             hideProgressBar()
         }
@@ -454,6 +475,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         txt_ringtone_value?.text = app.ringTone
         switch_vibrate?.isChecked = app.isVibrateOnAlarm
         switch_custom_time?.isChecked = app.isCustomTime
+        txt_start_time_value?.text = app.startTime
+        txt_end_time_value?.text = app.endTime
         txt_number_of_play_value?.text = String.format("%d times", app.numberOfPlay)
         txt_sender_name_value?.text = app.senderNames
         txt_message_body_value?.text = app.messageBody

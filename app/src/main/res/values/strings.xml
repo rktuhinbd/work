@@ -18,4 +18,5 @@
     <string name="delete_app_title">Delete Application</string>
     <string name="update_successful">Application updated successfully!</string>
     <string name="update_error">Can\'t update Application!</string>
+    <string name="time_constrain_error">Start time needs to be less than end time!</string>
 </resources>
