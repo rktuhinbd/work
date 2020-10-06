@@ -30,6 +30,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import java.lang.Exception
+import java.lang.NumberFormatException
+import java.text.ParseException
 import java.text.SimpleDateFormat
 
 import java.util.*
@@ -210,7 +212,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
 
         view_start_time?.setOnClickListener {
-            val c: Calendar = Calendar.getInstance()
+            val c: Calendar = startTimeCalender()
             val hour: Int = c.get(Calendar.HOUR_OF_DAY)
             val minute: Int = c.get(Calendar.MINUTE)
             val timePickerDialog =
@@ -231,7 +233,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
 
         view_end_time?.setOnClickListener {
-            val c: Calendar = Calendar.getInstance()
+            val c: Calendar = endTimeCalender()
             val hour: Int = c.get(Calendar.HOUR_OF_DAY)
             val minute: Int = c.get(Calendar.MINUTE)
             val timePickerDialog =
@@ -320,12 +322,32 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         addApplicationEntity.ringTone = name
     }
 
+
+    @SuppressLint("SimpleDateFormat")
+    fun startTimeCalender():Calendar{
+        val dfDate  = SimpleDateFormat("hh:mm a")
+        val cal = Calendar.getInstance()
+        cal.time = dfDate.parse(txt_start_time_value?.text.toString())!!
+        return cal
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun endTimeCalender():Calendar{
+        val dfDate  = SimpleDateFormat("hh:mm a")
+        val cal = Calendar.getInstance()
+        cal.time = dfDate.parse(txt_end_time_value?.text.toString())!!
+        return cal
+    }
+
+
     private fun defaultValuesToDataModel(){
         addApplicationEntity.alarmRepeat = "Once"
         addApplicationEntity.ringTone = "Default"
         addApplicationEntity.isVibrateOnAlarm = false
         addApplicationEntity.isCustomTime = false
         addApplicationEntity.numberOfPlay = 2
+        addApplicationEntity.startTime = "6:00 AM"
+        addApplicationEntity.endTime = "12:00 AM"
         addApplicationEntity.senderNames = "None"
         addApplicationEntity.messageBody = "None"
         addApplicationEntity.isRunningStatus = true
