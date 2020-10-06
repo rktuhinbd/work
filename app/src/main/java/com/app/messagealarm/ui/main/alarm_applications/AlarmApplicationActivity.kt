@@ -21,6 +21,8 @@ import com.app.messagealarm.ui.adapters.AddedAppsListAdapter
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
 import com.app.messagealarm.utils.*
+import dev.doubledot.doki.api.extensions.DONT_KILL_MY_APP_DEFAULT_MANUFACTURER
+import dev.doubledot.doki.ui.DokiActivity
 import es.dmoral.toasty.Toasty
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.activity_main.*
@@ -66,7 +68,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.mnu_help -> Toast.makeText(this, "Clicked Menu 1", Toast.LENGTH_SHORT).show()
+            R.id.mnu_help -> DokiActivity.start(this, DONT_KILL_MY_APP_DEFAULT_MANUFACTURER)
             else -> {
             }
         }
