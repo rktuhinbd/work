@@ -5,7 +5,10 @@ import android.content.Intent
 import android.graphics.Canvas
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,7 +29,8 @@ import java.io.File
 import java.io.Serializable
 
 
-class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, AddedAppsListAdapter.ItemClickListener {
+class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
+    AddedAppsListAdapter.ItemClickListener {
 
     val bottomSheetModel = AddApplicationOption()
     val REQUEST_CODE_PICK_AUDIO = 1
@@ -35,12 +39,13 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, AddedApps
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setToolBar()
         setListener()
         askForPermission()
         handleService()
     }
 
-    private fun lookForAlarmApplication(){
+    private fun lookForAlarmApplication() {
         alarmAppPresenter.getApplicationList()
     }
 
@@ -49,10 +54,28 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, AddedApps
         lookForAlarmApplication()
     }
 
+    private fun setToolBar(){
+        setSupportActionBar(findViewById(R.id.toolbar))
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_item_home, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.mnu_help -> Toast.makeText(this, "Clicked Menu 1", Toast.LENGTH_SHORT).show()
+            else -> {
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(REQUEST_CODE_PICK_AUDIO == requestCode){
-            if(resultCode == Activity.RESULT_OK && data!!.data != null){
+        if (REQUEST_CODE_PICK_AUDIO == requestCode) {
+            if (resultCode == Activity.RESULT_OK && data!!.data != null) {
                 val fileName = File(PathUtils.getPath(this, data.data!!)!!).name
                 bottomSheetModel.txt_ringtone_value?.text = fileName
                 bottomSheetModel.setToneName(fileName)
@@ -63,27 +86,29 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, AddedApps
     }
 
 
-    private fun handleService(){
-        val isServiceStopped = SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)
-        if(SharedPrefUtils.contains(Constants.PreferenceKeys.IS_SERVICE_STOPPED)){
-            if(isServiceStopped){
+    private fun handleService() {
+        val isServiceStopped =
+            SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)
+        if (SharedPrefUtils.contains(Constants.PreferenceKeys.IS_SERVICE_STOPPED)) {
+            if (isServiceStopped) {
                 switch_alarm_status?.isChecked = false
-            }else{
+            } else {
                 switch_alarm_status?.isChecked = true
                 startMagicService()
             }
-        }else{
+        } else {
             startMagicService()
         }
     }
 
-    private fun askForPermission(){
-        PermissionUtils.requestPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE,
+    private fun askForPermission() {
+        PermissionUtils.requestPermission(
+            this, android.Manifest.permission.READ_EXTERNAL_STORAGE,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
+        )
     }
 
-    private fun recyclerViewSwipeHandler(){
+    private fun recyclerViewSwipeHandler() {
         val callback: ItemTouchHelper.SimpleCallback = object :
             ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
@@ -113,11 +138,15 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, AddedApps
                     dY,
                     actionState,
                     isCurrentlyActive
-                ).addSwipeLeftBackgroundColor(ContextCompat.getColor(this@AlarmApplicationActivity, R.color.colorAccent))
+                ).addSwipeLeftBackgroundColor(
+                    ContextCompat.getColor(
+                        this@AlarmApplicationActivity,
+                        R.color.colorAccent
+                    )
+                )
                     .addSwipeLeftActionIcon(R.drawable.ic_delete_black_24dp)
                     .create()
                     .decorate()
-
                 super.onChildDraw(
                     c,
                     recyclerView,
@@ -133,20 +162,23 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, AddedApps
                 viewHolder: RecyclerView.ViewHolder,
                 direction: Int
             ) { // Take action for the swiped item
-                DialogUtils.showDialog(this@AlarmApplicationActivity, getString(R.string.delete_app_title),
-                    getString(R.string.delete_app_message), object :DialogUtils.Callback{
+                DialogUtils.showDialog(this@AlarmApplicationActivity,
+                    getString(R.string.delete_app_title),
+                    getString(R.string.delete_app_message),
+                    object : DialogUtils.Callback {
                         override fun onPositive() {
                             alarmAppPresenter.deleteApplication(
-                                (rv_application_list?.adapter as AddedAppsListAdapter).getItem(viewHolder.adapterPosition),
+                                (rv_application_list?.adapter as AddedAppsListAdapter).getItem(
+                                    viewHolder.adapterPosition
+                                ),
                                 viewHolder.adapterPosition
                             )
                         }
+
                         override fun onNegative() {
                             rv_application_list?.adapter?.notifyDataSetChanged()
                         }
-
                     })
-
             }
         }
         val itemTouchHelper = ItemTouchHelper(callback)
@@ -154,43 +186,43 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, AddedApps
     }
 
 
-    private fun stopService(){
-        if(AndroidUtils.isServiceRunning(this, NotificationListener::class.java)){
+    private fun stopService() {
+        if (AndroidUtils.isServiceRunning(this, NotificationListener::class.java)) {
             val intent = Intent(this, NotificationListener::class.java)
             intent.action = NotificationListener.ACTION_STOP_FOREGROUND_SERVICE
             startService(intent)
         }
     }
 
-    private fun startMagicService(){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val intent = Intent(this, NotificationListener::class.java)
-                startForegroundService(intent)
-            }else{
-                val intent = Intent(this, NotificationListener::class.java)
-                startService(intent)
-            }
+    private fun startMagicService() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val intent = Intent(this, NotificationListener::class.java)
+            startForegroundService(intent)
+        } else {
+            val intent = Intent(this, NotificationListener::class.java)
+            startService(intent)
+        }
     }
 
 
-    private fun setListener(){
+    private fun setListener() {
 
         fab_button_add_application?.setOnClickListener {
             startActivity(Intent(this, AddApplicationActivity::class.java))
         }
 
         switch_alarm_status?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if(isChecked){
-               ic_alarm_status?.setImageResource(R.drawable.ic_on_button)
-               startMagicService()
-            }else{
+            if (isChecked) {
+                ic_alarm_status?.setImageResource(R.drawable.ic_on_button)
+                startMagicService()
+            } else {
                 ic_alarm_status?.setImageResource(R.drawable.ic_off_button)
                 stopService()
             }
         }
     }
 
-    private fun setupAppsRecyclerView(appsList:ArrayList<ApplicationEntity>){
+    private fun setupAppsRecyclerView(appsList: ArrayList<ApplicationEntity>) {
         rv_application_list?.layoutManager = LinearLayoutManager(this)
         rv_application_list?.isVerticalScrollBarEnabled = true
         rv_application_list?.adapter = AddedAppsListAdapter(appsList, this)
@@ -199,24 +231,24 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, AddedApps
 
     override fun onGetAlarmApplicationSuccess(appsList: ArrayList<ApplicationEntity>) {
         runOnUiThread {
-            if(appsList.isNotEmpty()){
+            if (appsList.isNotEmpty()) {
                 setupAppsRecyclerView(appsList)
                 recyclerViewSwipeHandler()
                 dataState()
-            }else{
+            } else {
                 emptyState()
             }
         }
     }
 
-    private fun emptyState(){
+    private fun emptyState() {
         rv_application_list?.visibility = View.GONE
         img_empty_state?.visibility = View.VISIBLE
         txt_empty_state_title?.visibility = View.VISIBLE
         txt_empty_state_desc?.visibility = View.VISIBLE
     }
 
-    private fun dataState(){
+    private fun dataState() {
         rv_application_list?.visibility = View.VISIBLE
         img_empty_state?.visibility = View.GONE
         txt_empty_state_title?.visibility = View.GONE
@@ -227,21 +259,21 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, AddedApps
 
     }
 
-    override fun onApplicationDeleteSuccess(position:Int) {
+    override fun onApplicationDeleteSuccess(position: Int) {
         runOnUiThread {
             (rv_application_list?.adapter as AddedAppsListAdapter).deleteItem(position)
             Toasty.success(this, getString(R.string.app_delete_success)).show()
-            if((rv_application_list?.adapter as AddedAppsListAdapter).itemCount == 0){
+            if ((rv_application_list?.adapter as AddedAppsListAdapter).itemCount == 0) {
                 emptyState()
             }
         }
     }
 
     override fun onApplicationDeleteError() {
-       runOnUiThread {
-           Toasty.error(this, getString(R.string.app_delete_error)).show()
-           rv_application_list?.adapter?.notifyDataSetChanged()
-       }
+        runOnUiThread {
+            Toasty.error(this, getString(R.string.app_delete_error)).show()
+            rv_application_list?.adapter?.notifyDataSetChanged()
+        }
     }
 
     override fun onItemClick(app: ApplicationEntity) {
@@ -255,6 +287,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, AddedApps
     }
 
     override fun onLongClick(app: ApplicationEntity) {
+
     }
 
 }

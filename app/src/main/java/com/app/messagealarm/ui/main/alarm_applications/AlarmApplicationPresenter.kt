@@ -7,11 +7,13 @@ import com.app.messagealarm.model.entity.ApplicationEntity
 import java.lang.NullPointerException
 
 class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicationView){
+
     fun getApplicationList(){
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread(Runnable {
             try{
-                alarmApplicationView.onGetAlarmApplicationSuccess(appDatabase.applicationDao().allApplicationList as ArrayList<ApplicationEntity>)
+                alarmApplicationView.onGetAlarmApplicationSuccess(appDatabase.applicationDao().allApplicationList
+                        as ArrayList<ApplicationEntity>)
             }catch (e:NullPointerException){
                 alarmApplicationView.onGetAlarmApplicationError()
             }catch (e:SQLiteException){
