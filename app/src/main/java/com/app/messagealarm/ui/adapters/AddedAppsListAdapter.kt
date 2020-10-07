@@ -33,6 +33,12 @@ class AddedAppsListAdapter(
         return appsList.size
     }
 
+    fun addItems(list:ArrayList<ApplicationEntity>){
+        appsList.clear()
+        appsList.addAll(list)
+        notifyDataSetChanged()
+    }
+
     fun deleteItem(position: Int) {
         appsList.removeAt(position)
         notifyDataSetChanged()
@@ -55,13 +61,13 @@ class AddedAppsListAdapter(
 
         fun bindItems(app: ApplicationEntity) {
             itemView.tv_app_name?.text = app.appName
+            itemView.switch_app_status?.isChecked = app.isRunningStatus
             itemView.iv_app_icon?.setImageBitmap(
                 BitmapFactory.decodeFile(
                     File(app.bitmapPath)
                         .absolutePath
                 )
             )
-            itemView.switch_app_status?.isChecked = app.isRunningStatus
         }
 
         override fun onClick(v: View?) {

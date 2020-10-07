@@ -5,6 +5,8 @@ import android.content.Intent
 import android.graphics.Canvas
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -45,6 +47,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         setListener()
         askForPermission()
         handleService()
+        setupAppsRecyclerView()
     }
 
     private fun lookForAlarmApplication() {
@@ -224,17 +227,18 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         }
     }
 
-    private fun setupAppsRecyclerView(appsList: ArrayList<ApplicationEntity>) {
+    private fun setupAppsRecyclerView() {
         rv_application_list?.layoutManager = LinearLayoutManager(this)
         rv_application_list?.isVerticalScrollBarEnabled = true
-        rv_application_list?.adapter = AddedAppsListAdapter(appsList, this)
+        val arraylist = ArrayList<ApplicationEntity>()
+        rv_application_list?.adapter = AddedAppsListAdapter(arraylist, this)
     }
 
 
     override fun onGetAlarmApplicationSuccess(appsList: ArrayList<ApplicationEntity>) {
         runOnUiThread {
             if (appsList.isNotEmpty()) {
-                setupAppsRecyclerView(appsList)
+                (rv_application_list?.adapter as AddedAppsListAdapter).addItems(appsList)
                 recyclerViewSwipeHandler()
                 dataState()
             } else {
@@ -279,10 +283,11 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
     }
 
     override fun onItemClick(app: ApplicationEntity) {
+        //refresh adapter first
         if (!bottomSheetModel.isAdded) {
             val bundle = Bundle()
             bundle.putBoolean(Constants.BundleKeys.IS_EDIT_MODE, true)
-            bundle.putSerializable(Constants.BundleKeys.APP, app as Serializable)
+            bundle.putString(Constants.BundleKeys.PACKAGE_NAME, app.packageName)
             bottomSheetModel.arguments = bundle
             bottomSheetModel.show(supportFragmentManager, "MAIN")
         }

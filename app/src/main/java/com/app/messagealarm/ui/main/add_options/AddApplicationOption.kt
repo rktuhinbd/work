@@ -61,14 +61,20 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setListener()
-        defaultValuesToDataModel()
-        if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
-            addApplicationOptionPresenter?.getAppByPackageName(
-                (arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps).packageName)
+        handleEditAndViewMode()
+    }
+
+    private fun handleEditAndViewMode(){
+        if(arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE) == null){
+            defaultValuesToDataModel()
         }else{
-            //edit mode from home
-            addApplicationEntity = arguments?.getSerializable(Constants.BundleKeys.APP) as ApplicationEntity
-            setPresetValueToUi(addApplicationEntity)
+            if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
+                addApplicationOptionPresenter?.getAppByPackageName(
+                    (arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps).packageName)
+            }else{
+                //edit mode from home
+                addApplicationOptionPresenter?.getAppByPackageName(arguments?.getString(Constants.BundleKeys.PACKAGE_NAME)!!)
+            }
         }
     }
 
@@ -331,18 +337,28 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
          * User will be doing in 12 hours
          * Background works will be in 24 hours
          */
-        val dfDate  = SimpleDateFormat("HH:mm")
-        val cal = Calendar.getInstance()
-        cal.time = dfDate.parse(txt_start_time_value?.text.toString())!!
-        return cal
+        return try {
+            val dfDate  = SimpleDateFormat("HH:mm")
+            val cal = Calendar.getInstance()
+            cal.time = dfDate.parse(txt_start_time_value?.text.toString())!!
+             cal
+        }catch (ex:ParseException){
+            return Calendar.getInstance()
+        }
+
     }
 
     @SuppressLint("SimpleDateFormat")
     fun endTimeCalender():Calendar{
-        val dfDate  = SimpleDateFormat("HH:mm")
-        val cal = Calendar.getInstance()
-        cal.time = dfDate.parse(txt_end_time_value?.text.toString())!!
-        return cal
+        return try {
+            val dfDate  = SimpleDateFormat("HH:mm")
+            val cal = Calendar.getInstance()
+            cal.time = dfDate.parse(txt_end_time_value?.text.toString())!!
+             cal
+        }catch (ex:ParseException){
+            return Calendar.getInstance()
+        }
+
     }
 
 
@@ -396,8 +412,12 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
     @SuppressLint("SimpleDateFormat")
     private fun isTimeConstrained(startTime:String, endTime:String):Boolean{
-        val dfDate  = SimpleDateFormat("HH:mm")
-        return dfDate.parse(startTime)!!.before(dfDate.parse(endTime))
+       return try{
+           val dfDate  = SimpleDateFormat("HH:mm")
+            dfDate.parse(startTime)!!.before(dfDate.parse(endTime))
+        }catch (ex:ParseException){
+           return false
+        }
     }
 
     private fun checkForDefault():Boolean{
@@ -490,6 +510,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 )){
                 addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
             }else{
+                hideProgressBar()
                 activity!!.runOnUiThread {
                     Toasty.info(activity!!, getString(R.string.time_constrain_error)).show()
                 }
