@@ -65,9 +65,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     private fun handleEditAndViewMode(){
-        if(arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE) == null){
             defaultValuesToDataModel()
-        }else{
             if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
                 addApplicationOptionPresenter?.getAppByPackageName(
                     (arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps).packageName)
@@ -75,7 +73,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 //edit mode from home
                 addApplicationOptionPresenter?.getAppByPackageName(arguments?.getString(Constants.BundleKeys.PACKAGE_NAME)!!)
             }
-        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

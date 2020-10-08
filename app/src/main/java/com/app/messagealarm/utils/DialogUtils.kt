@@ -113,6 +113,8 @@ class DialogUtils {
                 // user checked or unchecked a box
                 if (isChecked) {
                     list.add(days[which])
+                }else{
+                    list.remove(days[which])
                 }
             }
             // add OK and Cancel buttons
