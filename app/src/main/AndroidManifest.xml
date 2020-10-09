@@ -40,6 +40,7 @@
             android:name=".ui.main.alarm_applications.AlarmApplicationActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleTop" />
+        <activity android:name=".ui.alarm.AlarmActivity" />
 
         <service
             android:name="com.app.messagealarm.service.notification_service.NotificationListener"

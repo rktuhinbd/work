@@ -480,7 +480,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     private fun checkForDefault():Boolean{
-        Log.e("CHECK", holderEntity.toString())
         var isDefault = false
             if(txt_repeat_value?.text.toString().trim() == holderEntity.alarmRepeat){
                 if(txt_ringtone_value?.text.toString().trim() == holderEntity.ringTone){

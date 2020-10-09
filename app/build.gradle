@@ -64,6 +64,9 @@ dependencies {
         transitive = true
     }
 
+    //swipe to cancel
+    implementation "com.ncorti:slidetoact:0.9.0"
+
     //recycler view swipe
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
 }
