@@ -9,53 +9,50 @@ import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.ui.alarm.AlarmActivity
 import com.app.messagealarm.ui.notifications.FloatingNotification
-import com.app.messagealarm.utils.AlarmCheckerThread
-import com.app.messagealarm.utils.Constants
-import com.app.messagealarm.utils.ExoPlayerUtils
-import com.app.messagealarm.utils.MediaUtils
+import com.app.messagealarm.utils.*
 import com.judemanutd.autostarter.AutoStartPermissionHelper
 import java.lang.Exception
+import javax.security.auth.login.LoginException
 
 
 class AlarmService {
 
     companion object{
 
-        private const val MESSENGER_PKG = ""
-        private const val WHATSAPP_PKG = ""
+        var isPlayAble = true
+        var isThreadExecuted = false
+        private const val MESSENGER_PKG = "com.facebook.orca"
+        private const val WHATSAPP_PKG = "com.whatsapp"
         private const val VIBER_PKG = ""
         private const val IMO_PKG = ""
 
         fun playAlarmOnNotification(sbn: StatusBarNotification?, appsList:List<ApplicationEntity>, service: Service){
-            appsList.forEach {
-                if(sbn?.packageName != null){
-                    if(sbn.packageName == it.packageName){
-                        if(sbn.notification.extras["android.title"] != null){
-                            when(sbn.packageName){
-                                MESSENGER_PKG ->{
-                                    messengerFilter(sbn.notification.extras["android.title"].toString())
-                                }
-                                WHATSAPP_PKG ->{
-                                    whatsAppFilter()
-                                    return
-                                }
-                                IMO_PKG -> imoFilter()
-                            }
-                            messengerFilter(sbn.notification.extras["android.title"].toString())
-                                if(!ExoPlayerUtils.isPlaying()){
-                                        magicPlay(it.ringTone, service, sbn, it)
+            when(sbn!!.packageName){
+                MESSENGER_PKG ->{
+                    messengerFilter(sbn.notification.extras["android.title"].toString())
+                }
+                WHATSAPP_PKG ->{
+                    whatsAppFilter(
+                        sbn.notification.extras["android.title"].toString(),
+                        sbn.notification.extras["android.text"].toString())
+                }
+                IMO_PKG -> imoFilter()
 
+                else -> isPlayAble = true
+            }
+            for (app in appsList){
+                if(sbn.packageName != null){
+                    if(sbn.packageName == app.packageName){
+                        if(sbn.notification.extras["android.title"] != null){
+                            if(!ExoPlayerUtils.isPlaying()){
+                                if(isPlayAble){
+                                    magicPlay(app.ringTone, service, sbn, app)
                                 }
+                            }
                         }
+                        break
                     }
                 }
-            }
-        }
-
-        private fun messengerFilter(title:String){
-            if(title.contains("Chat heads active")){
-                Log.e("STOP","TRUE")
-                return
             }
         }
 
@@ -78,12 +75,12 @@ class AlarmService {
 
 
         private fun startAlarmActivity(service: Service, tone:String?, sbn: StatusBarNotification?, app:ApplicationEntity){
-                    AlarmCheckerThread(AlarmCheckerThread.PlayListener { s ->
-                        if(!s){
-                            FloatingNotification.showFloatingNotification(service, app.tone_path)
-                        }
-                    })
-                    val title = sbn?.notification!!.extras["android.title"].toString()
+                AlarmCheckerThread(AlarmCheckerThread.PlayListener { s ->
+                    if(!s){
+                        FloatingNotification.showFloatingNotification(service, app.tone_path)
+                    }
+                }).execute()
+            val title = sbn?.notification!!.extras["android.title"].toString()
                     val desc = sbn.notification!!.extras["android.text"].toString()
                     val intent = Intent(service, AlarmActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -98,9 +95,16 @@ class AlarmService {
 
 
 
-        private fun whatsAppFilter(){
-
+        private fun whatsAppFilter(title:String, desc:String){
+            isPlayAble = !(title == "WhatsApp" ||
+                    desc == "Checking for new messages" ||
+                    desc == "8 new messages")
         }
+
+        private fun messengerFilter(title:String){
+            isPlayAble = title != "Chat heads active"
+        }
+
 
         private fun viberFilter(){
 

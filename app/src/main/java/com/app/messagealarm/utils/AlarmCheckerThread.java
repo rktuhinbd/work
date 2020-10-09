@@ -1,31 +1,66 @@
 package com.app.messagealarm.utils;
 
+import android.util.Log;
+
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class AlarmCheckerThread extends Thread {
 
-    PlayListener playListener;
-    public AlarmCheckerThread(PlayListener listener){
-        this.playListener = listener;
+    private static Lock lock = new ReentrantLock();
+    private PlayListener playListener;
+
+    public AlarmCheckerThread(PlayListener playListener) {
+        this.playListener = playListener;
     }
     private int count = 0;
 
+    public void execute(){
+        if(!isAlive()){
+          start();
+        }
+    }
+
     @Override
     public void run() {
-        while (true){
-            try {
-                sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        if (AlarmCheckerThread.lock.tryLock())
+        {
+            try
+            {
+                // TODO something
+                while (true){
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    count++;
+                    Log.e("COUNT", String.valueOf(count));
+                    if(count == 4){
+                        count = 0;
+                        if(!ExoPlayerUtils.Companion.isPlaying()){
+                            playListener.isPlaying(ExoPlayerUtils.Companion.isPlaying());
+                        }
+                        interrupt();
+                        break;
+                    }
+                }
             }
-            count++;
-            if(count == 4){
-                    playListener.isPlaying(ExoPlayerUtils.Companion.isPlaying());
-                    interrupt();
+            finally
+            {
+                AlarmCheckerThread.lock.unlock();
             }
         }
 
+
     }
 
-   public interface  PlayListener{
+    @Override
+    public void interrupt() {
+        super.interrupt();
+    }
+
+    public interface  PlayListener{
         void isPlaying(boolean s);
     }
 

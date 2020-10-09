@@ -17,16 +17,17 @@ import com.google.android.exoplayer2.upstream.RawResourceDataSource
 class ExoPlayerUtils {
 
     companion object{
+
         var exoPlayer:SimpleExoPlayer? = null
 
         public fun playAudio(context: Context, mediaPath:String?){
                 val mobilemode =
                     context.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
-                mobilemode!!.setStreamVolume(
-                    AudioManager.STREAM_MUSIC,
-                    mobilemode.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
-                    0
-                )
+            mobilemode?.setStreamVolume(
+                AudioManager.STREAM_MUSIC,
+                mobilemode.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
+                0
+            )
             exoPlayer = SimpleExoPlayer.Builder(context)
                 .build()
             var mediaItem:MediaItem? = null
@@ -40,9 +41,11 @@ class ExoPlayerUtils {
             exoPlayer!!.play()
         }
 
+
         fun stopAlarm() {
             if (exoPlayer != null && isPlaying()) {
                 exoPlayer!!.stop()
+
             }
         }
 

@@ -7,14 +7,21 @@ import com.app.messagealarm.local_database.AppDatabase
 import java.lang.NullPointerException
 
 class NotificationListenerPresenter (private val view: NotificationListenerView){
+
+    var isExecuted = false
+
     fun getApplicationList(sbn:StatusBarNotification?){
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread(Runnable {
                 try{
-                    view.onApplicationListGetSuccess(
+                    if(!isExecuted){
+                        view.onApplicationListGetSuccess(
                             appDatabase.applicationDao().allApplicationList,
                             sbn
                         )
+                        isExecuted = true
+                    }
+
                 }catch (e: NullPointerException){
                     view.onApplicationListGetError()
                 }catch (e: SQLiteException){

@@ -5,10 +5,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.R
-import com.app.messagealarm.utils.Constants
-import com.app.messagealarm.utils.ExoPlayerUtils
-import com.app.messagealarm.utils.MediaUtils
-import com.app.messagealarm.utils.VibratorUtils
+import com.app.messagealarm.utils.*
 import com.ncorti.slidetoact.SlideToActView
 import kotlinx.android.synthetic.main.activity_alarm.*
 
@@ -53,6 +50,7 @@ class AlarmActivity : BaseActivity() {
             }
 
             override fun onSlideCompleteAnimationEnded(view: SlideToActView) {
+                SnoozeUtils.activateSnoozeMode(true)
                 ExoPlayerUtils.stopAlarm()
                 VibratorUtils.stopVibrate()
                 openApp()

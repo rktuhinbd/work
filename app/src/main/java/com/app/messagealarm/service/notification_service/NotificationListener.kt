@@ -4,6 +4,7 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Handler
 import android.provider.MediaStore
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
@@ -20,6 +21,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 class NotificationListener : NotificationListenerService(),
     NotificationListenerView {
 
+    var isExecuted = false
+    val sbnList = ArrayList<StatusBarNotification>()
+
     companion object{
         const val ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE"
     }
@@ -27,11 +31,20 @@ class NotificationListener : NotificationListenerService(),
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         val packageName = sbn?.packageName
-        Log.e(TAG, "Package name " + packageName)
+        /*Log.e(TAG, "Package name " + packageName)
         Log.e(TAG, "TITLE " + sbn!!.notification.extras["android.title"])
-        Log.e(TAG, "DESC " + sbn!!.notification.extras["android.text"])
-        NotificationListenerPresenter(this).getApplicationList(sbn)
+        Log.e(TAG, "DESC " + sbn!!.notification.extras["android.text"])*/
+        Log.e(TAG, "TITLE " + sbn!!.notification.extras["android.title"])
+        if(!SnoozeUtils.isSnoozedModeActivate()){
+            doMagic(sbn)
+        }
     }
+
+    @Synchronized fun doMagic(sbn: StatusBarNotification?){
+            NotificationListenerPresenter(this)
+                .getApplicationList(sbn)
+    }
+
 
     override fun onNotificationRemoved(sbn: StatusBarNotification?) {
         //NOTE: Music not getting off on notification removed
