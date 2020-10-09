@@ -17,6 +17,7 @@ import androidx.core.graphics.drawable.toBitmap
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
+import com.app.messagealarm.ui.notifications.FloatingNotification
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.DataUtils
 import com.app.messagealarm.utils.DialogUtils
@@ -25,8 +26,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
+import com.judemanutd.autostarter.AutoStartPermissionHelper
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
+import timber.log.Timber
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -131,7 +134,11 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
 
         btn_save?.setOnClickListener {
-            saveApplication()
+            if(AutoStartPermissionHelper.getInstance().isAutoStartPermissionAvailable(activity!!)){
+                saveApplication()
+            }else{
+                AutoStartPermissionHelper.getInstance().getAutoStartPermission(activity!!)
+            }
         }
 
         switch_custom_time?.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -449,10 +456,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             Thread(Runnable {
                 try {
                     val bitmap = app.drawableIcon
-                    addApplicationOptionPresenter?.saveBitmapToFile(bitmap.toBitmap())
+                    addApplicationOptionPresenter?.saveBitmapToFile(activity!!, bitmap.toBitmap())
                 }catch (e:Exception){
                     hideProgressBar()
-                    Toasty.error(activity!!, DataUtils.getString(R.string.something_wrong)).show()
+                Toasty.error(activity!!, e.message!!).show()
                 }
             }).start()
         }else{

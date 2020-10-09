@@ -63,7 +63,6 @@
         app:layout_constraintBottom_toTopOf="@id/side_to_active"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-
         app:layout_constraintTop_toBottomOf="@id/txt_message_desc" />
 
     <ImageView
@@ -90,6 +89,7 @@
         app:animation_duration="250"
         app:area_margin="4dp"
         app:border_radius="16dp"
+
         app:inner_color="@android:color/darker_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -97,6 +97,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:outer_color="@color/colorAccent"
         app:slider_height="60dp"
+        app:text_style="bold"
         app:slider_locked="false"
         app:text="Side to open Skype"
         app:text_size="18sp" />

@@ -5,7 +5,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
@@ -40,7 +39,9 @@
             android:name=".ui.main.alarm_applications.AlarmApplicationActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleTop" />
-        <activity android:name=".ui.alarm.AlarmActivity" />
+
+        <activity android:name=".ui.alarm.AlarmActivity" android:launchMode="singleInstance"
+            android:theme="@style/AppTheme.GradientStatusBar"/>
 
         <service
             android:name="com.app.messagealarm.service.notification_service.NotificationListener"

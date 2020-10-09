@@ -1,5 +1,6 @@
 package com.app.messagealarm.ui.main.add_options
 
+import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteException
 import android.graphics.Bitmap
@@ -11,6 +12,7 @@ import com.app.messagealarm.R
 import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.utils.DataUtils
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -78,11 +80,11 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
     /*
       * this method save a bitmap to file
       * */
-    fun saveBitmapToFile(bitmap: Bitmap) {
+    fun saveBitmapToFile(context: Context, bitmap: Bitmap) {
         var file_path = ""
         var imageName = ""
         try {
-            file_path = Environment.getExternalStorageDirectory().absolutePath +
+            file_path = context.getExternalFilesDir(null)!!.absolutePath +
                     "/.message_alarm"
             val dir = File(file_path)
             if (!dir.exists()) {
@@ -99,6 +101,7 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
                 fOut.close()
             }
         } catch (e: IOException) {
+            Timber.e(e)
             e.printStackTrace()
             addApplicationOptionView.onBitmapSaveError()
         }catch (ex:NullPointerException){

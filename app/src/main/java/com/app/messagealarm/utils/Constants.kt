@@ -124,7 +124,11 @@ class Constants {
 
     class IntentKeys {
         companion object {
-            const val PRODUCT_DETAILS = "product_details"
+            const val TITLE = "title"
+            const val DESC = "desc"
+            const val IMAGE_PATH = "image"
+            const val PACKAGE_NAME = "package"
+            const val TONE = "tone"
         }
     }
 
