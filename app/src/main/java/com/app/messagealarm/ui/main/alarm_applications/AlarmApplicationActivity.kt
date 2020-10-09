@@ -108,7 +108,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
 
     private fun askForPermission() {
         PermissionUtils.requestPermission(
-            this, android.Manifest.permission.READ_EXTERNAL_STORAGE,
+            this, android.Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+        PermissionUtils.requestPermission(
+            this,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
     }
