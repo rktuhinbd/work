@@ -18,7 +18,6 @@ class ExoPlayerUtils {
 
     companion object{
 
-        var isExecuted = false;
         var exoPlayer:SimpleExoPlayer? = null
 
         public fun playAudio(context: Context, mediaPath:String?){
@@ -38,12 +37,8 @@ class ExoPlayerUtils {
                 MediaItem.fromUri(RawResourceDataSource.buildRawResourceUri(R.raw.crush))
             }
             exoPlayer!!.setMediaItem(mediaItem)
-            if(!isExecuted){
                 exoPlayer!!.prepare()
                 exoPlayer!!.play()
-                isExecuted = true
-            }
-
         }
 
 

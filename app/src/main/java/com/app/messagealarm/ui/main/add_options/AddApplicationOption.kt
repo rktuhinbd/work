@@ -134,11 +134,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
 
         btn_save?.setOnClickListener {
-            if(AutoStartPermissionHelper.getInstance().isAutoStartPermissionAvailable(activity!!)){
                 saveApplication()
-            }else{
-                AutoStartPermissionHelper.getInstance().getAutoStartPermission(activity!!)
-            }
         }
 
         switch_custom_time?.setOnCheckedChangeListener { buttonView, isChecked ->
