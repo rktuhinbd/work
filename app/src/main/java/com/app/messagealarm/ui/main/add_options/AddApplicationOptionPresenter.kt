@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteException
 import android.graphics.Bitmap
 import android.os.Environment
 import android.os.Handler
+import android.util.Log
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.app.messagealarm.local_database.AppDatabase
@@ -14,6 +15,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.Exception
+import java.lang.IllegalStateException
 import java.lang.NullPointerException
 
 class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApplicationOptionView) {
@@ -40,17 +42,21 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
     }
 
 
-    fun getAppByPackageName(packageName:String){
+    fun getAppByPackageName(packageName:String?){
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread(Runnable {
             try {
-                addApplicationOptionView.onApplicationGetSuccess(
-                    appDatabase.applicationDao().getAppByPackageName(packageName)
-                )
+                if(packageName != null){
+                    addApplicationOptionView.onApplicationGetSuccess(
+                        appDatabase.applicationDao().getAppByPackageName(packageName)
+                    )
+                }
             }catch (ex:NullPointerException){
                 addApplicationOptionView.onApplicationGetError(DataUtils.getString(R.string.something_wrong))
             }catch (ex:SQLiteException){
                 addApplicationOptionView.onApplicationGetError(DataUtils.getString(R.string.something_wrong))
+            }catch (ex:IllegalStateException){
+                addApplicationOptionView.onIllegalState()
             }
         }).start()
     }

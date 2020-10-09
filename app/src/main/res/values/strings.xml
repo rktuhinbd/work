@@ -19,4 +19,7 @@
     <string name="update_successful">Application updated successfully!</string>
     <string name="update_error">Can\'t update Application!</string>
     <string name="time_constrain_error">Start time needs to be less than end time!</string>
+    <string name="txt_discard">Discard</string>
+    <string name="txt_discard_changes">Discard Changes?</string>
+    <string name="txt_cancel">Cancel</string>
 </resources>

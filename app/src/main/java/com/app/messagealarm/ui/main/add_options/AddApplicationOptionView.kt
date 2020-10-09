@@ -11,4 +11,5 @@ interface AddApplicationOptionView{
     fun onBitmapSaveError()
     fun onApplicationGetSuccess(app:ApplicationEntity)
     fun onApplicationGetError(message: String)
+    fun onIllegalState()
 }
