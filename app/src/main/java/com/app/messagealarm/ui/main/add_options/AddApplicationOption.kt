@@ -9,6 +9,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -479,6 +480,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     private fun checkForDefault():Boolean{
+        Log.e("CHECK", holderEntity.toString())
         var isDefault = false
             if(txt_repeat_value?.text.toString().trim() == holderEntity.alarmRepeat){
                 if(txt_ringtone_value?.text.toString().trim() == holderEntity.ringTone){
@@ -604,10 +606,24 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     override fun onApplicationGetSuccess(app: ApplicationEntity) {
         //show edited value to
         addApplicationEntity = app
-        holderEntity = app
+        convertToHolderEntity(addApplicationEntity)
         activity!!.runOnUiThread {
             setPresetValueToUi(app)
         }
+    }
+
+    private fun convertToHolderEntity(app: ApplicationEntity){
+        holderEntity.endTime = app.endTime
+        holderEntity.startTime = app.startTime
+        holderEntity.ringTone = app.ringTone
+        holderEntity.numberOfPlay = app.numberOfPlay
+        holderEntity.bitmapPath = app.bitmapPath
+        holderEntity.messageBody = app.messageBody
+        holderEntity.senderNames = app.senderNames
+        holderEntity.isCustomTime = app.isCustomTime
+        holderEntity.isVibrateOnAlarm = app.isVibrateOnAlarm
+        holderEntity.tone_path = app.tone_path
+        holderEntity.alarmRepeat = app.alarmRepeat
     }
 
     override fun onApplicationGetError(message: String) {
