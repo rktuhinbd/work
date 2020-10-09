@@ -57,7 +57,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         super.onActivityCreated(savedInstanceState)
         setListener()
         handleEditAndViewMode()
-
     }
 
     private fun handleEditAndViewMode(){
@@ -86,7 +85,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     false
                 }
             }
-
         })
     }
 
@@ -408,7 +406,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
 
-    private fun defaultValuesToDataModel(){
+    private fun defaultValuesToDataModel() : ApplicationEntity {
         addApplicationEntity.alarmRepeat = "Once"
         addApplicationEntity.ringTone = "Default"
         addApplicationEntity.isVibrateOnAlarm = false
@@ -432,6 +430,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         holderEntity.messageBody = "None"
         holderEntity.isRunningStatus = true
 
+        return addApplicationEntity
     }
 
     private fun saveApplication(){
@@ -619,5 +618,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         defaultValuesToDataModel()
     }
 
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        setPresetValueToUi(defaultValuesToDataModel())
+    }
 
 }
