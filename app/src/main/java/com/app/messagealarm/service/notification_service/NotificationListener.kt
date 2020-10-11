@@ -75,15 +75,44 @@ class NotificationListener : NotificationListenerService(),
     }
 
     private fun whatsAppFilter(title:String, desc:String){
-      /*  isPlayAble = if(title != "WhatsApp"){
-            false
-        }else if(desc != "Checking for new messages"){
-            false
-        }else if(!desc.contains("new messages")){
-            false
-        }else if(desc != "Incoming voice call"){
-            false
-        }else if(desc != "Missed voice call"){*/
+        isPlayAble = when {
+            title == "WhatsApp" -> {
+                false
+            }
+            desc == "Checking for new messages" -> {
+                false
+            }
+
+            desc == "Incoming voice call" ->{
+                false
+            }
+
+            desc == "Missed voice call" ->{
+                false
+            }
+
+            desc.contains("new messages", false) ->{
+                false
+            }
+
+            title == "null" ->{
+                false
+            }
+
+            desc == "null" ->{
+                false
+            }
+
+            title.isEmpty() ->{
+                false
+            }
+
+            desc.isEmpty() ->{
+                false
+            }
+
+            else -> true
+        }
     }
 
 
@@ -99,11 +128,11 @@ class NotificationListener : NotificationListenerService(),
                 false
             }
 
-            desc.contains("You missed a call from") ->{
+            desc.contains("You missed a call from", false) ->{
                 false
             }
 
-            desc == "Tap to return to call • Connecting…" ->{
+            desc.contains("Tap to return to call", false) ->{
                 false
             }
 
