@@ -10,6 +10,7 @@ import android.media.AudioManager
 import android.media.session.PlaybackState
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
 import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -29,8 +30,11 @@ class FloatingNotification {
         fun showFloatingNotification(context: Service, mediaPath:String?) {
             SnoozeUtils.activateSnoozeMode(true)
             if(!ExoPlayerUtils.isPlaying()){
-                ExoPlayerUtils.playAudio(context, mediaPath)
-                VibratorUtils.startVibrate(context)
+                Thread(Runnable {
+                    ExoPlayerUtils.playAudio(context, mediaPath)
+                    VibratorUtils.startVibrate(context)
+                }).start()
+
             }
             // sending data to new activity
             val receiveCallAction =

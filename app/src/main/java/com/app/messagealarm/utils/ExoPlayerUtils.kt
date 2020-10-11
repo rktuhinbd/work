@@ -45,7 +45,6 @@ class ExoPlayerUtils {
         fun stopAlarm() {
             if (exoPlayer != null && isPlaying()) {
                 exoPlayer!!.stop()
-
             }
         }
 

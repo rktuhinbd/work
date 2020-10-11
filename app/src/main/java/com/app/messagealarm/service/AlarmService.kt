@@ -20,29 +20,20 @@ class AlarmService {
     companion object{
 
         var isPlayAble = true
-        var isThreadExecuted = false
-        private const val MESSENGER_PKG = "com.facebook.orca"
-        private const val WHATSAPP_PKG = "com.whatsapp"
-        private const val VIBER_PKG = ""
-        private const val IMO_PKG = ""
 
         fun playAlarmOnNotification(sbn: StatusBarNotification?, appsList:List<ApplicationEntity>, service: Service){
-            when(sbn!!.packageName){
-                MESSENGER_PKG ->{
-                    messengerFilter(sbn.notification.extras["android.title"].toString())
-                }
-                WHATSAPP_PKG ->{
-                    whatsAppFilter(
-                        sbn.notification.extras["android.title"].toString(),
-                        sbn.notification.extras["android.text"].toString())
-                }
-                IMO_PKG -> imoFilter()
+           //filter for apps
+          //  filterApps(sbn)
+            //find app and play
+            findOutAppToPlay(sbn, appsList, service)
+        }
 
-                else -> isPlayAble = true
-            }
+        private fun findOutAppToPlay(sbn: StatusBarNotification?, appsList: List<ApplicationEntity>, service: Service){
             for (app in appsList){
-                if(sbn.packageName != null){
+                if(sbn?.packageName != null){
                     if(sbn.packageName == app.packageName){
+                        //alarm repeat
+                        alarmRepeatOutput(app.alarmRepeat, app)
                         if(sbn.notification.extras["android.title"] != null){
                             if(!ExoPlayerUtils.isPlaying()){
                                 if(isPlayAble){
@@ -73,6 +64,25 @@ class AlarmService {
             }
         }
 
+        private fun alarmRepeatOutput(repeat:String, app:ApplicationEntity){
+            when {
+                repeat.contains("Once") -> {
+                    //play one time and switch off the status
+                    isPlayAble = true
+                    AlarmServicePresenter.updateAppStatus(false, app.id)
+                }
+                repeat.contains("Daily") -> {
+                    //play every date and every time
+                    isPlayAble = true
+                }
+                repeat.contains("Custom") -> {
+                    //check the for the days, if the day match then please
+                    Log.e("OUTPUT", app.repeatDays.toString().trim())
+                }
+            }
+        }
+
+
 
         private fun startAlarmActivity(service: Service, tone:String?, sbn: StatusBarNotification?, app:ApplicationEntity){
                 AlarmCheckerThread(AlarmCheckerThread.PlayListener { s ->
@@ -91,39 +101,6 @@ class AlarmService {
                     intent.putExtra(Constants.IntentKeys.TITLE, title)
                     intent.putExtra(Constants.IntentKeys.DESC, desc)
                     service.startActivity(intent)
-        }
-
-
-
-        private fun whatsAppFilter(title:String, desc:String){
-            isPlayAble = !(title == "WhatsApp" ||
-                    desc == "Checking for new messages" ||
-                    desc == "8 new messages")
-        }
-
-        private fun messengerFilter(title:String){
-            isPlayAble = title != "Chat heads active"
-        }
-
-
-        private fun viberFilter(){
-
-        }
-
-        private fun upworkFilter(){
-
-        }
-
-        private fun fiverrFilter(){
-
-        }
-
-        private fun freelancerFilter(){
-
-        }
-
-        private fun imoFilter(){
-
         }
     }
 }

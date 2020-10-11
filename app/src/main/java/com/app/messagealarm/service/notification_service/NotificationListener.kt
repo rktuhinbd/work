@@ -21,10 +21,16 @@ import kotlinx.android.synthetic.main.activity_main.*
 class NotificationListener : NotificationListenerService(),
     NotificationListenerView {
 
-    var isExecuted = false
+    var isPlayAble = true
+    var isThreadExecuted = false
+
     val sbnList = ArrayList<StatusBarNotification>()
 
     companion object{
+        private  val MESSENGER_PKG = "com.facebook.orca"
+        private  val WHATSAPP_PKG = "com.whatsapp"
+        private  val VIBER_PKG = ""
+        private  val IMO_PKG = ""
         const val ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE"
     }
     private val TAG: String = "LISTENER"
@@ -35,14 +41,110 @@ class NotificationListener : NotificationListenerService(),
         Log.e(TAG, "TITLE " + sbn!!.notification.extras["android.title"])
         Log.e(TAG, "DESC " + sbn!!.notification.extras["android.text"])*/
         Log.e(TAG, "TITLE " + sbn!!.notification.extras["android.title"])
-        if(!SnoozeUtils.isSnoozedModeActivate()){
-            doMagic(sbn)
+        Log.e(TAG, "DESC " + sbn!!.notification.extras["android.text"])
+        filterApps(sbn)
+        Log.e("IS", isPlayAble.toString())
+        if(isPlayAble){
+            if(!SnoozeUtils.isSnoozedModeActivate()){
+                doMagic(sbn)
+            }
         }
+
     }
 
     @Synchronized fun doMagic(sbn: StatusBarNotification?){
             NotificationListenerPresenter(this)
                 .getApplicationList(sbn)
+    }
+
+    private fun filterApps(sbn: StatusBarNotification?){
+        when(sbn!!.packageName){
+            MESSENGER_PKG ->{
+               messengerFilter(sbn.notification.extras["android.title"].toString(),
+                   sbn.notification.extras["android.text"].toString()
+                   )
+            }
+            WHATSAPP_PKG ->{
+             whatsAppFilter(
+                    sbn.notification.extras["android.title"].toString(),
+                    sbn.notification.extras["android.text"].toString()
+                )
+            }
+            else -> isPlayAble = true
+        }
+    }
+
+    private fun whatsAppFilter(title:String, desc:String){
+      /*  isPlayAble = if(title != "WhatsApp"){
+            false
+        }else if(desc != "Checking for new messages"){
+            false
+        }else if(!desc.contains("new messages")){
+            false
+        }else if(desc != "Incoming voice call"){
+            false
+        }else if(desc != "Missed voice call"){*/
+    }
+
+
+    private fun messengerFilter(title:String, desc: String){
+        isPlayAble = when {
+            title == "Chat heads active" -> {
+                false
+            }
+            desc == "Start a conversation" -> {
+                false
+            }
+            desc == "Calling from Messenger" -> {
+                false
+            }
+
+            desc.contains("You missed a call from") ->{
+                false
+            }
+
+            desc == "Tap to return to call • Connecting…" ->{
+                false
+            }
+
+            title == "null" ->{
+                false
+            }
+
+            desc == "null" ->{
+                false
+            }
+
+            title.isEmpty() ->{
+                false
+            }
+
+            desc.isEmpty() ->{
+                false
+            }
+
+            else -> true
+        }
+    }
+
+    private fun viberFilter(){
+
+    }
+
+    private fun upworkFilter(){
+
+    }
+
+    private fun fiverrFilter(){
+
+    }
+
+    private fun freelancerFilter(){
+
+    }
+
+    private fun imoFilter(){
+
     }
 
 
