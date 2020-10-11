@@ -1,6 +1,7 @@
 package com.app.messagealarm.ui.main.alarm_applications
 
 import android.database.sqlite.SQLiteException
+import android.util.Log
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.entity.ApplicationEntity
@@ -18,6 +19,22 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
                 alarmApplicationView.onGetAlarmApplicationError()
             }catch (e:SQLiteException){
                 alarmApplicationView.onGetAlarmApplicationError()
+            }
+        }).start()
+    }
+
+    fun updateAppStatus(boolean: Boolean, id:Int){
+        val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
+        Thread(Runnable {
+            try{
+                appDatabase.applicationDao().updateAppStatus(boolean, id)
+                alarmApplicationView.onAppStatusUpdateSuccess()
+            }catch (e:NullPointerException){
+                e.printStackTrace()
+                alarmApplicationView.onAppStatusUpdateError(e.message.toString())
+            }catch (e:SQLiteException){
+                alarmApplicationView.onAppStatusUpdateError(e.message.toString())
+                e.printStackTrace()
             }
         }).start()
     }

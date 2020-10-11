@@ -89,7 +89,6 @@
         app:animation_duration="250"
         app:area_margin="4dp"
         app:border_radius="16dp"
-
         app:inner_color="@android:color/darker_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

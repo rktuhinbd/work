@@ -22,6 +22,9 @@ public interface ApplicationDao {
     @Update
     int updateApplication(ApplicationEntity applicationEntity);
 
+    @Query("UPDATE applications SET running_status = :status WHERE id = :id")
+    void updateAppStatus(boolean status, int id);
+
     @Delete
     void deleteApplication(ApplicationEntity applicationEntity);
 

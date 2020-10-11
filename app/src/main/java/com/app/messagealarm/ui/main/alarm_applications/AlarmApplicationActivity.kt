@@ -285,6 +285,17 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         }
     }
 
+    override fun onAppStatusUpdateSuccess() {
+
+    }
+
+    override fun onAppStatusUpdateError(message: String) {
+      runOnUiThread {
+          rv_application_list?.adapter?.notifyDataSetChanged()
+          Toasty.error(this, message).show()
+      }
+    }
+
     override fun onItemClick(app: ApplicationEntity) {
         //refresh adapter first
         if (!bottomSheetModel.isAdded) {
@@ -298,6 +309,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
 
     override fun onLongClick(app: ApplicationEntity) {
 
+    }
+
+    override fun onApplicationSwitch(boolean: Boolean, id:Int) {
+        alarmAppPresenter.updateAppStatus(boolean, id)
     }
 
 }

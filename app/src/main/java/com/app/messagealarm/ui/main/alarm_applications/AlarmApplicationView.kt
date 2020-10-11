@@ -7,4 +7,6 @@ interface AlarmApplicationView {
     fun onGetAlarmApplicationError()
     fun onApplicationDeleteSuccess(position:Int)
     fun onApplicationDeleteError()
+    fun onAppStatusUpdateSuccess()
+    fun onAppStatusUpdateError(message:String)
 }
