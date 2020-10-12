@@ -19,8 +19,6 @@ class AlarmService {
 
     companion object{
 
-        var isPlayAble = false
-
         fun playAlarmOnNotification(sbn: StatusBarNotification?, appsList:List<ApplicationEntity>, service: Service){
            //filter for apps
           //  filterApps(sbn)
@@ -32,11 +30,12 @@ class AlarmService {
             for (app in appsList){
                 if(sbn?.packageName != null){
                     if(sbn.packageName == app.packageName){
-                        //alarm repeat
-                        alarmRepeatOutput(app.alarmRepeat, app)
-                        if(sbn.notification.extras["android.title"] != null){
-                            if(!ExoPlayerUtils.isPlaying()){
-                                if(isPlayAble){
+                        //check for alarm repeat
+                        if(alarmRepeatOutput(app.alarmRepeat, app)){
+                            //check for title not null
+                            if(sbn.notification.extras["android.title"] != null){
+                                //check for player not playing
+                                if(!ExoPlayerUtils.isPlaying()){
                                     magicPlay(app.ringTone, service, sbn, app)
                                 }
                             }
@@ -71,22 +70,23 @@ class AlarmService {
             }
         }
 
-        private fun alarmRepeatOutput(repeat:String, app:ApplicationEntity){
-            when {
-                repeat.contains("Once") -> {
+        private fun alarmRepeatOutput(repeat:String, app:ApplicationEntity):Boolean{
+            var isPlayAble = false
+            when (repeat) {
+                "Once" -> {
                     //play one time and switch off the status
                     if(app.isRunningStatus){
                         isPlayAble = true
                         AlarmServicePresenter.updateAppStatus(false, app.id)
                     }
                 }
-                repeat.contains("Daily") -> {
+                "Daily" -> {
                     //play every date and every time
                     if(app.isRunningStatus){
                         isPlayAble = true
                     }
                 }
-                repeat.contains("Custom") -> {
+                "Custom" -> {
                     //check the for the days, if the day match then please
                     if(app.isRunningStatus){
                         if(checkWithCurrentDay(app.repeatDays)){
@@ -94,7 +94,10 @@ class AlarmService {
                         }
                     }
                 }
+
+                else -> isPlayAble = false
             }
+            return isPlayAble
         }
 
         private fun checkWithCurrentDay(days:String) : Boolean{

@@ -75,6 +75,7 @@ class NotificationListener : NotificationListenerService(),
     }
 
     private fun whatsAppFilter(title:String, desc:String){
+
         isPlayAble = when {
             title == "WhatsApp" -> {
                 false
@@ -109,6 +110,10 @@ class NotificationListener : NotificationListenerService(),
             }
 
             desc.contains("new messages", false) ->{
+                false
+            }
+
+            title == "Check message" ->{
                 false
             }
 

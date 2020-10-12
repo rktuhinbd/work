@@ -9,22 +9,14 @@ import java.lang.NullPointerException
 
 class NotificationListenerPresenter (private val view: NotificationListenerView){
 
-    var isExecuted = false
-
     fun getApplicationList(sbn:StatusBarNotification?){
-        Log.e("BEFORE", "TRUE")
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread(Runnable {
                 try{
-                    if(!isExecuted){
-                        Log.e("AFTER", "TRUE")
                         view.onApplicationListGetSuccess(
                             appDatabase.applicationDao().allApplicationList,
                             sbn
                         )
-                        isExecuted = true
-                    }
-
                 }catch (e: NullPointerException){
                     view.onApplicationListGetError()
                 }catch (e: SQLiteException){
