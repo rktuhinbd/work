@@ -79,6 +79,19 @@ class NotificationListener : NotificationListenerService(),
             title == "WhatsApp" -> {
                 false
             }
+
+            desc == "Ringing…" ->{
+                false
+            }
+
+            desc == "Calling…" ->{
+                false
+            }
+
+            desc == "Ongoing voice call" ->{
+                false
+            }
+
             desc == "Checking for new messages" -> {
                 false
             }
