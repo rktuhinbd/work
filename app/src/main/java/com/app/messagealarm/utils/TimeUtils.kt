@@ -1,6 +1,7 @@
 package com.app.messagealarm.utils
 
 import android.annotation.SuppressLint
+
 import timber.log.Timber
 import java.text.DateFormatSymbols
 import java.text.Format
@@ -30,6 +31,12 @@ class TimeUtils private constructor() {
             return System.currentTimeMillis()
 
 
+        }
+
+        fun getCurrentDayName() : String{
+            val calendar = Calendar.getInstance()
+            val date = calendar.time
+           return SimpleDateFormat("EE", Locale.ENGLISH).format(date.time)
         }
 
         /**

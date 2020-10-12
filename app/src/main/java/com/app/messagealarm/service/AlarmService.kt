@@ -19,13 +19,13 @@ class AlarmService {
 
     companion object{
 
-        var isPlayAble = true
+        var isPlayAble = false
 
         fun playAlarmOnNotification(sbn: StatusBarNotification?, appsList:List<ApplicationEntity>, service: Service){
            //filter for apps
           //  filterApps(sbn)
             //find app and play
-            findOutAppToPlay(sbn, appsList, service)
+                findOutAppToPlay(sbn, appsList, service)
         }
 
         private fun findOutAppToPlay(sbn: StatusBarNotification?, appsList: List<ApplicationEntity>, service: Service){
@@ -53,13 +53,20 @@ class AlarmService {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q){
                     startAlarmActivity(service, app.tone_path, sbn, app)
                 }else{
-                    FloatingNotification.showFloatingNotification(service, app.tone_path)
+                    //check if activity is not open
+                    if(!BaseApplication.isActivityRunning()){
+                        FloatingNotification.showFloatingNotification(service, app.tone_path)
+                    }
                }
             }else{
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q){
                     startAlarmActivity(service,null, sbn, app)
                 }else{
-                    FloatingNotification.showFloatingNotification(service, null)
+                    //check activity is not open
+                    if(!BaseApplication.isActivityRunning()){
+                        FloatingNotification.showFloatingNotification(service, null)
+                    }
+
                 }
             }
         }
@@ -68,21 +75,40 @@ class AlarmService {
             when {
                 repeat.contains("Once") -> {
                     //play one time and switch off the status
-                    isPlayAble = true
-                    AlarmServicePresenter.updateAppStatus(false, app.id)
+                    if(app.isRunningStatus){
+                        isPlayAble = true
+                        AlarmServicePresenter.updateAppStatus(false, app.id)
+                    }
                 }
                 repeat.contains("Daily") -> {
                     //play every date and every time
-                    isPlayAble = true
+                    if(app.isRunningStatus){
+                        isPlayAble = true
+                    }
                 }
                 repeat.contains("Custom") -> {
                     //check the for the days, if the day match then please
-                    Log.e("OUTPUT", app.repeatDays.toString().trim())
+                    if(app.isRunningStatus){
+                        if(checkWithCurrentDay(app.repeatDays)){
+                            isPlayAble = true
+                        }
+                    }
                 }
             }
         }
 
-
+        private fun checkWithCurrentDay(days:String) : Boolean{
+            val list = days.split(", ")
+            var isToday = false
+            for (x in list){
+                if(x == TimeUtils.getCurrentDayName()){
+                    Log.e("CHECK", x + "==" + TimeUtils.getCurrentDayName())
+                    isToday = true
+                    break
+                }
+            }
+            return isToday
+        }
 
         private fun startAlarmActivity(service: Service, tone:String?, sbn: StatusBarNotification?, app:ApplicationEntity){
                 AlarmCheckerThread(AlarmCheckerThread.PlayListener { s ->
@@ -95,6 +121,7 @@ class AlarmService {
                     val intent = Intent(service, AlarmActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    intent.putExtra(Constants.IntentKeys.APP_NAME, app.appName)
                     intent.putExtra(Constants.IntentKeys.PACKAGE_NAME, app.packageName)
                     intent.putExtra(Constants.IntentKeys.TONE, tone)
                     intent.putExtra(Constants.IntentKeys.IMAGE_PATH, app.bitmapPath)

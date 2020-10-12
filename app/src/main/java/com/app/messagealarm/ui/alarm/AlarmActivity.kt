@@ -4,6 +4,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
 import com.app.messagealarm.BaseActivity
+import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.app.messagealarm.utils.*
 import com.ncorti.slidetoact.SlideToActView
@@ -23,17 +24,24 @@ class AlarmActivity : BaseActivity() {
 
     private fun playMedia(){
         if (intent?.extras!!.getString(Constants.IntentKeys.TONE) != null){
-            ExoPlayerUtils.playAudio(this, intent?.extras!!.getString(Constants.IntentKeys.TONE))
-            VibratorUtils.startVibrate(this)
+            Thread(Runnable {
+                ExoPlayerUtils.playAudio(this, intent?.extras!!.getString(Constants.IntentKeys.TONE))
+                VibratorUtils.startVibrate(this)
+            }).start()
         }else{
-            ExoPlayerUtils.playAudio(this, null)
-            VibratorUtils.startVibrate(this)
+            Thread(Runnable {
+                ExoPlayerUtils.playAudio(this, null)
+                VibratorUtils.startVibrate(this)
+            }).start()
+
         }
     }
 
     private fun setupViews(){
         txt_message_from?.text = intent?.extras!!.getString(Constants.IntentKeys.TITLE)
         txt_message_desc?.text = intent?.extras!!.getString(Constants.IntentKeys.DESC)
+        side_to_active?.text  = String.format("Slide to open %s", intent?.extras!!
+            .getString(Constants.IntentKeys.APP_NAME))
         val imagePath = intent?.extras!!.getString(Constants.IntentKeys.IMAGE_PATH)
         if(imagePath != null){
             img_app_icon?.setImageBitmap(
@@ -50,9 +58,11 @@ class AlarmActivity : BaseActivity() {
             }
 
             override fun onSlideCompleteAnimationEnded(view: SlideToActView) {
+                Thread(Runnable {
+                    ExoPlayerUtils.stopAlarm()
+                    VibratorUtils.stopVibrate()
+                }).start()
                 SnoozeUtils.activateSnoozeMode(true)
-                ExoPlayerUtils.stopAlarm()
-                VibratorUtils.stopVibrate()
                 openApp()
                 finish()
             }
@@ -71,6 +81,18 @@ class AlarmActivity : BaseActivity() {
 
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        BaseApplication.activityRunning()
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        BaseApplication.activityStopped()
+    }
+
 
 
     private fun openApp(){

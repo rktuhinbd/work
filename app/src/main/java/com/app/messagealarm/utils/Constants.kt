@@ -129,6 +129,7 @@ class Constants {
             const val DESC = "desc"
             const val IMAGE_PATH = "image"
             const val PACKAGE_NAME = "package"
+            const val APP_NAME = "app_name"
             const val TONE = "tone"
         }
     }

@@ -98,7 +98,8 @@
         app:slider_height="60dp"
         app:text_style="bold"
         app:slider_locked="false"
-        app:text="Side to open Skype"
+        app:text_color="@color/color_white"
+        app:text=""
         app:text_size="18sp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
