@@ -8,6 +8,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.text.InputType
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.FrameLayout
@@ -94,6 +95,7 @@ class DialogUtils {
         }
 
         fun showCheckedItemListDialog(
+            repeatDays:String,
             context: Context,
             checkedCallBack: CheckedListCallback,
             callback: Callback
@@ -108,7 +110,21 @@ class DialogUtils {
                 "Saturday", "Sunday", "Monday", "Wednesday", "Tuesday",
                 "Thursday", "Friday"
             )
-            val checkedItems = booleanArrayOf(false, false, false, false, false, false, false)
+
+            //check which days already added and create checked items
+            //this code is not working yet, have to fix.
+           val daysList = repeatDays.split(", ")
+            var checkedItems = booleanArrayOf(false, false, false, false, false, false, false)
+            if(daysList.isNotEmpty()){
+                for(x in daysList.indices){
+                    for(element in days){
+                        checkedItems[x] = daysList[x].contains(element)
+                    }
+                }
+            }
+            //end of that
+
+
             builder.setMultiChoiceItems(days, checkedItems) { dialog, which, isChecked ->
                 // user checked or unchecked a box
                 if (isChecked) {

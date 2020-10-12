@@ -306,6 +306,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     addApplicationEntity.alarmRepeat = name
                     if (name.contains("Custom")) {
                         DialogUtils.showCheckedItemListDialog(
+                            addApplicationEntity.repeatDays,
                             activity!!,
                             object : DialogUtils.CheckedListCallback {
                                 @SuppressLint("SetTextI18n")
