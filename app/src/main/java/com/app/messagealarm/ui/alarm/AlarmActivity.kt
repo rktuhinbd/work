@@ -26,12 +26,16 @@ class AlarmActivity : BaseActivity() {
         if (intent?.extras!!.getString(Constants.IntentKeys.TONE) != null){
             Thread(Runnable {
                 ExoPlayerUtils.playAudio(this, intent?.extras!!.getString(Constants.IntentKeys.TONE))
-                VibratorUtils.startVibrate(this)
+                if(intent?.extras!!.getBoolean(Constants.IntentKeys.IS_VIBRATE)){
+                    VibratorUtils.startVibrate(this)
+                }
             }).start()
         }else{
             Thread(Runnable {
                 ExoPlayerUtils.playAudio(this, null)
-                VibratorUtils.startVibrate(this)
+                if(intent?.extras!!.getBoolean(Constants.IntentKeys.IS_VIBRATE)){
+                    VibratorUtils.startVibrate(this)
+                }
             }).start()
 
         }

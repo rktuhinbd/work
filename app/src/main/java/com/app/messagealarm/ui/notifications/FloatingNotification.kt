@@ -27,12 +27,14 @@ class FloatingNotification {
         private const val CHANNEL_ID = "alarm channel"
         private const val CHANNEL_NAME = "alarm app channel"
 
-        fun showFloatingNotification(context: Service, mediaPath:String?) {
+        fun showFloatingNotification(isVibrate:Boolean, context: Service, mediaPath:String?) {
             SnoozeUtils.activateSnoozeMode(true)
             if(!ExoPlayerUtils.isPlaying()){
                 Thread(Runnable {
                     ExoPlayerUtils.playAudio(context, mediaPath)
-                    VibratorUtils.startVibrate(context)
+                    if(isVibrate){
+                        VibratorUtils.startVibrate(context)
+                    }
                 }).start()
 
             }

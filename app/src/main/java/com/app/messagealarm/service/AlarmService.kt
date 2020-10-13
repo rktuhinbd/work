@@ -54,7 +54,7 @@ class AlarmService {
                 }else{
                     //check if activity is not open
                     if(!BaseApplication.isActivityRunning()){
-                        FloatingNotification.showFloatingNotification(service, app.tone_path)
+                        FloatingNotification.showFloatingNotification(app.isVibrateOnAlarm,service, app.tone_path)
                     }
                }
             }else{
@@ -63,12 +63,13 @@ class AlarmService {
                 }else{
                     //check activity is not open
                     if(!BaseApplication.isActivityRunning()){
-                        FloatingNotification.showFloatingNotification(service, null)
+                        FloatingNotification.showFloatingNotification(app.isVibrateOnAlarm, service, null)
                     }
 
                 }
             }
         }
+
 
         private fun alarmRepeatOutput(repeat:String, app:ApplicationEntity):Boolean{
             var isPlayAble = false
@@ -105,7 +106,6 @@ class AlarmService {
             var isToday = false
             for (x in list){
                 if(x == TimeUtils.getCurrentDayName()){
-                    Log.e("CHECK", x + "==" + TimeUtils.getCurrentDayName())
                     isToday = true
                     break
                 }
@@ -114,9 +114,12 @@ class AlarmService {
         }
 
         private fun startAlarmActivity(service: Service, tone:String?, sbn: StatusBarNotification?, app:ApplicationEntity){
+            //when alarm is playing with activity and the thread is not finished then user dismissed the alarm, then it's playing with notification again
+            //temporary fixed by reducing waiting time from 4 sec to 2 sec.
+            //need to check device to device for more result
                 AlarmCheckerThread(AlarmCheckerThread.PlayListener { s ->
                     if(!s){
-                        FloatingNotification.showFloatingNotification(service, app.tone_path)
+                        FloatingNotification.showFloatingNotification(app.isVibrateOnAlarm, service, app.tone_path)
                     }
                 }).execute()
             val title = sbn?.notification!!.extras["android.title"].toString()
@@ -125,6 +128,7 @@ class AlarmService {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     intent.putExtra(Constants.IntentKeys.APP_NAME, app.appName)
+                    intent.putExtra(Constants.IntentKeys.IS_VIBRATE, app.isVibrateOnAlarm)
                     intent.putExtra(Constants.IntentKeys.PACKAGE_NAME, app.packageName)
                     intent.putExtra(Constants.IntentKeys.TONE, tone)
                     intent.putExtra(Constants.IntentKeys.IMAGE_PATH, app.bitmapPath)

@@ -95,7 +95,7 @@ class DialogUtils {
         }
 
         fun showCheckedItemListDialog(
-            repeatDays:String,
+            repeatDays:String?,
             context: Context,
             checkedCallBack: CheckedListCallback,
             callback: Callback
@@ -110,15 +110,14 @@ class DialogUtils {
                 "Saturday", "Sunday", "Monday", "Wednesday", "Tuesday",
                 "Thursday", "Friday"
             )
-
             //check which days already added and create checked items
             //this code is not working yet, have to fix.
-           val daysList = repeatDays.split(", ")
-            var checkedItems = booleanArrayOf(false, false, false, false, false, false, false)
-            if(daysList.isNotEmpty()){
-                for (x in 0 until days.size){
-                    for(y in 0 until daysList.size){
-                        if(days[x].contains(daysList[y])){
+            val daysList = repeatDays?.split(", ")
+            val checkedItems = booleanArrayOf(false, false, false, false, false, false, false)
+            if(daysList!= null && daysList.isNotEmpty()){
+                for (x in days.indices){
+                    for(element in daysList){
+                        if(days[x].contains(element)){
                             list.add(days[x])
                             checkedItems[x] = true
                         }
