@@ -116,15 +116,16 @@ class DialogUtils {
            val daysList = repeatDays.split(", ")
             var checkedItems = booleanArrayOf(false, false, false, false, false, false, false)
             if(daysList.isNotEmpty()){
-                for(x in daysList.indices){
-                    for(element in days){
-                        checkedItems[x] = daysList[x].contains(element)
+                for (x in 0 until days.size){
+                    for(y in 0 until daysList.size){
+                        if(days[x].contains(daysList[y])){
+                            list.add(days[x])
+                            checkedItems[x] = true
+                        }
                     }
                 }
             }
             //end of that
-
-
             builder.setMultiChoiceItems(days, checkedItems) { dialog, which, isChecked ->
                 // user checked or unchecked a box
                 if (isChecked) {
