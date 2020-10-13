@@ -67,7 +67,6 @@ class AlarmActivity : BaseActivity() {
             override fun onSlideComplete(view: SlideToActView) {
 
             }
-
             override fun onSlideCompleteAnimationEnded(view: SlideToActView) {
                 Thread(Runnable {
                     ExoPlayerUtils.stopAlarm()
@@ -101,6 +100,10 @@ class AlarmActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         BaseApplication.activityStopped()
+    }
+
+    override fun onBackPressed() {
+
     }
 
 
