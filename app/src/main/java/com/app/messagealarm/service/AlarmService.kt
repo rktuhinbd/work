@@ -53,19 +53,14 @@ class AlarmService {
                     startAlarmActivity(service, app.tone_path, sbn, app)
                 }else{
                     //check if activity is not open
-                    if(!BaseApplication.isActivityRunning()){
-                        FloatingNotification.showFloatingNotification(app.isVibrateOnAlarm,service, app.tone_path)
-                    }
+                        FloatingNotification.showFloatingNotification(app.numberOfPlay, app.isVibrateOnAlarm,service, app.tone_path)
                }
             }else{
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q){
                     startAlarmActivity(service,null, sbn, app)
                 }else{
                     //check activity is not open
-                    if(!BaseApplication.isActivityRunning()){
-                        FloatingNotification.showFloatingNotification(app.isVibrateOnAlarm, service, null)
-                    }
-
+                        FloatingNotification.showFloatingNotification(app.numberOfPlay, app.isVibrateOnAlarm, service, null)
                 }
             }
         }
@@ -119,7 +114,7 @@ class AlarmService {
             //need to check device to device for more result
                 AlarmCheckerThread(AlarmCheckerThread.PlayListener { s ->
                     if(!s){
-                        FloatingNotification.showFloatingNotification(app.isVibrateOnAlarm, service, app.tone_path)
+                        FloatingNotification.showFloatingNotification(app.numberOfPlay, app.isVibrateOnAlarm, service, app.tone_path)
                     }
                 }).execute()
             val title = sbn?.notification!!.extras["android.title"].toString()
@@ -127,6 +122,7 @@ class AlarmService {
                     val intent = Intent(service, AlarmActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    intent.putExtra(Constants.IntentKeys.NUMBER_OF_PLAY, app.numberOfPlay)
                     intent.putExtra(Constants.IntentKeys.APP_NAME, app.appName)
                     intent.putExtra(Constants.IntentKeys.IS_VIBRATE, app.isVibrateOnAlarm)
                     intent.putExtra(Constants.IntentKeys.PACKAGE_NAME, app.packageName)

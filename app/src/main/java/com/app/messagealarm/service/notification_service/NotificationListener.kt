@@ -204,10 +204,9 @@ class NotificationListener : NotificationListenerService(),
         if (sbn!!.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
             Thread(Runnable {
                 ExoPlayerUtils.stopAlarm()
-                VibratorUtils.stopVibrate()
             }).start()
             Toasty.info(this, "Snoozed for 20 minutes!").show()
-        }else if(sbn!!.packageName == AndroidUtils.getPackageInfo()!!.packageName){
+        }else if(sbn.packageName == AndroidUtils.getPackageInfo()!!.packageName){
             Toasty.info(this, "Alarm Service Stopped!").show()
         }
     }

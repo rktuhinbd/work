@@ -27,17 +27,24 @@ class FloatingNotification {
         private const val CHANNEL_ID = "alarm channel"
         private const val CHANNEL_NAME = "alarm app channel"
 
-        fun showFloatingNotification(isVibrate:Boolean, context: Service, mediaPath:String?) {
-            SnoozeUtils.activateSnoozeMode(true)
-            if(!ExoPlayerUtils.isPlaying()){
-                Thread(Runnable {
-                    ExoPlayerUtils.playAudio(context, mediaPath)
-                    if(isVibrate){
-                        VibratorUtils.startVibrate(context)
+        private fun startPlaying(tone:String?, isVibrate: Boolean,context: Service,
+                                 notificationManager: NotificationManagerCompat,  numberOfPlay: Int){
+            Thread(Runnable {
+                //here i need run the loop of how much time need to play
+                for (x in 0 until numberOfPlay){
+                    ExoPlayerUtils.playAudio(
+                        isVibrate,
+                        context, tone)
+                    if(x == numberOfPlay - 1){
+                        //done playing dismiss the activity now
+                        //send a notification that you missed the alarm
+                        notificationManager.cancel(225)
                     }
-                }).start()
+                }
+            }).start()
+        }
 
-            }
+        fun showFloatingNotification(numberOfPlay:Int, isVibrate:Boolean, context: Service, mediaPath:String?) {
             // sending data to new activity
             val receiveCallAction =
                 Intent(context, AlarmApplicationActivity::class.java)
@@ -75,6 +82,9 @@ class FloatingNotification {
                 .setAutoCancel(true)
             val notificationManager = NotificationManagerCompat.from(context)
             notificationManager.notify(225, notificationBuilder.build())
+
+            //start playing
+            startPlaying(mediaPath, isVibrate, context, notificationManager, numberOfPlay)
         }
 
         /*

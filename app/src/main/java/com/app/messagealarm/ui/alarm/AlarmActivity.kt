@@ -24,21 +24,28 @@ class AlarmActivity : BaseActivity() {
 
     private fun playMedia(){
         if (intent?.extras!!.getString(Constants.IntentKeys.TONE) != null){
-            Thread(Runnable {
-                ExoPlayerUtils.playAudio(this, intent?.extras!!.getString(Constants.IntentKeys.TONE))
-                if(intent?.extras!!.getBoolean(Constants.IntentKeys.IS_VIBRATE)){
-                    VibratorUtils.startVibrate(this)
-                }
-            }).start()
+            startPlaying(intent?.extras!!.getString(Constants.IntentKeys.TONE))
         }else{
-            Thread(Runnable {
-                ExoPlayerUtils.playAudio(this, null)
-                if(intent?.extras!!.getBoolean(Constants.IntentKeys.IS_VIBRATE)){
-                    VibratorUtils.startVibrate(this)
-                }
-            }).start()
-
+           startPlaying(null)
         }
+    }
+
+
+    private fun startPlaying(tone:String?){
+        Thread(Runnable {
+            //here i need run the loop of how much time need to play
+            val numberOfPLay = intent?.extras!!.getInt(Constants.IntentKeys.NUMBER_OF_PLAY)
+            for (x in 0 until numberOfPLay){
+                ExoPlayerUtils.playAudio(
+                    intent?.extras!!.getBoolean(Constants.IntentKeys.IS_VIBRATE),
+                    this, tone)
+                if(x == numberOfPLay - 1){
+                    //done playing dismiss the activity now
+                    //send a notification that you missed the alarm
+                    finish()
+                }
+            }
+        }).start()
     }
 
     private fun setupViews(){
@@ -64,7 +71,6 @@ class AlarmActivity : BaseActivity() {
             override fun onSlideCompleteAnimationEnded(view: SlideToActView) {
                 Thread(Runnable {
                     ExoPlayerUtils.stopAlarm()
-                    VibratorUtils.stopVibrate()
                 }).start()
                 SnoozeUtils.activateSnoozeMode(true)
                 openApp()

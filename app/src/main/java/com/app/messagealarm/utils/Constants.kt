@@ -131,6 +131,7 @@ class Constants {
             const val PACKAGE_NAME = "package"
             const val APP_NAME = "app_name"
             const val TONE = "tone"
+            const val NUMBER_OF_PLAY = "number_of_play"
             const val IS_VIBRATE = "is_vibrate"
         }
     }
