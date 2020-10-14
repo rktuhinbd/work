@@ -1,13 +1,15 @@
 package com.app.messagealarm.ui.alarm
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.view.animation.RotateAnimation
+import com.allyants.notifyme.NotifyMe
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
+import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.ExoPlayerUtils
 import com.app.messagealarm.utils.SnoozeUtils
@@ -46,10 +48,37 @@ class AlarmActivity : BaseActivity() {
                 if(x == numberOfPLay - 1){
                     //done playing dismiss the activity now
                     //send a notification that you missed the alarm
+                    showYouMissedAlarmNotification(intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!)
                     finish()
                 }
             }
         }).start()
+    }
+
+    private fun showYouMissedAlarmNotification(app:String){
+        val notifyMe = NotifyMe.Builder(BaseApplication.getBaseApplicationContext())
+        notifyMe.title("Message Alarm");
+        notifyMe.content(String.format("You missed an alarm from %s",app));
+        notifyMe.large_icon(R.mipmap.ic_launcher);//Icon resource by ID
+        notifyMe.addAction(Intent(applicationContext, AlarmApplicationActivity::class.java),"")
+        notifyMe.build()
+    }
+
+    private fun showPageDismissNotification(app:String){
+       /* Notify
+            .with(this)
+            .content { // this: Payload.Content.Default
+                title = "Message Alarm"
+                text = String.format("You got a message from %s", app)
+            }
+
+            .actions { Notify.IMPORTANCE_HIGH }
+            .show()*/
+    }
+
+    override fun onPause() {
+        super.onPause()
+        showPageDismissNotification(intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!)
     }
 
     private fun tiltAnimation(){

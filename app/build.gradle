@@ -16,6 +16,18 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude("META-INF/*.kotlin_module")
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -75,6 +87,7 @@ dependencies {
 
     implementation 'com.github.judemanutd:autostarter:1.0.8'
 
+    implementation 'com.github.jakebonk:NotifyMe:1.0.1'
     //recycler view swipe
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
 }
