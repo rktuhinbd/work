@@ -36,7 +36,7 @@ public class AlarmCheckerThread extends Thread {
                     }
                     count++;
                     Log.e("COUNT", String.valueOf(count));
-                    if(count == 2){
+                    if(count == 3){
                         count = 0;
                         if(!ExoPlayerUtils.Companion.isPlaying()){
                             playListener.isPlaying(ExoPlayerUtils.Companion.isPlaying());
