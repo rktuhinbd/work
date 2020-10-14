@@ -2,14 +2,17 @@ package com.app.messagealarm.ui.alarm
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.provider.MediaStore
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.view.animation.RotateAnimation
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
-import com.app.messagealarm.utils.*
+import com.app.messagealarm.utils.Constants
+import com.app.messagealarm.utils.ExoPlayerUtils
+import com.app.messagealarm.utils.SnoozeUtils
 import com.ncorti.slidetoact.SlideToActView
 import kotlinx.android.synthetic.main.activity_alarm.*
-
 import java.io.File
 
 
@@ -20,6 +23,7 @@ class AlarmActivity : BaseActivity() {
         setContentView(R.layout.activity_alarm)
         setupViews()
         playMedia()
+        tiltAnimation()
     }
 
     private fun playMedia(){
@@ -48,10 +52,17 @@ class AlarmActivity : BaseActivity() {
         }).start()
     }
 
+    private fun tiltAnimation(){
+        val ranim =
+            AnimationUtils.loadAnimation(this, R.anim.tilt_animation) as Animation
+        ranim.repeatCount = Animation.INFINITE
+        img_app_icon?.animation = ranim
+    }
+
     private fun setupViews(){
         txt_message_from?.text = intent?.extras!!.getString(Constants.IntentKeys.TITLE)
         txt_message_desc?.text = intent?.extras!!.getString(Constants.IntentKeys.DESC)
-        side_to_active?.text  = String.format("Slide to open %s", intent?.extras!!
+        side_to_active?.text  = String.format("Open %s", intent?.extras!!
             .getString(Constants.IntentKeys.APP_NAME))
         val imagePath = intent?.extras!!.getString(Constants.IntentKeys.IMAGE_PATH)
         if(imagePath != null){
