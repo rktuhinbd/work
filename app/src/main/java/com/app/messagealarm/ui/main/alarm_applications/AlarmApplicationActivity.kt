@@ -114,6 +114,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
             this,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
+        PermissionUtils.requestPermission(
+            this,
+            android.Manifest.permission.SYSTEM_ALERT_WINDOW
+        )
     }
 
     private fun recyclerViewSwipeHandler() {

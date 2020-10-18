@@ -1,15 +1,22 @@
 package com.app.messagealarm.ui.splash
 
+import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.service.notification.NotificationListenerService.requestRebind
 import android.view.animation.AnimationUtils
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.R
+import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.DialogUtils
 import com.app.messagealarm.utils.PermissionUtils
 import kotlinx.android.synthetic.main.activity_splash.*
+
+
 
 class SplashActivity : BaseActivity() {
 
@@ -24,6 +31,7 @@ class SplashActivity : BaseActivity() {
             txt_title?.startAnimation(animation)
             progress_bar_splash?.startAnimation(animation)
             runProgressWithSteps()
+            tryReconnectService()
         }else{
             DialogUtils.showDialog(
                     this,
@@ -41,6 +49,35 @@ class SplashActivity : BaseActivity() {
             )
         }
     }
+
+
+    private fun tryReconnectService() {
+        toggleNotificationListenerService()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val componentName = ComponentName(
+                applicationContext,
+                NotificationListener::class.java
+            )
+            //It say to Notification Manager RE-BIND your service to listen notifications again inmediatelly!
+            requestRebind(componentName)
+        }
+    }
+
+    /**
+     * Try deactivate/activate your component service
+     */
+    private fun toggleNotificationListenerService() {
+        val pm = packageManager
+        pm.setComponentEnabledSetting(
+            ComponentName(this, NotificationListener::class.java),
+            PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP
+        )
+        pm.setComponentEnabledSetting(
+            ComponentName(this, NotificationListener::class.java),
+            PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP
+        )
+    }
+
 
     override fun onResume() {
         super.onResume()

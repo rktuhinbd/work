@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Handler
+import android.os.IBinder
 import android.provider.MediaStore
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
@@ -230,6 +231,7 @@ class NotificationListener : NotificationListenerService(),
 
     override fun onCreate() {
         super.onCreate()
+        FloatingNotification.startForegroundService(this)
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
