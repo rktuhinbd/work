@@ -118,6 +118,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
             this,
             android.Manifest.permission.SYSTEM_ALERT_WINDOW
         )
+        PermissionUtils.requestPermission(
+            this,
+            android.Manifest.permission.RECEIVE_BOOT_COMPLETED
+        )
     }
 
     private fun recyclerViewSwipeHandler() {

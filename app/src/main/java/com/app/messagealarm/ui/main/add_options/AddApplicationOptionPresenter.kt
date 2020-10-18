@@ -78,8 +78,6 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
     }
 
 
-
-
     /*
       * this method save a bitmap to file
       * */

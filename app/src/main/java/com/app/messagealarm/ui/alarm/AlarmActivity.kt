@@ -1,11 +1,12 @@
 package com.app.messagealarm.ui.alarm
 
+import android.app.Notification
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import com.allyants.notifyme.NotifyMe
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
@@ -14,6 +15,7 @@ import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.ExoPlayerUtils
 import com.app.messagealarm.utils.SnoozeUtils
 import com.ncorti.slidetoact.SlideToActView
+import com.tapadoo.alerter.Alerter
 import kotlinx.android.synthetic.main.activity_alarm.*
 import java.io.File
 
@@ -56,24 +58,29 @@ class AlarmActivity : BaseActivity() {
     }
 
     private fun showYouMissedAlarmNotification(app:String){
-        val notifyMe = NotifyMe.Builder(BaseApplication.getBaseApplicationContext())
-        notifyMe.title("Message Alarm");
-        notifyMe.content(String.format("You missed an alarm from %s",app));
-        notifyMe.large_icon(R.mipmap.ic_launcher);//Icon resource by ID
-        notifyMe.addAction(Intent(applicationContext, AlarmApplicationActivity::class.java),"")
-        notifyMe.build()
+        Alerter.create(this)
+            .setTitle("Message Alarm")
+            .setText(String.format("You missed a message alarm from %s", app))
+            .setIcon(R.drawable.ic_clear)
+            .setBackgroundColorRes(R.color.colorPrimaryDark)
+            .setOnClickListener(View.OnClickListener {
+               startActivity(Intent(this, AlarmApplicationActivity::class.java)
+                   .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+               )
+            })
+            .show()
     }
 
     private fun showPageDismissNotification(app:String){
-       /* Notify
-            .with(this)
-            .content { // this: Payload.Content.Default
-                title = "Message Alarm"
-                text = String.format("You got a message from %s", app)
-            }
-
-            .actions { Notify.IMPORTANCE_HIGH }
-            .show()*/
+        Alerter.create(this)
+            .setTitle("Message Alarm")
+            .setText(String.format("You got a message from %s", app))
+            .setIcon(R.drawable.ic_angry)
+            .setBackgroundColorRes(R.color.colorPrimaryDark)
+            .setOnClickListener(View.OnClickListener {
+             openApp()
+            })
+            .show()
     }
 
     override fun onPause() {

@@ -87,7 +87,7 @@ dependencies {
 
     implementation 'com.github.judemanutd:autostarter:1.0.8'
 
-    implementation 'com.github.jakebonk:NotifyMe:1.0.1'
+    implementation 'com.tapadoo.android:alerter:6.2.1'
     //recycler view swipe
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
 }
