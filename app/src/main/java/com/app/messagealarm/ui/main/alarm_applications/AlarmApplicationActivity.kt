@@ -19,6 +19,7 @@ import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.R
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.service.notification_service.NotificationListener
+import com.app.messagealarm.ui.about.AboutActivity
 import com.app.messagealarm.ui.adapters.AddedAppsListAdapter
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
@@ -59,7 +60,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         lookForAlarmApplication()
     }
 
-    private fun setToolBar(){
+    private fun setToolBar() {
         setSupportActionBar(findViewById(R.id.toolbar))
     }
 
@@ -71,7 +72,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.mnu_help -> DokiActivity.start(this, DONT_KILL_MY_APP_DEFAULT_MANUFACTURER)
+            R.id.mnu_help -> {
+                DokiActivity.start(this, DONT_KILL_MY_APP_DEFAULT_MANUFACTURER)
+            }
+            R.id.mnu_about -> {
+                startActivity(Intent(this, AboutActivity::class.java))
+            }
             else -> {
             }
         }
@@ -298,10 +304,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
     }
 
     override fun onAppStatusUpdateError(message: String) {
-      runOnUiThread {
-          rv_application_list?.adapter?.notifyDataSetChanged()
-          Toasty.error(this, message).show()
-      }
+        runOnUiThread {
+            rv_application_list?.adapter?.notifyDataSetChanged()
+            Toasty.error(this, message).show()
+        }
     }
 
     override fun onItemClick(app: ApplicationEntity) {
@@ -319,7 +325,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
 
     }
 
-    override fun onApplicationSwitch(boolean: Boolean, id:Int) {
+    override fun onApplicationSwitch(boolean: Boolean, id: Int) {
         alarmAppPresenter.updateAppStatus(boolean, id)
     }
 

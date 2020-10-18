@@ -22,4 +22,7 @@
     <string name="txt_discard">Discard</string>
     <string name="txt_discard_changes">Discard Changes?</string>
     <string name="txt_cancel">Cancel</string>
+    <string name="txt_author">Author</string>
+    <string name="txt_developed_designed_by"><![CDATA[Developed & Designed By]]></string>
+    <string name="txt_company_info">A star-up software development team, with 100% dedicated peoples! With a long vison.</string>
 </resources>
