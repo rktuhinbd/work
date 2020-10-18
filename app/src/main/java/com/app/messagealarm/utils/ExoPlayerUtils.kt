@@ -2,24 +2,12 @@ package com.app.messagealarm.utils
 
 import android.content.Context
 import android.media.AudioManager
-import android.net.Uri
-import android.os.Build
-import android.os.Handler
+import android.media.RingtoneManager
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.Timeline
-import com.google.android.exoplayer2.audio.AudioAttributes
-import com.google.android.exoplayer2.audio.AudioListener
-import com.google.android.exoplayer2.device.DeviceListener
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
-import com.google.android.exoplayer2.source.ExtractorMediaSource
-import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.upstream.RawResourceDataSource
-import java.lang.IllegalStateException
-import java.lang.NullPointerException
 
 
 class ExoPlayerUtils {
@@ -38,13 +26,19 @@ class ExoPlayerUtils {
             )
             try {
                 //audio playing logic should be playing for
+                val defaultRingtoneUri =
+                    RingtoneManager.getActualDefaultRingtoneUri(
+                        BaseApplication.getBaseApplicationContext(),
+                        RingtoneManager.TYPE_RINGTONE
+                    )
+
                 exoPlayer = SimpleExoPlayer.Builder(context)
                     .build()
                 var mediaItem: MediaItem? = null
                 mediaItem = if (mediaPath != null) {
                     MediaItem.fromUri(mediaPath)
                 } else {
-                    MediaItem.fromUri(RawResourceDataSource.buildRawResourceUri(R.raw.crush))
+                    MediaItem.fromUri(defaultRingtoneUri)
                 }
                 exoPlayer!!.setMediaItem(mediaItem)
                 exoPlayer!!.prepare()
