@@ -23,6 +23,7 @@ import com.app.messagealarm.ui.about.AboutActivity
 import com.app.messagealarm.ui.adapters.AddedAppsListAdapter
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
+import com.app.messagealarm.ui.setting.SettingsActivity
 import com.app.messagealarm.utils.*
 import dev.doubledot.doki.api.extensions.DONT_KILL_MY_APP_DEFAULT_MANUFACTURER
 import dev.doubledot.doki.ui.DokiActivity
@@ -77,6 +78,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
             }
             R.id.mnu_about -> {
                 startActivity(Intent(this, AboutActivity::class.java))
+            }
+            R.id.mnu_setting ->{
+                startActivity(Intent(this, SettingsActivity::class.java))
             }
             else -> {
             }

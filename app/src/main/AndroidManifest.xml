@@ -22,44 +22,41 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="q">
-
+        <activity
+            android:name=".ui.setting.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTop"/>
         <activity
             android:name=".ui.main.add_apps.AddApplicationActivity"
             android:launchMode="singleTop"
             android:parentActivityName=".ui.main.alarm_applications.AlarmApplicationActivity" />
-
         <activity
             android:name=".ui.splash.SplashActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.GradientStatusBar">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:name=".ui.main.alarm_applications.AlarmApplicationActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleTop" />
-
-
         <activity
             android:name=".ui.alarm.AlarmActivity"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.GradientStatusBar" />
-
-
         <activity
             android:name=".ui.about.AboutActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleTop" />
 
         <service
-            android:name="com.app.messagealarm.service.notification_service.NotificationListener"
+            android:name=".service.notification_service.NotificationListener"
             android:enabled="true"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
@@ -76,7 +73,6 @@
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>
