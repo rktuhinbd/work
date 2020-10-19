@@ -31,7 +31,7 @@
         <Preference
             app:key="background_not_working"
             app:icon="@drawable/ic_help_black_24dp"
-            app:title="Not working when app closed?"
+            app:title="@string/txt_not_background"
             app:summary="Here we have detailed guidelines"
             />
 

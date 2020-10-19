@@ -73,12 +73,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.mnu_help -> {
-                DokiActivity.start(this, DONT_KILL_MY_APP_DEFAULT_MANUFACTURER)
-            }
-            R.id.mnu_about -> {
-                startActivity(Intent(this, AboutActivity::class.java))
-            }
             R.id.mnu_setting ->{
                 startActivity(Intent(this, SettingsActivity::class.java))
             }
