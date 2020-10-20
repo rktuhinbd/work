@@ -31,6 +31,7 @@ import java.io.Serializable
 class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     AllAppsListAdapter.ItemClickListener {
 
+    var addApplicationPresenter:AddApplicationPresenter? = null
     val bottomSheetModel = AddApplicationOption()
     val REQUEST_CODE_PICK_AUDIO = 1
 
@@ -40,8 +41,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         //setup toolbar
         toolBarSetup()
         //setup presenter
-        val addApplicationPresenter = AddApplicationPresenter(this, this)
-        addApplicationPresenter.getAllApplicationList()
+        addApplicationPresenter = AddApplicationPresenter(this, this)
         filterListener()
     }
 
@@ -67,7 +67,11 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             }
 
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-
+                if(p2 == 0){
+                    addApplicationPresenter!!.getAllApplicationList()
+                }else{
+                    addApplicationPresenter!!.filterByMessaging()
+                }
             }
         }
     }
@@ -82,6 +86,10 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         runOnUiThread {
             Toasty.info(this, message).show()
         }
+    }
+
+    override fun onApplicationFiltered(list: ArrayList<InstalledApps>) {
+        (rv_apps_list?.adapter as AllAppsListAdapter).updateData(list)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

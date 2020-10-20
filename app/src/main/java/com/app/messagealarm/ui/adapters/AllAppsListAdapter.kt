@@ -11,8 +11,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class AllAppsListAdapter ( private val appsList: ArrayList<InstalledApps>,
-                           val mItemClickListener: ItemClickListener
+class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
+                          val mItemClickListener: ItemClickListener
 ):
     RecyclerView.Adapter<AllAppsListAdapter.AllAppsViewHolder>(){
 
@@ -35,6 +35,12 @@ class AllAppsListAdapter ( private val appsList: ArrayList<InstalledApps>,
 
     override fun getItemCount(): Int {
         return appsList.size
+    }
+
+    public fun updateData(list:ArrayList<InstalledApps>){
+        appsList.clear()
+        appsList = list
+        notifyDataSetChanged()
     }
 
     fun filter(text: String) {
