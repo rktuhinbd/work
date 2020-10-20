@@ -7,6 +7,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.about.AboutActivity
+import com.app.messagealarm.utils.SupportUtils
 import dev.doubledot.doki.api.extensions.DONT_KILL_MY_APP_DEFAULT_MANUFACTURER
 import dev.doubledot.doki.ui.DokiActivity
 
@@ -42,6 +43,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         private fun setListener(){
+
             val notWorkingBackground =
                 findPreference("background_not_working") as Preference?
             notWorkingBackground!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
@@ -57,6 +59,17 @@ class SettingsActivity : AppCompatActivity() {
                 startActivity(Intent(activity, AboutActivity::class.java))
                 true
             }
+
+
+            val emailPre =
+                findPreference("email") as Preference?
+            emailPre!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                //open browser or intent here
+                SupportUtils.sendEmail(requireActivity())
+                true
+            }
+
+
         }
     }
 }
