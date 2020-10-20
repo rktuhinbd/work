@@ -112,11 +112,14 @@ class AlarmService {
             //when alarm is playing with activity and the thread is not finished then user dismissed the alarm, then it's playing with notification again
             //temporary fixed by reducing waiting time from 4 sec to 2 sec.
             //need to check device to device for more result
+            val once = Once()
+            once.run(Runnable {
                 AlarmCheckerThread(AlarmCheckerThread.PlayListener { s ->
                     if(!s){
                         FloatingNotification.showFloatingNotification(app.numberOfPlay, app.isVibrateOnAlarm, service, app.tone_path)
                     }
                 }).execute()
+            })
             val title = sbn?.notification!!.extras["android.title"].toString()
                     val desc = sbn.notification!!.extras["android.text"].toString()
                     val intent = Intent(service, AlarmActivity::class.java)

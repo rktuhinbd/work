@@ -13,6 +13,7 @@ import com.app.messagealarm.R
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.ExoPlayerUtils
+import com.app.messagealarm.utils.Once
 import com.app.messagealarm.utils.SnoozeUtils
 import com.ncorti.slidetoact.SlideToActView
 import com.tapadoo.alerter.Alerter
@@ -44,9 +45,12 @@ class AlarmActivity : BaseActivity() {
             //here i need run the loop of how much time need to play
             val numberOfPLay = intent?.extras!!.getInt(Constants.IntentKeys.NUMBER_OF_PLAY)
             for (x in 0 until numberOfPLay){
-                ExoPlayerUtils.playAudio(
-                    intent?.extras!!.getBoolean(Constants.IntentKeys.IS_VIBRATE),
-                    this, tone)
+                val once = Once()
+                once.run(Runnable {
+                    ExoPlayerUtils.playAudio(
+                        intent?.extras!!.getBoolean(Constants.IntentKeys.IS_VIBRATE),
+                        this, tone)
+                })
                 if(x == numberOfPLay - 1){
                     //done playing dismiss the activity now
                     //send a notification that you missed the alarm

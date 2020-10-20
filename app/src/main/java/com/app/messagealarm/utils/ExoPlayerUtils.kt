@@ -38,7 +38,7 @@ class ExoPlayerUtils {
                 mediaItem = if (mediaPath != null) {
                     MediaItem.fromUri(mediaPath)
                 } else {
-                    MediaItem.fromUri(defaultRingtoneUri)
+                    MediaItem.fromUri(RawResourceDataSource.buildRawResourceUri(R.raw.default_ringtone))
                 }
                 exoPlayer!!.setMediaItem(mediaItem)
                 exoPlayer!!.prepare()
@@ -47,7 +47,11 @@ class ExoPlayerUtils {
                 Thread(Runnable {
                     //vibrate
                     if (isVibrate) {
-                        VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext())
+                        val once = Once()
+                        once.run(Runnable {
+                            VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext())
+                        })
+
                     }
                 }).start()
                 stopPlayBackAfterDone()
@@ -64,7 +68,7 @@ class ExoPlayerUtils {
             //here 30 is not static it will be from setting page, the values will be 1, 2, 3, or Full song
             while (true) {
                 val totalPlayBack = (exoPlayer!!.currentPosition / 1000).toInt()
-                if (totalPlayBack == 20) {
+                if (totalPlayBack == 30) {
                     if (exoPlayer!!.isPlaying) {
                         exoPlayer!!.playWhenReady = false
                         VibratorUtils.stopVibrate()

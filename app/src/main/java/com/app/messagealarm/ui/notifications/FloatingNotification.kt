@@ -32,9 +32,14 @@ class FloatingNotification {
             Thread(Runnable {
                 //here i need run the loop of how much time need to play
                 for (x in 0 until numberOfPlay){
-                    ExoPlayerUtils.playAudio(
-                        isVibrate,
-                        context, tone)
+                    val once = Once()
+                    once.run(
+                        Runnable {
+                            ExoPlayerUtils.playAudio(
+                                isVibrate,
+                                context, tone)
+                        }
+                    )
                     if(x == numberOfPlay - 1){
                         //done playing dismiss the activity now
                         //send a notification that you missed the alarm
