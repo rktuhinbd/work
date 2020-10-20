@@ -6,8 +6,10 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
 @Entity(tableName = "applications", indices = {@Index(value = {"package_name", "app_name"}, unique = true)})
-public class ApplicationEntity {
+public class ApplicationEntity implements Serializable {
 
     /**
      * Entity fields
@@ -183,5 +185,27 @@ public class ApplicationEntity {
 
     public void setTone_path(String tone_path) {
         this.tone_path = tone_path;
+    }
+
+    @Override
+    public String toString() {
+        return "ApplicationEntity{" +
+                "id=" + id +
+                ", runningStatus=" + runningStatus +
+                ", appName='" + appName + '\'' +
+                ", packageName='" + packageName + '\'' +
+                ", alarmRepeat='" + alarmRepeat + '\'' +
+                ", ringTone='" + ringTone + '\'' +
+                ", vibrateOnAlarm=" + vibrateOnAlarm +
+                ", customTime=" + customTime +
+                ", startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", numberOfPlay=" + numberOfPlay +
+                ", senderNames='" + senderNames + '\'' +
+                ", messageBody='" + messageBody + '\'' +
+                ", repeatDays='" + repeatDays + '\'' +
+                ", tone_path='" + tone_path + '\'' +
+                ", bitmapPath='" + bitmapPath + '\'' +
+                '}';
     }
 }

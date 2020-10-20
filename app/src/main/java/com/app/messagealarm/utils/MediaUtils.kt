@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
+import android.util.Log
 
 class MediaUtils {
     companion object {
@@ -21,7 +22,7 @@ class MediaUtils {
             mediaPlayer = if(mediaPath != null){
                 MediaPlayer.create(context, Uri.parse(mediaPath))
             }else{
-                MediaPlayer.create(context, com.app.messagealarm.R.raw.crush)
+                MediaPlayer.create(context, com.app.messagealarm.R.raw.default_ringtone)
             }
             mediaPlayer!!.setVolume(1.0f, 1.0f)
             mediaPlayer!!.isLooping = true

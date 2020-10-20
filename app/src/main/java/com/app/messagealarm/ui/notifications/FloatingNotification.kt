@@ -10,16 +10,14 @@ import android.media.AudioManager
 import android.media.session.PlaybackState
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
 import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.service.notification_service.NotificationListener
-import com.app.messagealarm.utils.Constants
-import com.app.messagealarm.utils.MediaUtils
-import com.app.messagealarm.utils.SharedPrefUtils
-import com.app.messagealarm.utils.VibratorUtils
+import com.app.messagealarm.utils.*
 import java.util.*
 
 
@@ -29,9 +27,29 @@ class FloatingNotification {
         private const val CHANNEL_ID = "alarm channel"
         private const val CHANNEL_NAME = "alarm app channel"
 
-        fun showFloatingNotification(context: Service, mediaPath:String?) {
-            MediaUtils.playAlarm(context, mediaPath)
-            VibratorUtils.startVibrate(context)
+        private fun startPlaying(tone:String?, isVibrate: Boolean,context: Service,
+                                 notificationManager: NotificationManagerCompat,  numberOfPlay: Int){
+            Thread(Runnable {
+                //here i need run the loop of how much time need to play
+                for (x in 0 until numberOfPlay){
+                    val once = Once()
+                    once.run(
+                        Runnable {
+                            ExoPlayerUtils.playAudio(
+                                isVibrate,
+                                context, tone)
+                        }
+                    )
+                    if(x == numberOfPlay - 1){
+                        //done playing dismiss the activity now
+                        //send a notification that you missed the alarm
+                        notificationManager.cancel(225)
+                    }
+                }
+            }).start()
+        }
+
+        fun showFloatingNotification(numberOfPlay:Int, isVibrate:Boolean, context: Service, mediaPath:String?) {
             // sending data to new activity
             val receiveCallAction =
                 Intent(context, AlarmApplicationActivity::class.java)
@@ -55,29 +73,23 @@ class FloatingNotification {
                 .setSmallIcon(
                     R.drawable.ic_btn_speak_now
                 )
-                .setPriority(Notification.PRIORITY_MAX)
                 .setCategory(NotificationCompat.CATEGORY_CALL)
                 .addAction(
                     R.drawable.ic_menu_call,
                     "Receive Call",
                     receiveCallPendingIntent
                 )
-                .setVibrate(LongArray(0))
                 .addAction(
                     R.drawable.ic_menu_close_clear_cancel,
                     "Cancel call",
                     cancelCallPendingIntent
                 )
                 .setAutoCancel(true)
-                .setSound(
-                    Uri.parse(
-                        "android.resource://" + context.packageName
-                            .toString() + "/" + com.app.messagealarm.R.raw.crush
-                    )
-                )
-                .setFullScreenIntent(receiveCallPendingIntent, true)
             val notificationManager = NotificationManagerCompat.from(context)
             notificationManager.notify(225, notificationBuilder.build())
+
+            //start playing
+            startPlaying(mediaPath, isVibrate, context, notificationManager, numberOfPlay)
         }
 
         /*
@@ -88,22 +100,10 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
                 val channel = NotificationChannel(
                     CHANNEL_ID,
                     CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_HIGH
+                    NotificationManager.IMPORTANCE_DEFAULT
                 )
                 channel.description = "Call Notifications"
-                channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC;
-                channel.enableVibration(true)
-                channel.setSound(
-                    Uri.parse(
-                        "android.resource://" + context.packageName
-                            .toString() + "/" + com.app.messagealarm.R.raw.crush
-                    ),
-                    AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                        .setLegacyStreamType(AudioManager.STREAM_RING)
-                        .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION).build()
-                )
-
+                channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
                 Objects.requireNonNull(context.getSystemService(NotificationManager::class.java))
                     .createNotificationChannel(channel)
             }

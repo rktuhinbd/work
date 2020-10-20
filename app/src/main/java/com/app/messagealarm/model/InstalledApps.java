@@ -9,7 +9,7 @@ public class InstalledApps implements Serializable {
     private String appName;
     private String packageName;
     private String versionName;
-    private Drawable drawableIcon;
+    private transient Drawable drawableIcon;
 
     public InstalledApps(String appName, String packageName, String versionName, Drawable drawableIcon) {
         this.appName = appName;

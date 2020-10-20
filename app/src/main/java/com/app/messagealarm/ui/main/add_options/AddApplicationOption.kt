@@ -3,48 +3,50 @@ package com.app.messagealarm.ui.main.add_options
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
-import android.app.ProgressDialog
 import android.app.TimePickerDialog
 import android.app.TimePickerDialog.OnTimeSetListener
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.os.Handler
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.FrameLayout
-import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.core.graphics.drawable.toBitmap
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
-import com.app.messagealarm.utils.*
+import com.app.messagealarm.ui.notifications.FloatingNotification
+import com.app.messagealarm.utils.Constants
+import com.app.messagealarm.utils.DataUtils
+import com.app.messagealarm.utils.DialogUtils
+import com.app.messagealarm.utils.TimeUtils
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.textfield.TextInputEditText
+import com.judemanutd.autostarter.AutoStartPermissionHelper
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
-import java.lang.Exception
-
+import timber.log.Timber
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.*
 
 
 class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionView {
 
     public var alarmTonePath:String? = null
-    private val addApplicationEntity = ApplicationEntity()
+    var ringtoneName:String? = null
+    private var addApplicationEntity = ApplicationEntity()
+    private var holderEntity = ApplicationEntity()
     private var addApplicationOptionPresenter: AddApplicationOptionPresenter? = null
     val REQUEST_CODE_PICK_AUDIO = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addApplicationOptionPresenter = AddApplicationOptionPresenter(this)
-        defaultValuesToDataModel()
     }
 
     override fun onCreateView(
@@ -58,6 +60,36 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setListener()
+        handleEditAndViewMode()
+    }
+
+    private fun handleEditAndViewMode(){
+            defaultValuesToDataModel()
+            if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
+                if(arguments?.getSerializable(Constants.BundleKeys.APP) != null){
+                    addApplicationOptionPresenter?.getAppByPackageName(
+                        (arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps).packageName)
+                }
+            }else{
+                //edit mode from home
+                if(arguments?.getString(Constants.BundleKeys.PACKAGE_NAME) != null){
+                    addApplicationOptionPresenter?.getAppByPackageName(arguments?.getString(Constants.BundleKeys.PACKAGE_NAME)!!)
+                }
+            }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        dialog!!.setOnKeyListener( object : DialogInterface.OnKeyListener{
+            override fun onKey(dialog: DialogInterface?, keyCode: Int, event: KeyEvent?): Boolean {
+                return if(keyCode == android.view.KeyEvent.KEYCODE_BACK){
+                    btn_close?.performClick()
+                    true
+                }else{
+                    false
+                }
+            }
+        })
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -65,6 +97,9 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         dialog.setOnShowListener { dialogInterface ->
             val bottomSheetDialog = dialogInterface as BottomSheetDialog
             setupFullHeight(bottomSheetDialog)
+        }
+        dialog.setOnCancelListener {
+            btn_close?.performClick()
         }
         return dialog
     }
@@ -91,16 +126,15 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
     private fun setListener() {
         btn_close?.setOnClickListener {
-            Log.e("CHECK", checkForDefault().toString())
             if(checkForDefault()){
                 dismiss()
             }else{
-                Toasty.info(activity!!, "Show dialog").show()
+                showDiscardDialog()
             }
         }
 
         btn_save?.setOnClickListener {
-            saveApplication()
+                saveApplication()
         }
 
         switch_custom_time?.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -190,7 +224,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         /**
                          * set custom alarm tone type to data model
                          */
-                        addApplicationEntity.ringTone = "Custom"
+                        addApplicationEntity.ringTone = "Default"
                     } else {
                         txt_ringtone_value?.text = name
                         /**
@@ -203,7 +237,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
 
         view_start_time?.setOnClickListener {
-            val c: Calendar = Calendar.getInstance()
+            val c: Calendar = startTimeCalender()
             val hour: Int = c.get(Calendar.HOUR_OF_DAY)
             val minute: Int = c.get(Calendar.MINUTE)
             val timePickerDialog =
@@ -217,14 +251,14 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         if(addApplicationEntity.isCustomTime){
                             addApplicationEntity.startTime = txt_start_time_value?.text.toString()
                         }
-                    }, hour, minute, true
+                    }, hour, minute, false
                 )
             timePickerDialog.show()
         }
 
 
         view_end_time?.setOnClickListener {
-            val c: Calendar = Calendar.getInstance()
+            val c: Calendar = endTimeCalender()
             val hour: Int = c.get(Calendar.HOUR_OF_DAY)
             val minute: Int = c.get(Calendar.MINUTE)
             val timePickerDialog =
@@ -238,7 +272,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         if(addApplicationEntity.isCustomTime){
                             addApplicationEntity.endTime = txt_end_time_value?.text.toString()
                         }
-                    }, hour, minute, true
+                    }, hour, minute, false
 
                 )
             timePickerDialog.show()
@@ -272,6 +306,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     addApplicationEntity.alarmRepeat = name
                     if (name.contains("Custom")) {
                         DialogUtils.showCheckedItemListDialog(
+                            addApplicationEntity.repeatDays,
                             activity!!,
                             object : DialogUtils.CheckedListCallback {
                                 @SuppressLint("SetTextI18n")
@@ -309,15 +344,98 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
     }
 
-    private fun defaultValuesToDataModel(){
+   fun setToneName(name:String){
+        addApplicationEntity.ringTone = name
+    }
+
+    private fun showDiscardDialog() {
+        val dialog = Dialog(activity!!)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_discard_layout)
+        val txtCancel = dialog.findViewById<TextView>(R.id.btn_cancel)
+        val txtDiscard = dialog.findViewById<TextView>(R.id.btn_discard)
+        Objects.requireNonNull(dialog.window!!).setBackgroundDrawableResource(android.R.color.transparent)
+        txtCancel.setOnClickListener {
+            dialog.cancel()
+            if (dialog.isShowing) {
+                dialog.dismiss()
+            }
+        }
+       txtDiscard.setOnClickListener {
+           dialog.cancel()
+           dismiss()
+           if (dialog.isShowing) {
+               dialog.dismiss()
+           }
+       }
+        val window = dialog.window
+        window!!.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT)
+        val wlp = window.attributes;
+         wlp.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND
+        window.attributes = wlp
+        if(!dialog.isShowing){
+            dialog.show()
+        }
+    }
+
+
+    @SuppressLint("SimpleDateFormat")
+    fun startTimeCalender():Calendar{
+        /**
+         * User will be doing in 12 hours
+         * Background works will be in 24 hours
+         */
+        return try {
+            val dfDate  = SimpleDateFormat("hh:mm aa")
+            val cal = Calendar.getInstance()
+            cal.time = dfDate.parse(txt_start_time_value?.text.toString())!!
+             cal
+        }catch (ex:ParseException){
+            return Calendar.getInstance()
+        }
+
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun endTimeCalender():Calendar{
+        return try {
+            val dfDate  = SimpleDateFormat("hh:mm aa")
+            val cal = Calendar.getInstance()
+            cal.time = dfDate.parse(txt_end_time_value?.text.toString())!!
+             cal
+        }catch (ex:ParseException){
+            return Calendar.getInstance()
+        }
+
+    }
+
+
+    private fun defaultValuesToDataModel() : ApplicationEntity {
         addApplicationEntity.alarmRepeat = "Once"
         addApplicationEntity.ringTone = "Default"
         addApplicationEntity.isVibrateOnAlarm = false
         addApplicationEntity.isCustomTime = false
         addApplicationEntity.numberOfPlay = 2
+        addApplicationEntity.startTime = "6:00 am"
+        addApplicationEntity.endTime = "12:00 pm"
         addApplicationEntity.senderNames = "None"
         addApplicationEntity.messageBody = "None"
         addApplicationEntity.isRunningStatus = true
+
+        //set this to holder object for checking default
+        holderEntity.alarmRepeat = "Once"
+        holderEntity.ringTone = "Default"
+        holderEntity.isVibrateOnAlarm = false
+        holderEntity.isCustomTime = false
+        holderEntity.numberOfPlay = 2
+        holderEntity.startTime = "6:00 am"
+        holderEntity.endTime = "12:00 pm"
+        holderEntity.senderNames = "None"
+        holderEntity.messageBody = "None"
+        holderEntity.isRunningStatus = true
+
+        return addApplicationEntity
     }
 
     private fun saveApplication(){
@@ -325,21 +443,25 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
          * Populate Application entity from UI controller data
          * with start of other values
          */
-        val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
-        addApplicationEntity.appName = app.appName
-        addApplicationEntity.packageName = app.packageName
-        addApplicationEntity.tone_path = alarmTonePath
         //start progress bar
         showProgressBar()
-        Thread(Runnable {
-            try {
-                val bitmap = app.drawableIcon
-                    addApplicationOptionPresenter?.saveBitmapToFile(bitmap.toBitmap())
-            }catch (e:Exception){
-                hideProgressBar()
-                Toasty.error(activity!!, DataUtils.getString(R.string.something_wrong)).show()
-            }
-        }).start()
+        if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
+            val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
+            addApplicationEntity.appName = app.appName
+            addApplicationEntity.packageName = app.packageName
+            addApplicationEntity.tone_path = alarmTonePath
+            Thread(Runnable {
+                try {
+                    val bitmap = app.drawableIcon
+                    addApplicationOptionPresenter?.saveBitmapToFile(activity!!, bitmap.toBitmap())
+                }catch (e:Exception){
+                    hideProgressBar()
+                Toasty.error(activity!!, e.message!!).show()
+                }
+            }).start()
+        }else{
+            saveWithTimeConstrain()
+        }
     }
 
     private fun showProgressBar(){
@@ -350,16 +472,27 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         progress_bar_option?.visibility = View.INVISIBLE
     }
 
+
+    @SuppressLint("SimpleDateFormat")
+    private fun isTimeConstrained(startTime:String, endTime:String):Boolean{
+       return try{
+               val dfDate  = SimpleDateFormat("hh:mm aa")
+               dfDate.parse(startTime)!!.before(dfDate.parse(endTime))
+        }catch (ex:ParseException){
+           return false
+        }
+    }
+
     private fun checkForDefault():Boolean{
         var isDefault = false
-            if(txt_repeat_value?.text.toString().trim() == addApplicationEntity.alarmRepeat){
-                if(txt_ringtone_value?.text.toString().trim() == addApplicationEntity.ringTone){
-                    if(switch_vibrate?.isChecked == addApplicationEntity.isVibrateOnAlarm){
-                        if(switch_custom_time?.isChecked == addApplicationEntity.isCustomTime){
+            if(txt_repeat_value?.text.toString().trim() == holderEntity.alarmRepeat){
+                if(txt_ringtone_value?.text.toString().trim() == holderEntity.ringTone){
+                    if(switch_vibrate?.isChecked == holderEntity.isVibrateOnAlarm){
+                        if(switch_custom_time?.isChecked == holderEntity.isCustomTime){
                             if(txt_number_of_play_value?.text.toString().trim()[0].toString() ==
-                                addApplicationEntity.numberOfPlay.toString()){
-                                if(txt_sender_name_value?.text.toString() == addApplicationEntity.senderNames){
-                                    if(txt_message_body_value?.text.toString() == addApplicationEntity.messageBody){
+                                holderEntity.numberOfPlay.toString()){
+                                if(txt_sender_name_value?.text.toString() == holderEntity.senderNames){
+                                    if(txt_message_body_value?.text.toString() == holderEntity.messageBody){
                                         isDefault = true
                                     }
                                 }
@@ -403,14 +536,50 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
      }
     }
 
+    override fun onApplicationUpdateSuccess() {
+       activity!!.runOnUiThread {
+           Toasty.success(activity!!, getString(R.string.update_successful)).show()
+           if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
+               dismiss()
+               activity!!.finish()
+           }else{
+               dismiss()
+           }
+       }
+    }
+
+    override fun onApplicationUpdateError(message: String) {
+      activity!!.runOnUiThread {
+          Toasty.error(activity!!, message).show()
+      }
+    }
+
     override fun onBitmapSaveSuccess(path: String) {
         addApplicationEntity.bitmapPath = path
         /**
          * End of other values
          */
-        addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
+        saveWithTimeConstrain()
         activity!!.runOnUiThread {
             hideProgressBar()
+        }
+    }
+
+    private fun saveWithTimeConstrain(){
+        //if start time and end time constrained
+        if(switch_custom_time?.isChecked!!){
+            if(isTimeConstrained(txt_start_time_value?.text.toString(),
+                    txt_end_time_value?.text.toString()
+                )){
+                addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
+            }else{
+                hideProgressBar()
+                activity!!.runOnUiThread {
+                    Toasty.info(activity!!, getString(R.string.time_constrain_error)).show()
+                }
+            }
+        }else{
+            addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
         }
     }
 
@@ -421,5 +590,57 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
     }
 
+    private fun setPresetValueToUi(app: ApplicationEntity){
+        if(app.alarmRepeat == "Custom"){
+            txt_repeat_value?.text = app.repeatDays
+        }else{
+            txt_repeat_value?.text = app.alarmRepeat
+        }
+        txt_ringtone_value?.text = app.ringTone
+        switch_vibrate?.isChecked = app.isVibrateOnAlarm
+        switch_custom_time?.isChecked = app.isCustomTime
+        txt_start_time_value?.text = app.startTime
+        txt_end_time_value?.text = app.endTime
+        txt_number_of_play_value?.text = String.format("%d times", app.numberOfPlay)
+        txt_sender_name_value?.text = app.senderNames
+        txt_message_body_value?.text = app.messageBody
+    }
+
+    override fun onApplicationGetSuccess(app: ApplicationEntity) {
+        //show edited value to
+        addApplicationEntity = app
+        convertToHolderEntity(addApplicationEntity)
+        activity!!.runOnUiThread {
+            setPresetValueToUi(app)
+        }
+    }
+
+    private fun convertToHolderEntity(app: ApplicationEntity){
+        holderEntity.endTime = app.endTime
+        holderEntity.startTime = app.startTime
+        holderEntity.ringTone = app.ringTone
+        holderEntity.numberOfPlay = app.numberOfPlay
+        holderEntity.bitmapPath = app.bitmapPath
+        holderEntity.messageBody = app.messageBody
+        holderEntity.senderNames = app.senderNames
+        holderEntity.isCustomTime = app.isCustomTime
+        holderEntity.isVibrateOnAlarm = app.isVibrateOnAlarm
+        holderEntity.tone_path = app.tone_path
+        holderEntity.alarmRepeat = app.alarmRepeat
+    }
+
+    override fun onApplicationGetError(message: String) {
+        defaultValuesToDataModel()
+    }
+
+    override fun onIllegalState() {
+        defaultValuesToDataModel()
+    }
+
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        setPresetValueToUi(defaultValuesToDataModel())
+    }
 
 }

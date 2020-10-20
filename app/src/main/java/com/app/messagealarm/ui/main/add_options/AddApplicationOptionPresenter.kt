@@ -1,19 +1,23 @@
 package com.app.messagealarm.ui.main.add_options
 
+import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteException
 import android.graphics.Bitmap
 import android.os.Environment
 import android.os.Handler
+import android.util.Log
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.utils.DataUtils
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.Exception
+import java.lang.IllegalStateException
 import java.lang.NullPointerException
 
 class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApplicationOptionView) {
@@ -28,21 +32,60 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
                }catch (e:NullPointerException){
                    addApplicationOptionView.onApplicationSaveError(DataUtils.getString(R.string.something_wrong))
                }catch (e:SQLiteConstraintException){
-                   addApplicationOptionView.onApplicationSaveError(DataUtils.getString(R.string.txt_application_exists))
+                   /**
+                    * If the app is already in database then just update it
+                    */
+                  updateApplication(addApplicationEntity)
                }catch (e:SQLiteException){
                    addApplicationOptionView.onApplicationSaveError(DataUtils.getString(R.string.something_wrong))
                }
             }
         ).start()
     }
+
+
+    fun getAppByPackageName(packageName:String?){
+        val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
+        Thread(Runnable {
+            try {
+                if(packageName != null){
+                    addApplicationOptionView.onApplicationGetSuccess(
+                        appDatabase.applicationDao().getAppByPackageName(packageName)
+                    )
+                }
+            }catch (ex:NullPointerException){
+                addApplicationOptionView.onApplicationGetError(DataUtils.getString(R.string.something_wrong))
+            }catch (ex:SQLiteException){
+                addApplicationOptionView.onApplicationGetError(DataUtils.getString(R.string.something_wrong))
+            }catch (ex:IllegalStateException){
+                addApplicationOptionView.onIllegalState()
+            }
+        }).start()
+    }
+
+   private fun updateApplication(app:ApplicationEntity){
+        val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
+        Thread(Runnable {
+            try{
+                appDatabase.applicationDao().updateApplication(app)
+                addApplicationOptionView.onApplicationUpdateSuccess()
+            }catch (ex:NullPointerException){
+                addApplicationOptionView.onApplicationUpdateError(DataUtils.getString(R.string.update_error))
+            }catch (ex:SQLiteException){
+                addApplicationOptionView.onApplicationUpdateError(DataUtils.getString(R.string.update_error))
+            }
+        }).start()
+    }
+
+
     /*
       * this method save a bitmap to file
       * */
-    fun saveBitmapToFile(bitmap: Bitmap) {
+    fun saveBitmapToFile(context: Context, bitmap: Bitmap) {
         var file_path = ""
         var imageName = ""
         try {
-            file_path = Environment.getExternalStorageDirectory().absolutePath +
+            file_path = context.getExternalFilesDir(null)!!.absolutePath +
                     "/.message_alarm"
             val dir = File(file_path)
             if (!dir.exists()) {
@@ -59,6 +102,7 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
                 fOut.close()
             }
         } catch (e: IOException) {
+            Timber.e(e)
             e.printStackTrace()
             addApplicationOptionView.onBitmapSaveError()
         }catch (ex:NullPointerException){

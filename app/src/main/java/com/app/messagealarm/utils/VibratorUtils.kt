@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit
 class VibratorUtils {
     companion object{
 
+        var totalPlayBack = 0
         var vibrator:Vibrator? = null
 
         fun startVibrate(context: Context){
@@ -21,6 +22,7 @@ class VibratorUtils {
                     2000), 1)
             }
         }
+
 
         fun stopVibrate(){
                 if(vibrator != null){

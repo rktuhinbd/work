@@ -118,13 +118,21 @@ class Constants {
 
     class PreferenceKeys {
         companion object {
+            const val IS_SNOOZED_MODE_ACTIVE = "snozzed"
             const val IS_SERVICE_STOPPED = "service_stopped"
         }
     }
 
     class IntentKeys {
         companion object {
-            const val PRODUCT_DETAILS = "product_details"
+            const val TITLE = "title"
+            const val DESC = "desc"
+            const val IMAGE_PATH = "image"
+            const val PACKAGE_NAME = "package"
+            const val APP_NAME = "app_name"
+            const val TONE = "tone"
+            const val NUMBER_OF_PLAY = "number_of_play"
+            const val IS_VIBRATE = "is_vibrate"
         }
     }
 
@@ -132,6 +140,7 @@ class Constants {
     class BundleKeys{
         companion object{
             const val APP = "app"
+            const val IS_EDIT_MODE = "is_edit"
             const val APP_NAME = "app_name"
             const val PACKAGE_NAME = "package_name"
             const val BITMAP = "bitmap"

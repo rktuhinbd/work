@@ -6,10 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,7 +42,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         //setup presenter
         val addApplicationPresenter = AddApplicationPresenter(this, this)
         addApplicationPresenter.getAllApplicationList()
-
+        filterListener()
     }
 
     private fun initAllAppsRecyclerView(list: ArrayList<InstalledApps>) {
@@ -54,6 +56,19 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             progress_bar_add_app?.visibility = View.GONE
             rv_apps_list?.visibility = View.VISIBLE
             initAllAppsRecyclerView(list)
+        }
+    }
+
+    private fun filterListener() {
+        spinner_filter?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+
+            }
         }
     }
 
@@ -96,9 +111,11 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(REQUEST_CODE_PICK_AUDIO == requestCode){
-            if(resultCode == Activity.RESULT_OK && data!!.data != null){
-                bottomSheetModel.txt_ringtone_value?.text = File(PathUtils.getPath(this, data.data!!)!!).name
+        if (REQUEST_CODE_PICK_AUDIO == requestCode) {
+            if (resultCode == Activity.RESULT_OK && data!!.data != null) {
+                val fileName = File(PathUtils.getPath(this, data.data!!)!!).name
+                bottomSheetModel.txt_ringtone_value?.text = fileName
+                bottomSheetModel.setToneName(fileName)
                 bottomSheetModel.alarmTonePath = PathUtils.getPath(this, data.data!!)!!
             }
         }
@@ -119,6 +136,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     override fun onItemClick(app: InstalledApps) {
         if (!bottomSheetModel.isAdded) {
             val bundle = Bundle()
+            bundle.putBoolean(Constants.BundleKeys.IS_EDIT_MODE, false)
             bundle.putSerializable(Constants.BundleKeys.APP, app as Serializable)
             bottomSheetModel.arguments = bundle
             bottomSheetModel.show(supportFragmentManager, "OPTIONS")
@@ -131,11 +149,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
 
     override fun onBackPressed() {
-        if(bottomSheetModel.isAdded){
-            bottomSheetModel.btn_close?.performClick()
-        }else{
-            super.onBackPressed()
-        }
+        super.onBackPressed()
     }
 
 }
