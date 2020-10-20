@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -26,6 +25,9 @@ import kotlinx.android.synthetic.main.activity_add_application.*
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import java.io.File
 import java.io.Serializable
+import java.util.*
+import kotlin.Comparator
+import kotlin.collections.ArrayList
 
 
 class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
@@ -52,6 +54,8 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     }
 
     override fun onAllApplicationGetSuccess(list: ArrayList<InstalledApps>) {
+        Collections.sort(list,
+            Comparator<InstalledApps> { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
         runOnUiThread {
             progress_bar_add_app?.visibility = View.GONE
             rv_apps_list?.visibility = View.VISIBLE
@@ -89,6 +93,8 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     }
 
     override fun onApplicationFiltered(list: ArrayList<InstalledApps>) {
+        Collections.sort(list,
+            Comparator<InstalledApps> { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
         (rv_apps_list?.adapter as AllAppsListAdapter).updateData(list)
     }
 
