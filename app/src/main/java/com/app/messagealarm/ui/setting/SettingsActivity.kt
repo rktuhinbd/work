@@ -70,6 +70,16 @@ class SettingsActivity : AppCompatActivity() {
             }
 
 
+            val sharePre =
+                findPreference("share") as Preference?
+            sharePre!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                //open browser or intent here
+                SupportUtils.shareApp(requireActivity())
+                true
+            }
+
+
+
         }
     }
 }

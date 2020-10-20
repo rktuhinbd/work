@@ -4,6 +4,7 @@ import android.R.id.message
 import android.app.Activity
 import android.content.Intent
 import androidx.core.content.ContextCompat.startActivity
+import com.app.messagealarm.BuildConfig
 
 
 class SupportUtils {
@@ -17,6 +18,20 @@ class SupportUtils {
             //need this to prompts email client only
             email.type = "message/rfc822"
             activity.startActivity(Intent.createChooser(email, "Choose an Email client :"))
+        }
+
+        fun shareApp(activity: Activity){
+            try {
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                shareIntent.type = "text/plain"
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Message Alarm - Never miss an important message")
+                var shareMessage = "\nI am using this application, it's helping me not missing any clients and important messages!\n\n"
+                shareMessage =
+                    shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n"
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
+                activity.startActivity(Intent.createChooser(shareIntent, "Choose App"))
+            } catch (e: Exception) { //e.toString();
+            }
         }
     }
 }
