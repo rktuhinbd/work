@@ -95,7 +95,10 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     override fun onApplicationFiltered(list: ArrayList<InstalledApps>) {
         Collections.sort(list,
             Comparator<InstalledApps> { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
-        (rv_apps_list?.adapter as AllAppsListAdapter).updateData(list)
+        runOnUiThread {
+            (rv_apps_list?.adapter as AllAppsListAdapter).updateData(list)
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -109,6 +112,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         searchView.setOnQueryTextListener(object :
             androidx.appcompat.widget.SearchView.OnQueryTextListener,
             SearchView.OnQueryTextListener {
+
             override fun onQueryTextSubmit(query: String?): Boolean {
                 (rv_apps_list?.adapter as AllAppsListAdapter).filter(query!!)
                 return true

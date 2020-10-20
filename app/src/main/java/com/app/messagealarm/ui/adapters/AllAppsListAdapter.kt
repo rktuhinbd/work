@@ -16,7 +16,7 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
 ):
     RecyclerView.Adapter<AllAppsListAdapter.AllAppsViewHolder>(){
 
-    private val itemsCopy: ArrayList<InstalledApps> = ArrayList()
+    private var itemsCopy: ArrayList<InstalledApps> = ArrayList()
 
 
     interface ItemClickListener{
@@ -40,6 +40,8 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
     public fun updateData(list:ArrayList<InstalledApps>){
         appsList.clear()
         appsList = list
+        itemsCopy.clear()
+        itemsCopy.addAll(appsList)
         notifyDataSetChanged()
     }
 

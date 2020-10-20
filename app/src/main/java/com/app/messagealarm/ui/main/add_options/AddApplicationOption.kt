@@ -121,7 +121,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     private fun pickAudioFromStorage() {
         val intent =
             Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI)
-        activity!!.startActivityForResult(intent, REQUEST_CODE_PICK_AUDIO)
+        requireActivity().startActivityForResult(intent, REQUEST_CODE_PICK_AUDIO)
     }
 
     private fun setListener() {
@@ -166,7 +166,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
         view_sender_name?.setOnClickListener {
             DialogUtils.showSenderNameDialog(
-                activity!!,
+                requireActivity(),
                 txt_sender_name_value?.text.toString(),
                 object : DialogUtils.RepeatCallBack {
                     override fun onClick(name: String) {
@@ -192,7 +192,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
         view_message_body?.setOnClickListener {
             DialogUtils.showMessageBodyDialog(
-                activity!!,
+                requireActivity(),
                 txt_message_body_value?.text.toString(),
                 object : DialogUtils.RepeatCallBack {
                     override fun onClick(name: String) {
@@ -217,7 +217,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
 
         view_ringtone?.setOnClickListener {
-            DialogUtils.showRingToneSelectDialog(activity!!, object : DialogUtils.RepeatCallBack {
+            DialogUtils.showRingToneSelectDialog(requireActivity(), object : DialogUtils.RepeatCallBack {
                 override fun onClick(name: String) {
                     if (name.contains("Select a song")) {
                         pickAudioFromStorage()
@@ -280,7 +280,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
 
         view_number_of_play?.setOnClickListener {
-            DialogUtils.showInputDialog(activity!!,
+            DialogUtils.showInputDialog(requireActivity(),
                 txt_number_of_play_value.text.toString().replace(" times", ""),
                 "Select number of play",
                 object : DialogUtils.RepeatCallBack {
@@ -297,7 +297,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
 
         view_repeat_bg?.setOnClickListener {
-            DialogUtils.showSimpleListDialog(activity!!, object : DialogUtils.RepeatCallBack {
+            DialogUtils.showSimpleListDialog(requireActivity(), object : DialogUtils.RepeatCallBack {
                 override fun onClick(name: String) {
                     txt_repeat_value?.text = name
                     /**
@@ -349,7 +349,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     private fun showDiscardDialog() {
-        val dialog = Dialog(activity!!)
+        val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)
         dialog.setContentView(R.layout.dialog_discard_layout)
@@ -453,10 +453,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             Thread(Runnable {
                 try {
                     val bitmap = app.drawableIcon
-                    addApplicationOptionPresenter?.saveBitmapToFile(activity!!, bitmap.toBitmap())
+                    addApplicationOptionPresenter?.saveBitmapToFile(requireActivity(), bitmap.toBitmap())
                 }catch (e:Exception){
                     hideProgressBar()
-                Toasty.error(activity!!, e.message!!).show()
+                Toasty.error(requireActivity(), e.message!!).show()
                 }
             }).start()
         }else{
@@ -523,25 +523,25 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     override fun onApplicationSaveSuccess() {
-       activity!!.runOnUiThread {
-               Toasty.success(activity!!, getString(R.string.application_save_success)).show()
+       requireActivity().runOnUiThread {
+               Toasty.success(requireActivity(), getString(R.string.application_save_success)).show()
                dismiss()
-               activity!!.finish()
+               requireActivity().finish()
        }
     }
 
     override fun onApplicationSaveError(message: String) {
-     activity!!.runOnUiThread {
-         Toasty.error(activity!!, message).show()
+     requireActivity().runOnUiThread {
+         Toasty.error(requireActivity(), message).show()
      }
     }
 
     override fun onApplicationUpdateSuccess() {
-       activity!!.runOnUiThread {
-           Toasty.success(activity!!, getString(R.string.update_successful)).show()
+       requireActivity().runOnUiThread {
+           Toasty.success(requireActivity(), getString(R.string.update_successful)).show()
            if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
                dismiss()
-               activity!!.finish()
+               requireActivity().finish()
            }else{
                dismiss()
            }
@@ -549,8 +549,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     override fun onApplicationUpdateError(message: String) {
-      activity!!.runOnUiThread {
-          Toasty.error(activity!!, message).show()
+      requireActivity().runOnUiThread {
+          Toasty.error(requireActivity(), message).show()
       }
     }
 
@@ -560,7 +560,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
          * End of other values
          */
         saveWithTimeConstrain()
-        activity!!.runOnUiThread {
+        requireActivity().runOnUiThread {
             hideProgressBar()
         }
     }
@@ -574,8 +574,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
             }else{
                 hideProgressBar()
-                activity!!.runOnUiThread {
-                    Toasty.info(activity!!, getString(R.string.time_constrain_error)).show()
+                requireActivity().runOnUiThread {
+                    Toasty.info(requireActivity(), getString(R.string.time_constrain_error)).show()
                 }
             }
         }else{
@@ -584,8 +584,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     override fun onBitmapSaveError() {
-        activity!!.runOnUiThread {
-            Toasty.error(activity!!, DataUtils.getString(R.string.something_wrong)).show()
+        requireActivity().runOnUiThread {
+            Toasty.error(requireActivity(), DataUtils.getString(R.string.something_wrong)).show()
             hideProgressBar()
         }
     }
@@ -610,7 +610,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         //show edited value to
         addApplicationEntity = app
         convertToHolderEntity(addApplicationEntity)
-        activity!!.runOnUiThread {
+        requireActivity().runOnUiThread {
             setPresetValueToUi(app)
         }
     }
