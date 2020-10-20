@@ -2,21 +2,33 @@ package com.app.messagealarm.ui.main.add_apps
 
 import android.app.Activity
 import com.app.messagealarm.R
+import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.service.AppsReader
 import com.app.messagealarm.utils.DataUtils
 
-class AddApplicationPresenter(private val addApplicationView: AddApplicationView,
-                              private val activity: Activity
-                              ) {
-    fun getAllApplicationList(){
+class AddApplicationPresenter(
+    private val addApplicationView: AddApplicationView,
+    private val activity: Activity
+) {
+
+
+
+    fun getAllApplicationList() {
         Thread(Runnable {
-            try{
+            try {
                 addApplicationView.onAllApplicationGetSuccess(
                     AppsReader.getInstalledApps(true, activity)!!
                 )
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 addApplicationView.onAllApplicationGetError(DataUtils.getString(R.string.something_wrong))
             }
         }).start()
+    }
+
+    fun filterByMessaging(
+        installedApps: List<InstalledApps>,
+        packageList: List<String>
+    ): List<InstalledApps> {
+
     }
 }
