@@ -25,7 +25,6 @@ import java.net.URL
 class PushMessage : FirebaseMessagingService() {
 
     override fun onMessageReceived(p0: RemoteMessage?) {
-        Log.e("PUSH","TRUE")
        createNotification(p0)
     }
 
