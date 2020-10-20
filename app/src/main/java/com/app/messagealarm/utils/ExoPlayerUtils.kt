@@ -51,7 +51,6 @@ class ExoPlayerUtils {
                         once.run(Runnable {
                             VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext())
                         })
-
                     }
                 }).start()
                 stopPlayBackAfterDone()

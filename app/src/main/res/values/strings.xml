@@ -49,4 +49,9 @@
     <string name="txt_not_background">Not working when app closed?</string>
     <string name="notification_channel">sells_post</string>
     <string name="notification_channel_name">posts</string>
+
+    <string-array name="spinner_item">
+        <item>All Apps</item>
+        <item>Messaging</item>
+    </string-array>
 </resources>
