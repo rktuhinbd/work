@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1032389457006",
+    "firebase_url": "https://messagealarm-856f8.firebaseio.com",
+    "project_id": "messagealarm-856f8",
+    "storage_bucket": "messagealarm-856f8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1032389457006:android:f5dc5da7296e7bef34e27f",
+        "android_client_info": {
+          "package_name": "com.app.messagealarm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1032389457006-qr41p3biddmvsv5ooonppdgup7ehemgm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.messagealarm",
+            "certificate_hash": "204b663932b988774f37e27f3bf8c84d590bf062"
+          }
+        },
+        {
+          "client_id": "1032389457006-acp5p08oan3p9eph7en6d3os0aerk1r6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFkt-14tXJc7uPd6-lp_SW60Zy1mZnmWE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1032389457006-acp5p08oan3p9eph7en6d3os0aerk1r6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
