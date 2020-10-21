@@ -18,6 +18,4 @@ class AboutActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-
-
 }

@@ -2,11 +2,16 @@ package com.app.messagealarm.ui.setting
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.about.AboutActivity
+import com.app.messagealarm.utils.Constants
+import com.app.messagealarm.utils.SharedPrefUtils
 import com.app.messagealarm.utils.SupportUtils
 import dev.doubledot.doki.api.extensions.DONT_KILL_MY_APP_DEFAULT_MANUFACTURER
 import dev.doubledot.doki.ui.DokiActivity
@@ -79,6 +84,22 @@ class SettingsActivity : AppCompatActivity() {
             }
 
 
+            val themePre = findPreference("theme") as ListPreference?
+            themePre?.setOnPreferenceChangeListener(object :Preference.OnPreferenceChangeListener{
+                override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
+                    if(newValue == "Dark"){
+                        //enable dark mode
+                        SharedPrefUtils.write(Constants.PreferenceKeys.IS_DARK_MODE, true)
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    }else if(newValue == "Light"){
+                        //enable light mode
+                        SharedPrefUtils.write(Constants.PreferenceKeys.IS_DARK_MODE, false)
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    }
+                    return true
+                }
+
+            })
 
         }
     }

@@ -5,11 +5,11 @@
     <color name="colorAccent">#1436F5</color>
     <color name="dottedLine">#C8C9CB</color>
     <color name="color_white">#ffffff</color>
-    <color name="colorTextRegular">#111111</color>
+    <color name="colorTextRegular">#FFFFFF</color>
     <color name="colorBackground">#EFEFEF</color>
     <color name="colorOfNavigationBar">#3497fd</color>
-    <color name="background_screen">#e6FFFFFF</color>
-    <color name="default_text">#808080</color>
-    <color name="toolbar_color">#ffffffff</color>
-    <color name="card_view_color">#ffffffff</color>
+    <color name="background_screen">#121212</color>
+    <color name="default_text">#FFFFFF</color>
+    <color name="toolbar_color">#262833</color>
+    <color name="card_view_color">#262833</color>
 </resources>

@@ -48,7 +48,6 @@
             app:summary="Share with your friends"
             />
 
-
     </PreferenceCategory>
 
     <PreferenceCategory app:title="About">
