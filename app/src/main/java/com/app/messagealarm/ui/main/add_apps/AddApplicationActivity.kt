@@ -1,9 +1,11 @@
 package com.app.messagealarm.ui.main.add_apps
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
@@ -11,6 +13,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,11 +23,13 @@ import com.app.messagealarm.ui.adapters.AllAppsListAdapter
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.PathUtils
+import com.app.messagealarm.utils.SharedPrefUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_add_application.*
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import java.io.File
 import java.io.Serializable
+import java.lang.NullPointerException
 import java.util.*
 import kotlin.Comparator
 import kotlin.collections.ArrayList
@@ -40,6 +45,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_application)
+        setupSpinner()
         //setup toolbar
         toolBarSetup()
         //setup presenter
@@ -60,6 +66,22 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             progress_bar_add_app?.visibility = View.GONE
             rv_apps_list?.visibility = View.VISIBLE
             initAllAppsRecyclerView(list)
+        }
+    }
+
+
+    @SuppressLint("ResourceType")
+    private fun setupSpinner(){
+        val spinnerList = ArrayList<String>()
+        spinnerList.add("All Apps")
+        spinnerList.add("Messaging")
+        val adapter: ArrayAdapter<String> =
+            ArrayAdapter<String>(this, R.layout.spinner_item, spinnerList)
+        spinner_filter?.adapter = adapter
+        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
+            spinner_filter?.backgroundTintList = ColorStateList.valueOf(R.color.color_white)
+        }else{
+            spinner_filter?.backgroundTintList = ColorStateList.valueOf(android.R.color.black)
         }
     }
 
@@ -93,12 +115,15 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     }
 
     override fun onApplicationFiltered(list: ArrayList<InstalledApps>) {
-        Collections.sort(list,
-            Comparator<InstalledApps> { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
-        runOnUiThread {
-            (rv_apps_list?.adapter as AllAppsListAdapter).updateData(list)
+        try{
+            Collections.sort(list,
+                Comparator<InstalledApps> { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
+            runOnUiThread {
+                (rv_apps_list?.adapter as AllAppsListAdapter).updateData(list)
+            }
+        }catch (e:NullPointerException){
+            e.printStackTrace()
         }
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
