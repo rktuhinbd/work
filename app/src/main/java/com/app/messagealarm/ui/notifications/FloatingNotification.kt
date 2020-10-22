@@ -11,7 +11,6 @@ import android.media.session.PlaybackState
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
-import android.os.Looper
 import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -28,25 +27,20 @@ class FloatingNotification {
         private const val CHANNEL_ID = "alarm channel"
         private const val CHANNEL_NAME = "alarm app channel"
 
-        private fun startPlaying(
-            tone: String?, isVibrate: Boolean, context: Service,
-            notificationManager: NotificationManagerCompat, numberOfPlay: Int
-        ) {
+        private fun startPlaying(tone:String?, isVibrate: Boolean,context: Service,
+                                 notificationManager: NotificationManagerCompat,  numberOfPlay: Int){
             Thread(Runnable {
+                val once = Once()
                 //here i need run the loop of how much time need to play
-                for (x in 0 until numberOfPlay) {
-                    val once = Once()
+                for (x in 0 until numberOfPlay){
                     once.run(
                         Runnable {
-                            Handler(Looper.getMainLooper()).post {
-                                ExoPlayerUtils.playAudio(
-                                    isVibrate,
-                                    context, tone
-                                )
-                            }
+                            ExoPlayerUtils.playAudio(
+                                isVibrate,
+                                context, tone)
                         }
                     )
-                    if (x == numberOfPlay - 1) {
+                    if(x == numberOfPlay - 1){
                         //done playing dismiss the activity now
                         //send a notification that you missed the alarm
                         notificationManager.cancel(225)
@@ -55,12 +49,7 @@ class FloatingNotification {
             }).start()
         }
 
-        fun showFloatingNotification(
-            numberOfPlay: Int,
-            isVibrate: Boolean,
-            context: Service,
-            mediaPath: String?
-        ) {
+        fun showFloatingNotification(numberOfPlay:Int, isVibrate:Boolean, context: Service, mediaPath:String?) {
             // sending data to new activity
             val receiveCallAction =
                 Intent(context, AlarmApplicationActivity::class.java)
@@ -197,14 +186,8 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
                 (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
             manager.createNotificationChannel(chan)
             // Get the layouts to use in the custom notification
-            val notificationLayout = RemoteViews(
-                context.packageName,
-                com.app.messagealarm.R.layout.layout_foreground_notification
-            )
-            val notificationLayoutExpanded = RemoteViews(
-                context.packageName,
-                com.app.messagealarm.R.layout.layout_foreground_notification
-            )
+            val notificationLayout = RemoteViews(context.packageName, com.app.messagealarm.R.layout.layout_foreground_notification)
+            val notificationLayoutExpanded = RemoteViews(context.packageName, com.app.messagealarm.R.layout.layout_foreground_notification)
             val notificationBuilder =
                 NotificationCompat.Builder(context, channelId)
             val notification: Notification = notificationBuilder
