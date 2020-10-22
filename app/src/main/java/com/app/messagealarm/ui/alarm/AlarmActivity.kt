@@ -47,9 +47,9 @@ class AlarmActivity : BaseActivity() {
             val numberOfPLay = intent?.extras!!.getInt(Constants.IntentKeys.NUMBER_OF_PLAY)
             for (x in 0 until numberOfPLay){
                 once.run(Runnable {
-                    ExoPlayerUtils.playAudio(
-                        intent?.extras!!.getBoolean(Constants.IntentKeys.IS_VIBRATE),
-                        this, tone)
+                        ExoPlayerUtils.playAudio(
+                            intent?.extras!!.getBoolean(Constants.IntentKeys.IS_VIBRATE),
+                            this, tone)
                 })
                 if(x == numberOfPLay - 1){
                     //done playing dismiss the activity now

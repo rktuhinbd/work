@@ -3,6 +3,7 @@ package com.app.messagealarm.utils
 import android.content.Context
 import android.media.AudioManager
 import android.media.RingtoneManager
+import android.os.Handler
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.google.android.exoplayer2.C
@@ -28,34 +29,33 @@ class ExoPlayerUtils {
                 )
             }).start()
             try {
-                exoPlayer = SimpleExoPlayer.Builder(context)
-                    .build()
-                var mediaItem: MediaItem? = null
-                mediaItem = if (mediaPath != null) {
-                    MediaItem.fromUri(mediaPath)
-                } else {
-                    MediaItem.fromUri(RawResourceDataSource.buildRawResourceUri(R.raw.default_ringtone))
-                }
-                exoPlayer!!.setMediaItem(mediaItem)
-                exoPlayer!!.prepare()
-                exoPlayer!!.setForegroundMode(true)
-                exoPlayer!!.playWhenReady = true
-                exoPlayer!!.setWakeMode(C.WAKE_MODE_LOCAL)
-                Thread(Runnable {
-                    //vibrate
-                    if (isVibrate) {
-                        val once = Once()
-                        once.run(Runnable {
-                            VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext())
-                        })
+                    exoPlayer = SimpleExoPlayer.Builder(context)
+                        .build()
+                    var mediaItem: MediaItem? = null
+                    mediaItem = if (mediaPath != null) {
+                        MediaItem.fromUri(mediaPath)
+                    } else {
+                        MediaItem.fromUri(RawResourceDataSource.buildRawResourceUri(R.raw.default_ringtone))
                     }
-                }).start()
-                stopPlayBackAfterDone()
-
+                    exoPlayer!!.setMediaItem(mediaItem)
+                    exoPlayer!!.prepare()
+                    exoPlayer!!.setForegroundMode(true)
+                    exoPlayer!!.playWhenReady = true
+                    exoPlayer!!.setWakeMode(C.WAKE_MODE_LOCAL)
+                    Thread(Runnable {
+                        //vibrate
+                        if (isVibrate) {
+                            val once = Once()
+                            once.run(Runnable {
+                                VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext())
+                            })
+                        }
+                    }).start()
+                    stopPlayBackAfterDone()
             } catch (e: NullPointerException) {
-              e.printStackTrace()
+                e.printStackTrace()
             } catch (e: IllegalStateException) {
-               e.printStackTrace()
+                e.printStackTrace()
             }
 
         }
@@ -83,7 +83,7 @@ class ExoPlayerUtils {
         }
 
         fun isPlaying(): Boolean {
-            return exoPlayer != null && exoPlayer!!.isPlaying
+            return exoPlayer != null && exoPlayer!!.isPlaying;
         }
     }
 }

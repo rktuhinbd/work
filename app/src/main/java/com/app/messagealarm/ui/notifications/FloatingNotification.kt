@@ -35,9 +35,9 @@ class FloatingNotification {
                 for (x in 0 until numberOfPlay){
                     once.run(
                         Runnable {
-                            ExoPlayerUtils.playAudio(
-                                isVibrate,
-                                context, tone)
+                                ExoPlayerUtils.playAudio(
+                                    isVibrate,
+                                    context, tone)
                         }
                     )
                     if(x == numberOfPlay - 1){
