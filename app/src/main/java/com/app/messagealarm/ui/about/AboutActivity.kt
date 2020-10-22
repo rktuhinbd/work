@@ -23,10 +23,12 @@ class AboutActivity : BaseActivity() {
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
+            img_company_logo?.setImageResource(R.drawable.company_logo_white)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 toolbar.navigationIcon?.setTint(resources.getColor(R.color.color_white, theme))
                 toolbar.collapseIcon?.setTint(resources.getColor(R.color.color_white, theme))
             }else{
+                img_company_logo?.setImageResource(R.drawable.company_logo)
                 toolbar.navigationIcon?.setTint(resources.getColor(R.color.color_white))
                 toolbar.collapseIcon?.setTint(resources.getColor(R.color.color_white))
             }

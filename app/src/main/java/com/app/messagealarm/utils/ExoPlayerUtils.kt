@@ -3,6 +3,8 @@ package com.app.messagealarm.utils
 import android.content.Context
 import android.media.AudioManager
 import android.media.RingtoneManager
+import android.os.Handler
+import android.os.Looper
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.google.android.exoplayer2.MediaItem
@@ -24,7 +26,7 @@ class ExoPlayerUtils {
                 mobilemode.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
                 0
             )
-            try {
+                //code that runs in main
                 //audio playing logic should be playing for
                 val defaultRingtoneUri =
                     RingtoneManager.getActualDefaultRingtoneUri(
@@ -44,23 +46,27 @@ class ExoPlayerUtils {
                 exoPlayer!!.prepare()
                 exoPlayer!!.setForegroundMode(true)
                 exoPlayer!!.playWhenReady = true
-                Thread(Runnable {
-                    //vibrate
-                    if (isVibrate) {
-                        val once = Once()
-                        once.run(Runnable {
-                            VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext())
-                        })
-                    }
-                }).start()
+                //start vibraton
+                //startVibration(isVibrate)
                 stopPlayBackAfterDone()
+        }
 
-            } catch (e: NullPointerException) {
-              e.printStackTrace()
-            } catch (e: IllegalStateException) {
-               e.printStackTrace()
-            }
+        private fun startVibration(isVibrate: Boolean) {
+            Thread(Runnable {
+                //vibrate
+                if (isVibrate) {
+                    val once = Once()
+                    once.run(Runnable {
+                        VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext())
+                    })
+                }
+            }).start()
+        }
 
+        private fun stopVibration() {
+            Thread(Runnable {
+                VibratorUtils.stopVibrate()
+            }).start()
         }
 
         private fun stopPlayBackAfterDone() {
@@ -70,7 +76,7 @@ class ExoPlayerUtils {
                 if (totalPlayBack == 30) {
                     if (exoPlayer!!.isPlaying) {
                         exoPlayer!!.playWhenReady = false
-                        VibratorUtils.stopVibrate()
+                        // stopVibration()
                         break
                     }
                 }
@@ -81,7 +87,7 @@ class ExoPlayerUtils {
         fun stopAlarm() {
             if (exoPlayer != null && isPlaying()) {
                 exoPlayer!!.playWhenReady = false
-                VibratorUtils.stopVibrate()
+                //stopVibration()
             }
         }
 

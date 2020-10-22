@@ -1,5 +1,8 @@
 package com.app.messagealarm.utils;
 
+import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import java.util.concurrent.locks.Lock;
@@ -9,9 +12,11 @@ public class AlarmCheckerThread extends Thread {
 
     private static Lock lock = new ReentrantLock();
     private PlayListener playListener;
+    private Context context;
 
-    public AlarmCheckerThread(PlayListener playListener) {
+    public AlarmCheckerThread(PlayListener playListener, Context context) {
         this.playListener = playListener;
+        this.context = context;
     }
     private int count = 0;
 
@@ -35,11 +40,20 @@ public class AlarmCheckerThread extends Thread {
                         e.printStackTrace();
                     }
                     count++;
-                    Log.e("COUNT", String.valueOf(count));
                     if(count == 5){
                         count = 0;
-                        if(!ExoPlayerUtils.Companion.isPlaying()){
-                            playListener.isPlaying(ExoPlayerUtils.Companion.isPlaying());
+                        final boolean[] isPLaying = {false};
+                        // Get a handler that can be used to post to the main thread
+                        Handler mainHandler = new Handler(context.getMainLooper());
+                        Runnable myRunnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                isPLaying[0] = ExoPlayerUtils.Companion.isPlaying();
+                            } // This is your code
+                        };
+                        mainHandler.post(myRunnable);
+                        if(!isPLaying[0]){
+                            playListener.isPlaying(isPLaying);
                         }
                         interrupt();
                         break;
@@ -61,7 +75,7 @@ public class AlarmCheckerThread extends Thread {
     }
 
     public interface  PlayListener{
-        void isPlaying(boolean s);
+        void isPlaying(boolean[] s);
     }
 
 
