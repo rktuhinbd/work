@@ -51,7 +51,8 @@ class SettingsActivity : AppCompatActivity() {
 
             val notWorkingBackground =
                 findPreference("background_not_working") as Preference?
-            notWorkingBackground!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+            notWorkingBackground!!.layoutResource = R.layout.layout_preference
+            notWorkingBackground.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 //open browser or intent here
                 DokiActivity.start(requireActivity(), DONT_KILL_MY_APP_DEFAULT_MANUFACTURER)
                 true
@@ -59,7 +60,8 @@ class SettingsActivity : AppCompatActivity() {
 
             val aboutPre =
                 findPreference("about") as Preference?
-            aboutPre!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+          aboutPre!!.layoutResource = R.layout.layout_preference
+            aboutPre.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 //open browser or intent here
                 startActivity(Intent(activity, AboutActivity::class.java))
                 true
@@ -68,7 +70,8 @@ class SettingsActivity : AppCompatActivity() {
 
             val emailPre =
                 findPreference("email") as Preference?
-            emailPre!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+            emailPre!!.layoutResource = R.layout.layout_preference
+            emailPre.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 //open browser or intent here
                 SupportUtils.sendEmail(requireActivity())
                 true
@@ -77,7 +80,8 @@ class SettingsActivity : AppCompatActivity() {
 
             val sharePre =
                 findPreference("share") as Preference?
-            sharePre!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+            sharePre!!.layoutResource = R.layout.layout_preference
+            sharePre.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 //open browser or intent here
                 SupportUtils.shareApp(requireActivity())
                 true
@@ -85,7 +89,8 @@ class SettingsActivity : AppCompatActivity() {
 
 
             val themePre = findPreference("theme") as ListPreference?
-            themePre?.setOnPreferenceChangeListener(object :Preference.OnPreferenceChangeListener{
+            themePre!!.layoutResource = R.layout.layout_preference
+            themePre.setOnPreferenceChangeListener(object :Preference.OnPreferenceChangeListener{
                 override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
                     if(newValue == "Dark"){
                         //enable dark mode

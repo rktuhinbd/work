@@ -195,7 +195,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             clearImage.setColorFilter(Color.WHITE)
             imageView.setColorFilter(Color.WHITE)
             textView.setTextColor(Color.WHITE)
-            textView.hint = "Search Apps"
+            textView.hint = getString(R.string.txt_search_app)
             textView.setHintTextColor(Color.GRAY)
         }
         return super.onCreateOptionsMenu(menu)

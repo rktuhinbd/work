@@ -49,6 +49,7 @@
     <string name="txt_not_background">Not working when app closed?</string>
     <string name="notification_channel">sells_post</string>
     <string name="notification_channel_name">posts</string>
+    <string name="txt_search_app">Search Apps</string>
 
     <string-array name="spinner_item">
         <item>All Apps</item>
