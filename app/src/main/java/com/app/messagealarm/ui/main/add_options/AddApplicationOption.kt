@@ -18,10 +18,7 @@ import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.ui.notifications.FloatingNotification
-import com.app.messagealarm.utils.Constants
-import com.app.messagealarm.utils.DataUtils
-import com.app.messagealarm.utils.DialogUtils
-import com.app.messagealarm.utils.TimeUtils
+import com.app.messagealarm.utils.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -49,6 +46,24 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         addApplicationOptionPresenter = AddApplicationOptionPresenter(this)
     }
 
+
+    private fun darkMode(){
+        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
+            btn_close?.setImageResource(R.drawable.ic_close_white)
+            btn_save?.setImageResource(R.drawable.ic_tick_white)
+            img_repeat?.setImageResource(R.drawable.ic_repeat_white)
+            img_ringtone?.setImageResource(R.drawable.ic_music_white)
+            img_vibrate?.setImageResource(R.drawable.ic_vibrate_white)
+            img_just_vibrate?.setImageResource(R.drawable.ic_vibrate_white)
+            img_custom_time?.setImageResource(R.drawable.ic_time_white)
+            img_number_of_play?.setImageResource(R.drawable.ic_loop_white)
+            img_sender_name?.setImageResource(R.drawable.ic_name_white)
+            img_message_body?.setImageResource(R.drawable.ic_message_white)
+            img_start_time?.setImageResource(R.drawable.ic_watch_white)
+            img_end_time?.setImageResource(R.drawable.ic_watch_white)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -61,6 +76,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         super.onActivityCreated(savedInstanceState)
         setListener()
         handleEditAndViewMode()
+        darkMode()
     }
 
     private fun handleEditAndViewMode(){
