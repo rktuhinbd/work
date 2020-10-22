@@ -3,6 +3,7 @@ package com.app.messagealarm.ui.main.alarm_applications
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Canvas
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -53,6 +54,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         setupAppsRecyclerView()
     }
 
+
+
     private fun lookForAlarmApplication() {
         alarmAppPresenter.getApplicationList()
     }
@@ -69,6 +72,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_item_home, menu)
+        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
+            MenuTintUtils.tintAllIcons(menu, Color.WHITE)
+        }
         return super.onCreateOptionsMenu(menu)
     }
 

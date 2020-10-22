@@ -7,23 +7,29 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.SearchView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.ui.adapters.AllAppsListAdapter
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
 import com.app.messagealarm.utils.Constants
+import com.app.messagealarm.utils.MenuTintUtils
 import com.app.messagealarm.utils.PathUtils
 import com.app.messagealarm.utils.SharedPrefUtils
+import com.google.android.material.appbar.MaterialToolbar
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_add_application.*
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
@@ -51,7 +57,11 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         //setup presenter
         addApplicationPresenter = AddApplicationPresenter(this, this)
         filterListener()
+
     }
+
+
+
 
     private fun initAllAppsRecyclerView(list: ArrayList<InstalledApps>) {
         rv_apps_list?.layoutManager = LinearLayoutManager(this)
@@ -103,10 +113,22 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     }
 
     private fun toolBarSetup() {
-        setSupportActionBar(findViewById(R.id.toolbar))
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
         supportActionBar?.title = getString(R.string.txt_add_app)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                toolbar.navigationIcon?.setTint(resources.getColor(R.color.color_white, theme))
+                toolbar.collapseIcon?.setTint(resources.getColor(R.color.color_white, theme))
+            }else{
+                toolbar.navigationIcon?.setTint(resources.getColor(R.color.color_white))
+                toolbar.collapseIcon?.setTint(resources.getColor(R.color.color_white))
+            }
+        }
     }
+
+
 
     override fun onAllApplicationGetError(message: String) {
         runOnUiThread {
@@ -132,6 +154,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         val searchItem: MenuItem? = menu?.findItem(R.id.mnu_search)
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchView: SearchView? = searchItem?.actionView as SearchView
+        // Assumes current activity is the searchable activity
         searchView?.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         setSearchViewEditTextBackgroundColor(this, searchView!!)
         searchView.setOnQueryTextListener(object :
@@ -139,16 +162,42 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             SearchView.OnQueryTextListener {
 
             override fun onQueryTextSubmit(query: String?): Boolean {
-                (rv_apps_list?.adapter as AllAppsListAdapter).filter(query!!)
+                try{
+                    (rv_apps_list?.adapter as AllAppsListAdapter).filter(query!!)
+                }catch (e:TypeCastException){
+                    e.printStackTrace()
+                }catch (e:NullPointerException){
+                    e.printStackTrace()
+                }
+
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                (rv_apps_list?.adapter as AllAppsListAdapter).filter(newText!!)
+                try{
+                    (rv_apps_list?.adapter as AllAppsListAdapter).filter(newText!!)
+                }catch (e:TypeCastException){
+                    e.printStackTrace()
+                }catch (e:NullPointerException){
+                    e.printStackTrace()
+                }
+
                 return true
             }
-
         })
+        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
+            val clearButton = searchView.context.resources.getIdentifier("android:id/search_close_btn",null,null)
+            val buttonId = searchView.context.resources.getIdentifier("android:id/search_button",null, null)
+            val id = searchView.context.resources.getIdentifier("android:id/search_src_text", null, null);
+            val textView = searchView.findViewById<TextView>(id)
+            val imageView = searchView.findViewById<ImageView>(buttonId)
+            val clearImage = searchView.findViewById<ImageView>(clearButton)
+            clearImage.setColorFilter(Color.WHITE)
+            imageView.setColorFilter(Color.WHITE)
+            textView.setTextColor(Color.WHITE)
+            textView.hint = "Search Apps"
+            textView.setHintTextColor(Color.GRAY)
+        }
         return super.onCreateOptionsMenu(menu)
 
     }
