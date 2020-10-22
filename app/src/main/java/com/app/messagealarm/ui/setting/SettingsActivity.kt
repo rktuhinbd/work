@@ -1,6 +1,7 @@
 package com.app.messagealarm.ui.setting
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,7 @@ import com.app.messagealarm.utils.SharedPrefUtils
 import com.app.messagealarm.utils.SupportUtils
 import dev.doubledot.doki.api.extensions.DONT_KILL_MY_APP_DEFAULT_MANUFACTURER
 import dev.doubledot.doki.ui.DokiActivity
+import kotlinx.android.synthetic.main.settings_activity.*
 
 
 class SettingsActivity : AppCompatActivity() {
@@ -34,6 +36,15 @@ class SettingsActivity : AppCompatActivity() {
     private fun toolBarSetup() {
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                toolbar.navigationIcon?.setTint(resources.getColor(R.color.color_white, theme))
+                toolbar.collapseIcon?.setTint(resources.getColor(R.color.color_white, theme))
+            }else{
+                toolbar.navigationIcon?.setTint(resources.getColor(R.color.color_white))
+                toolbar.collapseIcon?.setTint(resources.getColor(R.color.color_white))
+            }
+        }
     }
 
 
