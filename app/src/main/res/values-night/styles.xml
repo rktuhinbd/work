@@ -22,5 +22,13 @@
     </style>
 
 
+    <!-- Alert Dialog -->
+    <style name="MyAlertDialogTheme" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorBackground">@color/card_view_color</item>
+        <item name="android:windowBackground">@color/card_view_color</item>
+        <item name="android:textColorPrimary">@color/default_text</item>
+    </style>
+
 
 </resources>

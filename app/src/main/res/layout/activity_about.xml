@@ -145,7 +145,6 @@
                         app:layout_constraintTop_toBottomOf="@id/txt_company_info"
                         app:layout_constraintVertical_bias="0" />
 
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.card.MaterialCardView>
