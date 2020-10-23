@@ -9,6 +9,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -424,7 +425,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
          * Background works will be in 24 hours
          */
         return try {
-            val dfDate  = SimpleDateFormat("hh:mm aa")
+            val dfDate  = SimpleDateFormat("hh:mm a")
             val cal = Calendar.getInstance()
             cal.time = dfDate.parse(txt_start_time_value?.text.toString())!!
              cal
@@ -437,7 +438,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     @SuppressLint("SimpleDateFormat")
     fun endTimeCalender():Calendar{
         return try {
-            val dfDate  = SimpleDateFormat("hh:mm aa")
+            val dfDate  = SimpleDateFormat("hh:mm a")
             val cal = Calendar.getInstance()
             cal.time = dfDate.parse(txt_end_time_value?.text.toString())!!
              cal
@@ -454,8 +455,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         addApplicationEntity.isVibrateOnAlarm = false
         addApplicationEntity.isCustomTime = false
         addApplicationEntity.numberOfPlay = 2
-        addApplicationEntity.startTime = "6:00 am"
-        addApplicationEntity.endTime = "12:00 pm"
+        addApplicationEntity.startTime = "6:00 AM"
+        addApplicationEntity.endTime = "12:00 PM"
         addApplicationEntity.senderNames = "None"
         addApplicationEntity.messageBody = "None"
         addApplicationEntity.isRunningStatus = true
@@ -466,8 +467,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         holderEntity.isVibrateOnAlarm = false
         holderEntity.isCustomTime = false
         holderEntity.numberOfPlay = 2
-        holderEntity.startTime = "6:00 am"
-        holderEntity.endTime = "12:00 pm"
+        holderEntity.startTime = "6:00 AM"
+        holderEntity.endTime = "12:00 PM"
         holderEntity.senderNames = "None"
         holderEntity.messageBody = "None"
         holderEntity.isRunningStatus = true
@@ -495,8 +496,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         bitmap.toBitmap()
                     )
                 } catch (e: Exception) {
-                    hideProgressBar()
-                    Toasty.error(requireActivity(), e.message!!).show()
+                    requireActivity().runOnUiThread {
+                        hideProgressBar()
+                        Toasty.error(requireActivity(), e.message!!).show()
+                    }
                 }
             }).start()
         }else{
@@ -515,12 +518,16 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
     @SuppressLint("SimpleDateFormat")
     private fun isTimeConstrained(startTime: String, endTime: String):Boolean{
-       return try{
-               val dfDate  = SimpleDateFormat("hh:mm aa")
-               dfDate.parse(startTime)!!.before(dfDate.parse(endTime))
-        }catch (ex: ParseException){
-           return false
-        }
+        return try{
+            val date = Date()
+            val dateFormatter = SimpleDateFormat("yyyy/MM/dd")
+            val startDateWithTime = dateFormatter.format(date) + " " + startTime
+            val endDateWithTime = dateFormatter.format(date) + " " + endTime
+            val converterFormat = SimpleDateFormat("yyyy/MM/dd hh:mm a")
+            converterFormat.parse(startDateWithTime).before(converterFormat.parse(endDateWithTime))
+       }catch (ex: ParseException){
+           false
+       }
     }
 
     private fun checkForDefault():Boolean{
@@ -615,8 +622,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 )){
                 addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
             }else{
-                hideProgressBar()
                 requireActivity().runOnUiThread {
+                    hideProgressBar()
                     Toasty.info(requireActivity(), getString(R.string.time_constrain_error)).show()
                 }
             }

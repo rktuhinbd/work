@@ -3,10 +3,7 @@ package com.app.messagealarm.utils
 import android.annotation.SuppressLint
 
 import timber.log.Timber
-import java.text.DateFormatSymbols
-import java.text.Format
-import java.text.ParseException
-import java.text.SimpleDateFormat
+import java.text.*
 import java.util.*
 
 
@@ -92,8 +89,10 @@ class TimeUtils private constructor() {
             val calendar = Calendar.getInstance()
             calendar.set(year, month, day)
 
-            return SimpleDateFormat(Constants.Common.APP_COMMON_DATE_FORMAT,
-                    Locale.ENGLISH).format(calendar.time)
+            return SimpleDateFormat(
+                Constants.Common.APP_COMMON_DATE_FORMAT,
+                Locale.ENGLISH
+            ).format(calendar.time)
         }
 
         /**
@@ -104,7 +103,8 @@ class TimeUtils private constructor() {
         fun getFormattedDateString(timeInMillis: Long): String {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = timeInMillis
-            return SimpleDateFormat(Constants.Common.APP_COMMON_DATE_FORMAT,
+            return SimpleDateFormat(
+                Constants.Common.APP_COMMON_DATE_FORMAT,
                 Locale.ENGLISH
             ).format(calendar.time)
         }
@@ -117,7 +117,8 @@ class TimeUtils private constructor() {
         fun getFormattedTimeString(timeInMillis: Long): String {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = timeInMillis
-            return SimpleDateFormat(Constants.Common.APP_COMMON_TIME_FORMAT,
+            return SimpleDateFormat(
+                Constants.Common.APP_COMMON_TIME_FORMAT,
                 Locale.ENGLISH
             ).format(calendar.time)
         }
@@ -130,7 +131,8 @@ class TimeUtils private constructor() {
         fun getFormattedDayNameString(timeInMillis: Long): String {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = timeInMillis
-            return SimpleDateFormat(Constants.Common.APP_COMMON_DAY_FORMAT,
+            return SimpleDateFormat(
+                Constants.Common.APP_COMMON_DAY_FORMAT,
                 Locale.ENGLISH
             ).format(calendar.time)
         }
@@ -158,7 +160,8 @@ class TimeUtils private constructor() {
         fun getFormattedOnlyDateString(timeInMillis: Long): String {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = timeInMillis
-            return SimpleDateFormat(Constants.Common.APP_COMMON_ONLY_DATE_FORMAT,
+            return SimpleDateFormat(
+                Constants.Common.APP_COMMON_ONLY_DATE_FORMAT,
                 Locale.ENGLISH
             ).format(calendar.time)
         }
@@ -171,7 +174,8 @@ class TimeUtils private constructor() {
         fun getFormattedMonthString(timeInMillis: Long): String {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = timeInMillis
-            return SimpleDateFormat(Constants.Common.APP_COMMON_MONTH_FORMAT,
+            return SimpleDateFormat(
+                Constants.Common.APP_COMMON_MONTH_FORMAT,
                 Locale.ENGLISH
             ).format(calendar.time)
         }
@@ -185,7 +189,8 @@ class TimeUtils private constructor() {
         fun getCalendarFromDate(date: String): Calendar {
             val calendar = Calendar.getInstance()
             try {
-                calendar.time = SimpleDateFormat(Constants.Common.APP_COMMON_DATE_FORMAT,
+                calendar.time = SimpleDateFormat(
+                    Constants.Common.APP_COMMON_DATE_FORMAT,
                     Locale.ENGLISH
                 ).parse(date)!!
             } catch (e: ParseException) {
@@ -323,8 +328,10 @@ class TimeUtils private constructor() {
             cal[Calendar.HOUR_OF_DAY] = hr
             cal[Calendar.MINUTE] = min
             val formatter: Format
-            formatter = SimpleDateFormat("hh:mm aa")
+            formatter = SimpleDateFormat("hh:mm a")
             return formatter.format(cal.time)
         }
+
+
     }
 }
