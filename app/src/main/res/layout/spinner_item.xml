@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<TextView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<TextView xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/txt_spinner_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textSize="14sp"
-    android:gravity="left"
-    android:background="@color/background_screen"
-    android:textColor="@color/default_text"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
+    android:textSize="16sp"
+    android:gravity="start"
+    android:background="@color/card_view_color"
+    android:textColor="@color/colorTextRegular"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:targetApi="m"
     />
+

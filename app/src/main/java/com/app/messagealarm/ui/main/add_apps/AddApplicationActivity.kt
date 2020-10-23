@@ -54,12 +54,23 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         setupSpinner()
         //setup toolbar
         toolBarSetup()
+        //hide spinner
+        spinner_filter?.visibility = View.INVISIBLE
+        spinner_drop_down?.visibility = View.INVISIBLE
         //setup presenter
         addApplicationPresenter = AddApplicationPresenter(this, this)
         filterListener()
-
+        darkModePre()
     }
 
+
+    private fun darkModePre(){
+        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
+            spinner_drop_down?.setImageResource(R.drawable.ic_arrow_drop_down_white)
+        }else{
+            spinner_drop_down?.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp)
+        }
+    }
 
 
 
@@ -70,12 +81,21 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     }
 
     override fun onAllApplicationGetSuccess(list: ArrayList<InstalledApps>) {
-        Collections.sort(list,
-            Comparator<InstalledApps> { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
-        runOnUiThread {
-            progress_bar_add_app?.visibility = View.GONE
-            rv_apps_list?.visibility = View.VISIBLE
-            initAllAppsRecyclerView(list)
+        try{
+            Collections.sort(list,
+                Comparator<InstalledApps> { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
+            runOnUiThread {
+                progress_bar_add_app?.visibility = View.GONE
+                rv_apps_list?.visibility = View.VISIBLE
+                initAllAppsRecyclerView(list)
+                spinner_filter?.visibility = View.VISIBLE
+                spinner_drop_down?.visibility = View.VISIBLE
+            }
+
+        }catch (e:TypeCastException){
+            e.printStackTrace()
+        }catch (e:NullPointerException){
+            e.printStackTrace()
         }
     }
 
@@ -88,11 +108,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         val adapter: ArrayAdapter<String> =
             ArrayAdapter<String>(this, R.layout.spinner_item, spinnerList)
         spinner_filter?.adapter = adapter
-        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
-            spinner_filter?.backgroundTintList = ColorStateList.valueOf(R.color.color_white)
-        }else{
-            spinner_filter?.backgroundTintList = ColorStateList.valueOf(android.R.color.black)
-        }
     }
 
     private fun filterListener() {
@@ -144,6 +159,8 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                 (rv_apps_list?.adapter as AllAppsListAdapter).updateData(list)
             }
         }catch (e:NullPointerException){
+            e.printStackTrace()
+        }catch (e:TypeCastException){
             e.printStackTrace()
         }
     }
