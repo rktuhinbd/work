@@ -248,6 +248,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             bundle.putBoolean(Constants.BundleKeys.IS_EDIT_MODE, false)
             bundle.putSerializable(Constants.BundleKeys.APP, app as Serializable)
             bottomSheetModel.arguments = bundle
+            bottomSheetModel.isCancelable = false
             bottomSheetModel.show(supportFragmentManager, "OPTIONS")
         }
     }
@@ -256,9 +257,5 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         Toasty.info(this, app.appName).show()
     }
 
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
 
 }

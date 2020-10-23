@@ -20,6 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_marginStart="5dp"
         >
 
         <TextView
@@ -28,7 +29,7 @@
             android:layout_height="wrap_content"
             android:text="Large Text"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:textColor="@color/colorTextRegular"
             android:textSize="16sp" />
 
@@ -38,7 +39,7 @@
             android:layout_height="wrap_content"
             android:text="TextVie"
             android:layout_marginStart="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="12dp"
             android:textColor="@color/default_text" />
 
 

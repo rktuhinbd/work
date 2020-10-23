@@ -9,7 +9,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -17,16 +16,12 @@ import androidx.core.graphics.drawable.toBitmap
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
-import com.app.messagealarm.ui.notifications.FloatingNotification
 import com.app.messagealarm.utils.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.textfield.TextInputEditText
-import com.judemanutd.autostarter.AutoStartPermissionHelper
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
-import timber.log.Timber
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,6 +29,7 @@ import java.util.*
 
 class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionView {
 
+    var once:Once? = null
     public var alarmTonePath:String? = null
     var ringtoneName:String? = null
     private var addApplicationEntity = ApplicationEntity()
@@ -44,6 +40,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addApplicationOptionPresenter = AddApplicationOptionPresenter(this)
+        once = Once()
     }
 
 
@@ -97,26 +94,36 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
                 if(arguments?.getSerializable(Constants.BundleKeys.APP) != null){
                     addApplicationOptionPresenter?.getAppByPackageName(
-                        (arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps).packageName)
+                        (arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps).packageName
+                    )
                 }
             }else{
                 //edit mode from home
                 if(arguments?.getString(Constants.BundleKeys.PACKAGE_NAME) != null){
-                    addApplicationOptionPresenter?.getAppByPackageName(arguments?.getString(Constants.BundleKeys.PACKAGE_NAME)!!)
+                    addApplicationOptionPresenter?.getAppByPackageName(
+                        arguments?.getString(
+                            Constants.BundleKeys.PACKAGE_NAME
+                        )!!
+                    )
                 }
             }
     }
 
     override fun onResume() {
         super.onResume()
-        dialog!!.setOnKeyListener( object : DialogInterface.OnKeyListener{
-            override fun onKey(dialog: DialogInterface?, keyCode: Int, event: KeyEvent?): Boolean {
-                return if(keyCode == android.view.KeyEvent.KEYCODE_BACK){
-                    btn_close?.performClick()
-                    true
-                }else{
-                    false
-                }
+        //back button handler
+        dialog!!.setOnKeyListener(object : DialogInterface.OnKeyListener {
+            override fun onKey(
+                dialog: DialogInterface?, keyCode: Int,
+                event: KeyEvent
+            ): Boolean {
+                return if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    //This is the filter
+                    once?.run(Runnable {
+                        btn_close?.performClick()
+                    })
+                    return true
+                } else false // pass on to be processed as normal
             }
         })
     }
@@ -126,9 +133,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         dialog.setOnShowListener { dialogInterface ->
             val bottomSheetDialog = dialogInterface as BottomSheetDialog
             setupFullHeight(bottomSheetDialog)
-        }
-        dialog.setOnCancelListener {
-            btn_close?.performClick()
         }
         return dialog
     }
@@ -161,6 +165,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 showDiscardDialog()
             }
         }
+
 
         btn_save?.setOnClickListener {
                 saveApplication()
@@ -246,23 +251,25 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
 
         view_ringtone?.setOnClickListener {
-            DialogUtils.showRingToneSelectDialog(requireActivity(), object : DialogUtils.RepeatCallBack {
-                override fun onClick(name: String) {
-                    if (name.contains("Select a song")) {
-                        pickAudioFromStorage()
-                        /**
-                         * set custom alarm tone type to data model
-                         */
-                        addApplicationEntity.ringTone = "Default"
-                    } else {
-                        txt_ringtone_value?.text = name
-                        /**
-                         * set default alarm tone type to data model
-                         */
-                        addApplicationEntity.ringTone = name
+            DialogUtils.showRingToneSelectDialog(
+                requireActivity(),
+                object : DialogUtils.RepeatCallBack {
+                    override fun onClick(name: String) {
+                        if (name.contains("Select a song")) {
+                            pickAudioFromStorage()
+                            /**
+                             * set custom alarm tone type to data model
+                             */
+                            addApplicationEntity.ringTone = "Default"
+                        } else {
+                            txt_ringtone_value?.text = name
+                            /**
+                             * set default alarm tone type to data model
+                             */
+                            addApplicationEntity.ringTone = name
+                        }
                     }
-                }
-            })
+                })
         }
 
         view_start_time?.setOnClickListener {
@@ -277,7 +284,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         /**
                          * set start time to data model
                          */
-                        if(addApplicationEntity.isCustomTime){
+                        if (addApplicationEntity.isCustomTime) {
                             addApplicationEntity.startTime = txt_start_time_value?.text.toString()
                         }
                     }, hour, minute, false
@@ -298,7 +305,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         /**
                          * set end time to data model
                          */
-                        if(addApplicationEntity.isCustomTime){
+                        if (addApplicationEntity.isCustomTime) {
                             addApplicationEntity.endTime = txt_end_time_value?.text.toString()
                         }
                     }, hour, minute, false
@@ -326,54 +333,56 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
 
         view_repeat_bg?.setOnClickListener {
-            DialogUtils.showSimpleListDialog(requireActivity(), object : DialogUtils.RepeatCallBack {
-                override fun onClick(name: String) {
-                    txt_repeat_value?.text = name
-                    /**
-                     * set alarm repeat value to data model
-                     */
-                    addApplicationEntity.alarmRepeat = name
-                    if (name.contains("Custom")) {
-                        DialogUtils.showCheckedItemListDialog(
-                            addApplicationEntity.repeatDays,
-                            activity!!,
-                            object : DialogUtils.CheckedListCallback {
-                                @SuppressLint("SetTextI18n")
-                                override fun onChecked(list: List<String>) {
-                                    var selectedDays: String = ""
-                                    list.forEach {
-                                        selectedDays += "${it.substring(0, 3)}, "
+            DialogUtils.showSimpleListDialog(
+                requireActivity(),
+                object : DialogUtils.RepeatCallBack {
+                    override fun onClick(name: String) {
+                        txt_repeat_value?.text = name
+                        /**
+                         * set alarm repeat value to data model
+                         */
+                        addApplicationEntity.alarmRepeat = name
+                        if (name.contains("Custom")) {
+                            DialogUtils.showCheckedItemListDialog(
+                                addApplicationEntity.repeatDays,
+                                activity!!,
+                                object : DialogUtils.CheckedListCallback {
+                                    @SuppressLint("SetTextI18n")
+                                    override fun onChecked(list: List<String>) {
+                                        var selectedDays: String = ""
+                                        list.forEach {
+                                            selectedDays += "${it.substring(0, 3)}, "
+                                        }
+                                        txt_repeat_value?.text = selectedDays.substring(
+                                            0,
+                                            selectedDays.length - 2
+                                        )
+                                        /**
+                                         * set alarm repeat days to data model
+                                         */
+                                        addApplicationEntity.repeatDays = selectedDays.substring(
+                                            0,
+                                            selectedDays.length - 2
+                                        )
                                     }
-                                    txt_repeat_value?.text = selectedDays.substring(
-                                        0,
-                                        selectedDays.length - 2
-                                    )
-                                    /**
-                                     * set alarm repeat days to data model
-                                     */
-                                    addApplicationEntity.repeatDays = selectedDays.substring(
-                                        0,
-                                        selectedDays.length - 2
-                                    )
-                                }
-                            },
-                            object : DialogUtils.Callback {
-                                override fun onPositive() {
+                                },
+                                object : DialogUtils.Callback {
+                                    override fun onPositive() {
 
-                                }
+                                    }
 
-                                override fun onNegative() {
+                                    override fun onNegative() {
 
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
-                }
-            })
+                })
         }
     }
 
-   fun setToneName(name:String){
+   fun setToneName(name: String){
         addApplicationEntity.ringTone = name
     }
 
@@ -386,20 +395,19 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         val txtDiscard = dialog.findViewById<TextView>(R.id.btn_discard)
         Objects.requireNonNull(dialog.window!!).setBackgroundDrawableResource(android.R.color.transparent)
         txtCancel.setOnClickListener {
-            dialog.cancel()
             if (dialog.isShowing) {
-                dialog.dismiss()
+                once = Once()
+                dialog.cancel()
             }
         }
        txtDiscard.setOnClickListener {
-           dialog.cancel()
            dismiss()
            if (dialog.isShowing) {
-               dialog.dismiss()
+               dialog.cancel()
            }
        }
         val window = dialog.window
-        window!!.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT)
+        window!!.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         val wlp = window.attributes;
          wlp.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND
         window.attributes = wlp
@@ -420,7 +428,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             val cal = Calendar.getInstance()
             cal.time = dfDate.parse(txt_start_time_value?.text.toString())!!
              cal
-        }catch (ex:ParseException){
+        }catch (ex: ParseException){
             return Calendar.getInstance()
         }
 
@@ -433,7 +441,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             val cal = Calendar.getInstance()
             cal.time = dfDate.parse(txt_end_time_value?.text.toString())!!
              cal
-        }catch (ex:ParseException){
+        }catch (ex: ParseException){
             return Calendar.getInstance()
         }
 
@@ -482,10 +490,13 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             Thread(Runnable {
                 try {
                     val bitmap = app.drawableIcon
-                    addApplicationOptionPresenter?.saveBitmapToFile(requireActivity(), bitmap.toBitmap())
-                }catch (e:Exception){
+                    addApplicationOptionPresenter?.saveBitmapToFile(
+                        requireActivity(),
+                        bitmap.toBitmap()
+                    )
+                } catch (e: Exception) {
                     hideProgressBar()
-                Toasty.error(requireActivity(), e.message!!).show()
+                    Toasty.error(requireActivity(), e.message!!).show()
                 }
             }).start()
         }else{
@@ -503,11 +514,11 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
 
     @SuppressLint("SimpleDateFormat")
-    private fun isTimeConstrained(startTime:String, endTime:String):Boolean{
+    private fun isTimeConstrained(startTime: String, endTime: String):Boolean{
        return try{
                val dfDate  = SimpleDateFormat("hh:mm aa")
                dfDate.parse(startTime)!!.before(dfDate.parse(endTime))
-        }catch (ex:ParseException){
+        }catch (ex: ParseException){
            return false
         }
     }
@@ -598,7 +609,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         addApplicationEntity.tone_path = alarmTonePath
         //if start time and end time constrained
         if(switch_custom_time?.isChecked!!){
-            if(isTimeConstrained(txt_start_time_value?.text.toString(),
+            if(isTimeConstrained(
+                    txt_start_time_value?.text.toString(),
                     txt_end_time_value?.text.toString()
                 )){
                 addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
