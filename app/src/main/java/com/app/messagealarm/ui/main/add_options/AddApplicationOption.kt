@@ -61,6 +61,19 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             img_message_body?.setImageResource(R.drawable.ic_message_white)
             img_start_time?.setImageResource(R.drawable.ic_watch_white)
             img_end_time?.setImageResource(R.drawable.ic_watch_white)
+        }else{
+            btn_close?.setImageResource(R.drawable.ic_close)
+            btn_save?.setImageResource(R.drawable.ic_tick)
+            img_repeat?.setImageResource(R.drawable.ic_repeat)
+            img_ringtone?.setImageResource(R.drawable.ic_music)
+            img_vibrate?.setImageResource(R.drawable.ic_vibration)
+            img_just_vibrate?.setImageResource(R.drawable.ic_vibration)
+            img_custom_time?.setImageResource(R.drawable.ic_clock)
+            img_number_of_play?.setImageResource(R.drawable.ic_refresh)
+            img_sender_name?.setImageResource(R.drawable.ic_name)
+            img_message_body?.setImageResource(R.drawable.ic_message)
+            img_start_time?.setImageResource(R.drawable.ic_stopwatch)
+            img_end_time?.setImageResource(R.drawable.ic_stopwatch)
         }
     }
 
@@ -582,6 +595,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     private fun saveWithTimeConstrain(){
+        addApplicationEntity.tone_path = alarmTonePath
         //if start time and end time constrained
         if(switch_custom_time?.isChecked!!){
             if(isTimeConstrained(txt_start_time_value?.text.toString(),

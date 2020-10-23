@@ -42,21 +42,22 @@ class AlarmActivity : BaseActivity() {
 
     private fun startPlaying(tone:String?){
         Thread(Runnable {
-            val once = Once()
             //here i need run the loop of how much time need to play
             val numberOfPLay = intent?.extras!!.getInt(Constants.IntentKeys.NUMBER_OF_PLAY)
             for (x in 0 until numberOfPLay){
+                val once = Once()
                 once.run(Runnable {
                         ExoPlayerUtils.playAudio(
                             intent?.extras!!.getBoolean(Constants.IntentKeys.IS_VIBRATE),
                             this, tone)
+                    if(x == numberOfPLay - 1){
+                        //done playing dismiss the activity now
+                        //send a notification that you missed the alarm
+                        showYouMissedAlarmNotification(intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!)
+                        finish()
+                    }
                 })
-                if(x == numberOfPLay - 1){
-                    //done playing dismiss the activity now
-                    //send a notification that you missed the alarm
-                    showYouMissedAlarmNotification(intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!)
-                    finish()
-                }
+
             }
         }).start()
     }
