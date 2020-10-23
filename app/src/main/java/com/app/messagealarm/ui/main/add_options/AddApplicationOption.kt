@@ -383,7 +383,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
    fun setToneName(name: String){
-        addApplicationEntity.ringTone = name
+        addApplicationEntity.ringTone = name.substring(0, 29)
     }
 
     private fun showDiscardDialog() {
