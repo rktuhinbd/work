@@ -32,11 +32,13 @@ class AlarmService {
                     if(sbn.packageName == app.packageName){
                         //check for alarm repeat
                         if(alarmRepeatOutput(app.alarmRepeat, app)){
-                            //check for title not null
-                            if(sbn.notification.extras["android.title"] != null){
-                                //check for player not playing
-                                if(!ExoPlayerUtils.isPlaying()){
-                                    magicPlay(app.ringTone, service, sbn, app)
+                            if(checkByTimeConstrain(app)){
+                                //check for title not null
+                                if(sbn.notification.extras["android.title"] != null){
+                                    //check for player not playing
+                                    if(!ExoPlayerUtils.isPlaying()){
+                                        magicPlay(app.ringTone, service, sbn, app)
+                                    }
                                 }
                             }
                         }
@@ -65,6 +67,10 @@ class AlarmService {
             }
         }
 
+
+        private fun checkByTimeConstrain(app:ApplicationEntity):Boolean{
+            return TimeUtils.isConstrainedByTime(app.startTime, app.endTime)
+        }
 
         private fun alarmRepeatOutput(repeat:String, app:ApplicationEntity):Boolean{
             var isPlayAble = false

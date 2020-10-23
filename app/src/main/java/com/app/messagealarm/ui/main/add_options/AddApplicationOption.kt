@@ -18,6 +18,7 @@ import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.utils.*
+import com.app.messagealarm.utils.TimeUtils.Companion.isTimeConstrained
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -516,20 +517,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
 
-    @SuppressLint("SimpleDateFormat")
-    private fun isTimeConstrained(startTime: String, endTime: String):Boolean{
-        return try{
-            val date = Date()
-            val dateFormatter = SimpleDateFormat("yyyy/MM/dd")
-            val startDateWithTime = dateFormatter.format(date) + " " + startTime
-            val endDateWithTime = dateFormatter.format(date) + " " + endTime
-            val converterFormat = SimpleDateFormat("yyyy/MM/dd hh:mm a")
-            converterFormat.parse(startDateWithTime).before(converterFormat.parse(endDateWithTime))
-       }catch (ex: ParseException){
-           false
-       }
-    }
-
     private fun checkForDefault():Boolean{
         var isDefault = false
             if(txt_repeat_value?.text.toString().trim() == holderEntity.alarmRepeat){
@@ -619,7 +606,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             if(isTimeConstrained(
                     txt_start_time_value?.text.toString(),
                     txt_end_time_value?.text.toString()
-                )){
+                )
+            ){
                 addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
             }else{
                 requireActivity().runOnUiThread {

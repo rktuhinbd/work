@@ -1,6 +1,9 @@
 package com.app.messagealarm.utils
 
 import android.annotation.SuppressLint
+import android.widget.Toast
+import com.app.messagealarm.BaseApplication
+import es.dmoral.toasty.Toasty
 
 import timber.log.Timber
 import java.text.*
@@ -320,6 +323,37 @@ class TimeUtils private constructor() {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = timeStamp
             return calendar.get(Calendar.DAY_OF_MONTH)
+        }
+
+        @SuppressLint("SimpleDateFormat")
+        fun isTimeConstrained(startTime: String, endTime: String):Boolean{
+            return try{
+                    val date = Date()
+                    val dateFormatter = SimpleDateFormat("yyyy/MM/dd")
+                    val startDateWithTime = dateFormatter.format(date) + " " + startTime
+                    val endDateWithTime = dateFormatter.format(date) + " " + endTime
+                    val converterFormat = SimpleDateFormat("yyyy/MM/dd hh:mm a")
+                    converterFormat.parse(startDateWithTime).before(converterFormat.parse(endDateWithTime))
+            }catch (ex: ParseException){
+                false
+            }
+        }
+
+
+        @SuppressLint("SimpleDateFormat")
+        fun isConstrainedByTime(startTime: String, endTime: String):Boolean{
+            return try{
+                val date = Date()
+                val dateFormatter = SimpleDateFormat("yyyy/MM/dd")
+                val startDateWithTime = dateFormatter.format(date) + " " + startTime
+                val endDateWithTime = dateFormatter.format(date) + " " + endTime
+                val converterFormat = SimpleDateFormat("yyyy/MM/dd hh:mm a")
+                val currentTime = converterFormat.format(date)
+                converterFormat.parse(currentTime).after(converterFormat.parse(startDateWithTime)) &&
+                        converterFormat.parse(currentTime).before(converterFormat.parse(endDateWithTime))
+            }catch (ex: ParseException){
+                false
+            }
         }
 
         @SuppressLint("SimpleDateFormat")
