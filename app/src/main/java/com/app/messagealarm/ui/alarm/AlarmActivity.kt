@@ -11,10 +11,7 @@ import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
-import com.app.messagealarm.utils.Constants
-import com.app.messagealarm.utils.ExoPlayerUtils
-import com.app.messagealarm.utils.Once
-import com.app.messagealarm.utils.SnoozeUtils
+import com.app.messagealarm.utils.*
 import com.ncorti.slidetoact.SlideToActView
 import com.tapadoo.alerter.Alerter
 import kotlinx.android.synthetic.main.activity_alarm.*
@@ -47,7 +44,7 @@ class AlarmActivity : BaseActivity() {
             for (x in 0 until numberOfPLay){
                 val once = Once()
                 once.run(Runnable {
-                        ExoPlayerUtils.playAudio(
+                        MediaUtils.playAlarm(
                             intent?.extras!!.getBoolean(Constants.IntentKeys.IS_VIBRATE),
                             this, tone)
                     if(x == numberOfPLay - 1){
@@ -121,7 +118,7 @@ class AlarmActivity : BaseActivity() {
             }
             override fun onSlideCompleteAnimationEnded(view: SlideToActView) {
                 Thread(Runnable {
-                    ExoPlayerUtils.stopAlarm()
+                    MediaUtils.stopAlarm()
                 }).start()
                 SnoozeUtils.activateSnoozeMode(true)
                 openApp()

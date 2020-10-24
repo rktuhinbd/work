@@ -198,7 +198,7 @@ class NotificationListener : NotificationListenerService(),
     override fun onNotificationRemoved(sbn: StatusBarNotification?) {
         //NOTE: Music not getting off on notification removed
         if (sbn!!.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
-            ExoPlayerUtils.stopAlarm()
+            MediaUtils.stopAlarm()
             Toasty.info(this, "Snoozed for 20 minutes!").show()
         } else if (sbn.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
             Toasty.info(this, "Alarm Service Stopped!").show()

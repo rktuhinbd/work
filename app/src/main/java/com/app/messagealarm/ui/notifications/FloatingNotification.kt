@@ -35,7 +35,7 @@ class FloatingNotification {
                     val once = Once()
                     once.run(
                         Runnable {
-                                ExoPlayerUtils.playAudio(
+                                MediaUtils.playAlarm(
                                     isVibrate,
                                     context, tone)
                             if(x == numberOfPlay - 1){

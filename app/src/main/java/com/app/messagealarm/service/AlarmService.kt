@@ -44,7 +44,7 @@ class AlarmService {
                                     if (checkBySenderName(app, sbn)) {
                                         if (checkByMessageBody(app, sbn)) {
                                             //check for player not playing
-                                            if (!ExoPlayerUtils.isPlaying()) {
+                                            if (!MediaUtils.isPlaying()) {
                                                 magicPlay(app.ringTone, service, sbn, app)
                                             }
                                         }

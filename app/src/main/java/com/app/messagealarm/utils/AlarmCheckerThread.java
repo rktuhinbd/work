@@ -38,8 +38,8 @@ public class AlarmCheckerThread extends Thread {
                     Log.e("COUNT", String.valueOf(count));
                     if(count == 5){
                         count = 0;
-                        if(!ExoPlayerUtils.Companion.isPlaying()){
-                            playListener.isPlaying(ExoPlayerUtils.Companion.isPlaying());
+                        if(!MediaUtils.Companion.isPlaying()){
+                            playListener.isPlaying(MediaUtils.Companion.isPlaying());
                         }
                         interrupt();
                         break;
