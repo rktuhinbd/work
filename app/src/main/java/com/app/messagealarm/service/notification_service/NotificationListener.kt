@@ -38,20 +38,12 @@ class NotificationListener : NotificationListenerService(),
     private val TAG: String = "LISTENER"
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
-        val packageName = sbn?.packageName
-        /*Log.e(TAG, "Package name " + packageName)
-        Log.e(TAG, "TITLE " + sbn!!.notification.extras["android.title"])
-        Log.e(TAG, "DESC " + sbn!!.notification.extras["android.text"])*/
-        Log.e(TAG, "TITLE " + sbn!!.notification.extras["android.title"])
-        Log.e(TAG, "DESC " + sbn!!.notification.extras["android.text"])
         filterApps(sbn)
-        Log.e("IS", isPlayAble.toString())
         if (isPlayAble) {
             if (!SnoozeUtils.isSnoozedModeActivate()) {
                 doMagic(sbn)
             }
         }
-
     }
 
     @Synchronized

@@ -128,7 +128,7 @@ class AlarmService {
             return result
         }
 
-        fun replaceAll(regex: String?, input:String, replacement: String?): String? {
+        private fun replaceAll(regex: String?, input:String, replacement: String?): String? {
             return Pattern.compile(regex!!).matcher(input).replaceAll(replacement!!)
         }
 
