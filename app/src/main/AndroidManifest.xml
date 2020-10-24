@@ -22,11 +22,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="q">
+
         <activity
             android:name=".ui.setting.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:excludeFromRecents="true"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.main.alarm_applications.AlarmApplicationActivity"
+            />
         <activity
             android:name=".ui.main.add_apps.AddApplicationActivity"
             android:launchMode="singleTop"
@@ -53,7 +56,9 @@
         <activity
             android:name=".ui.about.AboutActivity"
             android:excludeFromRecents="true"
-            android:launchMode="singleTop" />
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.setting.SettingsActivity"
+            />
 
         <service
             android:name=".service.notification_service.NotificationListener"

@@ -7,6 +7,9 @@ import android.R.id
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.os.Build
 import android.text.InputType
 import android.util.Log
 import android.view.ViewGroup
@@ -23,7 +26,7 @@ class DialogUtils {
     companion object {
 
         fun showDialog(context: Context, title: String, message: String, callback: Callback) {
-            AlertDialog.Builder(context)
+            AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(
@@ -44,7 +47,7 @@ class DialogUtils {
 
         fun showSimpleListDialog(context: Context, callBack: RepeatCallBack) {
             // setup the alert builder
-            val builder = AlertDialog.Builder(context)
+            val builder = AlertDialog.Builder(context,com.app.messagealarm.R.style.MyAlertDialogTheme)
             builder.setTitle("Alarm Repeat Time")
             val animals = arrayOf("Once", "Daily", "Custom")
             builder.setItems(animals) { dialog, which ->
@@ -72,7 +75,7 @@ class DialogUtils {
 
         fun showRingToneSelectDialog(context: Context, callBack: RepeatCallBack) {
             // setup the alert builder
-            val builder = AlertDialog.Builder(context)
+            val builder = AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
             builder.setTitle("Select Ringtone")
             val animals = arrayOf("Default", "Select a song")
             builder.setItems(animals) { dialog, which ->
@@ -101,7 +104,7 @@ class DialogUtils {
             callback: Callback
         ) {
             // setup the alert builder
-            val builder = AlertDialog.Builder(context)
+            val builder = AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
             builder.setTitle("Choose days")
             // user checked an item
             val list: MutableList<String> = ArrayList()
@@ -158,13 +161,17 @@ class DialogUtils {
             message: String,
             callBack: RepeatCallBack
         ) {
-            val alert = AlertDialog.Builder(context)
+            val alert = AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
             alert.setCancelable(false)
             alert.setTitle(message)
             alert.setMessage("This number will indicate how much time the alarm music will play, range 1 to 10")
             // Set an EditText view to get user input
             // Set an EditText view to get user input
             val input = EditText(context)
+            if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
+                input.setTextColor(Color.WHITE)
+                input.backgroundTintList = ColorStateList.valueOf(Color.WHITE)
+            }
             input.setText(currentCount)
             input.isSingleLine = true
             input.inputType = InputType.TYPE_CLASS_NUMBER
@@ -206,7 +213,7 @@ class DialogUtils {
         }
 
         fun showSenderNameDialog(context: Context, currentName: String, callBack: RepeatCallBack) {
-            val alert = AlertDialog.Builder(context)
+            val alert = AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
             alert.setCancelable(false)
             alert.setTitle("Select names")
             alert.setMessage(
@@ -216,6 +223,10 @@ class DialogUtils {
             // Set an EditText view to get user input
             // Set an EditText view to get user input
             val input = EditText(context)
+            if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
+                input.setTextColor(Color.WHITE)
+                input.backgroundTintList = ColorStateList.valueOf(Color.WHITE)
+            }
             if (currentName != "None") {
                 input.setText(currentName)
             }
@@ -250,7 +261,7 @@ class DialogUtils {
         }
 
         fun showMessageBodyDialog(context: Context, currentName: String, callBack: RepeatCallBack) {
-            val alert = AlertDialog.Builder(context)
+            val alert = AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
             alert.setCancelable(false)
             alert.setTitle("Select message body")
             alert.setMessage(
@@ -260,6 +271,10 @@ class DialogUtils {
             val input = EditText(context)
             if (currentName != "None") {
                 input.setText(currentName)
+            }
+            if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
+                input.setTextColor(Color.WHITE)
+                input.backgroundTintList = ColorStateList.valueOf(Color.WHITE)
             }
             input.maxLines = 3
             input.inputType = InputType.TYPE_TEXT_VARIATION_PERSON_NAME

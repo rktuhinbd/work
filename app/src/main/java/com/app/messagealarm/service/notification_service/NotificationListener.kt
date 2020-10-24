@@ -27,46 +27,41 @@ class NotificationListener : NotificationListenerService(),
 
     val sbnList = ArrayList<StatusBarNotification>()
 
-    companion object{
-        private  val MESSENGER_PKG = "com.facebook.orca"
-        private  val WHATSAPP_PKG = "com.whatsapp"
-        private  val VIBER_PKG = ""
-        private  val IMO_PKG = ""
+    companion object {
+        private val MESSENGER_PKG = "com.facebook.orca"
+        private val WHATSAPP_PKG = "com.whatsapp"
+        private val VIBER_PKG = ""
+        private val IMO_PKG = ""
         const val ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE"
     }
+
     private val TAG: String = "LISTENER"
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
-        val packageName = sbn?.packageName
-        /*Log.e(TAG, "Package name " + packageName)
-        Log.e(TAG, "TITLE " + sbn!!.notification.extras["android.title"])
-        Log.e(TAG, "DESC " + sbn!!.notification.extras["android.text"])*/
-        Log.e(TAG, "TITLE " + sbn!!.notification.extras["android.title"])
-        Log.e(TAG, "DESC " + sbn!!.notification.extras["android.text"])
         filterApps(sbn)
-        Log.e("IS", isPlayAble.toString())
-        if(isPlayAble){
-            if(!SnoozeUtils.isSnoozedModeActivate()){
+        if (isPlayAble) {
+            if (!SnoozeUtils.isSnoozedModeActivate()) {
                 doMagic(sbn)
             }
         }
-
     }
 
-    @Synchronized fun doMagic(sbn: StatusBarNotification?){
-            NotificationListenerPresenter(this)
-                .getApplicationList(sbn)
+    @Synchronized
+    fun doMagic(sbn: StatusBarNotification?) {
+        NotificationListenerPresenter(this)
+            .getApplicationList(sbn)
     }
 
-    private fun filterApps(sbn: StatusBarNotification?){
-        when(sbn!!.packageName){
-            MESSENGER_PKG ->{
-               messengerFilter(sbn.notification.extras["android.title"].toString(),
-                   sbn.notification.extras["android.text"].toString()
-                   )
+    private fun filterApps(sbn: StatusBarNotification?) {
+        when (sbn!!.packageName) {
+            MESSENGER_PKG -> {
+                messengerFilter(
+                    sbn.notification.extras["android.title"].toString(),
+                    sbn.notification.extras["android.text"].toString()
+                )
             }
-            WHATSAPP_PKG ->{
-             whatsAppFilter(
+            WHATSAPP_PKG -> {
+                whatsAppFilter(
                     sbn.notification.extras["android.title"].toString(),
                     sbn.notification.extras["android.text"].toString()
                 )
@@ -75,22 +70,22 @@ class NotificationListener : NotificationListenerService(),
         }
     }
 
-    private fun whatsAppFilter(title:String, desc:String){
+    private fun whatsAppFilter(title: String, desc: String) {
 
         isPlayAble = when {
             title == "WhatsApp" -> {
                 false
             }
 
-            desc == "Ringing…" ->{
+            desc == "Ringing…" -> {
                 false
             }
 
-            desc == "Calling…" ->{
+            desc == "Calling…" -> {
                 false
             }
 
-            desc == "Ongoing voice call" ->{
+            desc == "Ongoing voice call" -> {
                 false
             }
 
@@ -98,39 +93,39 @@ class NotificationListener : NotificationListenerService(),
                 false
             }
 
-            desc == "Ongoing video call" ->{
+            desc == "Ongoing video call" -> {
                 false
             }
 
-            desc == "Incoming voice call" ->{
+            desc == "Incoming voice call" -> {
                 false
             }
 
-            desc == "Missed voice call" ->{
+            desc == "Missed voice call" -> {
                 false
             }
 
-            desc.contains("new messages", false) ->{
+            desc.contains("new messages", false) -> {
                 false
             }
 
-            title == "Check message" ->{
+            title == "Check message" -> {
                 false
             }
 
-            title == "null" ->{
+            title == "null" -> {
                 false
             }
 
-            desc == "null" ->{
+            desc == "null" -> {
                 false
             }
 
-            title.isEmpty() ->{
+            title.isEmpty() -> {
                 false
             }
 
-            desc.isEmpty() ->{
+            desc.isEmpty() -> {
                 false
             }
 
@@ -139,7 +134,7 @@ class NotificationListener : NotificationListenerService(),
     }
 
 
-    private fun messengerFilter(title:String, desc: String){
+    private fun messengerFilter(title: String, desc: String) {
         isPlayAble = when {
             title == "Chat heads active" -> {
                 false
@@ -151,27 +146,27 @@ class NotificationListener : NotificationListenerService(),
                 false
             }
 
-            desc.contains("You missed a call from", false) ->{
+            desc.contains("You missed a call from", false) -> {
                 false
             }
 
-            desc.contains("Tap to return to call", false) ->{
+            desc.contains("Tap to return to call", false) -> {
                 false
             }
 
-            title == "null" ->{
+            title == "null" -> {
                 false
             }
 
-            desc == "null" ->{
+            desc == "null" -> {
                 false
             }
 
-            title.isEmpty() ->{
+            title.isEmpty() -> {
                 false
             }
 
-            desc.isEmpty() ->{
+            desc.isEmpty() -> {
                 false
             }
 
@@ -179,23 +174,23 @@ class NotificationListener : NotificationListenerService(),
         }
     }
 
-    private fun viberFilter(){
+    private fun viberFilter() {
 
     }
 
-    private fun upworkFilter(){
+    private fun upworkFilter() {
 
     }
 
-    private fun fiverrFilter(){
+    private fun fiverrFilter() {
 
     }
 
-    private fun freelancerFilter(){
+    private fun freelancerFilter() {
 
     }
 
-    private fun imoFilter(){
+    private fun imoFilter() {
 
     }
 
@@ -203,18 +198,16 @@ class NotificationListener : NotificationListenerService(),
     override fun onNotificationRemoved(sbn: StatusBarNotification?) {
         //NOTE: Music not getting off on notification removed
         if (sbn!!.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
-            Thread(Runnable {
-                ExoPlayerUtils.stopAlarm()
-            }).start()
+            MediaUtils.stopAlarm()
             Toasty.info(this, "Snoozed for 20 minutes!").show()
-        }else if(sbn.packageName == AndroidUtils.getPackageInfo()!!.packageName){
+        } else if (sbn.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
             Toasty.info(this, "Alarm Service Stopped!").show()
         }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if(intent != null){
-            when(intent.action){
+        if (intent != null) {
+            when (intent.action) {
                 ACTION_STOP_FOREGROUND_SERVICE -> stopForeGroundService()
                 else -> FloatingNotification.startForegroundService(this)
             }
@@ -222,7 +215,7 @@ class NotificationListener : NotificationListenerService(),
         return Service.START_STICKY
     }
 
-    private fun stopForeGroundService(){
+    private fun stopForeGroundService() {
         stopForeground(true)
         stopSelf()
         onDestroy()
@@ -239,18 +232,19 @@ class NotificationListener : NotificationListenerService(),
         restartService()
     }
 
-    private fun restartService(){
-        val isServiceStopped = SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)
-        if(SharedPrefUtils.contains(Constants.PreferenceKeys.IS_SERVICE_STOPPED)){
-            if(!isServiceStopped){
+    private fun restartService() {
+        val isServiceStopped =
+            SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)
+        if (SharedPrefUtils.contains(Constants.PreferenceKeys.IS_SERVICE_STOPPED)) {
+            if (!isServiceStopped) {
                 scheduleService()
             }
-        }else{
+        } else {
             scheduleService()
         }
     }
 
-    private fun scheduleService(){
+    private fun scheduleService() {
         val service = PendingIntent.getService(
             applicationContext,
             1001,

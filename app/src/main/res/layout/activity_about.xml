@@ -3,13 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/background_screen"
     android:layout_height="match_parent">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@color/toolbar_color"
         android:elevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,6 +44,7 @@
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="5dp"
+                app:cardBackgroundColor="@color/card_view_color"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -61,7 +63,7 @@
                         android:layout_marginTop="8dp"
                         android:fontFamily="@font/open_sans_semi_bold"
                         android:text="@string/txt_author"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/colorTextRegular"
                         android:textSize="16sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -104,6 +106,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
+                        android:textColor="@color/default_text"
                         android:text="@string/txt_company_info"
                         android:textAlignment="center"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -132,6 +135,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
+                        android:textColor="@color/default_text"
                         android:layout_marginBottom="16dp"
                         android:fontFamily="@font/open_sans_semi_bold"
                         android:text="@string/txt_location_developer"
@@ -140,7 +144,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/txt_company_info"
                         app:layout_constraintVertical_bias="0" />
-
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -155,6 +158,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="8dp"
+                app:cardBackgroundColor="@color/card_view_color"
                 app:cardElevation="5dp"
                 app:layout_constraintBottom_toTopOf="@id/card_view_author"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -187,7 +191,7 @@
                         android:layout_marginTop="8dp"
                         android:fontFamily="@font/open_sans_bold"
                         android:text="@string/app_name"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/colorTextRegular"
                         android:textSize="18sp"
                         app:layout_constraintBottom_toTopOf="@id/txt_version_name"
                         app:layout_constraintEnd_toEndOf="@id/img_app_icon"
@@ -199,6 +203,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:textColor="@color/default_text"
                         android:fontFamily="@font/open_sans_semi_bold"
                         android:text="@string/txt_version"
                         app:layout_constraintBottom_toTopOf="@id/txt_desc"
@@ -213,6 +218,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
+                        android:textColor="@color/default_text"
                         android:fontFamily="@font/open_sans_regular"
                         android:text="@string/txt_app_bio"
                         android:textAlignment="center"

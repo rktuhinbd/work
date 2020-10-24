@@ -11,12 +11,12 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class AllAppsListAdapter ( private val appsList: ArrayList<InstalledApps>,
-                           val mItemClickListener: ItemClickListener
+class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
+                          val mItemClickListener: ItemClickListener
 ):
     RecyclerView.Adapter<AllAppsListAdapter.AllAppsViewHolder>(){
 
-    private val itemsCopy: ArrayList<InstalledApps> = ArrayList()
+    private var itemsCopy: ArrayList<InstalledApps> = ArrayList()
 
 
     interface ItemClickListener{
@@ -35,6 +35,14 @@ class AllAppsListAdapter ( private val appsList: ArrayList<InstalledApps>,
 
     override fun getItemCount(): Int {
         return appsList.size
+    }
+
+    public fun updateData(list:ArrayList<InstalledApps>){
+        appsList.clear()
+        appsList = list
+        itemsCopy.clear()
+        itemsCopy.addAll(appsList)
+        notifyDataSetChanged()
     }
 
     fun filter(text: String) {

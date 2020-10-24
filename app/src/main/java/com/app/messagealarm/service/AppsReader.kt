@@ -7,8 +7,8 @@ import com.app.messagealarm.model.InstalledApps
 
 class AppsReader {
 
-    companion object{
-         fun getInstalledApps(getSysPackages: Boolean, context:Context): ArrayList<InstalledApps>? {
+    companion object {
+        fun getInstalledApps(getSysPackages: Boolean, context: Context): ArrayList<InstalledApps>? {
             val res: ArrayList<InstalledApps> = ArrayList()
             val packs: List<PackageInfo> =
                 context.packageManager.getInstalledPackages(0)
@@ -17,11 +17,15 @@ class AppsReader {
                 if (!getSysPackages && p.versionName == null) {
                     continue
                 }
-                val app = InstalledApps(p.applicationInfo.loadLabel(context.packageManager).toString(),
+                val app = InstalledApps(
+                    p.applicationInfo.loadLabel(context.packageManager).toString(),
                     p.packageName,
                     p.versionName,
                     p.applicationInfo.loadIcon(context.packageManager)
-                    )
+                )
+                if (app.appName.contains(".")) {
+                    continue
+                }
                 res.add(app)
             }
             return res

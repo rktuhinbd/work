@@ -35,16 +35,17 @@ class FloatingNotification {
                     val once = Once()
                     once.run(
                         Runnable {
-                            ExoPlayerUtils.playAudio(
-                                isVibrate,
-                                context, tone)
+                                MediaUtils.playAlarm(
+                                    isVibrate,
+                                    context, tone)
+                            if(x == numberOfPlay - 1){
+                                //done playing dismiss the activity now
+                                //send a notification that you missed the alarm
+                                notificationManager.cancel(225)
+                            }
                         }
                     )
-                    if(x == numberOfPlay - 1){
-                        //done playing dismiss the activity now
-                        //send a notification that you missed the alarm
-                        notificationManager.cancel(225)
-                    }
+
                 }
             }).start()
         }

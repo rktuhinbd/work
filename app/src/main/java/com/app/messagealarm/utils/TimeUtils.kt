@@ -1,12 +1,12 @@
 package com.app.messagealarm.utils
 
 import android.annotation.SuppressLint
+import android.widget.Toast
+import com.app.messagealarm.BaseApplication
+import es.dmoral.toasty.Toasty
 
 import timber.log.Timber
-import java.text.DateFormatSymbols
-import java.text.Format
-import java.text.ParseException
-import java.text.SimpleDateFormat
+import java.text.*
 import java.util.*
 
 
@@ -92,8 +92,10 @@ class TimeUtils private constructor() {
             val calendar = Calendar.getInstance()
             calendar.set(year, month, day)
 
-            return SimpleDateFormat(Constants.Common.APP_COMMON_DATE_FORMAT,
-                    Locale.ENGLISH).format(calendar.time)
+            return SimpleDateFormat(
+                Constants.Common.APP_COMMON_DATE_FORMAT,
+                Locale.ENGLISH
+            ).format(calendar.time)
         }
 
         /**
@@ -104,7 +106,8 @@ class TimeUtils private constructor() {
         fun getFormattedDateString(timeInMillis: Long): String {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = timeInMillis
-            return SimpleDateFormat(Constants.Common.APP_COMMON_DATE_FORMAT,
+            return SimpleDateFormat(
+                Constants.Common.APP_COMMON_DATE_FORMAT,
                 Locale.ENGLISH
             ).format(calendar.time)
         }
@@ -117,7 +120,8 @@ class TimeUtils private constructor() {
         fun getFormattedTimeString(timeInMillis: Long): String {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = timeInMillis
-            return SimpleDateFormat(Constants.Common.APP_COMMON_TIME_FORMAT,
+            return SimpleDateFormat(
+                Constants.Common.APP_COMMON_TIME_FORMAT,
                 Locale.ENGLISH
             ).format(calendar.time)
         }
@@ -130,7 +134,8 @@ class TimeUtils private constructor() {
         fun getFormattedDayNameString(timeInMillis: Long): String {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = timeInMillis
-            return SimpleDateFormat(Constants.Common.APP_COMMON_DAY_FORMAT,
+            return SimpleDateFormat(
+                Constants.Common.APP_COMMON_DAY_FORMAT,
                 Locale.ENGLISH
             ).format(calendar.time)
         }
@@ -158,7 +163,8 @@ class TimeUtils private constructor() {
         fun getFormattedOnlyDateString(timeInMillis: Long): String {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = timeInMillis
-            return SimpleDateFormat(Constants.Common.APP_COMMON_ONLY_DATE_FORMAT,
+            return SimpleDateFormat(
+                Constants.Common.APP_COMMON_ONLY_DATE_FORMAT,
                 Locale.ENGLISH
             ).format(calendar.time)
         }
@@ -171,7 +177,8 @@ class TimeUtils private constructor() {
         fun getFormattedMonthString(timeInMillis: Long): String {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = timeInMillis
-            return SimpleDateFormat(Constants.Common.APP_COMMON_MONTH_FORMAT,
+            return SimpleDateFormat(
+                Constants.Common.APP_COMMON_MONTH_FORMAT,
                 Locale.ENGLISH
             ).format(calendar.time)
         }
@@ -185,7 +192,8 @@ class TimeUtils private constructor() {
         fun getCalendarFromDate(date: String): Calendar {
             val calendar = Calendar.getInstance()
             try {
-                calendar.time = SimpleDateFormat(Constants.Common.APP_COMMON_DATE_FORMAT,
+                calendar.time = SimpleDateFormat(
+                    Constants.Common.APP_COMMON_DATE_FORMAT,
                     Locale.ENGLISH
                 ).parse(date)!!
             } catch (e: ParseException) {
@@ -318,13 +326,46 @@ class TimeUtils private constructor() {
         }
 
         @SuppressLint("SimpleDateFormat")
+        fun isTimeConstrained(startTime: String, endTime: String):Boolean{
+            return try{
+                    val date = Date()
+                    val dateFormatter = SimpleDateFormat("yyyy/MM/dd")
+                    val startDateWithTime = dateFormatter.format(date) + " " + startTime
+                    val endDateWithTime = dateFormatter.format(date) + " " + endTime
+                    val converterFormat = SimpleDateFormat("yyyy/MM/dd hh:mm a")
+                    converterFormat.parse(startDateWithTime).before(converterFormat.parse(endDateWithTime))
+            }catch (ex: ParseException){
+                false
+            }
+        }
+
+
+        @SuppressLint("SimpleDateFormat")
+        fun isConstrainedByTime(startTime: String, endTime: String):Boolean{
+            return try{
+                val date = Date()
+                val dateFormatter = SimpleDateFormat("yyyy/MM/dd")
+                val startDateWithTime = dateFormatter.format(date) + " " + startTime
+                val endDateWithTime = dateFormatter.format(date) + " " + endTime
+                val converterFormat = SimpleDateFormat("yyyy/MM/dd hh:mm a")
+                val currentTime = converterFormat.format(date)
+                converterFormat.parse(currentTime).after(converterFormat.parse(startDateWithTime)) &&
+                        converterFormat.parse(currentTime).before(converterFormat.parse(endDateWithTime))
+            }catch (ex: ParseException){
+                false
+            }
+        }
+
+        @SuppressLint("SimpleDateFormat")
          fun getTimeWithAMOrPM(hr: Int, min: Int): String? {
             val cal = Calendar.getInstance()
             cal[Calendar.HOUR_OF_DAY] = hr
             cal[Calendar.MINUTE] = min
             val formatter: Format
-            formatter = SimpleDateFormat("hh:mm aa")
+            formatter = SimpleDateFormat("hh:mm a")
             return formatter.format(cal.time)
         }
+
+
     }
 }

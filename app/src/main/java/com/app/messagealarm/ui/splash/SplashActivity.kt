@@ -8,12 +8,15 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.service.notification.NotificationListenerService.requestRebind
 import android.view.animation.AnimationUtils
+import androidx.appcompat.app.AppCompatDelegate
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.R
 import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
+import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.DialogUtils
 import com.app.messagealarm.utils.PermissionUtils
+import com.app.messagealarm.utils.SharedPrefUtils
 import kotlinx.android.synthetic.main.activity_splash.*
 
 
@@ -30,6 +33,7 @@ class SplashActivity : BaseActivity() {
             val animation = AnimationUtils.loadAnimation(this, R.anim.bottom_to_top)
             txt_title?.startAnimation(animation)
             progress_bar_splash?.startAnimation(animation)
+            changeTheme()
             runProgressWithSteps()
             tryReconnectService()
         }else{
@@ -47,6 +51,14 @@ class SplashActivity : BaseActivity() {
                 }
             }
             )
+        }
+    }
+
+    private fun changeTheme(){
+        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }else{
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
     }
 
