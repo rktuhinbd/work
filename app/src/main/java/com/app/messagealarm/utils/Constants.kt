@@ -121,6 +121,7 @@ class Constants {
             const val IS_SNOOZED_MODE_ACTIVE = "snozzed"
             const val IS_SERVICE_STOPPED = "service_stopped"
             const val IS_DARK_MODE = "is_dark"
+            const val SNOOZE_TIME = "snooze"
         }
     }
 

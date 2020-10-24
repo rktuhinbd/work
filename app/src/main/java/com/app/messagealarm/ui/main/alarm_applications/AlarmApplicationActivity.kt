@@ -1,18 +1,15 @@
 package com.app.messagealarm.ui.main.alarm_applications
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatDelegate
+import android.text.format.DateUtils
+import android.view.*
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,20 +18,19 @@ import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.R
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.service.notification_service.NotificationListener
-import com.app.messagealarm.ui.about.AboutActivity
 import com.app.messagealarm.ui.adapters.AddedAppsListAdapter
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
 import com.app.messagealarm.ui.setting.SettingsActivity
 import com.app.messagealarm.utils.*
-import dev.doubledot.doki.api.extensions.DONT_KILL_MY_APP_DEFAULT_MANUFACTURER
-import dev.doubledot.doki.ui.DokiActivity
 import es.dmoral.toasty.Toasty
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import java.io.File
-import java.io.Serializable
+import java.lang.NumberFormatException
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
@@ -55,7 +51,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
     }
 
 
-
     private fun lookForAlarmApplication() {
         alarmAppPresenter.getApplicationList()
     }
@@ -72,7 +67,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_item_home, menu)
-        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
+        if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)) {
             MenuTintUtils.tintAllIcons(menu, Color.WHITE)
         }
         return super.onCreateOptionsMenu(menu)
@@ -80,7 +75,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.mnu_setting ->{
+            R.id.mnu_setting -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
             }
             else -> {
@@ -312,6 +307,56 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         runOnUiThread {
             rv_application_list?.adapter?.notifyDataSetChanged()
             Toasty.error(this, message).show()
+        }
+    }
+
+    override fun onRemovedFromSnoozeSuccess() {
+     alarmAppPresenter.getApplicationList()
+    }
+
+    override fun onSnoozeClick(app: ApplicationEntity) {
+        //click event from an item
+        try {
+            snoozeRemoveDialog(timeDifference(app.snoozedTime.toLong()), app.appName, app.packageName)
+        } catch (e: NumberFormatException) {
+            Toasty.info(this, getString(R.string.txt_invalid_request)).show()
+        }
+    }
+
+    private fun timeDifference(time: Long): String {
+        return DateUtils.getRelativeTimeSpanString(time, System.currentTimeMillis(), 0).toString()
+    }
+
+    private fun snoozeRemoveDialog(difference: String, appName:String, packageName:String) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_snooze_timer)
+        val txtTitle = dialog.findViewById<TextView>(R.id.txt_discard)
+        val txtDesc = dialog.findViewById<TextView>(R.id.txt_changes)
+        txtDesc.text  = String.format("%s snooze has %s remaining, do you want to remove it now?", appName, difference)
+        val txtCancel = dialog.findViewById<TextView>(R.id.btn_cancel)
+        val txtDiscard = dialog.findViewById<TextView>(R.id.btn_discard)
+        Objects.requireNonNull(dialog.window!!)
+            .setBackgroundDrawableResource(android.R.color.transparent)
+        txtCancel.setOnClickListener {
+            if (dialog.isShowing) {
+                dialog.cancel()
+            }
+        }
+        txtDiscard.setOnClickListener {
+            if (dialog.isShowing) {
+                dialog.cancel()
+            }
+            alarmAppPresenter.removeFromSnooze(packageName)
+        }
+        val window = dialog.window
+        window!!.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        val wlp = window.attributes;
+        wlp.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND
+        window.attributes = wlp
+        if (!dialog.isShowing) {
+            dialog.show()
         }
     }
 

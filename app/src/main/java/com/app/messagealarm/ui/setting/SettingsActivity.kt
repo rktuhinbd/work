@@ -117,6 +117,11 @@ class SettingsActivity : AppCompatActivity() {
 
             })
 
+
+            val snoozePre = findPreference("snooze") as ListPreference?
+            snoozePre!!.layoutResource = R.layout.layout_preference
+
+
         }
     }
 }

@@ -9,4 +9,5 @@ interface AlarmApplicationView {
     fun onApplicationDeleteError()
     fun onAppStatusUpdateSuccess()
     fun onAppStatusUpdateError(message:String)
+    fun onRemovedFromSnoozeSuccess()
 }

@@ -124,7 +124,7 @@ class AlarmActivity : BaseActivity() {
 
                 override fun onSlideCompleteAnimationEnded(view: SlideToActView) {
                     MediaUtils.stopAlarm()
-                    SnoozeUtils.activateSnoozeMode(true)
+                    SnoozeUtils.activateSnoozeMode(intent?.extras!!.getString(Constants.IntentKeys.PACKAGE_NAME)!!)
                     openApp()
                     finish()
                 }

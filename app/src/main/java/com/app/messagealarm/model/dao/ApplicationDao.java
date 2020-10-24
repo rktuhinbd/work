@@ -30,4 +30,10 @@ public interface ApplicationDao {
 
     @Query("SELECT * FROM applications WHERE package_name = :packageName")
     ApplicationEntity getAppByPackageName(String packageName);
+
+    @Query("UPDATE applications SET is_snoozed = 1, snoozed_time = :snoozeTime WHERE package_name = :packageName")
+    void addSnooze(String packageName, String snoozeTime);
+
+    @Query("UPDATE applications SET is_snoozed = 0, running_status = 1 WHERE package_name = :packageName")
+    void removeFromSnooze(String packageName);
 }

@@ -48,11 +48,26 @@ public class ApplicationEntity implements Serializable {
     private String tone_path;
     @ColumnInfo(name = "bitmap_path")
     private String bitmapPath;
+    @ColumnInfo(name = "is_snoozed", defaultValue = "0")
+    private boolean isSnoozed;
+    @ColumnInfo(name = "snoozed_time")
+    private String snoozedTime;
+
 
     /**
      * Getter methods
+     *
      * @return
      */
+
+    public boolean isSnoozed() {
+        return isSnoozed;
+    }
+
+    public String getSnoozedTime() {
+        return snoozedTime;
+    }
+
 
     public String getBitmapPath() {
         return bitmapPath;
@@ -119,10 +134,19 @@ public class ApplicationEntity implements Serializable {
     }
 
 
+
     /**
      * Setter methods
      */
 
+
+    public void setSnoozed(boolean snoozed) {
+        isSnoozed = snoozed;
+    }
+
+    public void setSnoozedTime(String snoozedTime) {
+        this.snoozedTime = snoozedTime;
+    }
     public void setBitmapPath(String bitmapPath) {
         this.bitmapPath = bitmapPath;
     }
