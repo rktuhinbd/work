@@ -6,13 +6,16 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.util.Log
 import com.app.messagealarm.BaseApplication
+import java.io.IOException
+import java.lang.IllegalStateException
+import java.lang.NullPointerException
 
 class MediaUtils {
     companion object {
 
         var mediaPlayer: MediaPlayer? = null
 
-        fun playAlarm( isVibrate: Boolean, context: Context, mediaPath: String?) {
+        fun playAlarm(isVibrate: Boolean, context: Context, mediaPath: String?) {
 
             //start full sound
             Thread(Runnable {
@@ -25,16 +28,25 @@ class MediaUtils {
                 );
             }).start()
 
-            //start media player
-            mediaPlayer = if (mediaPath != null) {
-                MediaPlayer.create(context, Uri.parse(mediaPath))
-            } else {
-                MediaPlayer.create(context, com.app.messagealarm.R.raw.default_ringtone)
-            }
-            mediaPlayer!!.setVolume(1.0f, 1.0f)
-            mediaPlayer!!.isLooping = true
-            mediaPlayer!!.start()
+            try {
+                //start media player
+                mediaPlayer = if (mediaPath != null) {
+                    MediaPlayer.create(context, Uri.parse(mediaPath))
+                } else {
+                    MediaPlayer.create(context, com.app.messagealarm.R.raw.default_ringtone)
+                }
+                mediaPlayer!!.setVolume(1.0f, 1.0f)
+                mediaPlayer!!.isLooping = true
+                mediaPlayer!!.setOnPreparedListener { mediaPlayer!!.start() }
+                mediaPlayer!!.prepareAsync()
 
+            } catch (e: IllegalStateException) {
+
+            } catch (e: NullPointerException) {
+
+            } catch (e: IOException) {
+
+            }
             //start vibration
             Thread(Runnable {
                 //vibrate
@@ -45,7 +57,6 @@ class MediaUtils {
                     })
                 }
             }).start()
-
             //stop playBack
             stopPlayBackAfterDone()
         }
@@ -61,7 +72,7 @@ class MediaUtils {
             while (true) {
                 val totalPlayBack = (mediaPlayer!!.currentPosition / 1000).toInt()
                 if (totalPlayBack == 30) {
-                    if (mediaPlayer!!.isPlaying) {
+                    if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
                         mediaPlayer!!.stop()
                         stopVibration()
                         break
