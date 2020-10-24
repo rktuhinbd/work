@@ -82,7 +82,7 @@ class MediaUtils {
         }
 
         fun stopAlarm() {
-            if (mediaPlayer != null && !mediaPlayer!!.isPlaying) {
+            if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
                 mediaPlayer!!.stop()
                 stopVibration()
             }
