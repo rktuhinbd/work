@@ -267,5 +267,4 @@ class NotificationListener : NotificationListenerService(),
 
     }
 
-
 }

@@ -25,11 +25,13 @@ import java.net.URL
 class PushMessage : FirebaseMessagingService() {
 
     override fun onMessageReceived(p0: RemoteMessage?) {
+        Log.e("REMOTE_NOTIFY", p0!!.notification.toString())
        createNotification(p0)
     }
 
     override fun onNewToken(p0: String?) {
         super.onNewToken(p0)
+        Log.e("F_TOKEN", p0!!)
     }
 
 
@@ -59,13 +61,12 @@ class PushMessage : FirebaseMessagingService() {
         }
         val defaultSoundUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         // Set the notification parameters to the notification builder object
-        builder.setContentTitle(remoteMessage?.notification?.title)
-            .setContentText(remoteMessage?.notification?.body)
+        builder
             .setSmallIcon(R.mipmap.ic_launcher)
             .setSound(defaultSoundUri)
             .setAutoCancel(true)
         // Set the image for the notification
-            val bitmap: Bitmap = getBitmapfromUrl(remoteMessage!!.data?.get("image-url"))!!
+            val bitmap: Bitmap = getBitmapfromUrl(remoteMessage!!.data?.get("image"))!!
             builder.setStyle(
                 NotificationCompat.BigPictureStyle()
                     .bigPicture(bitmap)
