@@ -41,6 +41,8 @@ class NotificationListener : NotificationListenerService(),
         filterApps(sbn)
         if (isPlayAble) {
             if (!SnoozeUtils.isSnoozedModeActivate()) {
+                //make is stopped false
+                SharedPrefUtils.write(Constants.PreferenceKeys.IS_STOPPED, false)
                 doMagic(sbn)
             }
         }
@@ -198,8 +200,8 @@ class NotificationListener : NotificationListenerService(),
     override fun onNotificationRemoved(sbn: StatusBarNotification?) {
         //NOTE: Music not getting off on notification removed
         if (sbn!!.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
-            MediaUtils.stopAlarm()
-            Toasty.info(this, "Snoozed for 20 minutes!").show()
+                MediaUtils.stopAlarm()
+           // SnoozeUtils.activateSnoozeMode(sbn.packageName,  sbn.notification.extras["android.title"].toString(), this)
         } else if (sbn.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
             Toasty.info(this, "Alarm Service Stopped!").show()
         }

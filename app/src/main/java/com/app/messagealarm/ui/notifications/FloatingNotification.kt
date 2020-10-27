@@ -11,6 +11,7 @@ import android.media.session.PlaybackState
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
+import android.util.Log
 import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -27,20 +28,24 @@ class FloatingNotification {
         private const val CHANNEL_ID = "alarm channel"
         private const val CHANNEL_NAME = "alarm app channel"
 
-        private fun startPlaying(tone:String?, isVibrate: Boolean,context: Service,
+        private fun startPlaying(appName:String, packageName:String, tone:String?, isVibrate: Boolean,context: Service,
                                  notificationManager: NotificationManagerCompat,  numberOfPlay: Int){
             Thread(Runnable {
                 //here i need run the loop of how much time need to play
                 for (x in 0 until numberOfPlay){
+                    if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_STOPPED)){
+                        break
+                    }
                     val once = Once()
                     once.run(
                         Runnable {
                                 MediaUtils.playAlarm(
                                     isVibrate,
-                                    context, tone)
+                                    context, tone, (x == (numberOfPlay - 1)))
                             if(x == numberOfPlay - 1){
                                 //done playing dismiss the activity now
                                 //send a notification that you missed the alarm
+                                SnoozeUtils.activateSnoozeMode(packageName, appName, context)
                                 notificationManager.cancel(225)
                             }
                         }
@@ -50,7 +55,8 @@ class FloatingNotification {
             }).start()
         }
 
-        fun showFloatingNotification(numberOfPlay:Int, isVibrate:Boolean, context: Service, mediaPath:String?) {
+        fun showFloatingNotification(appName: String,packageName: String,numberOfPlay:Int,
+                                     isVibrate:Boolean, context: Service, mediaPath:String?) {
             // sending data to new activity
             val receiveCallAction =
                 Intent(context, AlarmApplicationActivity::class.java)
@@ -88,9 +94,8 @@ class FloatingNotification {
                 .setAutoCancel(true)
             val notificationManager = NotificationManagerCompat.from(context)
             notificationManager.notify(225, notificationBuilder.build())
-
             //start playing
-            startPlaying(mediaPath, isVibrate, context, notificationManager, numberOfPlay)
+            startPlaying(appName, packageName,mediaPath, isVibrate, context, notificationManager, numberOfPlay)
         }
 
         /*

@@ -4,6 +4,8 @@ import android.app.Notification
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -42,20 +44,28 @@ class AlarmActivity : BaseActivity() {
             //here i need run the loop of how much time need to play
             val numberOfPLay = intent?.extras!!.getInt(Constants.IntentKeys.NUMBER_OF_PLAY)
             for (x in 0 until numberOfPLay) {
+                if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_STOPPED)){
+                    break
+                }
                 val once = Once()
                 once.run(Runnable {
+                    Log.e("CALLED", "TRUE")
                     MediaUtils.playAlarm(
                         intent?.extras!!.getBoolean(Constants.IntentKeys.IS_VIBRATE),
-                        this, tone
+                        this, tone,
+                        (x == (numberOfPLay-1))
                     )
                     if (x == numberOfPLay - 1) {
                         //done playing dismiss the activity now
                         //send a notification that you missed the alarm
+                        SnoozeUtils.activateSnoozeMode(intent?.extras!!.getString(Constants.IntentKeys.PACKAGE_NAME)!!,
+                            intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!,
+                            this@AlarmActivity
+                        )
                         showYouMissedAlarmNotification(intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!)
                         finish()
                     }
                 })
-
             }
         }).start()
     }
@@ -124,7 +134,10 @@ class AlarmActivity : BaseActivity() {
 
                 override fun onSlideCompleteAnimationEnded(view: SlideToActView) {
                     MediaUtils.stopAlarm()
-                    SnoozeUtils.activateSnoozeMode(intent?.extras!!.getString(Constants.IntentKeys.PACKAGE_NAME)!!)
+                    SnoozeUtils.activateSnoozeMode(intent?.extras!!.getString(Constants.IntentKeys.PACKAGE_NAME)!!,
+                    intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!,
+                        this@AlarmActivity
+                        )
                     openApp()
                     finish()
                 }

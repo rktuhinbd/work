@@ -74,6 +74,8 @@ class AlarmService {
                 } else {
                     //check if activity is not open
                     FloatingNotification.showFloatingNotification(
+                        app.appName,
+                        app.packageName,
                         app.numberOfPlay,
                         app.isVibrateOnAlarm,
                         service,
@@ -86,6 +88,8 @@ class AlarmService {
                 } else {
                     //check activity is not open
                     FloatingNotification.showFloatingNotification(
+                        app.appName,
+                        app.packageName,
                         app.numberOfPlay,
                         app.isVibrateOnAlarm,
                         service,
@@ -221,6 +225,8 @@ class AlarmService {
                 AlarmCheckerThread(AlarmCheckerThread.PlayListener { s ->
                     if (!s) {
                         FloatingNotification.showFloatingNotification(
+                            app.appName,
+                            app.packageName,
                             app.numberOfPlay,
                             app.isVibrateOnAlarm,
                             service,
