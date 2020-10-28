@@ -314,52 +314,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
      alarmAppPresenter.getApplicationList()
     }
 
-    override fun onSnoozeClick(app: ApplicationEntity) {
-        //click event from an item
-        try {
-            snoozeRemoveDialog(timeDifference(app.snoozedTime.toLong()), app.appName, app.packageName)
-        } catch (e: NumberFormatException) {
-            Toasty.info(this, getString(R.string.txt_invalid_request)).show()
-        }
-    }
-
-    private fun timeDifference(time: Long): String {
-        return DateUtils.getRelativeTimeSpanString(time, System.currentTimeMillis(), 0).toString()
-    }
-
-    private fun snoozeRemoveDialog(difference: String, appName:String, packageName:String) {
-        val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(false)
-        dialog.setContentView(R.layout.dialog_snooze_timer)
-        val txtTitle = dialog.findViewById<TextView>(R.id.txt_discard)
-        val txtDesc = dialog.findViewById<TextView>(R.id.txt_changes)
-        txtDesc.text  = String.format("%s snooze has %s remaining, do you want to remove it now?", appName, difference)
-        val txtCancel = dialog.findViewById<TextView>(R.id.btn_cancel)
-        val txtDiscard = dialog.findViewById<TextView>(R.id.btn_discard)
-        Objects.requireNonNull(dialog.window!!)
-            .setBackgroundDrawableResource(android.R.color.transparent)
-        txtCancel.setOnClickListener {
-            if (dialog.isShowing) {
-                dialog.cancel()
-            }
-        }
-        txtDiscard.setOnClickListener {
-            if (dialog.isShowing) {
-                dialog.cancel()
-            }
-            alarmAppPresenter.removeFromSnooze(packageName)
-        }
-        val window = dialog.window
-        window!!.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        val wlp = window.attributes;
-        wlp.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND
-        window.attributes = wlp
-        if (!dialog.isShowing) {
-            dialog.show()
-        }
-    }
-
     override fun onItemClick(app: ApplicationEntity) {
         //refresh adapter first
         if (!bottomSheetModel.isAdded) {

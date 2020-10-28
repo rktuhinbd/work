@@ -27,7 +27,6 @@ class AddedAppsListAdapter(
     }
 
     interface ItemClickListener {
-        fun onSnoozeClick(app: ApplicationEntity)
         fun onItemClick(app: ApplicationEntity)
         fun onLongClick(app: ApplicationEntity)
         fun onApplicationSwitch(boolean: Boolean, id: Int)
@@ -66,16 +65,8 @@ class AddedAppsListAdapter(
         fun bindItems(app: ApplicationEntity) {
             itemView.tv_app_name?.text = app.appName
             itemView.switch_app_status?.isChecked = app.isRunningStatus
-            if (app.isSnoozed) {
-                itemView.switch_app_status?.isEnabled  = false
-                itemView.btn_snooze?.visibility = View.VISIBLE
-                itemView.switch_app_status?.isChecked = false
-            } else {
-                itemView.switch_app_status?.isEnabled = true
-                itemView.btn_snooze?.visibility = View.GONE
                 itemView.switch_app_status?.setOnCheckedChangeListener { buttonView, isChecked ->
                     mItemClickListener.onApplicationSwitch(isChecked, app.id)
-                }
             }
             itemView.iv_app_icon?.setImageBitmap(
                 BitmapFactory.decodeFile(
@@ -83,10 +74,6 @@ class AddedAppsListAdapter(
                         .absolutePath
                 )
             )
-
-            itemView.btn_snooze?.setOnClickListener {
-                mItemClickListener.onSnoozeClick(appsList[adapterPosition])
-            }
         }
 
         override fun onClick(v: View?) {

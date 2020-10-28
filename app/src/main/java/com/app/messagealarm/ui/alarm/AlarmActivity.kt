@@ -58,10 +58,6 @@ class AlarmActivity : BaseActivity() {
                     if (x == numberOfPLay - 1) {
                         //done playing dismiss the activity now
                         //send a notification that you missed the alarm
-                        SnoozeUtils.activateSnoozeMode(intent?.extras!!.getString(Constants.IntentKeys.PACKAGE_NAME)!!,
-                            intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!,
-                            this@AlarmActivity
-                        )
                         showYouMissedAlarmNotification(intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!)
                         finish()
                     }
@@ -134,10 +130,6 @@ class AlarmActivity : BaseActivity() {
 
                 override fun onSlideCompleteAnimationEnded(view: SlideToActView) {
                     MediaUtils.stopAlarm()
-                    SnoozeUtils.activateSnoozeMode(intent?.extras!!.getString(Constants.IntentKeys.PACKAGE_NAME)!!,
-                    intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!,
-                        this@AlarmActivity
-                        )
                     openApp()
                     finish()
                 }

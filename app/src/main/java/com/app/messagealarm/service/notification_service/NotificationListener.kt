@@ -3,20 +3,13 @@ package com.app.messagealarm.service.notification_service
 import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.os.Handler
-import android.os.IBinder
-import android.provider.MediaStore
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
-import android.util.Log
-import androidx.annotation.RequiresApi
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.service.AlarmService
 import com.app.messagealarm.ui.notifications.FloatingNotification
 import com.app.messagealarm.utils.*
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.activity_main.*
 
 
 class NotificationListener : NotificationListenerService(),
@@ -33,6 +26,7 @@ class NotificationListener : NotificationListenerService(),
         private val VIBER_PKG = ""
         private val IMO_PKG = ""
         const val ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE"
+
     }
 
     private val TAG: String = "LISTENER"
@@ -201,7 +195,6 @@ class NotificationListener : NotificationListenerService(),
         //NOTE: Music not getting off on notification removed
         if (sbn!!.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
                 MediaUtils.stopAlarm()
-           // SnoozeUtils.activateSnoozeMode(sbn.packageName,  sbn.notification.extras["android.title"].toString(), this)
         } else if (sbn.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
             Toasty.info(this, "Alarm Service Stopped!").show()
         }
@@ -211,11 +204,14 @@ class NotificationListener : NotificationListenerService(),
         if (intent != null) {
             when (intent.action) {
                 ACTION_STOP_FOREGROUND_SERVICE -> stopForeGroundService()
-                else -> FloatingNotification.startForegroundService(this)
+                else ->{
+                    FloatingNotification.startForegroundService(this, false)
+                }
             }
         }
         return Service.START_STICKY
     }
+
 
     private fun stopForeGroundService() {
         stopForeground(true)
@@ -224,9 +220,11 @@ class NotificationListener : NotificationListenerService(),
         SharedPrefUtils.write(Constants.PreferenceKeys.IS_SERVICE_STOPPED, true)
     }
 
+
     override fun onCreate() {
         super.onCreate()
-        FloatingNotification.startForegroundService(this)
+        //FloatingNotification.startForegroundService(this, false)
+       // muteListener()
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {

@@ -14,7 +14,7 @@ import java.util.logging.Handler
 class SnoozeUtils {
     companion object {
         fun activateSnoozeMode(packageName: String, appName:String, context: Context) {
-            var snoozeInterval = 20
+           /* var snoozeInterval = 20
             snoozeInterval = try {
                 SharedPrefUtils.readString(Constants.PreferenceKeys.SNOOZE_TIME)
                     .split(" ")[0].toInt()
@@ -39,7 +39,7 @@ class SnoozeUtils {
 
                 }
             }).start()
-
+*/
         }
 
         fun isSnoozedModeActivate(): Boolean {

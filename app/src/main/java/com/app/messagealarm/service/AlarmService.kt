@@ -46,9 +46,7 @@ class AlarmService {
                                             //check for player not playing
                                             if (!MediaUtils.isPlaying()) {
                                                 //check if app is in not snoozed
-                                                if (!app.isSnoozed) {
                                                     magicPlay(app.ringTone, service, sbn, app)
-                                                }
                                             }
                                         }
                                     }
@@ -98,6 +96,8 @@ class AlarmService {
                 }
             }
         }
+
+
 
 
         /**

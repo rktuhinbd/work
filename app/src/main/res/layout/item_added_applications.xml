@@ -50,27 +50,11 @@
                 android:maxLines="1"
                 android:textColor="@color/colorTextRegular"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/btn_snooze"
+                app:layout_constraintEnd_toStartOf="@id/switch_app_status"
                 app:layout_constraintStart_toEndOf="@id/iv_app_icon"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 tool:text="Mi Remote" />
-
-            <ImageButton
-                android:id="@+id/btn_snooze"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                app:layout_constraintEnd_toStartOf="@id/switch_app_status"
-                app:layout_constraintStart_toEndOf="@id/tv_app_name"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginEnd="12dp"
-                android:src="@drawable/ic_baseline_snooze_24"
-                android:foreground="?selectableItemBackground"
-                android:scaleType="fitCenter"
-                android:background="@android:color/transparent"
-                android:padding="3dp"
-                />
 
             <Switch
                 android:id="@+id/switch_app_status"

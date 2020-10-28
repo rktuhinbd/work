@@ -25,6 +25,11 @@ class Constants {
             const val SPACE_STRING: String = " "
         }
     }
+    class ACTION{
+        companion object{
+            const val ACTION_UN_MUTE = "un_mute"
+        }
+    }
 
     class Common {
         companion object {
@@ -119,10 +124,9 @@ class Constants {
     class PreferenceKeys {
         companion object {
             const val IS_STOPPED = "is_stopped"
-            const val IS_SNOOZED_MODE_ACTIVE = "snozzed"
             const val IS_SERVICE_STOPPED = "service_stopped"
             const val IS_DARK_MODE = "is_dark"
-            const val SNOOZE_TIME = "snooze"
+            const val IS_MUTED = "is_muted"
         }
     }
 

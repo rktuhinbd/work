@@ -3,11 +3,7 @@
 
     <PreferenceCategory app:title="@string/txt_themes">
 
-     <!--   <EditTextPreference
-            app:key="signature"
-            app:title="@string/signature_title"
-            app:useSimpleSummaryProvider="true" />
--->
+
         <ListPreference
             app:defaultValue="reply"
             app:entries="@array/theme_entries"
@@ -23,15 +19,15 @@
 
     <!--App Snooze-->
 
-    <PreferenceCategory app:title="@string/txt_snooze">
+    <PreferenceCategory app:title="@string/txt_mute">
 
-        <ListPreference android:title="@string/txt_alarm_snooze"
-            android:key="snooze"
+        <ListPreference android:title="@string/txt_alarm_mute"
+            android:key="mute"
             app:enabled="true"
             app:icon="@drawable/ic_baseline_snooze_24"
             app:useSimpleSummaryProvider="true"
-            app:entryValues="@array/snooze_values"
-            app:entries="@array/snooze_entries"
+            app:entryValues="@array/mute_values"
+            app:entries="@array/mute_entries"
             />
 
     </PreferenceCategory>
