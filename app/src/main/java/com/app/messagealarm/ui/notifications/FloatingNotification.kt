@@ -195,6 +195,8 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
                 DataUtils.getString(com.app.messagealarm.R.string.waiting_for_messages)
             )
 
+
+
             // And now, building and attaching the Skip button.
             // And now, building and attaching the Skip button.
             val buttonMuteHandler = Intent(context, UnMuteReceiver::class.java)
@@ -220,7 +222,7 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
         fun notifyMute(isMuted: Boolean) {
             if (notificationView == null || notificationBuilder == null) return
             val iconID: Int = if (isMuted) com.app.messagealarm.R.drawable.ic_silence else com.app.messagealarm.R.drawable.ic_snooze
-            val textString : String =  if(isMuted) DataUtils.getString(com.app.messagealarm.R.string.waiting_for_messages) else "Application muted"
+            val textString : String =  if(!isMuted) DataUtils.getString(com.app.messagealarm.R.string.waiting_for_messages) else "Application muted"
             notificationView!!.setImageViewResource(com.app.messagealarm.R.id.btn_mute_status, iconID)
             notificationView!!.setTextViewText(com.app.messagealarm.R.id.txt_desc, textString)
             notificationBuilder!!.setContent(notificationView)
@@ -232,12 +234,6 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
 
 
     }
-
-
-
-
-
-
 
 
 }
