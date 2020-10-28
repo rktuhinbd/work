@@ -45,8 +45,11 @@ class AlarmService {
                                         if (checkByMessageBody(app, sbn)) {
                                             //check for player not playing
                                             if (!MediaUtils.isPlaying()) {
-                                                //check if app is in not snoozed
+                                                //check if app is in not muted
+                                                if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_MUTED)){
                                                     magicPlay(app.ringTone, service, sbn, app)
+                                                }
+
                                             }
                                         }
                                     }

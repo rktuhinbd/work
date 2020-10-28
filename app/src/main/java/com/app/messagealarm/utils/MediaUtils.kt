@@ -111,7 +111,7 @@ class MediaUtils {
                 mediaPlayer!!.release()
                 mediaPlayer = null
                 stopVibration()
-                MuteUtils.muteApp()
+                //MuteUtils.muteApp()
             }
         }
 

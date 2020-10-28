@@ -14,11 +14,11 @@ public class UnMuteReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if(!SharedPrefUtils.INSTANCE.readBoolean(Constants.PreferenceKeys.IS_MUTED)){
-            FloatingNotification.Companion.notifyMute(true);
             SharedPrefUtils.INSTANCE.write(Constants.PreferenceKeys.IS_MUTED, true);
+            FloatingNotification.Companion.notifyMute(true);
         }else{
-            FloatingNotification.Companion.notifyMute(false);
             SharedPrefUtils.INSTANCE.write(Constants.PreferenceKeys.IS_MUTED, false);
+            FloatingNotification.Companion.notifyMute(false);
         }
 
 
