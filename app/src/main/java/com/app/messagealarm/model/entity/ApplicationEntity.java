@@ -49,8 +49,10 @@ public class ApplicationEntity implements Serializable {
     @ColumnInfo(name = "bitmap_path")
     private String bitmapPath;
 
+
     /**
      * Getter methods
+     *
      * @return
      */
 
@@ -117,6 +119,7 @@ public class ApplicationEntity implements Serializable {
     public String getTone_path() {
         return tone_path;
     }
+
 
 
     /**

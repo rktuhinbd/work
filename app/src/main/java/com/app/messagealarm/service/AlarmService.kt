@@ -45,7 +45,11 @@ class AlarmService {
                                         if (checkByMessageBody(app, sbn)) {
                                             //check for player not playing
                                             if (!MediaUtils.isPlaying()) {
-                                                magicPlay(app.ringTone, service, sbn, app)
+                                                //check if app is in not muted
+                                                if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_MUTED)){
+                                                    magicPlay(app.ringTone, service, sbn, app)
+                                                }
+
                                             }
                                         }
                                     }
@@ -71,6 +75,8 @@ class AlarmService {
                 } else {
                     //check if activity is not open
                     FloatingNotification.showFloatingNotification(
+                        app.appName,
+                        app.packageName,
                         app.numberOfPlay,
                         app.isVibrateOnAlarm,
                         service,
@@ -83,6 +89,8 @@ class AlarmService {
                 } else {
                     //check activity is not open
                     FloatingNotification.showFloatingNotification(
+                        app.appName,
+                        app.packageName,
                         app.numberOfPlay,
                         app.isVibrateOnAlarm,
                         service,
@@ -91,6 +99,8 @@ class AlarmService {
                 }
             }
         }
+
+
 
 
         /**
@@ -218,6 +228,8 @@ class AlarmService {
                 AlarmCheckerThread(AlarmCheckerThread.PlayListener { s ->
                     if (!s) {
                         FloatingNotification.showFloatingNotification(
+                            app.appName,
+                            app.packageName,
                             app.numberOfPlay,
                             app.isVibrateOnAlarm,
                             service,

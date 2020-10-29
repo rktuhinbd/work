@@ -1,12 +1,9 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory app:title="@string/txt_themes">
 
-     <!--   <EditTextPreference
-            app:key="signature"
-            app:title="@string/signature_title"
-            app:useSimpleSummaryProvider="true" />
--->
+
         <ListPreference
             app:defaultValue="reply"
             app:entries="@array/theme_entries"
@@ -15,9 +12,26 @@
             app:enabled="true"
             app:icon="@drawable/ic_color_lens_black_24dp"
             app:title="@string/reply_title"
-            app:useSimpleSummaryProvider="true" />
+            app:useSimpleSummaryProvider="true"
+           />
 
     </PreferenceCategory>
+
+    <!--App Snooze-->
+
+    <PreferenceCategory app:title="@string/txt_mute">
+
+        <ListPreference android:title="@string/txt_alarm_mute"
+            android:key="mute"
+            app:enabled="true"
+            app:icon="@drawable/ic_baseline_snooze_24"
+            app:useSimpleSummaryProvider="true"
+            app:entryValues="@array/mute_values"
+            app:entries="@array/mute_entries"
+            />
+
+    </PreferenceCategory>
+
 
     <PreferenceCategory app:title="Support">
 

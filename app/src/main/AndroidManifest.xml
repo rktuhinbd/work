@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.app.messagealarm">
 
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -79,6 +81,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".broadcast_receiver.UnMuteReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="skip" />
+            </intent-filter>
+        </receiver>
+
         <service
             android:name=".firebase.PushMessage"
             android:exported="false">
@@ -86,6 +94,11 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
+
+        <receiver android:exported="false"
+            android:process=":remote"
+            android:name=".broadcast_receiver.AlarmReceiver" />
+
     </application>
 
 </manifest>

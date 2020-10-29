@@ -29,14 +29,14 @@ class AddedAppsListAdapter(
     interface ItemClickListener {
         fun onItemClick(app: ApplicationEntity)
         fun onLongClick(app: ApplicationEntity)
-        fun onApplicationSwitch(boolean: Boolean, id:Int)
+        fun onApplicationSwitch(boolean: Boolean, id: Int)
     }
 
     override fun getItemCount(): Int {
         return appsList.size
     }
 
-    fun addItems(list:ArrayList<ApplicationEntity>){
+    fun addItems(list: ArrayList<ApplicationEntity>) {
         appsList.clear()
         appsList.addAll(list)
         notifyDataSetChanged()
@@ -65,8 +65,8 @@ class AddedAppsListAdapter(
         fun bindItems(app: ApplicationEntity) {
             itemView.tv_app_name?.text = app.appName
             itemView.switch_app_status?.isChecked = app.isRunningStatus
-            itemView.switch_app_status?.setOnCheckedChangeListener { buttonView, isChecked ->
-               mItemClickListener.onApplicationSwitch(isChecked, app.id)
+                itemView.switch_app_status?.setOnCheckedChangeListener { buttonView, isChecked ->
+                    mItemClickListener.onApplicationSwitch(isChecked, app.id)
             }
             itemView.iv_app_icon?.setImageBitmap(
                 BitmapFactory.decodeFile(
@@ -74,8 +74,6 @@ class AddedAppsListAdapter(
                         .absolutePath
                 )
             )
-
-
         }
 
         override fun onClick(v: View?) {

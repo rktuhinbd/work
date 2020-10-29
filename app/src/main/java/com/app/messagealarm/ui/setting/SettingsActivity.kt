@@ -117,6 +117,11 @@ class SettingsActivity : AppCompatActivity() {
 
             })
 
+
+            val snoozePre = findPreference("mute") as ListPreference?
+            snoozePre!!.layoutResource = R.layout.layout_preference
+
+
         }
     }
 }

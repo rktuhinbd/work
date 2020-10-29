@@ -30,4 +30,5 @@ public interface ApplicationDao {
 
     @Query("SELECT * FROM applications WHERE package_name = :packageName")
     ApplicationEntity getAppByPackageName(String packageName);
+
 }

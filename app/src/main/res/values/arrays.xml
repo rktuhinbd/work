@@ -10,4 +10,18 @@
         <item>Dark</item>
     </string-array>
 
+    <string-array name="mute_values">
+        <item>10 min</item>
+        <item>20 min</item>
+        <item>30 min</item>
+        <item>40 min</item>
+    </string-array>
+
+    <string-array name="mute_entries">
+        <item>10 min</item>
+        <item>20 min</item>
+        <item>30 min</item>
+        <item>40 min</item>
+    </string-array>
+
 </resources>
