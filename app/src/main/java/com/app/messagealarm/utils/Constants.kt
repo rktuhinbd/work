@@ -127,6 +127,7 @@ class Constants {
             const val IS_SERVICE_STOPPED = "service_stopped"
             const val IS_DARK_MODE = "is_dark"
             const val IS_MUTED = "is_muted"
+            const val MUTE_TIME = "mute"
         }
     }
 

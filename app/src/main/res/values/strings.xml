@@ -55,6 +55,7 @@
     <string name="txt_remove_from_snooze">Remove from Snooze</string>
     <string name="txt_remove">Remove</string>
     <string name="txt_invalid_request">Invalid request!</string>
+    <string name="txt_application_muted">Application muted</string>
 
     <string-array name="spinner_item">
         <item>All Apps</item>

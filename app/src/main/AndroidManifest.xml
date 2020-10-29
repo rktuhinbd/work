@@ -95,6 +95,10 @@
             </intent-filter>
         </service>
 
+        <receiver android:exported="false"
+            android:process=":remote"
+            android:name=".broadcast_receiver.AlarmReceiver" />
+
     </application>
 
 </manifest>

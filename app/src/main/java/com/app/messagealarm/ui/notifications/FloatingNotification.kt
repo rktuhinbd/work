@@ -1,6 +1,7 @@
 package com.app.messagealarm.ui.notifications
 
 import android.R
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -14,6 +15,8 @@ import androidx.core.app.NotificationManagerCompat
 import com.app.messagealarm.broadcast_receiver.UnMuteReceiver
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.*
+import com.app.messagealarm.work_manager.WorkManagerUtils
+import es.dmoral.toasty.Toasty
 import java.util.*
 
 
@@ -185,20 +188,28 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
                   com.app.messagealarm.R.layout.layout_foreground_notification
               )
 
-            notificationView!!.setImageViewResource(
-                com.app.messagealarm.R.id.btn_mute_status,
-                com.app.messagealarm.R.drawable.ic_snooze
-            )
+            if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_MUTED)){
+                notificationView!!.setImageViewResource(
+                    com.app.messagealarm.R.id.btn_mute_status,
+                    com.app.messagealarm.R.drawable.ic_silence
+                )
 
-            notificationView!!.setTextViewText(
-                com.app.messagealarm.R.id.txt_desc,
-                DataUtils.getString(com.app.messagealarm.R.string.waiting_for_messages)
-            )
+                notificationView!!.setTextViewText(
+                    com.app.messagealarm.R.id.txt_desc,
+                    DataUtils.getString(com.app.messagealarm.R.string.txt_application_muted)
+                )
+            }else{
+                notificationView!!.setImageViewResource(
+                    com.app.messagealarm.R.id.btn_mute_status,
+                    com.app.messagealarm.R.drawable.ic_snooze
+                )
 
+                notificationView!!.setTextViewText(
+                    com.app.messagealarm.R.id.txt_desc,
+                    DataUtils.getString(com.app.messagealarm.R.string.waiting_for_messages)
+                )
+            }
 
-
-            // And now, building and attaching the Skip button.
-            // And now, building and attaching the Skip button.
             val buttonMuteHandler = Intent(context, UnMuteReceiver::class.java)
             val buttonSkipPendingIntent =
                 PendingIntent.getBroadcast(context, 0, buttonMuteHandler, 0)
@@ -222,16 +233,26 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
         fun notifyMute(isMuted: Boolean) {
             if (notificationView == null || notificationBuilder == null) return
             val iconID: Int = if (isMuted) com.app.messagealarm.R.drawable.ic_silence else com.app.messagealarm.R.drawable.ic_snooze
-            val textString : String =  if(!isMuted) DataUtils.getString(com.app.messagealarm.R.string.waiting_for_messages) else "Application muted"
+            val textString : String =  if(!isMuted){
+                DataUtils.getString(com.app.messagealarm.R.string.waiting_for_messages)
+            } else DataUtils.getString(com.app.messagealarm.R.string.txt_application_muted)
             notificationView!!.setImageViewResource(com.app.messagealarm.R.id.btn_mute_status, iconID)
             notificationView!!.setTextViewText(com.app.messagealarm.R.id.txt_desc, textString)
             notificationBuilder!!.setContent(notificationView)
-//		notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
-            // Sets the notification to run on the foreground.
-            // (why not the former commented line?)
             service!!.startForeground(NOTIFICATION_ID, notificationBuilder!!.build())
+            if(isMuted){
+                showToastToUser(service!!)
+                //start alarm to dismiss mute
+              WorkManagerUtils.scheduleWorks(service!!)
+            }
         }
 
+
+        @SuppressLint("CheckResult")
+        fun showToastToUser(context: Service){
+            Toasty.info(context, String.format("Application muted for %s",
+                SharedPrefUtils.readString(Constants.PreferenceKeys.MUTE_TIME))).show()
+        }
 
     }
 
