@@ -128,6 +128,8 @@ class Constants {
             const val IS_DARK_MODE = "is_dark"
             const val IS_MUTED = "is_muted"
             const val MUTE_TIME = "mute"
+            const val THEME = "theme"
+
         }
     }
 

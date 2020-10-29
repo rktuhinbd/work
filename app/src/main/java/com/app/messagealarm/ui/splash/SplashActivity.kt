@@ -34,6 +34,7 @@ class SplashActivity : BaseActivity() {
             txt_title?.startAnimation(animation)
             progress_bar_splash?.startAnimation(animation)
             changeTheme()
+            defaultPreferences()
             runProgressWithSteps()
             tryReconnectService()
         }else{
@@ -88,6 +89,19 @@ class SplashActivity : BaseActivity() {
             ComponentName(this, NotificationListener::class.java),
             PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP
         )
+    }
+
+
+    private fun defaultPreferences(){
+        if(!SharedPrefUtils.contains(Constants.PreferenceKeys.THEME)){
+            SharedPrefUtils.write(Constants.PreferenceKeys.THEME, "Light")
+        }
+        if(!SharedPrefUtils.contains(Constants.PreferenceKeys.MUTE_TIME)){
+            SharedPrefUtils.write(Constants.PreferenceKeys.MUTE_TIME, "10 min")
+        }
+        if(!SharedPrefUtils.contains(Constants.PreferenceKeys.IS_MUTED)){
+            SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, false)
+        }
     }
 
 
