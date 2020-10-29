@@ -1,14 +1,12 @@
 package com.app.messagealarm.utils
 
 import android.content.Context
-import android.content.res.AssetFileDescriptor
 import android.media.AudioManager
 import android.media.MediaPlayer
-import android.os.Looper
-import android.util.Log
 import com.app.messagealarm.BaseApplication
+import com.app.messagealarm.ui.notifications.FloatingNotification.Companion.notifyMute
+import com.app.messagealarm.utils.SharedPrefUtils.write
 import java.io.IOException
-import java.util.logging.Handler
 
 class MediaUtils {
 
@@ -111,7 +109,8 @@ class MediaUtils {
                 mediaPlayer!!.release()
                 mediaPlayer = null
                 stopVibration()
-                //MuteUtils.muteApp()
+                write(Constants.PreferenceKeys.IS_MUTED, true)
+                notifyMute(true)
             }
         }
 
