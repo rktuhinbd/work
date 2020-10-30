@@ -8,6 +8,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import com.app.messagealarm.BaseApplication
+import java.util.*
 import kotlin.system.exitProcess
 
 /**
@@ -23,6 +24,15 @@ class AndroidUtils private constructor() {
          * */
         fun getApplicationId(): String? {
             return getPackageInfo()?.packageName
+        }
+
+        fun getCurrentLangCode(context: Context) : String{
+            val locale: Locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                context.resources.configuration.locales.get(0)
+            } else {
+                context.resources.configuration.locale
+            }
+            return locale.language
         }
 
         /**
