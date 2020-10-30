@@ -34,11 +34,8 @@ class NotificationListener : NotificationListenerService(),
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         filterApps(sbn)
         if (isPlayAble) {
-            if (!SnoozeUtils.isSnoozedModeActivate()) {
-                //make is stopped false
                 SharedPrefUtils.write(Constants.PreferenceKeys.IS_STOPPED, false)
                 doMagic(sbn)
-            }
         }
     }
 
@@ -64,6 +61,11 @@ class NotificationListener : NotificationListenerService(),
             }
             else -> isPlayAble = true
         }
+    }
+
+
+    private fun filterByAppConstrains(packageName:String, langCode:String){
+
     }
 
     private fun whatsAppFilter(title: String, desc: String) {
