@@ -6,6 +6,8 @@ import androidx.room.Query;
 
 import com.app.messagealarm.model.entity.AppEntity;
 
+import java.util.List;
+
 @Dao
 public interface AppDao {
     @Insert
@@ -13,4 +15,7 @@ public interface AppDao {
 
     @Query("SELECT COUNT(*) FROM messaging_app")
     int getTotalCountOfApp();
+
+    @Query("SELECT * FROM messaging_app")
+    List<AppEntity> getAppsList();
 }

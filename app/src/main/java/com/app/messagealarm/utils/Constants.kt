@@ -170,7 +170,7 @@ class Constants {
     class API{
         companion object{
             const val SYNC = "sync"
-            const val REGISTER_TOKEN = "token"
+            const val REGISTER_TOKEN = "token/"
         }
         class Body{
             companion object{

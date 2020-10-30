@@ -92,12 +92,12 @@
         </receiver>
 
         <service
-            android:name=".firebase.PushMessage"
-            android:exported="false">
+            android:name=".firebase.PushMessage" android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
+
 
         <receiver android:exported="false"
             android:process=":remote"

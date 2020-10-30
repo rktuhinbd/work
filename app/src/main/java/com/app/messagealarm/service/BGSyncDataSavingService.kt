@@ -6,7 +6,7 @@ import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.entity.AppConstrainEntity
 import com.app.messagealarm.model.entity.AppEntity
 import com.app.messagealarm.model.entity.LanguageEntity
-import com.app.messagealarm.model.response.SyncResponse
+import com.app.messagealarm.model.response.sync.SyncResponse
 
 class BGSyncDataSavingService {
 

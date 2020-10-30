@@ -1,4 +1,4 @@
-package com.app.messagealarm.model.response;
+package com.app.messagealarm.model.response.sync;
 
 import com.google.gson.annotations.SerializedName;
 
