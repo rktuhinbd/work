@@ -21,6 +21,7 @@ import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
 import com.app.messagealarm.ui.setting.SettingsActivity
 import com.app.messagealarm.utils.*
+import com.app.messagealarm.work_manager.WorkManagerUtils
 import es.dmoral.toasty.Toasty
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.activity_main.*
@@ -44,9 +45,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         askForPermission()
         handleService()
         setupAppsRecyclerView()
-
+        lookForTablesSize()
     }
 
+    private fun lookForTablesSize(){
+        alarmAppPresenter.getRequiredTableSize()
+    }
 
     private fun lookForAlarmApplication() {
         alarmAppPresenter.getApplicationList()
@@ -309,6 +313,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
 
     override fun onRemovedFromSnoozeSuccess() {
      alarmAppPresenter.getApplicationList()
+    }
+
+    override fun onTablesSizeRequestSuccess(appSize: Int, langSize: Int, appConstrainSize: Int) {
+        WorkManagerUtils.scheduleSyncWork(this, appSize, langSize, appConstrainSize)
     }
 
     override fun onItemClick(app: ApplicationEntity) {

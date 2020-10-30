@@ -8,7 +8,9 @@ import java.lang.NumberFormatException
 import java.util.concurrent.TimeUnit
 
 class WorkManagerUtils {
+
     companion object{
+
         fun scheduleWorks(context: Context){
             //get mute time from preferences
             val time = SharedPrefUtils.readString(Constants.PreferenceKeys.MUTE_TIME)
@@ -27,6 +29,7 @@ class WorkManagerUtils {
         }
 
         fun scheduleSyncWork(context: Context, appSize:Int, langSize:Int, constrainSize:Int){
+
             val inputData = Data.Builder()
                 .putInt(Constants.InputData.APP_SIZE, appSize)
                 .putInt(Constants.InputData.LANG_SIZE, langSize)
@@ -44,8 +47,7 @@ class WorkManagerUtils {
                .build()
 
             WorkManager.getInstance(context).enqueueUniqueWork(System.currentTimeMillis().toString(),
-            ExistingWorkPolicy.REPLACE, syncRequest
-                )
+            ExistingWorkPolicy.REPLACE, syncRequest)
         }
     }
 
