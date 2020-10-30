@@ -12,6 +12,15 @@ class Constants {
         }
     }
 
+    class InputData{
+        companion object{
+            const val APP_SIZE = "app_size"
+            const val LANG_SIZE = "lang_size"
+            const val CONSTRAIN_SIZE = "constrain_size"
+
+        }
+    }
+
     class Default {
         companion object {
             const val DEFAULT_STRING: String = ""

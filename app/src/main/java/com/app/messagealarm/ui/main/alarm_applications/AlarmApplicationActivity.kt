@@ -1,15 +1,12 @@
 package com.app.messagealarm.ui.main.alarm_applications
 
 import android.app.Activity
-import android.app.Dialog
 import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.text.format.DateUtils
 import android.view.*
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.R
 import com.app.messagealarm.model.entity.ApplicationEntity
+
 import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.ui.adapters.AddedAppsListAdapter
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
@@ -28,8 +26,6 @@ import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import java.io.File
-import java.lang.NumberFormatException
-import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -48,6 +44,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         askForPermission()
         handleService()
         setupAppsRecyclerView()
+
     }
 
 

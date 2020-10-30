@@ -64,6 +64,6 @@
 
 
     <!--base url-->
-    <string name="base_url">https://www.messagealarm.app/api/</string>
+    <string name="base_url">http://www.messagealarm.app/api/</string>
 
 </resources>
