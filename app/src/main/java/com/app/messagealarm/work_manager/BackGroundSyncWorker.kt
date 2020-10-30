@@ -18,33 +18,17 @@ class BackGroundSyncWorker(context: Context, workerParams: WorkerParameters) : W
 
     override fun doWork(): Result {
 
-        var result:Result? = null
-
         val appSize = inputData.getInt(Constants.InputData.APP_SIZE, 0)
         val langSize = inputData.getInt(Constants.InputData.LANG_SIZE, 0)
         val constrainSize = inputData.getInt(Constants.InputData.CONSTRAIN_SIZE, 0)
 
-        RetrofitClient.getApiService().syncData(appSize, langSize, constrainSize).enqueue(object
-            : Callback<SyncResponse> {
-            override fun onResponse(
-                call: Call<SyncResponse>,
-                response: Response<SyncResponse>
-            ) {
-                //data received save to local database
-                result = if(response.isSuccessful){
-                    BGSyncDataSavingService.saveData(response.body()!!)
-                    Result.success()
-                }else{
-                    Result.retry()
-                }
-            }
-            override fun onFailure(call: Call<SyncResponse>, t: Throwable) {
-                //sync failed, get ready for retry
-                result = Result.retry()
-            }
-
-        })
-
-        return result!!
+       val call = RetrofitClient.getApiService().syncData(appSize, langSize, constrainSize)
+        val response = call.execute()
+        return if(response.isSuccessful){
+            BGSyncDataSavingService.saveData(response.body()!!)
+            Result.success()
+        }else{
+            Result.retry()
+        }
     }
 }
