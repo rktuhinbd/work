@@ -18,6 +18,7 @@ public interface AppConstrainDao {
     int getTotalCountOfAppConstrain();
 
 
-    List<AppConstrainEntity> getAppConstrain(String packageName, String langCode);
+    @Query("SELECT * FROM app_constrain WHERE app_package_name = :packageName AND lang_code = :langCode")
+    List<AppConstrainEntity> getAppConstrains(String packageName, String langCode);
 
 }

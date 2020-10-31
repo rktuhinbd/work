@@ -18,8 +18,8 @@ public class AppConstrainEntity {
         this.id = id;
     }
 
-    @ColumnInfo(name = "lang_id")
-    private int langId;
+    @ColumnInfo(name = "lang_code")
+    private String langCode;
 
     @ColumnInfo(name = "description")
     private String description;
@@ -27,18 +27,18 @@ public class AppConstrainEntity {
     @ColumnInfo(name = "title")
     private String title;
 
-    @ColumnInfo(name = "app_id")
-    private int appId;
+    @ColumnInfo(name = "app_package_name")
+    private String appPackageName;
 
-    public AppConstrainEntity(int langId, String description, String title, int appId) {
-        this.langId = langId;
+    public AppConstrainEntity(String langCode, String description, String title, String appPackageName) {
+        this.langCode = langCode;
         this.description = description;
         this.title = title;
-        this.appId = appId;
+        this.appPackageName = appPackageName;
     }
 
-    public int getLangId() {
-        return langId;
+    public String getLangCode() {
+        return langCode;
     }
 
     public String getDescription() {
@@ -49,8 +49,8 @@ public class AppConstrainEntity {
         return title;
     }
 
-    public int getAppId() {
-        return appId;
+    public String getAppPackageName() {
+        return appPackageName;
     }
 
     public int getId() {

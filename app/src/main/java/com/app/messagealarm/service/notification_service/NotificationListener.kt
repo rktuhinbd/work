@@ -1,10 +1,14 @@
 package com.app.messagealarm.service.notification_service
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
+import android.util.Log
+import com.app.messagealarm.BaseApplication
+import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.service.AlarmService
 import com.app.messagealarm.ui.notifications.FloatingNotification
@@ -17,7 +21,6 @@ class NotificationListener : NotificationListenerService(),
 
     var isPlayAble = true
     var isThreadExecuted = false
-
     val sbnList = ArrayList<StatusBarNotification>()
 
     companion object {
@@ -31,12 +34,16 @@ class NotificationListener : NotificationListenerService(),
 
     private val TAG: String = "LISTENER"
 
+    @SuppressLint("LogNotTimber")
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
-        filterApps(sbn)
-        if (isPlayAble) {
-                SharedPrefUtils.write(Constants.PreferenceKeys.IS_STOPPED, false)
-                doMagic(sbn)
-        }
+       // filterApps(sbn)
+        //check for logs
+        Log.e("LISTENER", "PACKAGE = " +  sbn!!.packageName.toString())
+        Log.e("LISTENER", "TITLE = " +  sbn.notification.extras["android.title"].toString())
+        Log.e("LISTENER", "DESC = " +  sbn.notification.extras["android.text"].toString())
+        NotificationListenerPresenter(this).filterByAppConstrains(
+                sbn.packageName.toString(), AndroidUtils.getCurrentLangCode(this),
+                sbn.notification.extras["android.title"].toString(), sbn.notification.extras["android.text"].toString(), sbn)
     }
 
     @Synchronized
@@ -63,10 +70,6 @@ class NotificationListener : NotificationListenerService(),
         }
     }
 
-
-    private fun filterByAppConstrains(packageName:String, langCode:String){
-
-    }
 
     private fun whatsAppFilter(title: String, desc: String) {
 
@@ -267,6 +270,11 @@ class NotificationListener : NotificationListenerService(),
 
     override fun onApplicationListGetError() {
 
+    }
+
+    override fun isPlayAbleSuccess(sbn: StatusBarNotification?) {
+        SharedPrefUtils.write(Constants.PreferenceKeys.IS_STOPPED, false)
+        doMagic(sbn)
     }
 
 }

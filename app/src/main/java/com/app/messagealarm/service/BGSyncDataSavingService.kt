@@ -71,10 +71,10 @@ class BGSyncDataSavingService {
                         Thread.sleep(200)
                         appDatabase.appConstrainDao().insertAppConstrain(
                             AppConstrainEntity(
-                              x.langId,
+                              x.langCode,
                                 x.description,
                                 x.title,
-                                x.appId
+                                x.appPackageName
                             )
                         )
                     }

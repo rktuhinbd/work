@@ -7,8 +7,8 @@ public class AllAppconstrainItem{
 	@SerializedName("updated_at")
 	private String updatedAt;
 
-	@SerializedName("lang_id")
-	private int langId;
+	@SerializedName("lang_code")
+	private String langCode;
 
 	@SerializedName("description")
 	private String description;
@@ -19,15 +19,11 @@ public class AllAppconstrainItem{
 	@SerializedName("create_at")
 	private String createAt;
 
-	@SerializedName("app_id")
-	private int appId;
+	@SerializedName("app_package_name")
+	private String appPackageName;
 
 	public String getUpdatedAt(){
 		return updatedAt;
-	}
-
-	public int getLangId(){
-		return langId;
 	}
 
 	public String getDescription(){
@@ -42,20 +38,11 @@ public class AllAppconstrainItem{
 		return createAt;
 	}
 
-	public int getAppId(){
-		return appId;
+	public String getLangCode() {
+		return langCode;
 	}
 
-	@Override
- 	public String toString(){
-		return 
-			"AllAppconstrainItem{" + 
-			"updated_at = '" + updatedAt + '\'' + 
-			",lang_id = '" + langId + '\'' + 
-			",description = '" + description + '\'' + 
-			",title = '" + title + '\'' + 
-			",create_at = '" + createAt + '\'' + 
-			",app_id = '" + appId + '\'' + 
-			"}";
-		}
+	public String getAppPackageName() {
+		return appPackageName;
+	}
 }
