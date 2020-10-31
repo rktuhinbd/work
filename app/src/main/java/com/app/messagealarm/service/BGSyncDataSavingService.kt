@@ -74,7 +74,8 @@ class BGSyncDataSavingService {
                               x.langCode,
                                 x.description,
                                 x.title,
-                                x.appPackageName
+                                x.appPackageName,
+                                x.isContains
                             )
                         )
                     }
