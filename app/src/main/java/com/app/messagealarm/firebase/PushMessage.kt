@@ -13,7 +13,9 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.app.messagealarm.R
+import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.utils.DataUtils
+import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import timber.log.Timber
@@ -25,13 +27,14 @@ import java.net.URL
 class PushMessage : FirebaseMessagingService() {
 
     override fun onMessageReceived(p0: RemoteMessage?) {
-        Log.e("REMOTE_NOTIFY", p0!!.notification.toString())
+        WorkManagerUtils.scheduleSyncWork(this, 0, 0,0)
        createNotification(p0)
     }
 
     override fun onNewToken(p0: String?) {
         super.onNewToken(p0)
-        Log.e("F_TOKEN", p0!!)
+        val tokenCall = RetrofitClient.getApiService().registerToken(p0)
+        tokenCall.execute()
     }
 
 

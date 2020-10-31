@@ -10,4 +10,5 @@ interface AlarmApplicationView {
     fun onAppStatusUpdateSuccess()
     fun onAppStatusUpdateError(message:String)
     fun onRemovedFromSnoozeSuccess()
+    fun onTablesSizeRequestSuccess(appSize:Int, langSize:Int, appConstrainSize:Int)
 }

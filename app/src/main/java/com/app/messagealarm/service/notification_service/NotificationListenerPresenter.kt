@@ -24,4 +24,62 @@ class NotificationListenerPresenter (private val view: NotificationListenerView)
                 }
         }).start()
     }
+
+     fun filterByAppConstrains(packageName:String, langCode:String, title: String, desc:String, sbn: StatusBarNotification?) {
+         var isPlayAble = true
+         val appDataBase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
+         Thread(Runnable {
+             val constrainList =
+                 appDataBase.appConstrainDao().getAppConstrains(packageName, langCode)
+             for (x in constrainList) {
+
+                 if (x.title != null && x.description != null) {
+                     if (x.title == title || x.description == desc) {
+                         isPlayAble = false
+                         break
+                     }
+                 }
+
+                 if(x.title == null){
+                     if(x.description == desc){
+                         isPlayAble = false
+                         break
+                     }
+                 }
+
+                 if(x.description == null) {
+                     if (x.title == title) {
+                         isPlayAble = false
+                         break
+                     }
+                 }
+
+                 if(title.isEmpty()){
+                     isPlayAble = false
+                     break
+                 }
+
+                 if(desc.isEmpty()){
+                     isPlayAble = false
+                     break
+                 }
+
+                 if(title == "null"){
+                     isPlayAble = false
+                     break
+                 }
+
+                 if(desc == "null"){
+                     isPlayAble = false
+                     break
+                 }
+
+             }
+
+             if (isPlayAble) {
+                 view.isPlayAbleSuccess(sbn)
+             }
+         }).start()
+
+     }
 }

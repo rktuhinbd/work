@@ -39,6 +39,22 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
         }).start()
     }
 
+    fun getRequiredTableSize(){
+        val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
+        Thread(Runnable {
+            try {
+                val appSize = appDatabase.appDao().totalCountOfApp
+                val langSize = appDatabase.languageDao().totalCountOfLanguage
+                val appConstrainSize = appDatabase.appConstrainDao().totalCountOfAppConstrain
+                alarmApplicationView.onTablesSizeRequestSuccess(appSize, langSize, appConstrainSize)
+            }catch (e:SQLiteException){
+
+            }catch (e:NullPointerException){
+
+            }
+        }).start()
+    }
+
 
     fun  deleteApplication(applicationEntity: ApplicationEntity, position:Int){
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())

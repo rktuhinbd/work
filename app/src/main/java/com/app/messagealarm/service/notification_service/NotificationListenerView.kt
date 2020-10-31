@@ -6,4 +6,5 @@ import com.app.messagealarm.model.entity.ApplicationEntity
 interface NotificationListenerView {
     fun onApplicationListGetSuccess(list:List<ApplicationEntity>, sbn:StatusBarNotification?)
     fun onApplicationListGetError()
+    fun isPlayAbleSuccess(sbn: StatusBarNotification?)
 }

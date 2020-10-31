@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.app.messagealarm">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -20,6 +21,7 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:requestLegacyExternalStorage="true"
+        android:usesCleartextTraffic="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
@@ -54,7 +56,9 @@
         <activity
             android:name=".ui.alarm.AlarmActivity"
             android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
             android:theme="@style/AppTheme.GradientStatusBar" />
+
         <activity
             android:name=".ui.about.AboutActivity"
             android:excludeFromRecents="true"
@@ -88,12 +92,12 @@
         </receiver>
 
         <service
-            android:name=".firebase.PushMessage"
-            android:exported="false">
+            android:name=".firebase.PushMessage" android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
+
 
         <receiver android:exported="false"
             android:process=":remote"

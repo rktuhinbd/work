@@ -61,4 +61,9 @@
         <item>All Apps</item>
         <item>Messaging</item>
     </string-array>
+
+
+    <!--base url-->
+    <string name="base_url">http://www.messagealarm.app/api/</string>
+
 </resources>

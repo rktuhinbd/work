@@ -12,6 +12,15 @@ class Constants {
         }
     }
 
+    class InputData{
+        companion object{
+            const val APP_SIZE = "app_size"
+            const val LANG_SIZE = "lang_size"
+            const val CONSTRAIN_SIZE = "constrain_size"
+
+        }
+    }
+
     class Default {
         companion object {
             const val DEFAULT_STRING: String = ""
@@ -156,6 +165,29 @@ class Constants {
             const val BITMAP = "bitmap"
         }
     }
+
+
+    class API{
+        companion object{
+            const val SYNC = "sync"
+            const val REGISTER_TOKEN = "token/"
+        }
+        class Body{
+            companion object{
+                const val APP_SIZE = "app_size"
+                const val LANG_SIZE = "lang_size"
+                const val CONSTRAIN_SIZE = "constrain_size"
+                const val TOKEN = "token"
+            }
+        }
+        class ResponseFormat{
+            companion object{
+                const val JSON_RESPONSE = "Accept:application/json"
+            }
+        }
+    }
+
+
 
 
     class LanguageCodes {
