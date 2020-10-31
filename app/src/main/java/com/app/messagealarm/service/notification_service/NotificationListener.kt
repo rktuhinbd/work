@@ -38,12 +38,15 @@ class NotificationListener : NotificationListenerService(),
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
        // filterApps(sbn)
         //check for logs
+
         Log.e("LISTENER", "PACKAGE = " +  sbn!!.packageName.toString())
         Log.e("LISTENER", "TITLE = " +  sbn.notification.extras["android.title"].toString())
         Log.e("LISTENER", "DESC = " +  sbn.notification.extras["android.text"].toString())
+
         NotificationListenerPresenter(this).filterByAppConstrains(
                 sbn.packageName.toString(), AndroidUtils.getCurrentLangCode(this),
-                sbn.notification.extras["android.title"].toString(), sbn.notification.extras["android.text"].toString(), sbn)
+                sbn.notification.extras["android.title"].toString(),
+            sbn.notification.extras["android.text"].toString(), sbn)
     }
 
     @Synchronized

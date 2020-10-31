@@ -22,6 +22,13 @@ public class AllAppconstrainItem{
 	@SerializedName("app_package_name")
 	private String appPackageName;
 
+	@SerializedName("is_constains")
+	private boolean isContains;
+
+	public boolean isContains() {
+		return isContains;
+	}
+
 	public String getUpdatedAt(){
 		return updatedAt;
 	}
