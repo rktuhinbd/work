@@ -45,8 +45,8 @@ class NotificationListener : NotificationListenerService(),
 
         NotificationListenerPresenter(this).filterByAppConstrains(
                 sbn.packageName.toString(), AndroidUtils.getCurrentLangCode(this),
-                sbn.notification.extras["android.title"].toString(),
-            sbn.notification.extras["android.text"].toString(), sbn)
+                sbn.notification.extras["android.title"].toString().trim(),
+            sbn.notification.extras["android.text"].toString().trim(), sbn)
     }
 
     @Synchronized

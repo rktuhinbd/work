@@ -18,7 +18,6 @@ import com.app.messagealarm.utils.DataUtils
 import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import timber.log.Timber
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
@@ -27,6 +26,8 @@ import java.net.URL
 class PushMessage : FirebaseMessagingService() {
 
     override fun onMessageReceived(p0: RemoteMessage?) {
+        val data: Map<String, String> = p0!!.data
+        Log.e("DATA1", data.toString())
         WorkManagerUtils.scheduleSyncWork(this, 0, 0,0)
        createNotification(p0)
     }
@@ -69,6 +70,7 @@ class PushMessage : FirebaseMessagingService() {
             .setSound(defaultSoundUri)
             .setAutoCancel(true)
         // Set the image for the notification
+        Log.e("IMAGE", remoteMessage!!.data?.get("image").toString())
             val bitmap: Bitmap = getBitmapfromUrl(remoteMessage!!.data?.get("image"))!!
             builder.setStyle(
                 NotificationCompat.BigPictureStyle()
