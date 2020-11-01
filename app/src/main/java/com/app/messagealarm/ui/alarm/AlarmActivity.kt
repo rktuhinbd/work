@@ -13,6 +13,7 @@ import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
+import com.app.messagealarm.ui.notifications.FloatingNotification
 import com.app.messagealarm.utils.*
 import com.ncorti.slidetoact.SlideToActView
 import com.tapadoo.alerter.Alerter
@@ -57,8 +58,9 @@ class AlarmActivity : BaseActivity() {
                     if (x == numberOfPLay - 1) {
                         //done playing dismiss the activity now
                         //send a notification that you missed the alarm
-                        showYouMissedAlarmNotification(intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!)
                         finish()
+                        SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
+                        FloatingNotification.notifyMute(true)
                     }
                 })
             }

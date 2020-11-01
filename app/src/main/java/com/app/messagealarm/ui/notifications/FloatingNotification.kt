@@ -68,6 +68,8 @@ class FloatingNotification {
                                 //done playing dismiss the activity now
                                 //send a notification that you missed the alarm
                                 notificationManager.cancel(225)
+                                SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
+                                notifyMute(true)
                             }
                         }
                     )
