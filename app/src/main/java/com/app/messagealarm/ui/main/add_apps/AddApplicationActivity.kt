@@ -9,6 +9,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -25,16 +26,14 @@ import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.ui.adapters.AllAppsListAdapter
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
-import com.app.messagealarm.utils.Constants
-import com.app.messagealarm.utils.MenuTintUtils
-import com.app.messagealarm.utils.PathUtils
-import com.app.messagealarm.utils.SharedPrefUtils
+import com.app.messagealarm.utils.*
 import com.google.android.material.appbar.MaterialToolbar
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_add_application.*
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import java.io.File
 import java.io.Serializable
+import java.lang.IllegalArgumentException
 import java.lang.NullPointerException
 import java.util.*
 import kotlin.Comparator
@@ -223,9 +222,26 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         if (REQUEST_CODE_PICK_AUDIO == requestCode) {
             if (resultCode == Activity.RESULT_OK && data!!.data != null) {
                 val fileName = File(PathUtils.getPath(this, data.data!!)!!).name
-                bottomSheetModel.txt_ringtone_value?.text = fileName
-                bottomSheetModel.setToneName(fileName)
-                bottomSheetModel.alarmTonePath = PathUtils.getPath(this, data.data!!)!!
+                try {
+                    if(MediaUtils.getDurationOfMediaFle(PathUtils.getPath(this, data.data!!)!!) >= 30){
+                        bottomSheetModel.txt_ringtone_value?.text = fileName
+                        bottomSheetModel.setToneName(fileName)
+                        bottomSheetModel.alarmTonePath = PathUtils.getPath(this, data.data!!)!!
+                    }else{
+                        bottomSheetModel.txt_ringtone_value?.text = "Default"
+                        bottomSheetModel.setToneName("Default")
+                        bottomSheetModel.alarmTonePath = null
+                        DialogUtils.showSimpleDialog(this, getString(R.string.txt_wrong_duration),
+                            getString(R.string.txt_selected_music_duration))
+                    }
+                }catch (e:IllegalArgumentException){
+                    bottomSheetModel.txt_ringtone_value?.text = "Default"
+                    bottomSheetModel.setToneName("Default")
+                    bottomSheetModel.alarmTonePath = null
+                    DialogUtils.showSimpleDialog(this, getString(R.string.txt_music),
+                        getString(R.string.txt_try_again))
+                }
+
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
