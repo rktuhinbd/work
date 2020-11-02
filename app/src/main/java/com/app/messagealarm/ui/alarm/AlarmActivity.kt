@@ -32,6 +32,7 @@ class AlarmActivity : BaseActivity() {
     }
 
     private fun playMedia() {
+        SharedPrefUtils.write(Constants.PreferenceKeys.IS_ACTIVITY_STARTED, true)
         if (intent?.extras!!.getString(Constants.IntentKeys.TONE) != null) {
             startPlaying(intent?.extras!!.getString(Constants.IntentKeys.TONE))
         } else {
@@ -82,6 +83,8 @@ class AlarmActivity : BaseActivity() {
             .show()
     }
 
+
+
     private fun showPageDismissNotification(app: String) {
         Alerter.create(this)
             .setTitle("Message Alarm")
@@ -98,6 +101,8 @@ class AlarmActivity : BaseActivity() {
         super.onPause()
         showPageDismissNotification(intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!)
     }
+
+
 
     private fun tiltAnimation() {
         val ranim =
@@ -155,13 +160,13 @@ class AlarmActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        BaseApplication.activityRunning()
+
     }
 
 
     override fun onDestroy() {
         super.onDestroy()
-        BaseApplication.activityStopped()
+        SharedPrefUtils.write(Constants.PreferenceKeys.IS_ACTIVITY_STARTED, false)
     }
 
     override fun onBackPressed() {

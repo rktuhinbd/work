@@ -132,6 +132,7 @@ class Constants {
 
     class PreferenceKeys {
         companion object {
+            const val IS_ACTIVITY_STARTED = "is_activity_started"
             const val IS_STOPPED = "is_stopped"
             const val IS_SERVICE_STOPPED = "service_stopped"
             const val IS_DARK_MODE = "is_dark"

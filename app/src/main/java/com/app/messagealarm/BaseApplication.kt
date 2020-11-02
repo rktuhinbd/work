@@ -25,21 +25,6 @@ class BaseApplication : MultiDexApplication() {
         /**
          * check if the alarm activity is active or not
          */
-        private var isActivityRunning = false
-
-        fun activityRunning(){
-            isActivityRunning = true
-        }
-
-        fun activityStopped(){
-            isActivityRunning = false
-        }
-
-        fun isActivityRunning() : Boolean{
-            return isActivityRunning
-        }
-
-
         private lateinit var sInstance: BaseApplication
 
         /**
