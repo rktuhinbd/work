@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Handler
 import android.util.Log
 import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
@@ -252,8 +253,13 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
 
         @SuppressLint("CheckResult")
         fun showToastToUser(context: Service){
-            Toasty.info(context, String.format("Application muted for %s",
-                SharedPrefUtils.readString(Constants.PreferenceKeys.MUTE_TIME))).show()
+            val handler = Handler(context.mainLooper)
+            val runnable = Runnable(){
+                Toasty.info(context, String.format("Application muted for %s",
+                    SharedPrefUtils.readString(Constants.PreferenceKeys.MUTE_TIME))).show()
+            }
+            handler.post(runnable)
+
         }
 
     }
