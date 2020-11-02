@@ -19,6 +19,7 @@ import es.dmoral.toasty.Toasty
 class NotificationListener : NotificationListenerService(),
     NotificationListenerView {
 
+    val once = Once()
     var isPlayAble = true
     var isThreadExecuted = false
     val sbnList = ArrayList<StatusBarNotification>()
@@ -38,7 +39,9 @@ class NotificationListener : NotificationListenerService(),
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
        // filterApps(sbn)
         //check for logs
-
+        once.run {
+            SharedPrefUtils.write(Constants.PreferenceKeys.IS_ACTIVITY_STARTED, false)
+        }
         Log.e("LISTENER", "PACKAGE = " +  sbn!!.packageName.toString())
         Log.e("LISTENER", "TITLE = " +  sbn.notification.extras["android.title"].toString())
         Log.e("LISTENER", "DESC = " +  sbn.notification.extras["android.text"].toString())
