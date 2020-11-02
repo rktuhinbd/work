@@ -54,6 +54,7 @@ class AlarmActivity : BaseActivity() {
                     )
                     if (x == numberOfPLay - 1) {
                         //done playing dismiss the activity now
+                        Notify.cancel(this, 12)
                         //send a notification that you missed the alarm
                         finish()
                         SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
@@ -72,13 +73,14 @@ class AlarmActivity : BaseActivity() {
 
     private fun showPageDismissNotification() {
         val pattern = longArrayOf(0, 100, 500, 100, 500, 100, 500, 100, 500, 100, 500)
-        Notify.create(this)
+            Notify.create(this)
             .setChannelId(getString(R.string.notify_channel_id))
             .setChannelName(getString(R.string.notify_channel_name))
             .setChannelDescription(getString(R.string.notify_channel_description))
             .setTitle("You have a message from ${intent.extras?.getString(Constants.IntentKeys.APP_NAME)}")
             .setContent("Swipe to dismiss the alarm!")
             .setVibrationPattern(pattern)
+            .setId(12)
             .setImportance(Notify.NotificationImportance.HIGH)
             .setSmallIcon(R.mipmap.ic_launcher_round)
             .show()
