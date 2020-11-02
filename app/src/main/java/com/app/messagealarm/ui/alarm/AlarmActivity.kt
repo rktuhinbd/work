@@ -1,22 +1,18 @@
 package com.app.messagealarm.ui.alarm
 
-import android.app.Notification
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
-import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.app.messagealarm.BaseActivity
-import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
-import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.ui.notifications.FloatingNotification
-import com.app.messagealarm.utils.*
+import com.app.messagealarm.utils.Constants
+import com.app.messagealarm.utils.MediaUtils
+import com.app.messagealarm.utils.Once
+import com.app.messagealarm.utils.SharedPrefUtils
+import com.application.isradeleon.notify.Notify
 import com.ncorti.slidetoact.SlideToActView
-import com.tapadoo.alerter.Alerter
 import kotlinx.android.synthetic.main.activity_alarm.*
 import java.io.File
 
@@ -46,7 +42,7 @@ class AlarmActivity : BaseActivity() {
             //here i need run the loop of how much time need to play
             val numberOfPLay = intent?.extras!!.getInt(Constants.IntentKeys.NUMBER_OF_PLAY)
             for (x in 0 until numberOfPLay) {
-                if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_STOPPED)){
+                if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_STOPPED)) {
                     break
                 }
                 val once = Once()
@@ -54,7 +50,7 @@ class AlarmActivity : BaseActivity() {
                     MediaUtils.playAlarm(
                         intent?.extras!!.getBoolean(Constants.IntentKeys.IS_VIBRATE),
                         this, tone,
-                        (x == (numberOfPLay-1))
+                        (x == (numberOfPLay - 1))
                     )
                     if (x == numberOfPLay - 1) {
                         //done playing dismiss the activity now
@@ -69,37 +65,28 @@ class AlarmActivity : BaseActivity() {
     }
 
     private fun showYouMissedAlarmNotification(app: String) {
-        Alerter.create(this)
-            .setTitle("Message Alarm")
-            .setText(String.format("You missed a message alarm from %s", app))
-            .setIcon(R.drawable.ic_clear)
-            .setBackgroundColorRes(R.color.colorPrimaryDark)
-            .setOnClickListener(View.OnClickListener {
-                startActivity(
-                    Intent(this, AlarmApplicationActivity::class.java)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                )
-            })
-            .show()
+
     }
 
 
 
-    private fun showPageDismissNotification(app: String) {
-        Alerter.create(this)
-            .setTitle("Message Alarm")
-            .setText(String.format("You got a message from %s", app))
-            .setIcon(R.drawable.ic_angry)
-            .setBackgroundColorRes(R.color.colorPrimaryDark)
-            .setOnClickListener(View.OnClickListener {
-                openApp()
-            })
+    private fun showPageDismissNotification() {
+        val pattern = longArrayOf(0, 100, 500, 100, 500, 100, 500, 100, 500, 100, 500)
+        Notify.create(this)
+            .setChannelId(getString(R.string.notify_channel_id))
+            .setChannelName(getString(R.string.notify_channel_name))
+            .setChannelDescription(getString(R.string.notify_channel_description))
+            .setTitle("You have a message from ${intent.extras?.getString(Constants.IntentKeys.APP_NAME)}")
+            .setContent("Swipe to dismiss the alarm!")
+            .setVibrationPattern(pattern)
+            .setImportance(Notify.NotificationImportance.HIGH)
+            .setSmallIcon(R.mipmap.ic_launcher_round)
             .show()
     }
 
     override fun onPause() {
         super.onPause()
-        showPageDismissNotification(intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!)
+        showPageDismissNotification()
     }
 
 
