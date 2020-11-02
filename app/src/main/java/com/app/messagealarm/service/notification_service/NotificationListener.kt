@@ -19,7 +19,7 @@ import es.dmoral.toasty.Toasty
 class NotificationListener : NotificationListenerService(),
     NotificationListenerView {
 
-    val once = Once()
+
     var isPlayAble = true
     var isThreadExecuted = false
     val sbnList = ArrayList<StatusBarNotification>()
@@ -39,6 +39,12 @@ class NotificationListener : NotificationListenerService(),
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
        // filterApps(sbn)
         //check for logs
+        /*
+        * There is issue, that within 5 seconds if the activity alarm is dismissed, it's start the thread alarm again.
+        * Need to solve it ASAP
+        *
+        * */
+        val once = Once()
         once.run {
             SharedPrefUtils.write(Constants.PreferenceKeys.IS_ACTIVITY_STARTED, false)
         }
