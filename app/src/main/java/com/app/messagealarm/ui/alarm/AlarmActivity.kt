@@ -54,7 +54,7 @@ class AlarmActivity : BaseActivity() {
                     )
                     if (x == numberOfPLay - 1) {
                         //done playing dismiss the activity now
-                        Notify.cancel(this, 12)
+                        Notify.cancel(this, 13)
                         //send a notification that you missed the alarm
                         finish()
                         SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
@@ -80,7 +80,7 @@ class AlarmActivity : BaseActivity() {
             .setTitle("You have a message from ${intent.extras?.getString(Constants.IntentKeys.APP_NAME)}")
             .setContent("Swipe to dismiss the alarm!")
             .setVibrationPattern(pattern)
-            .setId(12)
+            .setId(13)
             .setImportance(Notify.NotificationImportance.HIGH)
             .setSmallIcon(R.mipmap.ic_launcher_round)
             .show()
