@@ -70,4 +70,11 @@
     <string name="txt_music">Wrong music format</string>
     <string name="txt_try_again">Please try again!</string>
 
+
+    <string name="notify_channel_id">AlarmDismissID</string>
+
+    <string name="notify_channel_name">AlarmDismissName</string>
+
+    <string name="notify_channel_description">AlarmDismissDescription</string>
+
 </resources>
