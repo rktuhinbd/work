@@ -107,7 +107,7 @@ class MediaUtils {
 
         fun stopAlarm() {
             if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
-                SharedPrefUtils.write(Constants.PreferenceKeys.IS_STOPPED, true)
+                write(Constants.PreferenceKeys.IS_STOPPED, true)
                 mediaPlayer!!.stop()
                 mediaPlayer!!.release()
                 mediaPlayer = null

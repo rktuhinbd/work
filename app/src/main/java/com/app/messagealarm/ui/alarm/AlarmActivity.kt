@@ -19,6 +19,8 @@ import java.io.File
 
 class AlarmActivity : BaseActivity() {
 
+    var isSwiped = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alarm)
@@ -65,8 +67,19 @@ class AlarmActivity : BaseActivity() {
         }).start()
     }
 
-    private fun showYouMissedAlarmNotification(app: String) {
-
+    private fun showYouMissedAlarmNotification() {
+        val pattern = longArrayOf(0, 100, 500, 100, 500, 100, 500, 100, 500, 100, 500)
+        Notify.create(this)
+            .setChannelId(getString(R.string.notify_channel_id))
+            .setChannelName(getString(R.string.notify_channel_name))
+            .setChannelDescription(getString(R.string.notify_channel_description))
+            .setTitle("You have missed an alarm from ${intent.extras?.getString(Constants.IntentKeys.APP_NAME)}")
+            .setContent("Swipe to dismiss the notification!")
+            .setVibrationPattern(pattern)
+            .setId(13)
+            .setImportance(Notify.NotificationImportance.HIGH)
+            .setSmallIcon(R.mipmap.ic_launcher_round)
+            .show()
     }
 
 
@@ -88,7 +101,9 @@ class AlarmActivity : BaseActivity() {
 
     override fun onPause() {
         super.onPause()
-        showPageDismissNotification()
+        if(!isSwiped){
+            showPageDismissNotification()
+        }
     }
 
 
@@ -124,6 +139,7 @@ class AlarmActivity : BaseActivity() {
                 }
 
                 override fun onSlideCompleteAnimationEnded(view: SlideToActView) {
+                    isSwiped = true
                     MediaUtils.stopAlarm()
                     openApp()
                     finish()
@@ -155,7 +171,9 @@ class AlarmActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        SharedPrefUtils.write(Constants.PreferenceKeys.IS_ACTIVITY_STARTED, false)
+        if (!isSwiped){
+            showYouMissedAlarmNotification()
+        }
     }
 
     override fun onBackPressed() {
