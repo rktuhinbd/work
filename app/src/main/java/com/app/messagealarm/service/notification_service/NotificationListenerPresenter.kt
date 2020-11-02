@@ -46,8 +46,8 @@ class NotificationListenerPresenter(private val view: NotificationListenerView) 
                             break
                         }
                     } else {
-                        if (x.title.contains(title, false) ||
-                            x.description.contains(desc, false)
+                        if (x.title.contains(title, true) ||
+                            x.description.contains(desc, true)
                         ) {
                             isPlayAble = false
                             break
@@ -62,7 +62,7 @@ class NotificationListenerPresenter(private val view: NotificationListenerView) 
                             break
                         }
                     } else {
-                        if (x.description.contains(desc, false)) {
+                        if (x.description.contains(desc, true)) {
                             isPlayAble = false
                             break
                         }
@@ -77,7 +77,7 @@ class NotificationListenerPresenter(private val view: NotificationListenerView) 
                             break
                         }
                     } else {
-                        if (x.title.contains(title)) {
+                        if (x.title.contains(title, true)) {
                             isPlayAble = false
                             break
                         }
