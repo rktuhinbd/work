@@ -180,6 +180,7 @@ class Constants {
                 const val LANG_SIZE = "lang_size"
                 const val CONSTRAIN_SIZE = "constrain_size"
                 const val TOKEN = "token"
+                const val LANG_CODE = "lang_code"
             }
         }
         class ResponseFormat{
