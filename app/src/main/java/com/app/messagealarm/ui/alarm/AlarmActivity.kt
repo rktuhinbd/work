@@ -44,6 +44,7 @@ class AlarmActivity : BaseActivity() {
     }
 
     private fun playMedia() {
+        SharedPrefUtils.write(Constants.PreferenceKeys.IS_NOTIFICATION_SWIPED, false)
         SharedPrefUtils.write(Constants.PreferenceKeys.IS_ACTIVITY_STARTED, true)
         if (intent?.extras!!.getString(Constants.IntentKeys.TONE) != null) {
             startPlaying(intent?.extras!!.getString(Constants.IntentKeys.TONE))
@@ -88,15 +89,13 @@ class AlarmActivity : BaseActivity() {
             .setChannelName(getString(R.string.notify_channel_name))
             .setChannelDescription(getString(R.string.notify_channel_description))
             .setTitle("You have missed an alarm from ${intent.extras?.getString(Constants.IntentKeys.APP_NAME)}")
-            .setContent("Swipe to dismiss the notification!")
+            .setContent("Swipe to dismiss !")
             .setVibrationPattern(pattern)
             .setId(13)
             .setImportance(Notify.NotificationImportance.HIGH)
             .setSmallIcon(R.mipmap.ic_launcher_round)
             .show()
     }
-
-
 
     private fun showPageDismissNotification() {
         val pattern = longArrayOf(0, 100, 500, 100, 500, 100, 500, 100, 500, 100, 500)
@@ -186,7 +185,9 @@ class AlarmActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if (!isSwiped){
-            showYouMissedAlarmNotification()
+            if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_NOTIFICATION_SWIPED)){
+                showYouMissedAlarmNotification()
+            }
         }
     }
 

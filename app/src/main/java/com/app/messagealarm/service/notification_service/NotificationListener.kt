@@ -207,6 +207,9 @@ class NotificationListener : NotificationListenerService(),
     override fun onNotificationRemoved(sbn: StatusBarNotification?) {
         //NOTE: Music not getting off on notification removed
         if (sbn!!.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
+            if(sbn.notification.extras["android.text"].toString() == "Swipe to dismiss the alarm!"){
+                SharedPrefUtils.write(Constants.PreferenceKeys.IS_NOTIFICATION_SWIPED, true)
+            }
                 MediaUtils.stopAlarm()
         } else if (sbn.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
             Toasty.info(this, "Alarm Service Stopped!").show()
