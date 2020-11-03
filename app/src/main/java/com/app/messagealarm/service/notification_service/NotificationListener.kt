@@ -44,10 +44,6 @@ class NotificationListener : NotificationListenerService(),
         * Need to solve it ASAP
         *
         * */
-        val once = Once()
-        once.run {
-            SharedPrefUtils.write(Constants.PreferenceKeys.IS_ACTIVITY_STARTED, false)
-        }
         Log.e("LISTENER", "PACKAGE = " +  sbn!!.packageName.toString())
         Log.e("LISTENER", "TITLE = " +  sbn.notification.extras["android.title"].toString())
         Log.e("LISTENER", "DESC = " +  sbn.notification.extras["android.text"].toString())

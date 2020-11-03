@@ -47,6 +47,8 @@ class AlarmService {
                                             if (!MediaUtils.isPlaying()) {
                                                 //check if app is in not muted
                                                 if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_MUTED)){
+                                                    //save activity started as false
+                                                        SharedPrefUtils.write(Constants.PreferenceKeys.IS_ACTIVITY_STARTED, false)
                                                     magicPlay(app.ringTone, service, sbn, app)
                                                 }
 
