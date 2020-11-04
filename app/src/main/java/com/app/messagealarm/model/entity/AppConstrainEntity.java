@@ -30,20 +30,20 @@ public class AppConstrainEntity {
     @ColumnInfo(name = "app_package_name")
     private String appPackageName;
 
-    @ColumnInfo(name = "is_contains")
-    private boolean isContains;
+    @ColumnInfo(name = "status")
+    private String status;
 
     public AppConstrainEntity(String langCode, String description, String title,
-                              String appPackageName, boolean  isContains) {
+                              String appPackageName, String  status) {
         this.langCode = langCode;
         this.description = description;
         this.title = title;
         this.appPackageName = appPackageName;
-        this.isContains  = isContains;
+        this.status  = status;
     }
 
-    public boolean isContains() {
-        return isContains;
+    public String getStatus() {
+        return status;
     }
 
     public String getLangCode() {
