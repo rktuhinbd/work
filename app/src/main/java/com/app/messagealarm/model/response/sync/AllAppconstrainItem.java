@@ -22,11 +22,11 @@ public class AllAppconstrainItem{
 	@SerializedName("app_package_name")
 	private String appPackageName;
 
-	@SerializedName("is_constains")
-	private boolean isContains;
+	@SerializedName("status")
+	private String status;
 
-	public boolean isContains() {
-		return isContains;
+	public String getStatus() {
+		return status;
 	}
 
 	public String getUpdatedAt(){
