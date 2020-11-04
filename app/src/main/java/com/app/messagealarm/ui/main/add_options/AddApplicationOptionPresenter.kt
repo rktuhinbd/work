@@ -107,6 +107,8 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
             addApplicationOptionView.onBitmapSaveError()
         }catch (ex:NullPointerException){
             addApplicationOptionView.onBitmapSaveError()
+        }catch (e:Exception){
+            e.printStackTrace()
         }
         addApplicationOptionView.onBitmapSaveSuccess("$file_path/$imageName")
     }

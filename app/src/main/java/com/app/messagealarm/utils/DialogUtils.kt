@@ -50,9 +50,9 @@ class DialogUtils {
                 }
                 .setIcon(R.drawable.ic_dialog_info)
                 .setNegativeButton(
-                    R.string.no
+                    R.string.cancel
                 ) { dialog, which ->
-                    dialog.dismiss()
+                    dialog.cancel()
                     callback.onNegative()
                 }
                 .setCancelable(false)
