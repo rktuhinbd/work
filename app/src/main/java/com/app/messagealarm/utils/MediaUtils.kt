@@ -32,24 +32,30 @@ class MediaUtils {
                     0
                 )
             try {
-                mediaPlayer = MediaPlayer()
-                mediaPlayer!!.reset()
-                if(mediaPath != null){
-                    mediaPlayer!!.setDataSource(mediaPath)
-                }else{
-                    val afd = context.resources.openRawResourceFd(com.app.messagealarm.R.raw.default_ringtone)
-                    mediaPlayer!!.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-                    afd.close()
-                }
-                mediaPlayer!!.setOnPreparedListener { mediaPlayer!!.start() }
-                mediaPlayer!!.prepare()
-                mediaPlayer!!.setOnErrorListener(object : MediaPlayer.OnErrorListener {
-                    override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
-                        mediaPlayer!!.reset()
-                        return true
+                val once = Once()
+                val runnable = Runnable(){
+                    mediaPlayer = MediaPlayer()
+                    mediaPlayer!!.reset()
+                    if(mediaPath != null){
+                        mediaPlayer!!.setDataSource(mediaPath)
+                    }else{
+                        val afd = context.resources.openRawResourceFd(com.app.messagealarm.R.raw.default_ringtone)
+                        mediaPlayer!!.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+                        afd.close()
                     }
+                    mediaPlayer!!.setOnPreparedListener { mediaPlayer!!.start() }
+                    mediaPlayer!!.prepare()
+                    mediaPlayer!!.setOnErrorListener(object : MediaPlayer.OnErrorListener {
+                        override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
+                            mediaPlayer!!.reset()
+                            return true
+                        }
 
-                })
+                    })
+                }
+                once.run(runnable)
+
+
             } catch (e: IllegalStateException) {
                 e.printStackTrace()
             } catch (e: NullPointerException) {

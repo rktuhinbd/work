@@ -5,6 +5,8 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
+import android.util.Log
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -19,27 +21,44 @@ import com.application.isradeleon.notify.Notify
 import com.ncorti.slidetoact.SlideToActView
 import kotlinx.android.synthetic.main.activity_alarm.*
 import java.io.File
+import java.security.AccessController.getContext
 
 
 class AlarmActivity : BaseActivity() {
 
+    val once = Once()
+    var hasFocus = true
     var isSwiped = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alarm)
+    }
+
+    override fun onStart() {
+        super.onStart()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true)
             setTurnScreenOn(true)
             val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
             keyguardManager.requestDismissKeyguard(this, null)
+            this.window.addFlags(
+                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
         } else {
-            this.window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
-                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-                    WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+            this.window.addFlags(
+                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON or
+                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+
+            )
         }
         setupViews()
-        playMedia()
+        val runnable = Runnable(){
+            playMedia()
+        }
+        once.run(runnable)
         tiltAnimation()
     }
 
@@ -55,6 +74,7 @@ class AlarmActivity : BaseActivity() {
 
 
     private fun startPlaying(tone: String?) {
+        Log.e("CALLED", "TRUE")
         Thread(Runnable {
             //here i need run the loop of how much time need to play
             val numberOfPLay = intent?.extras!!.getInt(Constants.IntentKeys.NUMBER_OF_PLAY)
@@ -84,41 +104,72 @@ class AlarmActivity : BaseActivity() {
 
     private fun showYouMissedAlarmNotification() {
         val pattern = longArrayOf(0, 100, 500, 100, 500, 100, 500, 100, 500, 100, 500)
-        Notify.create(this)
-            .setChannelId(getString(R.string.notify_channel_id))
-            .setChannelName(getString(R.string.notify_channel_name))
-            .setChannelDescription(getString(R.string.notify_channel_description))
-            .setTitle("You have missed an alarm from ${intent.extras?.getString(Constants.IntentKeys.APP_NAME)}")
-            .setContent("Swipe to dismiss !")
-            .setVibrationPattern(pattern)
-            .setId(13)
-            .setImportance(Notify.NotificationImportance.HIGH)
-            .setSmallIcon(R.mipmap.ic_launcher_round)
-            .show()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Notify.create(this)
+                .setChannelId(getString(R.string.notify_channel_id))
+                .setChannelName(getString(R.string.notify_channel_name))
+                .setChannelDescription(getString(R.string.notify_channel_description))
+                .setTitle("You have missed an alarm from ${intent.extras?.getString(Constants.IntentKeys.APP_NAME)}")
+                .setContent("Swipe to dismiss !")
+                .setVibrationPattern(pattern)
+                .setId(13)
+                .setImportance(Notify.NotificationImportance.HIGH)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .show()
+        }else{
+            Notify.create(this)
+                .setTitle("You have missed an alarm from ${intent.extras?.getString(Constants.IntentKeys.APP_NAME)}")
+                .setContent("Swipe to dismiss !")
+                .setVibrationPattern(pattern)
+                .setId(13)
+                .setImportance(Notify.NotificationImportance.HIGH)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .show()
+        }
+
     }
 
     private fun showPageDismissNotification() {
-        val pattern = longArrayOf(0, 100, 500, 100, 500, 100, 500, 100, 500, 100, 500)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val pattern = longArrayOf(0, 100, 500, 100, 500, 100, 500, 100, 500, 100, 500)
             Notify.create(this)
-            .setChannelId(getString(R.string.notify_channel_id))
-            .setChannelName(getString(R.string.notify_channel_name))
-            .setChannelDescription(getString(R.string.notify_channel_description))
-            .setTitle("You have a message from ${intent.extras?.getString(Constants.IntentKeys.APP_NAME)}")
-            .setContent("Swipe to dismiss the alarm!")
-            .setVibrationPattern(pattern)
-            .setId(13)
-            .setImportance(Notify.NotificationImportance.HIGH)
-            .setSmallIcon(R.mipmap.ic_launcher_round)
-            .show()
+                .setChannelId(getString(R.string.notify_channel_id))
+                .setChannelName(getString(R.string.notify_channel_name))
+                .setChannelDescription(getString(R.string.notify_channel_description))
+                .setTitle("You have a message from ${intent.extras?.getString(Constants.IntentKeys.APP_NAME)}")
+                .setContent("Swipe to dismiss the alarm!")
+                .setVibrationPattern(pattern)
+                .setId(13)
+                .setImportance(Notify.NotificationImportance.HIGH)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .show()
+        }else{
+            val pattern = longArrayOf(0, 100, 500, 100, 500, 100, 500, 100, 500, 100, 500)
+            Notify.create(this)
+                .setTitle("You have a message from ${intent.extras?.getString(Constants.IntentKeys.APP_NAME)}")
+                .setContent("Swipe to dismiss the alarm!")
+                .setVibrationPattern(pattern)
+                .setId(13)
+                .setImportance(Notify.NotificationImportance.HIGH)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .show()
+        }
+
     }
 
     override fun onPause() {
         super.onPause()
-        if(!isSwiped){
-            showPageDismissNotification()
+        if(!hasFocus) {
+            if(!isSwiped){
+                showPageDismissNotification()
+            }
         }
     }
 
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        this.hasFocus = hasFocus
+    }
 
 
     private fun tiltAnimation() {
