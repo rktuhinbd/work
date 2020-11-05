@@ -500,6 +500,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     val bitmap = app.drawableIcon
                     addApplicationOptionPresenter?.saveBitmapToFile(
                         requireActivity(),
+                        app.packageName,
                         bitmap.toBitmap()
                     )
                 } catch (e: Exception) {

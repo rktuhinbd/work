@@ -81,7 +81,7 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
     /*
       * this method save a bitmap to file
       * */
-    fun saveBitmapToFile(context: Context, bitmap: Bitmap) {
+    fun saveBitmapToFile(context: Context, packageName:String, bitmap: Bitmap) {
         var file_path = ""
         var imageName = ""
         try {
@@ -92,14 +92,15 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
                 dir.mkdirs()
             }
             Thread.sleep(1000)
-            val image = System.currentTimeMillis().toString()
-            imageName = "$image.png"
+            imageName = "$packageName.png"
             val file = File(dir, imageName)
             if (!file.exists()) {
                 val fOut = FileOutputStream(file)
                 bitmap.compress(Bitmap.CompressFormat.PNG, 90, fOut)
                 fOut.flush()
                 fOut.close()
+            }else{
+                addApplicationOptionView.onBitmapSaveSuccess("$file_path/$imageName")
             }
         } catch (e: IOException) {
             Timber.e(e)
