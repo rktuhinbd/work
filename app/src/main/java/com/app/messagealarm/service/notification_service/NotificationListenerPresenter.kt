@@ -45,16 +45,23 @@ class NotificationListenerPresenter(private val view: NotificationListenerView) 
                             isPlayAble = false
                             break
                         }
-                    } else if(x.status == "StartWith"){
+                    } else if (x.status == "StartWith") {
                         if (title.startsWith(x.title, true) ||
-                           desc.startsWith(x.description, true)
+                            desc.startsWith(x.description, true)
                         ) {
                             isPlayAble = false
                             break
                         }
-                    }else if(x.status == "EndWith"){
+                    } else if (x.status == "EndWith") {
                         if (title.endsWith(x.title, true) ||
                             desc.endsWith(x.description, true)
+                        ) {
+                            isPlayAble = false
+                            break
+                        }
+                    } else if (x.status == "MiddleWith") {
+                        if (title.contains(x.title, true) ||
+                            desc.contains(x.description, true)
                         ) {
                             isPlayAble = false
                             break
@@ -68,13 +75,18 @@ class NotificationListenerPresenter(private val view: NotificationListenerView) 
                             isPlayAble = false
                             break
                         }
-                    } else if (x.status == "StartWith"){
+                    } else if (x.status == "StartWith") {
                         if (desc.startsWith(x.description, true)) {
                             isPlayAble = false
                             break
                         }
-                    }else if(x.status == "EndWith"){
+                    } else if (x.status == "EndWith") {
                         if (desc.endsWith(x.description, true)) {
+                            isPlayAble = false
+                            break
+                        }
+                    } else if (x.status == "MiddleWith") {
+                        if (desc.contains(x.description, true)) {
                             isPlayAble = false
                             break
                         }
@@ -88,13 +100,18 @@ class NotificationListenerPresenter(private val view: NotificationListenerView) 
                             isPlayAble = false
                             break
                         }
-                    } else if(x.status == "StartWith"){
+                    } else if (x.status == "StartWith") {
                         if (title.startsWith(x.title, true)) {
                             isPlayAble = false
                             break
                         }
-                    }else if(x.status == "EndWith"){
+                    } else if (x.status == "EndWith") {
                         if (title.endsWith(x.title, true)) {
+                            isPlayAble = false
+                            break
+                        }
+                    } else if (x.status == "MiddleWith") {
+                        if (title.contains(x.title, true)) {
                             isPlayAble = false
                             break
                         }
