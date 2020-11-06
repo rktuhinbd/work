@@ -132,6 +132,8 @@ class Constants {
 
     class PreferenceKeys {
         companion object {
+            const val IS_NOTIFICATION_SWIPED = "is_swiped"
+            const val IS_ACTIVITY_STARTED = "is_activity_started"
             const val IS_STOPPED = "is_stopped"
             const val IS_SERVICE_STOPPED = "service_stopped"
             const val IS_DARK_MODE = "is_dark"
@@ -178,6 +180,7 @@ class Constants {
                 const val LANG_SIZE = "lang_size"
                 const val CONSTRAIN_SIZE = "constrain_size"
                 const val TOKEN = "token"
+                const val LANG_CODE = "lang_code"
             }
         }
         class ResponseFormat{

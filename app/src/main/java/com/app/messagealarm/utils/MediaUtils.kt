@@ -2,11 +2,14 @@ package com.app.messagealarm.utils
 
 import android.content.Context
 import android.media.AudioManager
+import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
+import android.net.Uri
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.ui.notifications.FloatingNotification.Companion.notifyMute
 import com.app.messagealarm.utils.SharedPrefUtils.write
 import java.io.IOException
+
 
 class MediaUtils {
 
@@ -29,24 +32,30 @@ class MediaUtils {
                     0
                 )
             try {
-                mediaPlayer = MediaPlayer()
-                mediaPlayer!!.reset()
-                if(mediaPath != null){
-                    mediaPlayer!!.setDataSource(mediaPath)
-                }else{
-                    val afd = context.resources.openRawResourceFd(com.app.messagealarm.R.raw.default_ringtone)
-                    mediaPlayer!!.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-                    afd.close()
-                }
-                mediaPlayer!!.setOnPreparedListener { mediaPlayer!!.start() }
-                mediaPlayer!!.prepare()
-                mediaPlayer!!.setOnErrorListener(object : MediaPlayer.OnErrorListener {
-                    override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
-                        mediaPlayer!!.reset()
-                        return true
+                val once = Once()
+                val runnable = Runnable(){
+                    mediaPlayer = MediaPlayer()
+                    mediaPlayer!!.reset()
+                    if(mediaPath != null){
+                        mediaPlayer!!.setDataSource(mediaPath)
+                    }else{
+                        val afd = context.resources.openRawResourceFd(com.app.messagealarm.R.raw.default_ringtone)
+                        mediaPlayer!!.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+                        afd.close()
                     }
+                    mediaPlayer!!.setOnPreparedListener { mediaPlayer!!.start() }
+                    mediaPlayer!!.prepare()
+                    mediaPlayer!!.setOnErrorListener(object : MediaPlayer.OnErrorListener {
+                        override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
+                            mediaPlayer!!.reset()
+                            return true
+                        }
 
-                })
+                    })
+                }
+                once.run(runnable)
+
+
             } catch (e: IllegalStateException) {
                 e.printStackTrace()
             } catch (e: NullPointerException) {
@@ -104,7 +113,7 @@ class MediaUtils {
 
         fun stopAlarm() {
             if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
-                SharedPrefUtils.write(Constants.PreferenceKeys.IS_STOPPED, true)
+                write(Constants.PreferenceKeys.IS_STOPPED, true)
                 mediaPlayer!!.stop()
                 mediaPlayer!!.release()
                 mediaPlayer = null
@@ -117,6 +126,15 @@ class MediaUtils {
 
         fun isPlaying(): Boolean {
             return mediaPlayer != null && mediaPlayer!!.isPlaying
+        }
+
+
+        fun getDurationOfMediaFle(path:String) : Int{
+            val uri: Uri = Uri.parse(path)
+            val mmr = MediaMetadataRetriever()
+            mmr.setDataSource(BaseApplication.getBaseApplicationContext(), uri)
+            val durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+            return durationStr!!.toInt() / 1000
         }
     }
 }

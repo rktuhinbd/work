@@ -38,20 +38,23 @@ class SplashActivity : BaseActivity() {
             runProgressWithSteps()
             tryReconnectService()
         }else{
-            DialogUtils.showDialog(
+            if(!isFinishing){
+                DialogUtils.showDialog(
                     this,
-            getString(R.string.txt_notification_permission),
-            getString(R.string.txt_notification_permission_message),
-            object :DialogUtils.Callback{
-                override fun onPositive() {
-                    val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
-                    startActivity(intent)
-                }
-                override fun onNegative() {
-                    finish()
-                }
+                    getString(R.string.txt_notification_permission),
+                    getString(R.string.txt_notification_permission_message),
+                    object :DialogUtils.Callback{
+                        override fun onPositive() {
+                            val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+                            startActivity(intent)
+                        }
+                        override fun onNegative() {
+                            finish()
+                        }
+                    }
+                )
             }
-            )
+
         }
     }
 

@@ -269,6 +269,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                              * set default alarm tone type to data model
                              */
                             addApplicationEntity.ringTone = name
+                            alarmTonePath = null
                         }
                     }
                 })
@@ -385,7 +386,12 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
    fun setToneName(name: String){
-        addApplicationEntity.ringTone = name.substring(0, 29)
+       if(name.length > 29){
+           addApplicationEntity.ringTone = name.substring(0, 29)
+       }else{
+           addApplicationEntity.ringTone = name
+       }
+
     }
 
     private fun showDiscardDialog() {
@@ -494,6 +500,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     val bitmap = app.drawableIcon
                     addApplicationOptionPresenter?.saveBitmapToFile(
                         requireActivity(),
+                        app.packageName,
                         bitmap.toBitmap()
                     )
                 } catch (e: Exception) {
@@ -646,6 +653,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     override fun onApplicationGetSuccess(app: ApplicationEntity) {
         //show edited value to
         addApplicationEntity = app
+        alarmTonePath = app.tone_path
         convertToHolderEntity(addApplicationEntity)
         requireActivity().runOnUiThread {
             setPresetValueToUi(app)

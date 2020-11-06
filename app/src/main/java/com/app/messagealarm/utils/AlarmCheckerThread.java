@@ -39,7 +39,9 @@ public class AlarmCheckerThread extends Thread {
                     if(count == 5){
                         count = 0;
                         if(!MediaUtils.Companion.isPlaying()){
-                            playListener.isPlaying(MediaUtils.Companion.isPlaying());
+                            if(!SharedPrefUtils.INSTANCE.readBoolean(Constants.PreferenceKeys.IS_ACTIVITY_STARTED)){
+                                playListener.isPlaying(MediaUtils.Companion.isPlaying());
+                            }
                         }
                         interrupt();
                         break;

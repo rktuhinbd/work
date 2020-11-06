@@ -12,13 +12,13 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.app.messagealarm.R
 import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.utils.DataUtils
 import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import timber.log.Timber
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
@@ -27,8 +27,12 @@ import java.net.URL
 class PushMessage : FirebaseMessagingService() {
 
     override fun onMessageReceived(p0: RemoteMessage?) {
-        WorkManagerUtils.scheduleSyncWork(this, 0, 0,0)
-       createNotification(p0)
+        val data: Map<String, String> = p0!!.data
+        Log.e("IMAGE", p0.data["image"].toString())
+        Log.e("TITLE", p0.data["title"].toString())
+        Log.e("BODY", p0.data["body"].toString())
+        WorkManagerUtils.scheduleSyncWork(this, 0, 0, 0)
+        createNotification(p0)
     }
 
     override fun onNewToken(p0: String?) {
@@ -39,7 +43,7 @@ class PushMessage : FirebaseMessagingService() {
 
 
     private fun createNotification(
-      remoteMessage:RemoteMessage?
+        remoteMessage: RemoteMessage?
     ) { // Let's create a
         // notification builder object
         val builder: NotificationCompat.Builder =
@@ -65,16 +69,19 @@ class PushMessage : FirebaseMessagingService() {
         val defaultSoundUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         // Set the notification parameters to the notification builder object
         builder
+            .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
             .setSmallIcon(R.mipmap.ic_launcher)
             .setSound(defaultSoundUri)
+            .setContentTitle(remoteMessage!!.data["title"])
+            .setContentText(remoteMessage.data["body"])
             .setAutoCancel(true)
         // Set the image for the notification
-            val bitmap: Bitmap = getBitmapfromUrl(remoteMessage!!.data?.get("image"))!!
-            builder.setStyle(
-                NotificationCompat.BigPictureStyle()
-                    .bigPicture(bitmap)
-                    .bigLargeIcon(null)
-            ).setLargeIcon(bitmap)
+        val bitmap: Bitmap = getBitmapfromUrl(remoteMessage.data?.get("image"))!!
+        builder.setStyle(
+            NotificationCompat.BigPictureStyle()
+                .bigPicture(bitmap)
+                .bigLargeIcon(null)
+        ).setLargeIcon(bitmap)
         notificationManager.notify(1, builder.build())
     }
 

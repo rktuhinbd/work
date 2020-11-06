@@ -29,6 +29,7 @@ import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import java.io.File
+import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -92,9 +93,25 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         if (REQUEST_CODE_PICK_AUDIO == requestCode) {
             if (resultCode == Activity.RESULT_OK && data!!.data != null) {
                 val fileName = File(PathUtils.getPath(this, data.data!!)!!).name
-                bottomSheetModel.txt_ringtone_value?.text = fileName
-                bottomSheetModel.setToneName(fileName)
-                bottomSheetModel.alarmTonePath = PathUtils.getPath(this, data.data!!)!!
+                try {
+                    if(MediaUtils.getDurationOfMediaFle(PathUtils.getPath(this, data.data!!)!!) >= 30){
+                        bottomSheetModel.txt_ringtone_value?.text = fileName
+                        bottomSheetModel.setToneName(fileName)
+                        bottomSheetModel.alarmTonePath = PathUtils.getPath(this, data.data!!)!!
+                    }else{
+                        bottomSheetModel.txt_ringtone_value?.text = "Default"
+                        bottomSheetModel.setToneName("Default")
+                        bottomSheetModel.alarmTonePath = null
+                        DialogUtils.showSimpleDialog(this, getString(R.string.txt_wrong_duration),
+                            getString(R.string.txt_selected_music_duration))
+                    }
+                }catch (e: IllegalArgumentException){
+                    bottomSheetModel.txt_ringtone_value?.text = "Default"
+                    bottomSheetModel.setToneName("Default")
+                    bottomSheetModel.alarmTonePath = null
+                    DialogUtils.showSimpleDialog(this, getString(R.string.txt_music),
+                        getString(R.string.txt_try_again))
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)

@@ -24,6 +24,7 @@ public interface ApiService {
     @GET(Constants.API.SYNC)
     Call<SyncResponse> syncData(@Query(Constants.API.Body.APP_SIZE)int appSize,
                                 @Query(Constants.API.Body.LANG_SIZE) int langSize,
-                                @Query(Constants.API.Body.CONSTRAIN_SIZE) int constrainSize
+                                @Query(Constants.API.Body.CONSTRAIN_SIZE) int constrainSize,
+                                @Query(Constants.API.Body.LANG_CODE) String langCode
                                 );
 }

@@ -25,6 +25,20 @@ class DialogUtils {
 
     companion object {
 
+        fun showSimpleDialog(context: Context, title: String, message: String) {
+            AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(
+                    R.string.ok
+                ) { dialog, which ->
+                    dialog.dismiss()
+                }
+                .setIcon(R.drawable.ic_dialog_info)
+                .setCancelable(false)
+                .show()
+        }
+
         fun showDialog(context: Context, title: String, message: String, callback: Callback) {
             AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
                 .setTitle(title)
@@ -36,9 +50,9 @@ class DialogUtils {
                 }
                 .setIcon(R.drawable.ic_dialog_info)
                 .setNegativeButton(
-                    R.string.no
+                    R.string.cancel
                 ) { dialog, which ->
-                    dialog.dismiss()
+                    dialog.cancel()
                     callback.onNegative()
                 }
                 .setCancelable(false)
@@ -76,7 +90,7 @@ class DialogUtils {
         fun showRingToneSelectDialog(context: Context, callBack: RepeatCallBack) {
             // setup the alert builder
             val builder = AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
-            builder.setTitle("Select Ringtone")
+            builder.setTitle("Select Alarm tone")
             val animals = arrayOf("Default", "Select a song")
             builder.setItems(animals) { dialog, which ->
                 when (which) {

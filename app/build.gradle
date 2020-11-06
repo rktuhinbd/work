@@ -90,7 +90,6 @@ dependencies {
 
     implementation 'com.github.judemanutd:autostarter:1.0.8'
 
-    implementation 'com.tapadoo.android:alerter:6.2.1'
     //recycler view swipe
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
 
@@ -103,4 +102,8 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.6.1'
     implementation 'com.squareup.okhttp3:okhttp:3.12.2'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.2'
+
+    implementation 'com.github.isradeleon:Notify-Android:1.0.3'
+
+
 }
