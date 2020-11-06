@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -21,6 +22,7 @@ import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.ui.adapters.AddedAppsListAdapter
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
+import com.app.messagealarm.ui.onboarding.OnboardingDialog
 import com.app.messagealarm.ui.setting.SettingsActivity
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
@@ -50,6 +52,11 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         handleService()
         setupAppsRecyclerView()
         lookForTablesSize()
+
+        //schedule quickstart
+        Handler().postDelayed(Runnable {
+            showQuickStartDialog()
+        }, 5000)
     }
 
     private fun lookForTablesSize(){
@@ -184,7 +191,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
                 ).addSwipeLeftBackgroundColor(
                     ContextCompat.getColor(
                         this@AlarmApplicationActivity,
-                        R.color.colorAccent
+                        R.color.delete_item
                     )
                 )
                     .addSwipeLeftActionIcon(R.drawable.ic_delete_black_24dp)
@@ -301,6 +308,11 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
 
     override fun onGetAlarmApplicationError() {
 
+    }
+
+    private fun showQuickStartDialog(){
+        val quickStartDialog = OnboardingDialog()
+        quickStartDialog.show(supportFragmentManager, "quick_start")
     }
 
     override fun onApplicationDeleteSuccess(position: Int) {
