@@ -32,6 +32,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import java.io.File
 import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -311,8 +312,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
     }
 
     private fun showQuickStartDialog(){
-        val quickStartDialog = OnboardingDialog()
-        quickStartDialog.show(supportFragmentManager, "quick_start")
+        try {
+            val quickStartDialog = OnboardingDialog()
+            quickStartDialog.show(supportFragmentManager, "quick_start")
+        }catch (e:IllegalStateException){
+
+        }
     }
 
     override fun onApplicationDeleteSuccess(position: Int) {

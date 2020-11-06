@@ -92,6 +92,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".broadcast_receiver.PowerOffReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="power_off" />
+            </intent-filter>
+        </receiver>
+
         <service
             android:name=".firebase.PushMessage" android:exported="true">
             <intent-filter>
