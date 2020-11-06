@@ -13,6 +13,7 @@ import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.app.messagealarm.broadcast_receiver.PowerOffReceiver
 import com.app.messagealarm.broadcast_receiver.UnMuteReceiver
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.*
@@ -200,12 +201,19 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
                 val buttonMuteHandler = Intent(context, UnMuteReceiver::class.java)
                 val buttonSkipPendingIntent =
                     PendingIntent.getBroadcast(context, 0, buttonMuteHandler, 0)
+
                 notificationView!!.setOnClickPendingIntent(com.app.messagealarm.R.id.btn_mute_status, buttonSkipPendingIntent)
+
+                val buttonPowerHandler = Intent(context, PowerOffReceiver::class.java)
+                val buttonPowerOffIntent =
+                    PendingIntent.getBroadcast(context, 0, buttonPowerHandler, 0)
+                notificationView!!.setOnClickPendingIntent(com.app.messagealarm.R.id.btn_power, buttonPowerOffIntent)
+
 
                 notificationBuilder = NotificationCompat.Builder(context)
 
                 val notification: Notification = notificationBuilder!!
-                    .setSmallIcon(R.drawable.sym_call_missed)
+                    .setSmallIcon(com.app.messagealarm.R.mipmap.ic_launcher_round)
                     .setCustomContentView(notificationView)
                     .setCategory(Notification.CATEGORY_SERVICE)
                     .setContentIntent(resultPendingIntent)
@@ -279,10 +287,15 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
                 PendingIntent.getBroadcast(context, 0, buttonMuteHandler, 0)
             notificationView!!.setOnClickPendingIntent(com.app.messagealarm.R.id.btn_mute_status, buttonSkipPendingIntent)
 
+            val buttonPowerHandler = Intent(context, PowerOffReceiver::class.java)
+            val buttonPowerOffIntent =
+                PendingIntent.getBroadcast(context, 0, buttonPowerHandler, 0)
+            notificationView!!.setOnClickPendingIntent(com.app.messagealarm.R.id.btn_power, buttonPowerOffIntent)
+
              notificationBuilder = NotificationCompat.Builder(context, channelId)
 
             val notification: Notification = notificationBuilder!!
-                .setSmallIcon(R.drawable.sym_call_missed)
+                .setSmallIcon(com.app.messagealarm.R.mipmap.ic_launcher_round)
                 .setCustomContentView(notificationView)
                 .setPriority(NotificationManager.IMPORTANCE_HIGH)
                 .setCategory(Notification.CATEGORY_SERVICE)

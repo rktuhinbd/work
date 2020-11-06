@@ -105,5 +105,7 @@ dependencies {
 
     implementation 'com.github.isradeleon:Notify-Android:1.0.3'
 
+    implementation 'com.tbuonomo.andrui:viewpagerdotsindicator:4.1.2'
+
 
 }
