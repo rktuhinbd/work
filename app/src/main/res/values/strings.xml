@@ -81,5 +81,7 @@
     <string name="desc_quick_start_two">Filter by messaging, and choose application from the list. Choose preferences from the next screen and save application!</string>
     <string name="desc_quick_start_third">Set custom time, set custom sender names, Only messages from this names will play alarm. Also you can filter alarm by message body!</string>
     <string name="desc_quick_start_four">This sticky notification indicates that the application is alive and waiting for message, Click on the notification button to mute and un-mute application, The power button turn off the sticky notification and kills the service</string>
+    <string name="desc_quick_start_five">This is at setting page, set automatic mute time, application will be un-mute after that time. If your phone killing this application when app is in background. Click on that bottom button and follow the instruction</string>
+    <string name="txt_finish">Finish</string>
 
 </resources>

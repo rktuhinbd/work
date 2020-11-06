@@ -6,12 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.onboarding.adapter.QuickStartAdapter
-import com.app.messagealarm.ui.onboarding.fragments.QuickStartFirstFragment
-import com.app.messagealarm.ui.onboarding.fragments.QuickStartFourFragment
-import com.app.messagealarm.ui.onboarding.fragments.QuickStartSecondFragment
-import com.app.messagealarm.ui.onboarding.fragments.QuickStartThirdFragment
+import com.app.messagealarm.ui.onboarding.fragments.*
 import kotlinx.android.synthetic.main.layout_dialog_onboarding.*
 
 class OnboardingDialog : DialogFragment(){
@@ -42,6 +40,10 @@ class OnboardingDialog : DialogFragment(){
                     it1, true)
             }
         }
+
+        btn_finish?.setOnClickListener {
+            dismiss()
+        }
     }
 
 
@@ -51,10 +53,39 @@ class OnboardingDialog : DialogFragment(){
         fragmentList.add(QuickStartSecondFragment())
         fragmentList.add(QuickStartThirdFragment())
         fragmentList.add(QuickStartFourFragment())
+        fragmentList.add(QuickStartFiveFragment())
        val quickStartAdapter= QuickStartAdapter(childFragmentManager, fragmentList)
         quick_start_pager?.adapter = quickStartAdapter
         dots_indicator?.setViewPager(quick_start_pager)
+
+        //listener
+        quick_start_pager?.addOnPageChangeListener(object :ViewPager.OnPageChangeListener{
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+
+            }
+
+            override fun onPageSelected(position: Int) {
+                    if(position == ((quick_start_pager?.adapter as QuickStartAdapter).count - 1)){
+                        btn_next?.visibility = View.INVISIBLE
+                        btn_finish?.visibility= View.VISIBLE
+                    }else{
+                        btn_next?.visibility = View.VISIBLE
+                        btn_finish?.visibility= View.INVISIBLE
+                    }
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+
+        })
     }
+
+
 
     override fun onStart() {
         super.onStart()
