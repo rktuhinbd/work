@@ -1,13 +1,15 @@
 package com.app.messagealarm.ui.main.alarm_applications
 
 import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -31,15 +33,12 @@ import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import java.io.File
-import java.lang.IllegalArgumentException
-import java.lang.IllegalStateException
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
     AddedAppsListAdapter.ItemClickListener {
 
+    var mMessageReceiver:BroadcastReceiver? = null
     val bottomSheetModel = AddApplicationOption()
     val REQUEST_CODE_PICK_AUDIO = 1
     private val alarmAppPresenter = AlarmApplicationPresenter(this)
@@ -58,6 +57,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         Handler().postDelayed(Runnable {
             showQuickStartDialog()
         }, 5000)
+
+         mMessageReceiver =  object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                switch_alarm_status?.isChecked = false
+            }
+        }
     }
 
     private fun lookForTablesSize(){
@@ -71,7 +76,15 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
     override fun onResume() {
         super.onResume()
         lookForAlarmApplication()
+        this.registerReceiver(mMessageReceiver,  IntentFilter("turn_off_switch"));
     }
+
+
+    override fun onPause() {
+        super.onPause()
+        this.unregisterReceiver(mMessageReceiver)
+    }
+
 
     private fun setToolBar() {
         setSupportActionBar(findViewById(R.id.toolbar))
@@ -110,15 +123,19 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
                         bottomSheetModel.txt_ringtone_value?.text = "Default"
                         bottomSheetModel.setToneName("Default")
                         bottomSheetModel.alarmTonePath = null
-                        DialogUtils.showSimpleDialog(this, getString(R.string.txt_wrong_duration),
-                            getString(R.string.txt_selected_music_duration))
+                        DialogUtils.showSimpleDialog(
+                            this, getString(R.string.txt_wrong_duration),
+                            getString(R.string.txt_selected_music_duration)
+                        )
                     }
                 }catch (e: IllegalArgumentException){
                     bottomSheetModel.txt_ringtone_value?.text = "Default"
                     bottomSheetModel.setToneName("Default")
                     bottomSheetModel.alarmTonePath = null
-                    DialogUtils.showSimpleDialog(this, getString(R.string.txt_music),
-                        getString(R.string.txt_try_again))
+                    DialogUtils.showSimpleDialog(
+                        this, getString(R.string.txt_music),
+                        getString(R.string.txt_try_again)
+                    )
                 }
             }
         }
@@ -273,6 +290,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         }
     }
 
+
+
+
     private fun setupAppsRecyclerView() {
         rv_application_list?.layoutManager = LinearLayoutManager(this)
         rv_application_list?.isVerticalScrollBarEnabled = true
@@ -315,7 +335,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         try {
             val quickStartDialog = OnboardingDialog()
             quickStartDialog.show(supportFragmentManager, "quick_start")
-        }catch (e:IllegalStateException){
+        }catch (e: IllegalStateException){
 
         }
     }

@@ -11,6 +11,8 @@ public class PowerOffReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
             stopService(context);
+            stopPowerSwitchInActivity(context);
+
     }
 
     private void stopService(Context context){
@@ -19,5 +21,10 @@ public class PowerOffReceiver extends BroadcastReceiver {
             intent.setAction(NotificationListener.ACTION_STOP_FOREGROUND_SERVICE);
             context.startService(intent);
         }
+    }
+
+    private void stopPowerSwitchInActivity(Context context){
+        Intent intent = new Intent("turn_off_switch");
+        context.sendBroadcast(intent);
     }
 }
