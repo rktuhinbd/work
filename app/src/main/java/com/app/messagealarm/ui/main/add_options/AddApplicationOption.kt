@@ -10,14 +10,20 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.*
+import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.graphics.drawable.toBitmap
+import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.utils.TimeUtils.Companion.isTimeConstrained
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -432,6 +438,24 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         dialog.getWindow()?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.setCancelable(false)
         dialog.setContentView(R.layout.dialog_sender_name)
+        //init views
+        val adapter = SenderNameAdapter()
+        val etName = dialog.findViewById<EditText>(R.id.et_sender_name)
+        val imageButton = dialog.findViewById<ImageButton>(R.id.btn_add)
+        val recyclerView = dialog.findViewById<RecyclerView>(R.id.recycler_view_sender_name)
+        val layoutManager = FlexboxLayoutManager(requireActivity())
+        layoutManager.flexDirection = FlexDirection.COLUMN
+        layoutManager.justifyContent = JustifyContent.FLEX_START
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = adapter
+        imageButton.setOnClickListener {
+            if(etName.text.toString().isNotEmpty()){
+                adapter.addName(etName.text.toString())
+                etName.setText("")
+            }else{
+                Toasty.info(requireActivity(), "Name can't be empty!").show()
+            }
+        }
         val window: Window = dialog.window!!
         window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         //
