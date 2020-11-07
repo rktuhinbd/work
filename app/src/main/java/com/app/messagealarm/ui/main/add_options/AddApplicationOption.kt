@@ -10,10 +10,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.*
-import android.widget.EditText
-import android.widget.FrameLayout
-import android.widget.ImageButton
-import android.widget.TextView
+import android.widget.*
 import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.R
@@ -27,8 +24,11 @@ import com.google.android.flexbox.JustifyContent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.button.MaterialButton
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
+import kotlinx.android.synthetic.main.dialog_add_app_options.btn_close
+import kotlinx.android.synthetic.main.item_sender_name.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -214,16 +214,11 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         if (name.isNotEmpty()) {
                             txt_sender_name_value?.text = name
                             btn_sender_name_clear?.visibility = View.VISIBLE
-                            *//**
-         * set sender name to data model
-         *//*
-                            addApplicationEntity.senderNames = name
+                           addApplicationEntity.senderNames = name
+
                         } else {
                             btn_sender_name_clear?.visibility = View.GONE
                             txt_sender_name_value?.text = "None"
-                            *//**
-         * set None sender name to data model
-         *//*
                             addApplicationEntity.senderNames = "None"
                         }
                     }
@@ -439,22 +434,55 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         dialog.setCancelable(false)
         dialog.setContentView(R.layout.dialog_sender_name)
         //init views
-        val adapter = SenderNameAdapter()
+        val cancelButton = dialog.findViewById<MaterialButton>(R.id.btn_cancel)
+        val saveButton = dialog.findViewById<MaterialButton>(R.id.btn_save)
+        val placeHolder = dialog.findViewById<ImageView>(R.id.img_placeholder)
         val etName = dialog.findViewById<EditText>(R.id.et_sender_name)
         val imageButton = dialog.findViewById<ImageButton>(R.id.btn_add)
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.recycler_view_sender_name)
         val layoutManager = FlexboxLayoutManager(requireActivity())
+        val adapter = SenderNameAdapter(object : SenderNameAdapter.ItemClickListener{
+            override fun onAllItemRemoved() {
+                saveButton.isEnabled = false
+                placeHolder.visibility = View.VISIBLE
+                recyclerView.visibility = View.INVISIBLE
+            }
+
+        })
         layoutManager.flexDirection = FlexDirection.COLUMN
         layoutManager.justifyContent = JustifyContent.FLEX_START
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
+
         imageButton.setOnClickListener {
             if(etName.text.toString().isNotEmpty()){
                 adapter.addName(etName.text.toString())
                 etName.setText("")
+                saveButton.isEnabled = true
+                placeHolder.visibility = View.INVISIBLE
+                recyclerView.visibility = View.VISIBLE
             }else{
                 Toasty.info(requireActivity(), "Name can't be empty!").show()
             }
+        }
+
+        saveButton.setOnClickListener {
+           val name =  adapter.convertList()
+            if (name.isNotEmpty()) {
+                txt_sender_name_value?.text = name
+                btn_sender_name_clear?.visibility = View.VISIBLE
+                addApplicationEntity.senderNames = name
+                dialog.dismiss()
+            } else {
+                btn_sender_name_clear?.visibility = View.GONE
+                txt_sender_name_value?.text = "None"
+                addApplicationEntity.senderNames = "None"
+                dialog.dismiss()
+            }
+        }
+
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
         }
         val window: Window = dialog.window!!
         window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)

@@ -6,10 +6,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
+import com.app.messagealarm.ui.adapters.AllAppsListAdapter
 import kotlinx.android.synthetic.main.item_all_apps.view.*
 import kotlinx.android.synthetic.main.item_sender_name.view.*
+import java.lang.StringBuilder
 
-class SenderNameAdapter : RecyclerView.Adapter<SenderNameAdapter.SenderNameHolder>(){
+class SenderNameAdapter( val mItemClickListener: ItemClickListener) : RecyclerView.Adapter<SenderNameAdapter.SenderNameHolder>(){
 
     val nameList = ArrayList<String>()
 
@@ -19,10 +21,22 @@ class SenderNameAdapter : RecyclerView.Adapter<SenderNameAdapter.SenderNameHolde
         return SenderNameHolder(view)
     }
 
+    interface ItemClickListener{
+       fun onAllItemRemoved()
+    }
+
     override fun onBindViewHolder(holder: SenderNameHolder, position: Int) {
         holder.bindItems(nameList[position])
     }
 
+
+    fun convertList() : String{
+        val builder = StringBuilder()
+        nameList.forEach {
+            builder.append("$it, ")
+        }
+        return builder.toString().substring(0, builder.toString().length - 2)
+    }
 
     fun addName(name:String){
         nameList.add(name)
@@ -46,6 +60,9 @@ class SenderNameAdapter : RecyclerView.Adapter<SenderNameAdapter.SenderNameHolde
         override fun onClick(v: View?) {
             nameList.removeAt(adapterPosition)
             notifyDataSetChanged()
+            if(nameList.size == 0){
+                mItemClickListener.onAllItemRemoved()
+            }
         }
     }
 
