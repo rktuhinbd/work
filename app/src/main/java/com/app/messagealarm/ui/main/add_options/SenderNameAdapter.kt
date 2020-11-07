@@ -11,9 +11,15 @@ import kotlinx.android.synthetic.main.item_all_apps.view.*
 import kotlinx.android.synthetic.main.item_sender_name.view.*
 import java.lang.StringBuilder
 
-class SenderNameAdapter( val mItemClickListener: ItemClickListener) : RecyclerView.Adapter<SenderNameAdapter.SenderNameHolder>(){
+class SenderNameAdapter(list:ArrayList<String>,
+                        val mItemClickListener: ItemClickListener) : RecyclerView.Adapter<SenderNameAdapter.SenderNameHolder>(){
+
 
     val nameList = ArrayList<String>()
+
+    init {
+        nameList.addAll(list)
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SenderNameHolder {

@@ -125,14 +125,13 @@ class AlarmService {
         ): Boolean {
             var result = false
             val title = sbn?.notification?.extras!!["android.title"]
-            val nameArray = app.senderNames.trim().split(",")
+            val nameArray = app.senderNames.trim().split(", ")
             if (app.senderNames != "None") {
                 for (x in nameArray) {
-                    val name = replaceAll("[^A-Za-z0-9]", x, "")!!
-                    val titleOutput = replaceAll("[^A-Za-z0-9]", title.toString(), "")!!
-                    if (titleOutput.trim().toLowerCase(Locale.getDefault())
+                    Log.e("NAME", x)
+                    if (title.toString().trim().toLowerCase(Locale.getDefault())
                             .contains(
-                                name.trim().toLowerCase(Locale.getDefault())
+                                x.trim().toLowerCase(Locale.getDefault())
                             )
                     ) {
                         result = true

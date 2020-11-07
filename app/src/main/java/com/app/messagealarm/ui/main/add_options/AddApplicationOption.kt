@@ -32,6 +32,7 @@ import kotlinx.android.synthetic.main.item_sender_name.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionView {
@@ -224,7 +225,15 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     }
                 })*/
 
-            senderNameDialog()
+            if(txt_sender_name_value?.text != "None"){
+                val nameList = txt_sender_name_value?.text.toString().split(", ")
+                senderNameDialog(nameList.toMutableList() as ArrayList<String>)
+            }else{
+                val list = ArrayList<String>()
+                senderNameDialog(list)
+            }
+
+
         }
 
 
@@ -427,7 +436,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
 
-    private fun senderNameDialog(){
+    private fun senderNameDialog(list:ArrayList<String>){
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.getWindow()?.setBackgroundDrawableResource(android.R.color.transparent)
@@ -441,7 +450,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         val imageButton = dialog.findViewById<ImageButton>(R.id.btn_add)
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.recycler_view_sender_name)
         val layoutManager = FlexboxLayoutManager(requireActivity())
-        val adapter = SenderNameAdapter(object : SenderNameAdapter.ItemClickListener{
+        val adapter = SenderNameAdapter(list, object : SenderNameAdapter.ItemClickListener{
             override fun onAllItemRemoved() {
                 saveButton.isEnabled = false
                 placeHolder.visibility = View.VISIBLE
@@ -449,10 +458,21 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             }
 
         })
+
+
+        //list not empty
+        if(list.size != 0){
+            recyclerView.visibility = View.VISIBLE
+            placeHolder.visibility = View.INVISIBLE
+            saveButton.isEnabled = true
+        }
+
         layoutManager.flexDirection = FlexDirection.COLUMN
         layoutManager.justifyContent = JustifyContent.FLEX_START
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
+
+
 
         imageButton.setOnClickListener {
             if(etName.text.toString().isNotEmpty()){
