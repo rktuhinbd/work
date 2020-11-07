@@ -83,5 +83,8 @@
     <string name="desc_quick_start_four">This sticky notification indicates that the application is alive and waiting for message, Click on the notification button to mute and un-mute application, The power button turn off the sticky notification and kills the service</string>
     <string name="desc_quick_start_five">This is at setting page, set automatic mute time, application will be un-mute after that time. If your phone killing this application when app is in background. Click on that bottom button and follow the instruction</string>
     <string name="txt_finish">Finish</string>
+    <string name="txt_add_sender_name">Add sender name</string>
+    <string name="txt_sender_name">Sender Name</string>
+    <string name="txt_save">Save</string>
 
 </resources>

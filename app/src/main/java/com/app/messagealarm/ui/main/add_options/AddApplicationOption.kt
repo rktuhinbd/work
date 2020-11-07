@@ -9,7 +9,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -201,7 +200,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
 
         view_sender_name?.setOnClickListener {
-            DialogUtils.showSenderNameDialog(
+            /*DialogUtils.showSenderNameDialog(
                 requireActivity(),
                 txt_sender_name_value?.text.toString(),
                 object : DialogUtils.RepeatCallBack {
@@ -209,20 +208,22 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         if (name.isNotEmpty()) {
                             txt_sender_name_value?.text = name
                             btn_sender_name_clear?.visibility = View.VISIBLE
-                            /**
-                             * set sender name to data model
-                             */
+                            *//**
+         * set sender name to data model
+         *//*
                             addApplicationEntity.senderNames = name
                         } else {
                             btn_sender_name_clear?.visibility = View.GONE
                             txt_sender_name_value?.text = "None"
-                            /**
-                             * set None sender name to data model
-                             */
+                            *//**
+         * set None sender name to data model
+         *//*
                             addApplicationEntity.senderNames = "None"
                         }
                     }
-                })
+                })*/
+
+            senderNameDialog()
         }
 
 
@@ -419,6 +420,21 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         val wlp = window.attributes;
          wlp.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND
         window.attributes = wlp
+        if(!dialog.isShowing){
+            dialog.show()
+        }
+    }
+
+
+    private fun senderNameDialog(){
+        val dialog = Dialog(requireActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.getWindow()?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_sender_name)
+        val window: Window = dialog.window!!
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        //
         if(!dialog.isShowing){
             dialog.show()
         }
