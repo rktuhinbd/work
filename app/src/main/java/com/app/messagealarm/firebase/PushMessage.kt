@@ -15,6 +15,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.app.messagealarm.R
 import com.app.messagealarm.networking.RetrofitClient
+import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.DataUtils
 import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -24,15 +25,15 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 
-class PushMessage : FirebaseMessagingService() {
+class PushMessage : FirebaseMessagingService(), PushMessageView {
 
     override fun onMessageReceived(p0: RemoteMessage?) {
         val data: Map<String, String> = p0!!.data
-        Log.e("IMAGE", p0.data["image"].toString())
-        Log.e("TITLE", p0.data["title"].toString())
-        Log.e("BODY", p0.data["body"].toString())
-        WorkManagerUtils.scheduleSyncWork(this, 0, 0, 0)
         createNotification(p0)
+        if(data["action"] == Constants.ACTION.SYNC){
+            val pushMessagePresenter = PushMessagePresenter(this)
+            pushMessagePresenter.cleanDb()
+        }
     }
 
     override fun onNewToken(p0: String?) {
@@ -96,6 +97,10 @@ class PushMessage : FirebaseMessagingService() {
         } catch (e: Exception) {
             null
         }
+    }
+
+    override fun onDbCleanSuccess() {
+        WorkManagerUtils.scheduleSyncWork(this, 0, 0, 0)
     }
 
 }

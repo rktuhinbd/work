@@ -14,4 +14,6 @@ public interface LanguageDao {
     @Query("SELECT COUNT(*) FROM language")
     int getTotalCountOfLanguage();
 
+    @Query("DELETE FROM language")
+    void cleanLanguage();
 }

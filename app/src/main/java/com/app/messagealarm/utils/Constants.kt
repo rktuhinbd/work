@@ -37,6 +37,7 @@ class Constants {
     class ACTION{
         companion object{
             const val ACTION_UN_MUTE = "un_mute"
+            const val SYNC = "SYNC"
         }
     }
 
