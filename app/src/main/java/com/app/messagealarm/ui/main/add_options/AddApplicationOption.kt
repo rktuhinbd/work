@@ -351,7 +351,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         txt_sender_name_value?.text = "None"
                         btn_sender_name_clear?.visibility = View.GONE
                     }
-
                     override fun onNegative() {
 
                     }
@@ -554,7 +553,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }catch (ex: ParseException){
             return Calendar.getInstance()
         }
-
     }
 
 

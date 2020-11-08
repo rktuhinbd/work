@@ -90,5 +90,6 @@
     <string name="txt_desc_clear_message">Do you wants to clear message body?</string>
     <string name="txt_clear_sender_name">Clear Sender Names</string>
     <string name="txt_desc_clear_sender_namne">Do you wants to clear sender names?</string>
+    <string name="txt_alarm_repeat">Alarm Repeat</string>
 
 </resources>

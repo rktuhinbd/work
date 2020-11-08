@@ -128,9 +128,10 @@ class AlarmService {
             if (app.senderNames != "None") {
                 for (x in nameArray) {
                     Log.e("NAME", x)
-                    if (title.toString().trim().toLowerCase(Locale.getDefault())
+                    Log.e("TITLE", title.toString())
+                    if (x.trim().toLowerCase(Locale.getDefault())
                             .contains(
-                                x.trim().toLowerCase(Locale.getDefault())
+                                title.toString().trim().toLowerCase(Locale.getDefault())
                             )
                     ) {
                         result = true

@@ -13,6 +13,7 @@ import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.app.messagealarm.broadcast_receiver.OpenAppReceiver
 import com.app.messagealarm.broadcast_receiver.PowerOffReceiver
 import com.app.messagealarm.broadcast_receiver.UnMuteReceiver
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
@@ -36,6 +37,7 @@ class FloatingNotification {
         var notificationView: RemoteViews? = null
         var notificationBuilder: NotificationCompat.Builder? = null
         val NOTIFICATION_ID = 12
+        var notificationManager:NotificationManagerCompat? = null
         /**
          * end of remote notification
          */
@@ -70,6 +72,7 @@ class FloatingNotification {
                                 //done playing dismiss the activity now
                                 //send a notification that you missed the alarm
                                 notificationManager.cancel(225)
+                                showMissedAlarmNotification(context, packageName, appName)
                                 SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
                                 notifyMute(true)
                             }
@@ -80,48 +83,64 @@ class FloatingNotification {
             }).start()
         }
 
+
+        fun showMissedAlarmNotification(context: Context, packageName: String, appName: String){
+            // sending data to new activity
+            val buttonOpenAppBroadcast = Intent(context, OpenAppReceiver::class.java).
+            putExtra(Constants.IntentKeys.PACKAGE_NAME, packageName)
+                .putExtra(Constants.IntentKeys.TYPE_ALARM, Constants.Default.TYPE_MISSED)
+            val buttonOpenApp =
+                PendingIntent.getBroadcast(context, 0, buttonOpenAppBroadcast, 0)
+
+            createChannel(context)
+
+            var notificationBuilder: NotificationCompat.Builder? = null
+            notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
+                .setContentText("You missed an alarm from $appName")
+                .setContentTitle("Swipe to dismiss notification!")
+                .setSmallIcon(
+                    com.app.messagealarm.R.drawable.ic_notifications_active_black_24dp
+                )
+                .setCategory(NotificationCompat.CATEGORY_ALARM)
+                .addAction(
+                    com.app.messagealarm.R.drawable.ic_notifications_active_black_24dp,
+                    "Open $appName",
+                    buttonOpenApp
+                )
+                .setAutoCancel(true)
+            notificationManager = NotificationManagerCompat.from(context)
+            notificationManager!!.notify(226, notificationBuilder.build())
+        }
+
         fun showFloatingNotification(
             appName: String, packageName: String, numberOfPlay: Int,
             isVibrate: Boolean, context: Service, mediaPath: String?
         ) {
             // sending data to new activity
-            val receiveCallAction =
-                Intent(context, AlarmApplicationActivity::class.java)
+            val buttonOpenAppBroadcast = Intent(context, OpenAppReceiver::class.java).
+                    putExtra(Constants.IntentKeys.PACKAGE_NAME, packageName)
+                .putExtra(Constants.IntentKeys.TYPE_ALARM, Constants.Default.TYPE_ALARM)
+            val buttonOpenApp =
+                PendingIntent.getBroadcast(context, 0, buttonOpenAppBroadcast, 0)
 
-            val receiveCallPendingIntent = PendingIntent.getBroadcast(
-                context,
-                1200,
-                receiveCallAction,
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
-            val cancelCallPendingIntent = PendingIntent.getBroadcast(
-                context,
-                1201,
-                receiveCallAction,
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
             createChannel(context)
+
             var notificationBuilder: NotificationCompat.Builder? = null
             notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setContentText("Message from upwork")
-                .setContentTitle("Check message")
+                .setContentText("You got a message from $appName")
+                .setContentTitle("Swipe to dismiss alarm!")
                 .setSmallIcon(
-                    R.drawable.ic_btn_speak_now
+                    com.app.messagealarm.R.drawable.ic_notifications_active_black_24dp
                 )
-                .setCategory(NotificationCompat.CATEGORY_CALL)
+                .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .addAction(
-                    R.drawable.ic_menu_call,
-                    "Receive Call",
-                    receiveCallPendingIntent
-                )
-                .addAction(
-                    R.drawable.ic_menu_close_clear_cancel,
-                    "Cancel call",
-                    cancelCallPendingIntent
+                    com.app.messagealarm.R.drawable.ic_notifications_active_black_24dp,
+                    "Open $appName",
+                    buttonOpenApp
                 )
                 .setAutoCancel(true)
-            val notificationManager = NotificationManagerCompat.from(context)
-            notificationManager.notify(225, notificationBuilder.build())
+             notificationManager = NotificationManagerCompat.from(context)
+            notificationManager!!.notify(225, notificationBuilder.build())
             //start playing
             startPlaying(
                 appName,
@@ -129,22 +148,36 @@ class FloatingNotification {
                 mediaPath,
                 isVibrate,
                 context,
-                notificationManager,
+                notificationManager!!,
                 numberOfPlay
             )
+
+        }
+
+
+        fun cancelAlarmNotification(){
+            if(notificationManager != null){
+                notificationManager!!.cancel(225)
+            }
+        }
+
+        fun cancelMissedAlarmNotification(){
+            if(notificationManager != null){
+                notificationManager!!.cancel(226)
+            }
         }
 
         /*
 Create noticiation channel if OS version is greater than or eqaul to Oreo
 */
-        private fun createChannel(context: Service) {
+        private fun createChannel(context: Context) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val channel = NotificationChannel(
                     CHANNEL_ID,
                     CHANNEL_NAME,
                     NotificationManager.IMPORTANCE_DEFAULT
                 )
-                channel.description = "Call Notifications"
+                channel.description = "Alarm Notifications"
                 channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
                 Objects.requireNonNull(context.getSystemService(NotificationManager::class.java))
                     .createNotificationChannel(channel)
@@ -304,6 +337,8 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
 
             context.startForeground(NOTIFICATION_ID, notification)
         }
+
+
 
 
 
