@@ -86,5 +86,9 @@
     <string name="txt_add_sender_name">Add sender name</string>
     <string name="txt_sender_name">Sender Name</string>
     <string name="txt_save">Save</string>
+    <string name="txt_clear_message_body">Clear Message Body</string>
+    <string name="txt_desc_clear_message">Do you wants to clear message body?</string>
+    <string name="txt_clear_sender_name">Clear Sender Names</string>
+    <string name="txt_desc_clear_sender_namne">Do you wants to clear sender names?</string>
 
 </resources>

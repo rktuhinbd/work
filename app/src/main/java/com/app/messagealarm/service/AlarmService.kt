@@ -51,7 +51,6 @@ class AlarmService {
                                                         SharedPrefUtils.write(Constants.PreferenceKeys.IS_ACTIVITY_STARTED, false)
                                                     magicPlay(app.ringTone, service, sbn, app)
                                                 }
-
                                             }
                                         }
                                     }

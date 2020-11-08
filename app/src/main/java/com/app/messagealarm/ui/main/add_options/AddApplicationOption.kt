@@ -207,24 +207,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
 
         view_sender_name?.setOnClickListener {
-            /*DialogUtils.showSenderNameDialog(
-                requireActivity(),
-                txt_sender_name_value?.text.toString(),
-                object : DialogUtils.RepeatCallBack {
-                    override fun onClick(name: String) {
-                        if (name.isNotEmpty()) {
-                            txt_sender_name_value?.text = name
-                            btn_sender_name_clear?.visibility = View.VISIBLE
-                           addApplicationEntity.senderNames = name
-
-                        } else {
-                            btn_sender_name_clear?.visibility = View.GONE
-                            txt_sender_name_value?.text = "None"
-                            addApplicationEntity.senderNames = "None"
-                        }
-                    }
-                })*/
-
             if(txt_sender_name_value?.text != "None"){
                 val nameList = txt_sender_name_value?.text.toString().split(", ")
                 senderNameDialog(nameList.toMutableList() as ArrayList<String>)
@@ -232,8 +214,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 val list = ArrayList<String>()
                 senderNameDialog(list)
             }
-
-
         }
 
 
@@ -342,6 +322,40 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         addApplicationEntity.numberOfPlay = name.trim().toInt()
                         txt_number_of_play_value?.text = """$name times"""
                     }
+                })
+        }
+
+
+        btn_message_body_clear?.setOnClickListener {
+            DialogUtils.showDialog(requireActivity(), getString(R.string.txt_clear_message_body) ,
+                getString(R.string.txt_desc_clear_message), object : DialogUtils.Callback{
+                override fun onPositive() {
+                   addApplicationEntity.messageBody = "None"
+                   txt_message_body_value?.text = "None"
+                    btn_message_body_clear?.visibility = View.GONE
+                }
+
+                override fun onNegative() {
+
+                }
+
+            })
+        }
+
+
+        btn_sender_name_clear?.setOnClickListener {
+            DialogUtils.showDialog(requireActivity(), getString(R.string.txt_clear_sender_name) ,
+                getString(R.string.txt_desc_clear_sender_namne), object : DialogUtils.Callback{
+                    override fun onPositive() {
+                        addApplicationEntity.senderNames = "None"
+                        txt_sender_name_value?.text = "None"
+                        btn_sender_name_clear?.visibility = View.GONE
+                    }
+
+                    override fun onNegative() {
+
+                    }
+
                 })
         }
 
@@ -740,6 +754,12 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
     override fun onApplicationGetSuccess(app: ApplicationEntity) {
         //show edited value to
+        if(app.senderNames != "None"){
+            btn_sender_name_clear?.visibility = View.VISIBLE
+        }
+        if(app.messageBody != "None"){
+            btn_message_body_clear?.visibility = View.VISIBLE
+        }
         addApplicationEntity = app
         alarmTonePath = app.tone_path
         convertToHolderEntity(addApplicationEntity)
