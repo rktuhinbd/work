@@ -32,11 +32,14 @@ class Constants {
             const val TRUE_INTEGER: Int = 1
             const val FALSE_INTEGER: Int = 0
             const val SPACE_STRING: String = " "
+            const val TYPE_MISSED = 1
+            const val TYPE_ALARM = 2
         }
     }
     class ACTION{
         companion object{
             const val ACTION_UN_MUTE = "un_mute"
+            const val SYNC = "SYNC"
         }
     }
 
@@ -150,6 +153,7 @@ class Constants {
             const val DESC = "desc"
             const val IMAGE_PATH = "image"
             const val PACKAGE_NAME = "package"
+            const val TYPE_ALARM = "type_alarm"
             const val APP_NAME = "app_name"
             const val TONE = "tone"
             const val NUMBER_OF_PLAY = "number_of_play"

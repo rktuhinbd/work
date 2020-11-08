@@ -9,24 +9,30 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.*
-import android.widget.FrameLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.core.graphics.drawable.toBitmap
+import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.utils.TimeUtils.Companion.isTimeConstrained
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.button.MaterialButton
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
+import kotlinx.android.synthetic.main.dialog_add_app_options.btn_close
+import kotlinx.android.synthetic.main.item_sender_name.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionView {
@@ -201,28 +207,13 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
 
         view_sender_name?.setOnClickListener {
-            DialogUtils.showSenderNameDialog(
-                requireActivity(),
-                txt_sender_name_value?.text.toString(),
-                object : DialogUtils.RepeatCallBack {
-                    override fun onClick(name: String) {
-                        if (name.isNotEmpty()) {
-                            txt_sender_name_value?.text = name
-                            btn_sender_name_clear?.visibility = View.VISIBLE
-                            /**
-                             * set sender name to data model
-                             */
-                            addApplicationEntity.senderNames = name
-                        } else {
-                            btn_sender_name_clear?.visibility = View.GONE
-                            txt_sender_name_value?.text = "None"
-                            /**
-                             * set None sender name to data model
-                             */
-                            addApplicationEntity.senderNames = "None"
-                        }
-                    }
-                })
+            if(txt_sender_name_value?.text != "None"){
+                val nameList = txt_sender_name_value?.text.toString().split(", ")
+                senderNameDialog(nameList.toMutableList() as ArrayList<String>)
+            }else{
+                val list = ArrayList<String>()
+                senderNameDialog(list)
+            }
         }
 
 
@@ -335,6 +326,39 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
 
 
+        btn_message_body_clear?.setOnClickListener {
+            DialogUtils.showDialog(requireActivity(), getString(R.string.txt_clear_message_body) ,
+                getString(R.string.txt_desc_clear_message), object : DialogUtils.Callback{
+                override fun onPositive() {
+                   addApplicationEntity.messageBody = "None"
+                   txt_message_body_value?.text = "None"
+                    btn_message_body_clear?.visibility = View.GONE
+                }
+
+                override fun onNegative() {
+
+                }
+
+            })
+        }
+
+
+        btn_sender_name_clear?.setOnClickListener {
+            DialogUtils.showDialog(requireActivity(), getString(R.string.txt_clear_sender_name) ,
+                getString(R.string.txt_desc_clear_sender_namne), object : DialogUtils.Callback{
+                    override fun onPositive() {
+                        addApplicationEntity.senderNames = "None"
+                        txt_sender_name_value?.text = "None"
+                        btn_sender_name_clear?.visibility = View.GONE
+                    }
+                    override fun onNegative() {
+
+                    }
+
+                })
+        }
+
+
         view_repeat_bg?.setOnClickListener {
             DialogUtils.showSimpleListDialog(
                 requireActivity(),
@@ -425,6 +449,83 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
 
+    private fun senderNameDialog(list:ArrayList<String>){
+        val dialog = Dialog(requireActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.getWindow()?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_sender_name)
+        //init views
+        val cancelButton = dialog.findViewById<MaterialButton>(R.id.btn_cancel)
+        val saveButton = dialog.findViewById<MaterialButton>(R.id.btn_save)
+        val placeHolder = dialog.findViewById<ImageView>(R.id.img_placeholder)
+        val etName = dialog.findViewById<EditText>(R.id.et_sender_name)
+        val imageButton = dialog.findViewById<ImageButton>(R.id.btn_add)
+        val recyclerView = dialog.findViewById<RecyclerView>(R.id.recycler_view_sender_name)
+        val layoutManager = FlexboxLayoutManager(requireActivity())
+        val adapter = SenderNameAdapter(list, object : SenderNameAdapter.ItemClickListener{
+            override fun onAllItemRemoved() {
+                saveButton.isEnabled = false
+                placeHolder.visibility = View.VISIBLE
+                recyclerView.visibility = View.INVISIBLE
+            }
+
+        })
+
+
+        //list not empty
+        if(list.size != 0){
+            recyclerView.visibility = View.VISIBLE
+            placeHolder.visibility = View.INVISIBLE
+            saveButton.isEnabled = true
+        }
+
+        layoutManager.flexDirection = FlexDirection.COLUMN
+        layoutManager.justifyContent = JustifyContent.FLEX_START
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = adapter
+
+
+
+        imageButton.setOnClickListener {
+            if(etName.text.toString().isNotEmpty()){
+                adapter.addName(etName.text.toString())
+                etName.setText("")
+                saveButton.isEnabled = true
+                placeHolder.visibility = View.INVISIBLE
+                recyclerView.visibility = View.VISIBLE
+            }else{
+                Toasty.info(requireActivity(), "Name can't be empty!").show()
+            }
+        }
+
+        saveButton.setOnClickListener {
+           val name =  adapter.convertList()
+            if (name.isNotEmpty()) {
+                txt_sender_name_value?.text = name
+                btn_sender_name_clear?.visibility = View.VISIBLE
+                addApplicationEntity.senderNames = name
+                dialog.dismiss()
+            } else {
+                btn_sender_name_clear?.visibility = View.GONE
+                txt_sender_name_value?.text = "None"
+                addApplicationEntity.senderNames = "None"
+                dialog.dismiss()
+            }
+        }
+
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
+        val window: Window = dialog.window!!
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        //
+        if(!dialog.isShowing){
+            dialog.show()
+        }
+    }
+
+
     @SuppressLint("SimpleDateFormat")
     fun startTimeCalender():Calendar{
         /**
@@ -452,7 +553,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }catch (ex: ParseException){
             return Calendar.getInstance()
         }
-
     }
 
 
@@ -652,6 +752,12 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
     override fun onApplicationGetSuccess(app: ApplicationEntity) {
         //show edited value to
+        if(app.senderNames != "None"){
+            btn_sender_name_clear?.visibility = View.VISIBLE
+        }
+        if(app.messageBody != "None"){
+            btn_message_body_clear?.visibility = View.VISIBLE
+        }
         addApplicationEntity = app
         alarmTonePath = app.tone_path
         convertToHolderEntity(addApplicationEntity)

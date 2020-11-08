@@ -18,4 +18,7 @@ public interface AppDao {
 
     @Query("SELECT * FROM messaging_app")
     List<AppEntity> getAppsList();
+
+    @Query("DELETE FROM messaging_app")
+    void cleanMessagingApp();
 }

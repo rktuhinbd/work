@@ -27,7 +27,6 @@ import java.security.AccessController.getContext
 class AlarmActivity : BaseActivity() {
 
     val once = Once()
-    var hasFocus = true
     var isSwiped = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,7 +73,6 @@ class AlarmActivity : BaseActivity() {
 
 
     private fun startPlaying(tone: String?) {
-        Log.e("CALLED", "TRUE")
         Thread(Runnable {
             //here i need run the loop of how much time need to play
             val numberOfPLay = intent?.extras!!.getInt(Constants.IntentKeys.NUMBER_OF_PLAY)
@@ -93,6 +91,10 @@ class AlarmActivity : BaseActivity() {
                         //done playing dismiss the activity now
                         Notify.cancel(this, 13)
                         //send a notification that you missed the alarm
+                        FloatingNotification.showMissedAlarmNotification(this,
+                            intent?.extras!!.getString(Constants.IntentKeys.PACKAGE_NAME)!!,
+                            intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!
+                            )
                         finish()
                         SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
                         FloatingNotification.notifyMute(true)
@@ -102,32 +104,6 @@ class AlarmActivity : BaseActivity() {
         }).start()
     }
 
-    private fun showYouMissedAlarmNotification() {
-        val pattern = longArrayOf(0, 100, 500, 100, 500, 100, 500, 100, 500, 100, 500)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Notify.create(this)
-                .setChannelId(getString(R.string.notify_channel_id))
-                .setChannelName(getString(R.string.notify_channel_name))
-                .setChannelDescription(getString(R.string.notify_channel_description))
-                .setTitle("You have missed an alarm from ${intent.extras?.getString(Constants.IntentKeys.APP_NAME)}")
-                .setContent("Swipe to dismiss !")
-                .setVibrationPattern(pattern)
-                .setId(13)
-                .setImportance(Notify.NotificationImportance.HIGH)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
-                .show()
-        }else{
-            Notify.create(this)
-                .setTitle("You have missed an alarm from ${intent.extras?.getString(Constants.IntentKeys.APP_NAME)}")
-                .setContent("Swipe to dismiss !")
-                .setVibrationPattern(pattern)
-                .setId(13)
-                .setImportance(Notify.NotificationImportance.HIGH)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
-                .show()
-        }
-
-    }
 
     private fun showPageDismissNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -159,18 +135,10 @@ class AlarmActivity : BaseActivity() {
 
     override fun onPause() {
         super.onPause()
-        if(!hasFocus) {
             if(!isSwiped){
                 showPageDismissNotification()
             }
-        }
     }
-
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        this.hasFocus = hasFocus
-    }
-
 
     private fun tiltAnimation() {
         val ranim =
@@ -235,11 +203,6 @@ class AlarmActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!isSwiped){
-            if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_NOTIFICATION_SWIPED)){
-                showYouMissedAlarmNotification()
-            }
-        }
     }
 
     override fun onBackPressed() {
