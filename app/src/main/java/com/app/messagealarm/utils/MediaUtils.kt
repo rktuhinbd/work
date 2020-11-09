@@ -31,6 +31,7 @@ class MediaUtils {
                     mobilemode.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
                     0
                 )
+
             try {
                 val once = Once()
                 val runnable = Runnable(){
