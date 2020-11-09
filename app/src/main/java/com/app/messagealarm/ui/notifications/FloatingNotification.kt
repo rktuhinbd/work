@@ -13,10 +13,7 @@ import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.app.messagealarm.broadcast_receiver.MissedAlarmReceiver
-import com.app.messagealarm.broadcast_receiver.OpenAppReceiver
-import com.app.messagealarm.broadcast_receiver.PowerOffReceiver
-import com.app.messagealarm.broadcast_receiver.UnMuteReceiver
+import com.app.messagealarm.broadcast_receiver.*
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
@@ -86,6 +83,9 @@ class FloatingNotification {
         }
 
 
+
+
+
         fun showMissedAlarmNotification(context: Context, packageName: String, appName: String){
             // sending data to new activity
             val buttonOpenAppBroadcast = Intent(context, MissedAlarmReceiver::class.java).
@@ -111,6 +111,35 @@ class FloatingNotification {
                 .setAutoCancel(true)
             notificationManager = NotificationManagerCompat.from(context)
             notificationManager!!.notify(226, notificationBuilder.build())
+        }
+
+
+
+        fun showPageDismissNotification(context: Context, packageName: String, appName: String){
+
+            val buttonOpenAppBroadcast = Intent(context, PageDismissReceiver::class.java).
+            putExtra(Constants.IntentKeys.PACKAGE_NAME, packageName)
+            val buttonOpenApp =
+                PendingIntent.getBroadcast(context, 0, buttonOpenAppBroadcast, 0)
+
+            createChannel(context)
+
+            var notificationBuilder: NotificationCompat.Builder? = null
+            notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
+                .setContentText("You have an alarm from $appName")
+                .setContentTitle("Swipe to dismiss alarm!")
+                .setSmallIcon(
+                    com.app.messagealarm.R.drawable.ic_notifications_active_black_24dp
+                )
+                .setCategory(NotificationCompat.CATEGORY_ALARM)
+                .addAction(
+                    com.app.messagealarm.R.drawable.ic_notifications_active_black_24dp,
+                    "Open $appName",
+                    buttonOpenApp
+                )
+                .setAutoCancel(true)
+            notificationManager = NotificationManagerCompat.from(context)
+            notificationManager!!.notify(227, notificationBuilder.build())
         }
 
         fun showFloatingNotification(
@@ -164,6 +193,12 @@ class FloatingNotification {
         fun cancelMissedAlarmNotification(){
             if(notificationManager != null){
                 notificationManager!!.cancel(226)
+            }
+        }
+
+        fun cancelPageDismissNotification(){
+            if(notificationManager != null){
+                notificationManager!!.cancel(227)
             }
         }
 

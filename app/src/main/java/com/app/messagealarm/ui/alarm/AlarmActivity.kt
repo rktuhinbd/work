@@ -95,6 +95,7 @@ class AlarmActivity : BaseActivity() {
                         finish()
                         SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
                         FloatingNotification.notifyMute(true)
+                        FloatingNotification.cancelPageDismissNotification()
                     }
                 })
             }
@@ -103,7 +104,9 @@ class AlarmActivity : BaseActivity() {
 
 
     private fun showPageDismissNotification() {
-
+        FloatingNotification.showPageDismissNotification(this,
+            intent?.extras!!.getString(Constants.IntentKeys.PACKAGE_NAME)!!,
+            intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!)
     }
 
     override fun onPause() {
