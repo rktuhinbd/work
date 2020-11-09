@@ -85,16 +85,13 @@ class AlarmActivity : BaseActivity() {
                     MediaUtils.playAlarm(
                         intent?.extras!!.getBoolean(Constants.IntentKeys.IS_VIBRATE),
                         this, tone,
-                        (x == (numberOfPLay - 1))
+                        (x == (numberOfPLay - 1)),
+                        intent?.extras!!.getString(Constants.IntentKeys.PACKAGE_NAME)!!,
+                        intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!
                     )
                     if (x == numberOfPLay - 1) {
                         //done playing dismiss the activity now
-                        Notify.cancel(this, 13)
                         //send a notification that you missed the alarm
-                        FloatingNotification.showMissedAlarmNotification(this,
-                            intent?.extras!!.getString(Constants.IntentKeys.PACKAGE_NAME)!!,
-                            intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!
-                            )
                         finish()
                         SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
                         FloatingNotification.notifyMute(true)
@@ -106,30 +103,6 @@ class AlarmActivity : BaseActivity() {
 
 
     private fun showPageDismissNotification() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val pattern = longArrayOf(0, 100, 500, 100, 500, 100, 500, 100, 500, 100, 500)
-            Notify.create(this)
-                .setChannelId(getString(R.string.notify_channel_id))
-                .setChannelName(getString(R.string.notify_channel_name))
-                .setChannelDescription(getString(R.string.notify_channel_description))
-                .setTitle("You have a message from ${intent.extras?.getString(Constants.IntentKeys.APP_NAME)}")
-                .setContent("Swipe to dismiss the alarm!")
-                .setVibrationPattern(pattern)
-                .setId(13)
-                .setImportance(Notify.NotificationImportance.HIGH)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
-                .show()
-        }else{
-            val pattern = longArrayOf(0, 100, 500, 100, 500, 100, 500, 100, 500, 100, 500)
-            Notify.create(this)
-                .setTitle("You have a message from ${intent.extras?.getString(Constants.IntentKeys.APP_NAME)}")
-                .setContent("Swipe to dismiss the alarm!")
-                .setVibrationPattern(pattern)
-                .setId(13)
-                .setImportance(Notify.NotificationImportance.HIGH)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
-                .show()
-        }
 
     }
 

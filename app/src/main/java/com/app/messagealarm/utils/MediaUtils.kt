@@ -6,6 +6,7 @@ import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
 import com.app.messagealarm.BaseApplication
+import com.app.messagealarm.ui.notifications.FloatingNotification
 import com.app.messagealarm.ui.notifications.FloatingNotification.Companion.notifyMute
 import com.app.messagealarm.utils.SharedPrefUtils.write
 import java.io.IOException
@@ -21,7 +22,9 @@ class MediaUtils {
             isVibrate: Boolean,
             context: Context,
             mediaPath: String?,
-            isLastIndex: Boolean
+            isLastIndex: Boolean,
+            packageName: String,
+            appName: String
         ) {
             //start full sound
                 val mobilemode =
@@ -44,6 +47,7 @@ class MediaUtils {
                         mediaPlayer!!.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
                         afd.close()
                     }
+                    mediaPlayer!!.setVolume(1.0f, 1.0f)
                     mediaPlayer!!.setOnPreparedListener { mediaPlayer!!.start() }
                     mediaPlayer!!.prepare()
                     mediaPlayer!!.setOnErrorListener(object : MediaPlayer.OnErrorListener {
@@ -77,7 +81,7 @@ class MediaUtils {
                 }
             }).start()
             //stop playBack
-            stopPlayBackAfterDone(isLastIndex)
+            stopPlayBackAfterDone(isLastIndex, context, packageName, appName)
         }
 
         private fun stopVibration() {
@@ -86,7 +90,7 @@ class MediaUtils {
             }).start()
         }
 
-        private fun stopPlayBackAfterDone(isLastIndex: Boolean) {
+        private fun stopPlayBackAfterDone(isLastIndex: Boolean, context: Context, packageName:String, appName:String) {
             try{
                 //here 30 is not static it will be from setting page, the values will be 1, 2, 3, or Full song
                 while (true) {
@@ -97,6 +101,11 @@ class MediaUtils {
                                     mediaPlayer!!.stop()
                                     mediaPlayer!!.release()
                                     mediaPlayer = null
+                                    FloatingNotification.showMissedAlarmNotification(
+                                        context,
+                                        packageName,
+                                        appName
+                                    )
                                 }else{
                                     mediaPlayer!!.stop()
                                 }

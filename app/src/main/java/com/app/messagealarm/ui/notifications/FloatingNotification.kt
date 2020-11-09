@@ -13,6 +13,7 @@ import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.app.messagealarm.broadcast_receiver.MissedAlarmReceiver
 import com.app.messagealarm.broadcast_receiver.OpenAppReceiver
 import com.app.messagealarm.broadcast_receiver.PowerOffReceiver
 import com.app.messagealarm.broadcast_receiver.UnMuteReceiver
@@ -66,13 +67,14 @@ class FloatingNotification {
                         Runnable {
                             MediaUtils.playAlarm(
                                 isVibrate,
-                                context, tone, (x == (numberOfPlay - 1))
+                                context, tone, (x == (numberOfPlay - 1)),
+                                packageName,
+                                appName
                             )
                             if (x == numberOfPlay - 1) {
                                 //done playing dismiss the activity now
                                 //send a notification that you missed the alarm
                                 notificationManager.cancel(225)
-                                showMissedAlarmNotification(context, packageName, appName)
                                 SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
                                 notifyMute(true)
                             }
@@ -86,9 +88,8 @@ class FloatingNotification {
 
         fun showMissedAlarmNotification(context: Context, packageName: String, appName: String){
             // sending data to new activity
-            val buttonOpenAppBroadcast = Intent(context, OpenAppReceiver::class.java).
+            val buttonOpenAppBroadcast = Intent(context, MissedAlarmReceiver::class.java).
             putExtra(Constants.IntentKeys.PACKAGE_NAME, packageName)
-                .putExtra(Constants.IntentKeys.TYPE_ALARM, Constants.Default.TYPE_MISSED)
             val buttonOpenApp =
                 PendingIntent.getBroadcast(context, 0, buttonOpenAppBroadcast, 0)
 
@@ -119,7 +120,6 @@ class FloatingNotification {
             // sending data to new activity
             val buttonOpenAppBroadcast = Intent(context, OpenAppReceiver::class.java).
                     putExtra(Constants.IntentKeys.PACKAGE_NAME, packageName)
-                .putExtra(Constants.IntentKeys.TYPE_ALARM, Constants.Default.TYPE_ALARM)
             val buttonOpenApp =
                 PendingIntent.getBroadcast(context, 0, buttonOpenAppBroadcast, 0)
 
