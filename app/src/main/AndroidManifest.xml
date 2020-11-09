@@ -55,7 +55,7 @@
             android:launchMode="singleTop" />
         <activity
             android:name=".ui.alarm.AlarmActivity"
-            android:launchMode="singleTask"
+            android:launchMode="singleInstance"
             android:excludeFromRecents="true"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/AppTheme.GradientStatusBar" />
