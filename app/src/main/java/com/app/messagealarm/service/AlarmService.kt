@@ -37,7 +37,6 @@ class AlarmService {
                 if (sbn?.packageName != null) {
                     if (sbn.packageName == app.packageName) {
                         //check for alarm repeat
-                        if (alarmRepeatOutput(app.alarmRepeat, app)) {
                             if (checkByTimeConstrain(app)) {
                                 //check for title not null
                                 if (sbn.notification.extras["android.title"] != null) {
@@ -47,16 +46,18 @@ class AlarmService {
                                             if (!MediaUtils.isPlaying()) {
                                                 //check if app is in not muted
                                                 if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_MUTED)){
+                                                    if(alarmRepeatOutput(app.alarmRepeat, app)) {
                                                     //save activity started as false
                                                         SharedPrefUtils.write(Constants.PreferenceKeys.IS_ACTIVITY_STARTED, false)
                                                     magicPlay(app.ringTone, service, sbn, app)
+
+                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
-                        }
                         break
                     }
                 }
@@ -129,9 +130,9 @@ class AlarmService {
                 for (x in nameArray) {
                     Log.e("NAME", x)
                     Log.e("TITLE", title.toString())
-                    if (x.trim().toLowerCase(Locale.getDefault())
+                    if (title.toString().trim().toLowerCase(Locale.getDefault())
                             .contains(
-                                title.toString().trim().toLowerCase(Locale.getDefault())
+                                x.trim().toLowerCase(Locale.getDefault())
                             )
                     ) {
                         result = true

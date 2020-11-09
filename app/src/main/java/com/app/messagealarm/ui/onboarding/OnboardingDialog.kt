@@ -71,10 +71,10 @@ class OnboardingDialog : DialogFragment(){
             override fun onPageSelected(position: Int) {
                     if(position == ((quick_start_pager?.adapter as QuickStartAdapter).count - 1)){
                         btn_next?.visibility = View.INVISIBLE
-                        btn_finish?.visibility= View.VISIBLE
+                        btn_finish?.visibility = View.VISIBLE
                     }else{
                         btn_next?.visibility = View.VISIBLE
-                        btn_finish?.visibility= View.INVISIBLE
+                        btn_finish?.visibility = View.INVISIBLE
                     }
             }
 

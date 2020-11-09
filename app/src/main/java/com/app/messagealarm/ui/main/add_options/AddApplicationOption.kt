@@ -9,6 +9,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.graphics.drawable.toBitmap
@@ -626,7 +627,13 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
     private fun checkForDefault():Boolean{
         var isDefault = false
-            if(txt_repeat_value?.text.toString().trim() == holderEntity.alarmRepeat){
+        var repeat = ""
+        repeat = if(holderEntity.alarmRepeat == "Custom"){
+            holderEntity.repeatDays
+        }else{
+            holderEntity.alarmRepeat
+        }
+            if(txt_repeat_value?.text.toString().trim() == repeat){
                 if(txt_ringtone_value?.text.toString().trim() == holderEntity.ringTone){
                     if(switch_vibrate?.isChecked == holderEntity.isVibrateOnAlarm){
                         if(switch_custom_time?.isChecked == holderEntity.isCustomTime){
@@ -778,6 +785,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         holderEntity.isVibrateOnAlarm = app.isVibrateOnAlarm
         holderEntity.tone_path = app.tone_path
         holderEntity.alarmRepeat = app.alarmRepeat
+        holderEntity.repeatDays = app.repeatDays
     }
 
     override fun onApplicationGetError(message: String) {

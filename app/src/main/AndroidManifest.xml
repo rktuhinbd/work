@@ -68,6 +68,7 @@
             />
 
         <service
+            android:stopWithTask="false"
             android:name=".service.notification_service.NotificationListener"
             android:enabled="true"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
@@ -101,6 +102,18 @@
         <receiver android:name=".broadcast_receiver.OpenAppReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="open_app" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".broadcast_receiver.PageDismissReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="page_dismiss" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".broadcast_receiver.MissedAlarmReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="missed_alarm" />
             </intent-filter>
         </receiver>
 
