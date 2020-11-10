@@ -9,7 +9,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.graphics.drawable.toBitmap
@@ -28,8 +27,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
-import kotlinx.android.synthetic.main.dialog_add_app_options.btn_close
-import kotlinx.android.synthetic.main.item_sender_name.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -328,30 +325,31 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
 
         btn_message_body_clear?.setOnClickListener {
-            DialogUtils.showDialog(requireActivity(), getString(R.string.txt_clear_message_body) ,
-                getString(R.string.txt_desc_clear_message), object : DialogUtils.Callback{
-                override fun onPositive() {
-                   addApplicationEntity.messageBody = "None"
-                   txt_message_body_value?.text = "None"
-                    btn_message_body_clear?.visibility = View.GONE
-                }
+            DialogUtils.showDialog(requireActivity(), getString(R.string.txt_clear_message_body),
+                getString(R.string.txt_desc_clear_message), object : DialogUtils.Callback {
+                    override fun onPositive() {
+                        addApplicationEntity.messageBody = "None"
+                        txt_message_body_value?.text = "None"
+                        btn_message_body_clear?.visibility = View.GONE
+                    }
 
-                override fun onNegative() {
+                    override fun onNegative() {
 
-                }
+                    }
 
-            })
+                })
         }
 
 
         btn_sender_name_clear?.setOnClickListener {
-            DialogUtils.showDialog(requireActivity(), getString(R.string.txt_clear_sender_name) ,
-                getString(R.string.txt_desc_clear_sender_namne), object : DialogUtils.Callback{
+            DialogUtils.showDialog(requireActivity(), getString(R.string.txt_clear_sender_name),
+                getString(R.string.txt_desc_clear_sender_namne), object : DialogUtils.Callback {
                     override fun onPositive() {
                         addApplicationEntity.senderNames = "None"
                         txt_sender_name_value?.text = "None"
                         btn_sender_name_clear?.visibility = View.GONE
                     }
+
                     override fun onNegative() {
 
                     }
@@ -450,7 +448,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
 
-    private fun senderNameDialog(list:ArrayList<String>){
+    private fun senderNameDialog(list: ArrayList<String>){
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.getWindow()?.setBackgroundDrawableResource(android.R.color.transparent)
@@ -464,7 +462,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         val imageButton = dialog.findViewById<ImageButton>(R.id.btn_add)
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.recycler_view_sender_name)
         val layoutManager = FlexboxLayoutManager(requireActivity())
-        val adapter = SenderNameAdapter(list, object : SenderNameAdapter.ItemClickListener{
+        val adapter = SenderNameAdapter(list, object : SenderNameAdapter.ItemClickListener {
             override fun onAllItemRemoved() {
                 saveButton.isEnabled = false
                 placeHolder.visibility = View.VISIBLE
@@ -495,6 +493,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 saveButton.isEnabled = true
                 placeHolder.visibility = View.INVISIBLE
                 recyclerView.visibility = View.VISIBLE
+                recyclerView.post { recyclerView.smoothScrollToPosition(adapter.itemCount - 1) }
             }else{
                 Toasty.info(requireActivity(), "Name can't be empty!").show()
             }
