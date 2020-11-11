@@ -67,20 +67,15 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
         holder.bindItems(appsList[position])
     }
 
-   inner class AllAppsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-
-        init {
-            itemView.setOnClickListener(this)
-        }
+   inner class AllAppsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
             fun bindItems(installedApps: InstalledApps){
                 itemView.tv_app_name?.text = installedApps.appName
                 itemView.iv_app_icon?.setImageDrawable(installedApps.drawableIcon)
+                itemView.card_view_all_app.setOnClickListener {
+                    mItemClickListener.onItemClick(appsList[adapterPosition])
+                }
             }
-
-        override fun onClick(v: View?) {
-            mItemClickListener.onItemClick(appsList[adapterPosition])
-        }
     }
 
 }
