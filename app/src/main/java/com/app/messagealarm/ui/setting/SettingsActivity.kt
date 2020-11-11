@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.work.WorkManager
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.about.AboutActivity
 import com.app.messagealarm.utils.Constants
@@ -29,8 +30,6 @@ class SettingsActivity : AppCompatActivity() {
             .beginTransaction()
             .replace(R.id.settings, SettingsFragment())
             .commit()
-
-
     }
 
     private fun toolBarSetup() {
@@ -120,6 +119,15 @@ class SettingsActivity : AppCompatActivity() {
 
             val snoozePre = findPreference("mute") as ListPreference?
             snoozePre!!.layoutResource = R.layout.layout_preference
+            snoozePre.setOnPreferenceChangeListener(object :Preference.OnPreferenceChangeListener{
+                override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
+                    if(newValue == "Manual"){
+                        WorkManager.getInstance(requireActivity()).cancelAllWorkByTag("MUTE")
+                    }
+                    return true
+                }
+
+            })
 
 
         }
