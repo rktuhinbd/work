@@ -24,7 +24,7 @@ class WorkManagerUtils {
                 .Builder(MuteDismissWorker::class.java)
                 .setInitialDelay(duration.toLong(), TimeUnit.MINUTES)
                 .build()
-            WorkManager.getInstance(context).enqueueUniqueWork(System.currentTimeMillis().toString(),
+            WorkManager.getInstance(context).enqueueUniqueWork(Constants.Default.MUTE_TIMER,
                 ExistingWorkPolicy.REPLACE, muteDismissRequest)
         }
 
@@ -46,7 +46,7 @@ class WorkManagerUtils {
                .setConstraints(networkConstrain)
                .build()
 
-            WorkManager.getInstance(context).enqueueUniqueWork(System.currentTimeMillis().toString(),
+            WorkManager.getInstance(context).enqueueUniqueWork(Constants.Default.SYNC,
             ExistingWorkPolicy.REPLACE, syncRequest)
         }
     }
