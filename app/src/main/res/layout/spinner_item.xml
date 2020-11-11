@@ -11,8 +11,8 @@
     android:paddingStart="24dp"
     android:paddingEnd="24dp"
     android:paddingTop="10dp"
+    android:foreground="?selectableItemBackground"
     android:paddingBottom="10dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    tools:targetApi="m"
-    />
+    tools:targetApi="m" />
 

@@ -77,6 +77,7 @@ class AlarmService {
                 } else {
                     //check if activity is not open
                     FloatingNotification.showFloatingNotification(
+                        app.isJustVibrate,
                         app.appName,
                         app.packageName,
                         app.numberOfPlay,
@@ -91,6 +92,7 @@ class AlarmService {
                 } else {
                     //check activity is not open
                     FloatingNotification.showFloatingNotification(
+                        app.isJustVibrate,
                         app.appName,
                         app.packageName,
                         app.numberOfPlay,
@@ -128,13 +130,20 @@ class AlarmService {
             val nameArray = app.senderNames.trim().split(", ")
             if (app.senderNames != "None") {
                 for (x in nameArray) {
-                    Log.e("NAME", x)
-                    Log.e("TITLE", title.toString())
+                   var firstName = ""
+                    firstName = if(x.contains(" ")){
+                        x.split(" ")[0]
+                    }else{
+                        x
+                    }
                     if (title.toString().trim().toLowerCase(Locale.getDefault())
                             .contains(
-                                x.trim().toLowerCase(Locale.getDefault())
+                                firstName.trim().toLowerCase(Locale.getDefault())
                             )
-                    ) {
+                        || firstName.trim().toLowerCase(Locale.getDefault())
+                            .contains(
+                                title.toString().trim().toLowerCase(Locale.getDefault())
+                            )) {
                         result = true
                         break
                     } else {
@@ -230,6 +239,7 @@ class AlarmService {
                 AlarmCheckerThread(AlarmCheckerThread.PlayListener { s ->
                     if (!s) {
                         FloatingNotification.showFloatingNotification(
+                            app.isJustVibrate,
                             app.appName,
                             app.packageName,
                             app.numberOfPlay,
@@ -243,16 +253,17 @@ class AlarmService {
             val title = sbn?.notification!!.extras["android.title"].toString()
             val desc = sbn.notification!!.extras["android.text"].toString()
             val intent = Intent(service, AlarmActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             intent.putExtra(Constants.IntentKeys.NUMBER_OF_PLAY, app.numberOfPlay)
             intent.putExtra(Constants.IntentKeys.APP_NAME, app.appName)
             intent.putExtra(Constants.IntentKeys.IS_VIBRATE, app.isVibrateOnAlarm)
             intent.putExtra(Constants.IntentKeys.PACKAGE_NAME, app.packageName)
             intent.putExtra(Constants.IntentKeys.TONE, tone)
+            intent.putExtra(Constants.IntentKeys.IS_JUST_VIBRATE, app.isJustVibrate)
             intent.putExtra(Constants.IntentKeys.IMAGE_PATH, app.bitmapPath)
             intent.putExtra(Constants.IntentKeys.TITLE, title)
             intent.putExtra(Constants.IntentKeys.DESC, desc)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             service.startActivity(intent)
         }
     }

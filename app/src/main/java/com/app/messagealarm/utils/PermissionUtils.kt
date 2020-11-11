@@ -120,7 +120,6 @@ object PermissionUtils {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true
         }
-
         return BaseApplication.getBaseApplicationContext()
                 .checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
     }

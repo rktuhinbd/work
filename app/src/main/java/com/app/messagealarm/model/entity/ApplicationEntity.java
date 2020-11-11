@@ -30,6 +30,8 @@ public class ApplicationEntity implements Serializable {
     private String ringTone;
     @ColumnInfo(name = "vibrate_on_alarm")
     private boolean vibrateOnAlarm;
+    @ColumnInfo(name = "just_vibrate")
+    private boolean justVibrate;
     @ColumnInfo(name = "custom_time")
     private boolean customTime;
     @ColumnInfo(name = "start_time")
@@ -121,10 +123,19 @@ public class ApplicationEntity implements Serializable {
     }
 
 
+    public boolean isJustVibrate() {
+        return justVibrate;
+    }
+
+
 
     /**
      * Setter methods
      */
+
+    public void setJustVibrate(boolean justVibrate) {
+        this.justVibrate = justVibrate;
+    }
 
     public void setBitmapPath(String bitmapPath) {
         this.bitmapPath = bitmapPath;

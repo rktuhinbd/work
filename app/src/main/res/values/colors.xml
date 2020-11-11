@@ -13,5 +13,6 @@
     <color name="toolbar_color">#ffffffff</color>
     <color name="card_view_color">#ffffffff</color>
     <color name="quick_start">#212121</color>
+    <color name="track_color">#696969</color>
     <color name="delete_item">#D11A2A</color>
 </resources>

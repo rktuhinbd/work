@@ -50,6 +50,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
 
+
     private fun darkMode(){
         if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
             btn_close?.setImageResource(R.drawable.ic_close_white)
@@ -194,6 +195,21 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
              * set vibrate option to data model
              */
             addApplicationEntity.isVibrateOnAlarm = isChecked
+
+            if(switch_vibrate.isChecked){
+                switch_just_vibrate.isChecked = false
+            }
+
+        }
+
+
+        switch_just_vibrate?.setOnCheckedChangeListener{ buttonView, isChecked ->
+
+            addApplicationEntity.isJustVibrate = isChecked
+
+            if(isChecked){
+                switch_vibrate.isChecked = false
+            }
         }
 
         view_custom_time?.setOnClickListener {
@@ -202,6 +218,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
         view_vibrate?.setOnClickListener {
             switch_vibrate?.performClick()
+        }
+
+        view_just_vibrate?.setOnClickListener {
+            switch_just_vibrate?.performClick()
         }
 
         view_sender_name?.setOnClickListener {
@@ -247,11 +267,15 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 object : DialogUtils.RepeatCallBack {
                     override fun onClick(name: String) {
                         if (name.contains("Select a song")) {
-                            pickAudioFromStorage()
-                            /**
-                             * set custom alarm tone type to data model
-                             */
-                            addApplicationEntity.ringTone = "Default"
+                            if(PermissionUtils.isAllowed(android.Manifest.permission.READ_EXTERNAL_STORAGE)){
+                                pickAudioFromStorage()
+                                /**
+                                 * set custom alarm tone type to data model
+                                 */
+                                addApplicationEntity.ringTone = "Default"
+                            }else{
+                                askForPermission()
+                            }
                         } else {
                             txt_ringtone_value?.text = name
                             /**
@@ -408,6 +432,16 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
     }
 
+    private fun askForPermission() {
+        PermissionUtils.requestPermission(
+            this, android.Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+        PermissionUtils.requestPermission(
+            this,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+    }
+
    fun setToneName(name: String){
        if(name.length > 29){
            addApplicationEntity.ringTone = name.substring(0, 29)
@@ -560,6 +594,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         addApplicationEntity.alarmRepeat = "Once"
         addApplicationEntity.ringTone = "Default"
         addApplicationEntity.isVibrateOnAlarm = false
+        addApplicationEntity.isJustVibrate = false
         addApplicationEntity.isCustomTime = false
         addApplicationEntity.numberOfPlay = 2
         addApplicationEntity.startTime = "6:00 AM"
@@ -572,6 +607,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         holderEntity.alarmRepeat = "Once"
         holderEntity.ringTone = "Default"
         holderEntity.isVibrateOnAlarm = false
+        holderEntity.isJustVibrate = false
         holderEntity.isCustomTime = false
         holderEntity.numberOfPlay = 2
         holderEntity.startTime = "6:00 AM"
@@ -635,12 +671,16 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             if(txt_repeat_value?.text.toString().trim() == repeat){
                 if(txt_ringtone_value?.text.toString().trim() == holderEntity.ringTone){
                     if(switch_vibrate?.isChecked == holderEntity.isVibrateOnAlarm){
-                        if(switch_custom_time?.isChecked == holderEntity.isCustomTime){
-                            if(txt_number_of_play_value?.text.toString().trim()[0].toString() ==
-                                holderEntity.numberOfPlay.toString()){
-                                if(txt_sender_name_value?.text.toString() == holderEntity.senderNames){
-                                    if(txt_message_body_value?.text.toString() == holderEntity.messageBody){
-                                        isDefault = true
+                        if(switch_just_vibrate?.isChecked == holderEntity.isJustVibrate) {
+                            if (switch_custom_time?.isChecked == holderEntity.isCustomTime) {
+                                if (txt_number_of_play_value?.text.toString()
+                                        .trim()[0].toString() ==
+                                    holderEntity.numberOfPlay.toString()
+                                ) {
+                                    if (txt_sender_name_value?.text.toString() == holderEntity.senderNames) {
+                                        if (txt_message_body_value?.text.toString() == holderEntity.messageBody) {
+                                            isDefault = true
+                                        }
                                     }
                                 }
                             }
@@ -749,6 +789,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         txt_ringtone_value?.text = app.ringTone
         switch_vibrate?.isChecked = app.isVibrateOnAlarm
         switch_custom_time?.isChecked = app.isCustomTime
+        switch_just_vibrate?.isChecked = app.isJustVibrate
         txt_start_time_value?.text = app.startTime
         txt_end_time_value?.text = app.endTime
         txt_number_of_play_value?.text = String.format("%d times", app.numberOfPlay)
@@ -781,6 +822,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         holderEntity.messageBody = app.messageBody
         holderEntity.senderNames = app.senderNames
         holderEntity.isCustomTime = app.isCustomTime
+        holderEntity.isJustVibrate = app.isJustVibrate
         holderEntity.isVibrateOnAlarm = app.isVibrateOnAlarm
         holderEntity.tone_path = app.tone_path
         holderEntity.alarmRepeat = app.alarmRepeat

@@ -34,6 +34,9 @@ class Constants {
             const val SPACE_STRING: String = " "
             const val TYPE_MISSED = 1
             const val TYPE_ALARM = 2
+            const val MUTE_TIMER = "mute_timer"
+            const val SYNC = "sync"
+            const val MANUAL = "Manual"
         }
     }
     class ACTION{
@@ -158,6 +161,7 @@ class Constants {
             const val TONE = "tone"
             const val NUMBER_OF_PLAY = "number_of_play"
             const val IS_VIBRATE = "is_vibrate"
+            const val IS_JUST_VIBRATE = "is_just_vibrate"
         }
     }
 

@@ -10,6 +10,7 @@
     <color name="colorOfNavigationBar">#3497fd</color>
     <color name="background_screen">#121212</color>
     <color name="default_text">#FFFFFF</color>
+    <color name="track_color">#FFFFFF</color>
     <color name="toolbar_color">#262833</color>
     <color name="card_view_color">#262833</color>
 </resources>

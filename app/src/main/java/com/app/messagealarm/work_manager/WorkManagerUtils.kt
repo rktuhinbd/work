@@ -14,18 +14,22 @@ class WorkManagerUtils {
         fun scheduleWorks(context: Context){
             //get mute time from preferences
             val time = SharedPrefUtils.readString(Constants.PreferenceKeys.MUTE_TIME)
-            var duration = 10
-            duration = try {
-                time.split(" ")[0].toInt()
-            }catch (e:NumberFormatException){
-                10
+            if(time != Constants.Default.MANUAL){
+                var duration = 10
+                duration = try {
+                    time.split(" ")[0].toInt()
+                }catch (e:NumberFormatException){
+                    10
+                }
+                val muteDismissRequest = OneTimeWorkRequest
+                    .Builder(MuteDismissWorker::class.java)
+                    .addTag("MUTE")
+                    .setInitialDelay(duration.toLong(), TimeUnit.MINUTES)
+                    .build()
+                WorkManager.getInstance(context)
+                    .enqueueUniqueWork(Constants.Default.MUTE_TIMER,
+                    ExistingWorkPolicy.REPLACE, muteDismissRequest)
             }
-            val muteDismissRequest = OneTimeWorkRequest
-                .Builder(MuteDismissWorker::class.java)
-                .setInitialDelay(duration.toLong(), TimeUnit.MINUTES)
-                .build()
-            WorkManager.getInstance(context).enqueueUniqueWork(System.currentTimeMillis().toString(),
-                ExistingWorkPolicy.REPLACE, muteDismissRequest)
         }
 
         fun scheduleSyncWork(context: Context, appSize:Int, langSize:Int, constrainSize:Int){
@@ -46,7 +50,7 @@ class WorkManagerUtils {
                .setConstraints(networkConstrain)
                .build()
 
-            WorkManager.getInstance(context).enqueueUniqueWork(System.currentTimeMillis().toString(),
+            WorkManager.getInstance(context).enqueueUniqueWork(Constants.Default.SYNC,
             ExistingWorkPolicy.REPLACE, syncRequest)
         }
     }

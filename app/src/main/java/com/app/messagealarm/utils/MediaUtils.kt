@@ -19,6 +19,7 @@ class MediaUtils {
         var mediaPlayer: MediaPlayer? = null
 
         fun playAlarm(
+            isJustVibrate:Boolean,
             isVibrate: Boolean,
             context: Context,
             mediaPath: String?,
@@ -26,41 +27,44 @@ class MediaUtils {
             packageName: String,
             appName: String
         ) {
-            //start full sound
-                val mobilemode =
-                    context.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
-                mobilemode!!.setStreamVolume(
-                    AudioManager.STREAM_MUSIC,
-                    mobilemode.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
-                    0
-                )
 
             try {
-                val once = Once()
-                val runnable = Runnable(){
-                    mediaPlayer = MediaPlayer()
-                    mediaPlayer!!.reset()
-                    if(mediaPath != null){
-                        mediaPlayer!!.setDataSource(mediaPath)
-                    }else{
-                        val afd = context.resources.openRawResourceFd(com.app.messagealarm.R.raw.default_ringtone)
-                        mediaPlayer!!.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-                        afd.close()
-                    }
-                    mediaPlayer!!.setVolume(1.0f, 1.0f)
-                    mediaPlayer!!.setOnPreparedListener { mediaPlayer!!.start() }
-                    mediaPlayer!!.prepare()
-                    mediaPlayer!!.setOnErrorListener(object : MediaPlayer.OnErrorListener {
-                        override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
-                            mediaPlayer!!.reset()
-                            return true
+                    //start full sound
+                    val mobilemode =
+                        context.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
+                    mobilemode!!.setStreamVolume(
+                        AudioManager.STREAM_MUSIC,
+                        mobilemode.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
+                        0
+                    )
+
+                    val once = Once()
+                    val runnable = Runnable(){
+                        mediaPlayer = MediaPlayer()
+                        mediaPlayer!!.reset()
+                        if(mediaPath != null){
+                            mediaPlayer!!.setDataSource(mediaPath)
+                        }else{
+                            val afd = context.resources.openRawResourceFd(com.app.messagealarm.R.raw.default_ringtone)
+                            mediaPlayer!!.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+                            afd.close()
                         }
+                        if(!isJustVibrate || (!isJustVibrate && !isVibrate)){
+                            mediaPlayer!!.setVolume(1.0f, 1.0f)
+                        }else{
+                            mediaPlayer!!.setVolume(0f, 0f)
+                        }
+                        mediaPlayer!!.setOnPreparedListener { mediaPlayer!!.start() }
+                        mediaPlayer!!.prepare()
+                        mediaPlayer!!.setOnErrorListener(object : MediaPlayer.OnErrorListener {
+                            override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
+                                mediaPlayer!!.reset()
+                                return true
+                            }
 
-                    })
-                }
-                once.run(runnable)
-
-
+                        })
+                    }
+                    once.run(runnable)
             } catch (e: IllegalStateException) {
                 e.printStackTrace()
             } catch (e: NullPointerException) {
@@ -73,7 +77,7 @@ class MediaUtils {
             //start vibration
             Thread(Runnable {
                 //vibrate
-                if (isVibrate) {
+                if (isVibrate || isJustVibrate) {
                     val once = Once()
                     once.run(Runnable {
                         VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext())

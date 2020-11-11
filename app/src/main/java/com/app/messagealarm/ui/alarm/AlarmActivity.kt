@@ -83,6 +83,7 @@ class AlarmActivity : BaseActivity() {
                 val once = Once()
                 once.run(Runnable {
                     MediaUtils.playAlarm(
+                        intent?.extras!!.getBoolean(Constants.IntentKeys.IS_JUST_VIBRATE),
                         intent?.extras!!.getBoolean(Constants.IntentKeys.IS_VIBRATE),
                         this, tone,
                         (x == (numberOfPLay - 1)),

@@ -82,8 +82,9 @@
                 app:layout_constraintStart_toEndOf="@id/ic_alarm_status"
                 app:layout_constraintHorizontal_bias="1"
                 android:layout_marginEnd="16dp"
+                android:trackTint="@color/track_color"
                 android:checked="true"
-                />
+                tools:targetApi="m" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
