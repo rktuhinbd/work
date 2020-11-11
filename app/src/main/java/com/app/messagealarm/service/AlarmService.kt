@@ -243,8 +243,6 @@ class AlarmService {
             val title = sbn?.notification!!.extras["android.title"].toString()
             val desc = sbn.notification!!.extras["android.text"].toString()
             val intent = Intent(service, AlarmActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             intent.putExtra(Constants.IntentKeys.NUMBER_OF_PLAY, app.numberOfPlay)
             intent.putExtra(Constants.IntentKeys.APP_NAME, app.appName)
             intent.putExtra(Constants.IntentKeys.IS_VIBRATE, app.isVibrateOnAlarm)
@@ -253,6 +251,8 @@ class AlarmService {
             intent.putExtra(Constants.IntentKeys.IMAGE_PATH, app.bitmapPath)
             intent.putExtra(Constants.IntentKeys.TITLE, title)
             intent.putExtra(Constants.IntentKeys.DESC, desc)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             service.startActivity(intent)
         }
     }
