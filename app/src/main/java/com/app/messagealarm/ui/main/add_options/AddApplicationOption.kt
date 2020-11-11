@@ -50,6 +50,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
 
+
     private fun darkMode(){
         if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
             btn_close?.setImageResource(R.drawable.ic_close_white)
@@ -247,11 +248,15 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 object : DialogUtils.RepeatCallBack {
                     override fun onClick(name: String) {
                         if (name.contains("Select a song")) {
-                            pickAudioFromStorage()
-                            /**
-                             * set custom alarm tone type to data model
-                             */
-                            addApplicationEntity.ringTone = "Default"
+                            if(PermissionUtils.isAllowed(android.Manifest.permission.READ_EXTERNAL_STORAGE)){
+                                pickAudioFromStorage()
+                                /**
+                                 * set custom alarm tone type to data model
+                                 */
+                                addApplicationEntity.ringTone = "Default"
+                            }else{
+                                askForPermission()
+                            }
                         } else {
                             txt_ringtone_value?.text = name
                             /**
@@ -406,6 +411,16 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     }
                 })
         }
+    }
+
+    private fun askForPermission() {
+        PermissionUtils.requestPermission(
+            this, android.Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+        PermissionUtils.requestPermission(
+            this,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
     }
 
    fun setToneName(name: String){
