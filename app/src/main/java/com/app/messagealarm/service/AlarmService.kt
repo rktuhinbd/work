@@ -77,6 +77,7 @@ class AlarmService {
                 } else {
                     //check if activity is not open
                     FloatingNotification.showFloatingNotification(
+                        app.isJustVibrate,
                         app.appName,
                         app.packageName,
                         app.numberOfPlay,
@@ -91,6 +92,7 @@ class AlarmService {
                 } else {
                     //check activity is not open
                     FloatingNotification.showFloatingNotification(
+                        app.isJustVibrate,
                         app.appName,
                         app.packageName,
                         app.numberOfPlay,
@@ -237,6 +239,7 @@ class AlarmService {
                 AlarmCheckerThread(AlarmCheckerThread.PlayListener { s ->
                     if (!s) {
                         FloatingNotification.showFloatingNotification(
+                            app.isJustVibrate,
                             app.appName,
                             app.packageName,
                             app.numberOfPlay,
@@ -255,6 +258,7 @@ class AlarmService {
             intent.putExtra(Constants.IntentKeys.IS_VIBRATE, app.isVibrateOnAlarm)
             intent.putExtra(Constants.IntentKeys.PACKAGE_NAME, app.packageName)
             intent.putExtra(Constants.IntentKeys.TONE, tone)
+            intent.putExtra(Constants.IntentKeys.IS_JUST_VIBRATE, app.isJustVibrate)
             intent.putExtra(Constants.IntentKeys.IMAGE_PATH, app.bitmapPath)
             intent.putExtra(Constants.IntentKeys.TITLE, title)
             intent.putExtra(Constants.IntentKeys.DESC, desc)

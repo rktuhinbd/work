@@ -45,6 +45,7 @@ class FloatingNotification {
         private const val CHANNEL_NAME = "alarm app channel"
 
         private fun startPlaying(
+            isJustVibrate:Boolean,
             appName: String,
             packageName: String,
             tone: String?,
@@ -63,6 +64,7 @@ class FloatingNotification {
                     once.run(
                         Runnable {
                             MediaUtils.playAlarm(
+                                isJustVibrate,
                                 isVibrate,
                                 context, tone, (x == (numberOfPlay - 1)),
                                 packageName,
@@ -143,6 +145,7 @@ class FloatingNotification {
         }
 
         fun showFloatingNotification(
+            isJustVibrate: Boolean,
             appName: String, packageName: String, numberOfPlay: Int,
             isVibrate: Boolean, context: Service, mediaPath: String?
         ) {
@@ -172,6 +175,7 @@ class FloatingNotification {
             notificationManager!!.notify(225, notificationBuilder.build())
             //start playing
             startPlaying(
+                isJustVibrate,
                 appName,
                 packageName,
                 mediaPath,
