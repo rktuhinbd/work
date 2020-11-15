@@ -46,7 +46,6 @@ class AlarmActivity : BaseActivity() {
         super.onStart()
     }
 
-
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
