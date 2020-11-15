@@ -146,6 +146,7 @@ class Constants {
             const val IS_MUTED = "is_muted"
             const val MUTE_TIME = "mute"
             const val THEME = "theme"
+            const val GOT_ONE_MESSAGE = "got_one_message"
 
         }
     }

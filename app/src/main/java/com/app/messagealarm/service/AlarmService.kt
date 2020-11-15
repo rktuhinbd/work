@@ -4,7 +4,6 @@ import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.service.notification.StatusBarNotification
-import android.util.Log
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.ui.alarm.AlarmActivity
 import com.app.messagealarm.ui.notifications.FloatingNotification
@@ -36,28 +35,30 @@ class AlarmService {
             for (app in appsList) {
                 if (sbn?.packageName != null) {
                     if (sbn.packageName == app.packageName) {
-                        //check for alarm repeat
+                        //check for player not playing
+                        if (!MediaUtils.isPlaying()) {
+                            //check for alarm repeat
                             if (checkByTimeConstrain(app)) {
                                 //check for title not null
                                 if (sbn.notification.extras["android.title"] != null) {
                                     if (checkBySenderName(app, sbn)) {
                                         if (checkByMessageBody(app, sbn)) {
-                                            //check for player not playing
-                                            if (!MediaUtils.isPlaying()) {
-                                                //check if app is in not muted
-                                                if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_MUTED)){
-                                                    if(alarmRepeatOutput(app.alarmRepeat, app)) {
+                                            //check if app is in not muted
+                                            if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_MUTED)) {
+                                                if (alarmRepeatOutput(app.alarmRepeat, app)) {
                                                     //save activity started as false
-                                                        SharedPrefUtils.write(Constants.PreferenceKeys.IS_ACTIVITY_STARTED, false)
+                                                    SharedPrefUtils.write(
+                                                        Constants.PreferenceKeys.IS_ACTIVITY_STARTED,
+                                                        false
+                                                    )
                                                     magicPlay(app.ringTone, service, sbn, app)
-
-                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
+                        }
                         break
                     }
                 }
@@ -105,8 +106,6 @@ class AlarmService {
         }
 
 
-
-
         /**
          * Check by time constrain, via start time and end time
          */
@@ -130,10 +129,10 @@ class AlarmService {
             val nameArray = app.senderNames.trim().split(", ")
             if (app.senderNames != "None") {
                 for (x in nameArray) {
-                   var firstName = ""
-                    firstName = if(x.contains(" ")){
+                    var firstName = ""
+                    firstName = if (x.contains(" ")) {
                         x.split(" ")[0]
-                    }else{
+                    } else {
                         x
                     }
                     if (title.toString().trim().toLowerCase(Locale.getDefault())
@@ -143,7 +142,8 @@ class AlarmService {
                         || firstName.trim().toLowerCase(Locale.getDefault())
                             .contains(
                                 title.toString().trim().toLowerCase(Locale.getDefault())
-                            )) {
+                            )
+                    ) {
                         result = true
                         break
                     } else {

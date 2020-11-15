@@ -22,7 +22,6 @@ import es.dmoral.toasty.Toasty
 class NotificationListener : NotificationListenerService(),
     NotificationListenerView {
 
-
     var isPlayAble = true
     var isThreadExecuted = false
     val sbnList = ArrayList<StatusBarNotification>()
@@ -40,22 +39,22 @@ class NotificationListener : NotificationListenerService(),
 
     @SuppressLint("LogNotTimber")
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
-       // filterApps(sbn)
+        // filterApps(sbn)
         //check for logs
         /*
         * There is issue, that within 5 seconds if the activity alarm is dismissed, it's start the thread alarm again.
         * Need to solve it ASAP
-        *
         * */
-        Log.e("LISTENER", "PACKAGE = " +  sbn!!.packageName.toString())
-        Log.e("LISTENER", "TITLE = " +  sbn.notification.extras["android.title"].toString())
-        Log.e("LISTENER", "DESC = " +  sbn.notification.extras["android.text"].toString())
-
-        if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)){
+        Log.e("LISTENER", "PACKAGE = " + sbn!!.packageName.toString())
+        Log.e("LISTENER", "TITLE = " + sbn.notification.extras["android.title"].toString())
+        Log.e("LISTENER", "DESC = " + sbn.notification.extras["android.text"].toString())
+        //got an message stop all getting message process
+            if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)) {
             NotificationListenerPresenter(this).filterByAppConstrains(
                 sbn.packageName.toString(), AndroidUtils.getCurrentLangCode(this),
                 sbn.notification.extras["android.title"].toString().trim(),
-                sbn.notification.extras["android.text"].toString().trim(), sbn)
+                sbn.notification.extras["android.text"].toString().trim(), sbn
+            )
         }
     }
 
@@ -69,10 +68,10 @@ class NotificationListener : NotificationListenerService(),
     override fun onNotificationRemoved(sbn: StatusBarNotification?) {
         //NOTE: Music not getting off on notification removed
         if (sbn!!.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
-            if(sbn.notification.extras["android.text"].toString() == "Swipe to dismiss the alarm!"){
+            if (sbn.notification.extras["android.text"].toString() == "Swipe to dismiss the alarm!") {
                 SharedPrefUtils.write(Constants.PreferenceKeys.IS_NOTIFICATION_SWIPED, true)
             }
-                MediaUtils.stopAlarm()
+            MediaUtils.stopAlarm()
         } else if (sbn.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
             Toasty.info(this, "Alarm Service Stopped!").show()
         }
@@ -82,7 +81,7 @@ class NotificationListener : NotificationListenerService(),
         if (intent != null) {
             when (intent.action) {
                 ACTION_STOP_FOREGROUND_SERVICE -> stopForeGroundService()
-                else ->{
+                else -> {
                     FloatingNotification.startForegroundService(this, false)
                 }
             }
@@ -100,7 +99,7 @@ class NotificationListener : NotificationListenerService(),
     override fun onCreate() {
         super.onCreate()
         //FloatingNotification.startForegroundService(this, false)
-       // muteListener()
+        // muteListener()
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
@@ -111,9 +110,9 @@ class NotificationListener : NotificationListenerService(),
     private fun restartService() {
         val isServiceStopped =
             SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)
-            if (!isServiceStopped) {
-                scheduleService()
-            }
+        if (!isServiceStopped) {
+            scheduleService()
+        }
     }
 
     private fun scheduleService() {
