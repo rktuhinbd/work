@@ -129,17 +129,11 @@ class AlarmService {
             val nameArray = app.senderNames.trim().split(", ")
             if (app.senderNames != "None") {
                 for (x in nameArray) {
-                    var firstName = ""
-                    firstName = if (x.contains(" ")) {
-                        x.split(" ")[0]
-                    } else {
-                        x
-                    }
                     if (title.toString().trim().toLowerCase(Locale.getDefault())
                             .contains(
-                                firstName.trim().toLowerCase(Locale.getDefault())
+                                x.trim().toLowerCase(Locale.getDefault())
                             )
-                        || firstName.trim().toLowerCase(Locale.getDefault())
+                        || x.trim().toLowerCase(Locale.getDefault())
                             .contains(
                                 title.toString().trim().toLowerCase(Locale.getDefault())
                             )
