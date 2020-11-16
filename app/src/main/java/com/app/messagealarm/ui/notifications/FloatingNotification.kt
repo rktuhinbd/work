@@ -160,6 +160,8 @@ class FloatingNotification {
 
             createChannel(context)
 
+            val notificationView = RemoteViews(context.packageName, com.app.messagealarm.R.layout.layout_incoming_notification_collapsed)
+
             val notificationViewFloatingNotification = RemoteViews(context.packageName, com.app.messagealarm.R.layout.layout_incoming_notification)
 
             notificationViewFloatingNotification.setTextViewText(com.app.messagealarm.R.id.txt_notification_title,
@@ -170,6 +172,14 @@ class FloatingNotification {
                 "Swipe to dismiss alarm!"
                 )
 
+            notificationView.setTextViewText(com.app.messagealarm.R.id.txt_notification_title,
+                "You got a message from $appName"
+            )
+
+            notificationView.setTextViewText(com.app.messagealarm.R.id.txt_notification_desc,
+                "Swipe to dismiss alarm!"
+            )
+
             notificationViewFloatingNotification.setTextViewText(com.app.messagealarm.R.id.btn_notification_action, "Open $appName")
 
             notificationViewFloatingNotification.setOnClickPendingIntent(com.app.messagealarm.R.id.btn_notification_action, buttonOpenApp)
@@ -179,11 +189,13 @@ class FloatingNotification {
             notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setCustomBigContentView(notificationViewFloatingNotification)
                 .setCustomHeadsUpContentView(notificationViewFloatingNotification)
+                .setCustomContentView(notificationView)
                 .setSmallIcon(
                     com.app.messagealarm.R.drawable.ic_notifications_active_black_24dp
                 )
+                .setPriority(Notification.PRIORITY_MAX)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
-                .setAutoCancel(true)
+                .setOngoing(true)
 
             notificationManager = NotificationManagerCompat.from(context)
             notificationManager!!.notify(225, notificationBuilder.build())
@@ -228,7 +240,7 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
                 val channel = NotificationChannel(
                     CHANNEL_ID,
                     CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_HIGH
                 )
                 channel.description = "Alarm Notifications"
                 channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
