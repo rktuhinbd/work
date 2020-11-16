@@ -160,20 +160,31 @@ class FloatingNotification {
 
             createChannel(context)
 
+            val notificationViewFloatingNotification = RemoteViews(context.packageName, com.app.messagealarm.R.layout.layout_incoming_notification)
+
+            notificationViewFloatingNotification.setTextViewText(com.app.messagealarm.R.id.txt_notification_title,
+                "You got a message from $appName"
+                )
+
+            notificationViewFloatingNotification.setTextViewText(com.app.messagealarm.R.id.txt_notification_desc,
+                "Swipe to dismiss alarm!"
+                )
+
+            notificationViewFloatingNotification.setTextViewText(com.app.messagealarm.R.id.btn_notification_action, "Open $appName")
+
+            notificationViewFloatingNotification.setOnClickPendingIntent(com.app.messagealarm.R.id.btn_notification_action, buttonOpenApp)
+
             var notificationBuilder: NotificationCompat.Builder? = null
+
             notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setContentText("You got a message from $appName")
-                .setContentTitle("Swipe to dismiss alarm!")
+                .setCustomBigContentView(notificationViewFloatingNotification)
+                .setCustomHeadsUpContentView(notificationViewFloatingNotification)
                 .setSmallIcon(
                     com.app.messagealarm.R.drawable.ic_notifications_active_black_24dp
                 )
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
-                .addAction(
-                    com.app.messagealarm.R.drawable.ic_notifications_active_black_24dp,
-                    "Open $appName",
-                    buttonOpenApp
-                )
                 .setAutoCancel(true)
+
             notificationManager = NotificationManagerCompat.from(context)
             notificationManager!!.notify(225, notificationBuilder.build())
             //start playing
