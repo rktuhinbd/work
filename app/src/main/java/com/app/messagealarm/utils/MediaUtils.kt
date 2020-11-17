@@ -1,6 +1,7 @@
 package com.app.messagealarm.utils
 
 import android.content.Context
+import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
@@ -54,8 +55,7 @@ class MediaUtils {
                         }else{
                             mediaPlayer!!.setVolume(0f, 0f)
                         }
-                        mediaPlayer!!.setOnPreparedListener { mediaPlayer!!.start() }
-                        mediaPlayer!!.prepare()
+
                         mediaPlayer!!.setOnErrorListener(object : MediaPlayer.OnErrorListener {
                             override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
                                 mediaPlayer!!.reset()
@@ -63,6 +63,13 @@ class MediaUtils {
                             }
 
                         })
+
+                        mediaPlayer!!.setOnPreparedListener {
+                            it.start()
+                        }
+
+                        mediaPlayer!!.prepare()
+
                     }
                     once.run(runnable)
             } catch (e: IllegalStateException) {
@@ -139,7 +146,11 @@ class MediaUtils {
 
 
         fun isPlaying(): Boolean {
-            return mediaPlayer != null && mediaPlayer!!.isPlaying
+            return if(mediaPlayer != null){
+                mediaPlayer!!.isPlaying
+            }else{
+                false
+            }
         }
 
 

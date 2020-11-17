@@ -36,7 +36,6 @@ class AlarmService {
                 if (sbn?.packageName != null) {
                     if (sbn.packageName == app.packageName) {
                         //check for player not playing
-                        if (!MediaUtils.isPlaying()) {
                             //check for alarm repeat
                             if (checkByTimeConstrain(app)) {
                                 //check for title not null
@@ -46,6 +45,7 @@ class AlarmService {
                                             //check if app is in not muted
                                             if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_MUTED)) {
                                                 if (alarmRepeatOutput(app.alarmRepeat, app)) {
+                                                    if (!MediaUtils.isPlaying()) {
                                                     //save activity started as false
                                                     SharedPrefUtils.write(
                                                         Constants.PreferenceKeys.IS_ACTIVITY_STARTED,
