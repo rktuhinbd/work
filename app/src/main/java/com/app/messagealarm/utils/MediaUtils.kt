@@ -20,7 +20,7 @@ class MediaUtils {
         var mediaPlayer: MediaPlayer? = null
 
         fun playAlarm(
-            isJustVibrate:Boolean,
+            isJustVibrate: Boolean,
             isVibrate: Boolean,
             context: Context,
             mediaPath: String?,
@@ -30,55 +30,55 @@ class MediaUtils {
         ) {
 
             try {
-                    //start full sound
-                    val mobilemode =
-                        context.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
-                    mobilemode!!.setStreamVolume(
-                        AudioManager.STREAM_MUSIC,
-                        mobilemode.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
-                        0
-                    )
-
-                    val once = Once()
-                    val runnable = Runnable(){
-                        mediaPlayer = MediaPlayer()
-                        mediaPlayer!!.reset()
-                        if(mediaPath != null){
-                            mediaPlayer!!.setDataSource(mediaPath)
-                        }else{
-                            val afd = context.resources.openRawResourceFd(com.app.messagealarm.R.raw.default_ringtone)
-                            mediaPlayer!!.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-                            afd.close()
-                        }
-                        if(!isJustVibrate || (!isJustVibrate && !isVibrate)){
-                            mediaPlayer!!.setVolume(1.0f, 1.0f)
-                        }else{
-                            mediaPlayer!!.setVolume(0f, 0f)
-                        }
-
-                        mediaPlayer!!.setOnErrorListener(object : MediaPlayer.OnErrorListener {
-                            override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
-                                mediaPlayer!!.reset()
-                                return true
-                            }
-
-                        })
-
-                        mediaPlayer!!.setOnPreparedListener {
-                            it.start()
-                        }
-
-                        mediaPlayer!!.prepare()
-
+                //start full sound
+                val mobilemode =
+                    context.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
+                mobilemode!!.setStreamVolume(
+                    AudioManager.STREAM_MUSIC,
+                    mobilemode.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
+                    0
+                )
+                val once = Once()
+                val runnable = Runnable() {
+                    mediaPlayer = MediaPlayer()
+                    mediaPlayer!!.reset()
+                    if (mediaPath != null) {
+                        mediaPlayer!!.setDataSource(mediaPath)
+                    } else {
+                        val afd =
+                            context.resources.openRawResourceFd(com.app.messagealarm.R.raw.default_ringtone)
+                        mediaPlayer!!.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+                        afd.close()
                     }
-                    once.run(runnable)
+                    if (!isJustVibrate || (!isJustVibrate && !isVibrate)) {
+                        mediaPlayer!!.setVolume(1.0f, 1.0f)
+                    } else {
+                        mediaPlayer!!.setVolume(0f, 0f)
+                    }
+
+                    mediaPlayer!!.setOnErrorListener(object : MediaPlayer.OnErrorListener {
+                        override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
+                            mediaPlayer!!.reset()
+                            return true
+                        }
+
+                    })
+
+                    mediaPlayer!!.setOnPreparedListener {
+                        it.start()
+                    }
+
+                    mediaPlayer!!.prepare()
+
+                }
+                once.run(runnable)
             } catch (e: IllegalStateException) {
                 e.printStackTrace()
             } catch (e: NullPointerException) {
                 e.printStackTrace()
             } catch (e: IOException) {
                 e.printStackTrace()
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
             //start vibration
@@ -101,33 +101,38 @@ class MediaUtils {
             }).start()
         }
 
-        private fun stopPlayBackAfterDone(isLastIndex: Boolean, context: Context, packageName:String, appName:String) {
-            try{
+        private fun stopPlayBackAfterDone(
+            isLastIndex: Boolean,
+            context: Context,
+            packageName: String,
+            appName: String
+        ) {
+            try {
                 //here 30 is not static it will be from setting page, the values will be 1, 2, 3, or Full song
                 while (true) {
-                        val totalPlayBack = (mediaPlayer!!.currentPosition / 1000).toInt()
-                        if (totalPlayBack == 30) {
-                            if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
-                                if(isLastIndex){
-                                    mediaPlayer!!.stop()
-                                    mediaPlayer!!.release()
-                                    mediaPlayer = null
-                                    FloatingNotification.showMissedAlarmNotification(
-                                        context,
-                                        packageName,
-                                        appName
-                                    )
-                                }else{
-                                    mediaPlayer!!.stop()
-                                }
-                                stopVibration()
-                                break
+                    val totalPlayBack = (mediaPlayer!!.currentPosition / 1000).toInt()
+                    if (totalPlayBack == 30) {
+                        if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+                            if (isLastIndex) {
+                                mediaPlayer!!.stop()
+                                mediaPlayer!!.release()
+                                mediaPlayer = null
+                                FloatingNotification.showMissedAlarmNotification(
+                                    context,
+                                    packageName,
+                                    appName
+                                )
+                            } else {
+                                mediaPlayer!!.stop()
                             }
+                            stopVibration()
+                            break
                         }
+                    }
                 }
-            }catch (e: IllegalStateException){
+            } catch (e: IllegalStateException) {
 
-            }catch (e: NullPointerException){
+            } catch (e: NullPointerException) {
 
             }
         }
@@ -146,15 +151,15 @@ class MediaUtils {
 
 
         fun isPlaying(): Boolean {
-            return if(mediaPlayer != null){
+            return if (mediaPlayer != null) {
                 mediaPlayer!!.isPlaying
-            }else{
+            } else {
                 false
             }
         }
 
 
-        fun getDurationOfMediaFle(path:String) : Int{
+        fun getDurationOfMediaFle(path: String): Int {
             val uri: Uri = Uri.parse(path)
             val mmr = MediaMetadataRetriever()
             mmr.setDataSource(BaseApplication.getBaseApplicationContext(), uri)
