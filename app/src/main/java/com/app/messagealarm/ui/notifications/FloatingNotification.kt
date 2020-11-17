@@ -116,31 +116,67 @@ class FloatingNotification {
         }
 
 
-        fun showPageDismissNotification(context: Context, packageName: String, appName: String) {
+        fun showPageDismissNotification(title: String, context: Context, packageName: String, appName: String) {
 
             val buttonOpenAppBroadcast = Intent(
                 context,
                 PageDismissReceiver::class.java
             ).putExtra(Constants.IntentKeys.PACKAGE_NAME, packageName)
+                .setAction("OPEN_APP")
             val buttonOpenApp =
                 PendingIntent.getBroadcast(context, 0, buttonOpenAppBroadcast, 0)
 
+
+            val btnCancel = Intent(
+                context,
+                PageDismissReceiver::class.java
+            ).putExtra(Constants.IntentKeys.PACKAGE_NAME, packageName)
+                .setAction("CANCEL")
+            val btnCancelIntent =
+                PendingIntent.getBroadcast(context, 0, btnCancel, 0)
+
+
             createChannel(context)
+
+            //remote view stating
+            val notificationView = RemoteViews(context.packageName, com.app.messagealarm.R.layout.layout_incoming_notification_collapsed)
+
+            val notificationViewFloatingNotification = RemoteViews(context.packageName, com.app.messagealarm.R.layout.layout_incoming_notification)
+
+            notificationViewFloatingNotification.setTextViewText(com.app.messagealarm.R.id.txt_notification_title,
+                "Message from $appName"
+            )
+
+            notificationViewFloatingNotification.setTextViewText(com.app.messagealarm.R.id.txt_notification_desc,
+                "$title sent you a message"
+            )
+
+            notificationView.setTextViewText(com.app.messagealarm.R.id.txt_notification_title,
+                "Message from $appName"
+            )
+
+            notificationView.setTextViewText(com.app.messagealarm.R.id.txt_notification_desc,
+                "$title sent you a message"
+            )
+
+            notificationViewFloatingNotification.setTextViewText(com.app.messagealarm.R.id.btn_notification_action, "Open $appName")
+
+            notificationViewFloatingNotification.setOnClickPendingIntent(com.app.messagealarm.R.id.btn_notification_action, buttonOpenApp)
+            notificationViewFloatingNotification.setOnClickPendingIntent(com.app.messagealarm.R.id.btn_notification_cancel, btnCancelIntent)
+            //remote view ending
 
             var notificationBuilder: NotificationCompat.Builder? = null
             notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setContentText("You have an alarm from $appName")
-                .setContentTitle("Swipe to dismiss alarm!")
                 .setSmallIcon(
                     com.app.messagealarm.R.drawable.ic_notifications_active_black_24dp
                 )
+                .setCustomBigContentView(notificationViewFloatingNotification)
+                .setCustomHeadsUpContentView(notificationViewFloatingNotification)
+                .setCustomContentView(notificationView)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
-                .addAction(
-                    com.app.messagealarm.R.drawable.ic_notifications_active_black_24dp,
-                    "Open $appName",
-                    buttonOpenApp
-                )
+                .setPriority(Notification.PRIORITY_MAX)
                 .setAutoCancel(true)
+                .setOngoing(true)
             notificationManager = NotificationManagerCompat.from(context)
             notificationManager!!.notify(227, notificationBuilder.build())
         }

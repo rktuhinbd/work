@@ -10,8 +10,15 @@ import com.app.messagealarm.utils.Constants;
 public class PageDismissReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        openApp(context, intent.getStringExtra(Constants.IntentKeys.PACKAGE_NAME));
-        FloatingNotification.Companion.cancelPageDismissNotification();
+        if(intent.getAction() != null){
+            if(intent.getAction().equals("CANCEL")){
+                FloatingNotification.Companion.cancelPageDismissNotification();
+            }else if(intent.getAction().equals("OPEN_APP")) {
+                openApp(context, intent.getStringExtra(Constants.IntentKeys.PACKAGE_NAME));
+                FloatingNotification.Companion.cancelPageDismissNotification();
+            }
+        }
+
     }
 
     private void openApp(Context context, String packageName){

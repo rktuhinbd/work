@@ -111,6 +111,7 @@ class AlarmActivity : BaseActivity() {
 
     private fun showPageDismissNotification() {
         FloatingNotification.showPageDismissNotification(
+            intent?.extras!!.getString(Constants.IntentKeys.TITLE)!!,
             this,
             intent?.extras!!.getString(Constants.IntentKeys.PACKAGE_NAME)!!,
             intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!
