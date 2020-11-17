@@ -146,6 +146,7 @@ class FloatingNotification {
         }
 
         fun showFloatingNotification(
+            title:String,
             isJustVibrate: Boolean,
             appName: String, packageName: String, numberOfPlay: Int,
             isVibrate: Boolean, context: Service, mediaPath: String?
@@ -155,8 +156,19 @@ class FloatingNotification {
                 context,
                 OpenAppReceiver::class.java
             ).putExtra(Constants.IntentKeys.PACKAGE_NAME, packageName)
+                .setAction("OPEN_APP")
+
             val buttonOpenApp =
                 PendingIntent.getBroadcast(context, 0, buttonOpenAppBroadcast, 0)
+
+            //just cancel the notification
+
+            val btnCancelCast = Intent(
+                context,
+                OpenAppReceiver::class.java
+            ).setAction("CANCEL")
+            val btnCancelIntent =
+                PendingIntent.getBroadcast(context, 0, btnCancelCast, 0)
 
             createChannel(context)
 
@@ -165,24 +177,25 @@ class FloatingNotification {
             val notificationViewFloatingNotification = RemoteViews(context.packageName, com.app.messagealarm.R.layout.layout_incoming_notification)
 
             notificationViewFloatingNotification.setTextViewText(com.app.messagealarm.R.id.txt_notification_title,
-                "You got a message from $appName"
+                "Message from $appName"
                 )
 
             notificationViewFloatingNotification.setTextViewText(com.app.messagealarm.R.id.txt_notification_desc,
-                "Swipe to dismiss alarm!"
+                "$title sent you a message"
                 )
 
             notificationView.setTextViewText(com.app.messagealarm.R.id.txt_notification_title,
-                "You got a message from $appName"
+                "Message from $appName"
             )
 
             notificationView.setTextViewText(com.app.messagealarm.R.id.txt_notification_desc,
-                "Swipe to dismiss alarm!"
+                "$title sent you a message"
             )
 
             notificationViewFloatingNotification.setTextViewText(com.app.messagealarm.R.id.btn_notification_action, "Open $appName")
 
             notificationViewFloatingNotification.setOnClickPendingIntent(com.app.messagealarm.R.id.btn_notification_action, buttonOpenApp)
+            notificationViewFloatingNotification.setOnClickPendingIntent(com.app.messagealarm.R.id.btn_notification_cancel, btnCancelIntent)
 
             var notificationBuilder: NotificationCompat.Builder? = null
 

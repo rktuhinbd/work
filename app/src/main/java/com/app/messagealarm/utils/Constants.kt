@@ -158,6 +158,7 @@ class Constants {
             const val IMAGE_PATH = "image"
             const val PACKAGE_NAME = "package"
             const val TYPE_ALARM = "type_alarm"
+            const val JUST_CANCEL = "just_cancel"
             const val APP_NAME = "app_name"
             const val TONE = "tone"
             const val NUMBER_OF_PLAY = "number_of_play"

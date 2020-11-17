@@ -15,4 +15,5 @@
     <color name="quick_start">#212121</color>
     <color name="track_color">#696969</color>
     <color name="delete_item">#D11A2A</color>
+    <color name="success_color">#4BB543</color>
 </resources>

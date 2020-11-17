@@ -72,12 +72,14 @@ class AlarmService {
             ringtone: String, service: Service, sbn: StatusBarNotification?,
             app: ApplicationEntity
         ) {
+            val title = sbn?.notification?.extras!!["android.title"]
             if (!ringtone.contains("Default")) {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     startAlarmActivity(service, app.tone_path, sbn, app)
                 } else {
                     //check if activity is not open
                     FloatingNotification.showFloatingNotification(
+                        title.toString(),
                         app.isJustVibrate,
                         app.appName,
                         app.packageName,
@@ -93,6 +95,7 @@ class AlarmService {
                 } else {
                     //check activity is not open
                     FloatingNotification.showFloatingNotification(
+                        title.toString(),
                         app.isJustVibrate,
                         app.appName,
                         app.packageName,
@@ -225,6 +228,7 @@ class AlarmService {
             sbn: StatusBarNotification?,
             app: ApplicationEntity
         ) {
+            val titleName = sbn?.notification?.extras!!["android.title"]
             //when alarm is playing with activity and the thread is not finished then user dismissed the alarm, then it's playing with notification again
             //temporary fixed by reducing waiting time from 4 sec to 2 sec.
             //need to check device to device for more result
@@ -233,6 +237,7 @@ class AlarmService {
                 AlarmCheckerThread(AlarmCheckerThread.PlayListener { s ->
                     if (!s) {
                         FloatingNotification.showFloatingNotification(
+                            titleName.toString(),
                             app.isJustVibrate,
                             app.appName,
                             app.packageName,
