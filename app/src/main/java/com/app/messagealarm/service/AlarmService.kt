@@ -4,7 +4,6 @@ import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.service.notification.StatusBarNotification
-import android.util.Log
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.ui.alarm.AlarmActivity
 import com.app.messagealarm.ui.notifications.FloatingNotification
@@ -36,28 +35,30 @@ class AlarmService {
             for (app in appsList) {
                 if (sbn?.packageName != null) {
                     if (sbn.packageName == app.packageName) {
-                        //check for alarm repeat
+                        //check for player not playing
+                        if (!MediaUtils.isPlaying()) {
+                            //check for alarm repeat
                             if (checkByTimeConstrain(app)) {
                                 //check for title not null
                                 if (sbn.notification.extras["android.title"] != null) {
                                     if (checkBySenderName(app, sbn)) {
                                         if (checkByMessageBody(app, sbn)) {
-                                            //check for player not playing
-                                            if (!MediaUtils.isPlaying()) {
-                                                //check if app is in not muted
-                                                if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_MUTED)){
-                                                    if(alarmRepeatOutput(app.alarmRepeat, app)) {
+                                            //check if app is in not muted
+                                            if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_MUTED)) {
+                                                if (alarmRepeatOutput(app.alarmRepeat, app)) {
                                                     //save activity started as false
-                                                        SharedPrefUtils.write(Constants.PreferenceKeys.IS_ACTIVITY_STARTED, false)
+                                                    SharedPrefUtils.write(
+                                                        Constants.PreferenceKeys.IS_ACTIVITY_STARTED,
+                                                        false
+                                                    )
                                                     magicPlay(app.ringTone, service, sbn, app)
-
-                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
+                        }
                         break
                     }
                 }
@@ -71,12 +72,14 @@ class AlarmService {
             ringtone: String, service: Service, sbn: StatusBarNotification?,
             app: ApplicationEntity
         ) {
+            val title = sbn?.notification?.extras!!["android.title"]
             if (!ringtone.contains("Default")) {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     startAlarmActivity(service, app.tone_path, sbn, app)
                 } else {
                     //check if activity is not open
                     FloatingNotification.showFloatingNotification(
+                        title.toString(),
                         app.isJustVibrate,
                         app.appName,
                         app.packageName,
@@ -92,6 +95,7 @@ class AlarmService {
                 } else {
                     //check activity is not open
                     FloatingNotification.showFloatingNotification(
+                        title.toString(),
                         app.isJustVibrate,
                         app.appName,
                         app.packageName,
@@ -103,8 +107,6 @@ class AlarmService {
                 }
             }
         }
-
-
 
 
         /**
@@ -130,20 +132,15 @@ class AlarmService {
             val nameArray = app.senderNames.trim().split(", ")
             if (app.senderNames != "None") {
                 for (x in nameArray) {
-                   var firstName = ""
-                    firstName = if(x.contains(" ")){
-                        x.split(" ")[0]
-                    }else{
-                        x
-                    }
                     if (title.toString().trim().toLowerCase(Locale.getDefault())
                             .contains(
-                                firstName.trim().toLowerCase(Locale.getDefault())
+                                x.trim().toLowerCase(Locale.getDefault())
                             )
-                        || firstName.trim().toLowerCase(Locale.getDefault())
+                        || x.trim().toLowerCase(Locale.getDefault())
                             .contains(
                                 title.toString().trim().toLowerCase(Locale.getDefault())
-                            )) {
+                            )
+                    ) {
                         result = true
                         break
                     } else {
@@ -231,6 +228,7 @@ class AlarmService {
             sbn: StatusBarNotification?,
             app: ApplicationEntity
         ) {
+            val titleName = sbn?.notification?.extras!!["android.title"]
             //when alarm is playing with activity and the thread is not finished then user dismissed the alarm, then it's playing with notification again
             //temporary fixed by reducing waiting time from 4 sec to 2 sec.
             //need to check device to device for more result
@@ -239,6 +237,7 @@ class AlarmService {
                 AlarmCheckerThread(AlarmCheckerThread.PlayListener { s ->
                     if (!s) {
                         FloatingNotification.showFloatingNotification(
+                            titleName.toString(),
                             app.isJustVibrate,
                             app.appName,
                             app.packageName,
@@ -264,6 +263,7 @@ class AlarmService {
             intent.putExtra(Constants.IntentKeys.DESC, desc)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
             service.startActivity(intent)
         }
     }

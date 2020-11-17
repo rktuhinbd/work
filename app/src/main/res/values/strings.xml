@@ -91,5 +91,8 @@
     <string name="txt_clear_sender_name">Clear Sender Names</string>
     <string name="txt_desc_clear_sender_namne">Do you wants to clear sender names?</string>
     <string name="txt_alarm_repeat">Alarm Repeat</string>
+    <string name="txt_hint_sender_name">Hint: Please add complete name</string>
+    <string name="txt_dismiss">Dismiss</string>
+    <string name="txt_swipe_bottom_to_expand">Swipe bottom to expand</string>
 
 </resources>
