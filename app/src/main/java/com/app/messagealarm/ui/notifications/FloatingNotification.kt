@@ -155,10 +155,6 @@ class FloatingNotification {
                 "Message from $appName"
             )
 
-            notificationView.setTextViewText(com.app.messagealarm.R.id.txt_notification_desc,
-                "$title sent you a message"
-            )
-
             notificationViewFloatingNotification.setTextViewText(com.app.messagealarm.R.id.btn_notification_action, "Open $appName")
 
             notificationViewFloatingNotification.setOnClickPendingIntent(com.app.messagealarm.R.id.btn_notification_action, buttonOpenApp)
@@ -222,10 +218,6 @@ class FloatingNotification {
 
             notificationView.setTextViewText(com.app.messagealarm.R.id.txt_notification_title,
                 "Message from $appName"
-            )
-
-            notificationView.setTextViewText(com.app.messagealarm.R.id.txt_notification_desc,
-                "$title sent you a message"
             )
 
             notificationViewFloatingNotification.setTextViewText(com.app.messagealarm.R.id.btn_notification_action, "Open $appName")

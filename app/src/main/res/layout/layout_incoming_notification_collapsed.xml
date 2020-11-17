@@ -37,7 +37,7 @@
                 android:id="@+id/txt_notification_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Swipe to dismiss"
+                android:text="@string/txt_swipe_bottom_to_expand"
                 android:textColor="@color/color_white"
                 android:textStyle="bold"
                 android:layout_marginStart="16dp"
