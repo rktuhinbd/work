@@ -1,7 +1,6 @@
 package com.app.messagealarm.utils
 
 import android.content.Context
-import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
@@ -61,14 +60,13 @@ class MediaUtils {
                             mediaPlayer!!.reset()
                             return true
                         }
-
                     })
 
                     mediaPlayer!!.setOnPreparedListener {
                         it.start()
                     }
 
-                    mediaPlayer!!.prepare()
+                    mediaPlayer!!.prepareAsync()
 
                 }
                 once.run(runnable)
@@ -153,6 +151,7 @@ class MediaUtils {
         fun isPlaying(): Boolean {
             return if (mediaPlayer != null) {
                 mediaPlayer!!.isPlaying
+                true
             } else {
                 false
             }
