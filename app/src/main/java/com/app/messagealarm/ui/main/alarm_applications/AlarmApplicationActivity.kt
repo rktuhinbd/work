@@ -28,6 +28,9 @@ import com.app.messagealarm.ui.onboarding.OnboardingDialog
 import com.app.messagealarm.ui.setting.SettingsActivity
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.activity_main.*
@@ -38,6 +41,7 @@ import java.io.File
 class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
     AddedAppsListAdapter.ItemClickListener {
 
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
     var mMessageReceiver:BroadcastReceiver? = null
     val bottomSheetModel = AddApplicationOption()
     val REQUEST_CODE_PICK_AUDIO = 1
@@ -52,7 +56,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         handleService()
         setupAppsRecyclerView()
         lookForTablesSize()
-
+        // Obtain the FirebaseAnalytics instance.
+        firebaseAnalytics = Firebase.analytics
         //schedule quickstart
         Handler().postDelayed(Runnable {
             showQuickStartDialog()
@@ -102,6 +107,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.mnu_setting -> {
+                throw RuntimeException("Test Crash")
                 startActivity(Intent(this, SettingsActivity::class.java))
             }
             else -> {
