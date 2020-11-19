@@ -9,14 +9,25 @@ import com.app.messagealarm.R
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.MenuTintUtils
 import com.app.messagealarm.utils.SharedPrefUtils
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_about.*
 
 class AboutActivity : BaseActivity() {
+
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
         setToolBar()
+        // Obtain the FirebaseAnalytics instance.
+        firebaseAnalytics = Firebase.analytics
+        //log about screen open log
+        val bundle = Bundle()
+        bundle.putString("open_about_screen", "yes")
+        firebaseAnalytics.logEvent("about_page", bundle)
     }
 
     private fun setToolBar() {

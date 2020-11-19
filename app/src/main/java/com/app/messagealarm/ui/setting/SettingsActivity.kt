@@ -53,7 +53,7 @@ class SettingsActivity : AppCompatActivity() {
 
     class SettingsFragment : PreferenceFragmentCompat() {
 
-        lateinit var firebaseAnalytics: FirebaseAnalytics
+       private lateinit var firebaseAnalytics: FirebaseAnalytics
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
@@ -150,10 +150,7 @@ class SettingsActivity : AppCompatActivity() {
                     }
                     return true
                 }
-
             })
-
-
         }
     }
 }
