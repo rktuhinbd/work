@@ -32,11 +32,17 @@ class Constants {
             const val TRUE_INTEGER: Int = 1
             const val FALSE_INTEGER: Int = 0
             const val SPACE_STRING: String = " "
+            const val TYPE_MISSED = 1
+            const val TYPE_ALARM = 2
+            const val MUTE_TIMER = "mute_timer"
+            const val SYNC = "sync"
+            const val MANUAL = "Manual"
         }
     }
     class ACTION{
         companion object{
             const val ACTION_UN_MUTE = "un_mute"
+            const val SYNC = "SYNC"
         }
     }
 
@@ -140,6 +146,7 @@ class Constants {
             const val IS_MUTED = "is_muted"
             const val MUTE_TIME = "mute"
             const val THEME = "theme"
+            const val GOT_ONE_MESSAGE = "got_one_message"
 
         }
     }
@@ -150,10 +157,13 @@ class Constants {
             const val DESC = "desc"
             const val IMAGE_PATH = "image"
             const val PACKAGE_NAME = "package"
+            const val TYPE_ALARM = "type_alarm"
+            const val JUST_CANCEL = "just_cancel"
             const val APP_NAME = "app_name"
             const val TONE = "tone"
             const val NUMBER_OF_PLAY = "number_of_play"
             const val IS_VIBRATE = "is_vibrate"
+            const val IS_JUST_VIBRATE = "is_just_vibrate"
         }
     }
 

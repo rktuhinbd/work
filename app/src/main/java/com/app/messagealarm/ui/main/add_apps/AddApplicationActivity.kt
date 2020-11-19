@@ -118,8 +118,12 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 if(p2 == 0){
+                    rv_apps_list?.visibility = View.GONE
+                    progress_bar_add_app?.visibility = View.VISIBLE
                     addApplicationPresenter!!.getAllApplicationList()
                 }else{
+                    rv_apps_list?.visibility = View.GONE
+                    progress_bar_add_app?.visibility = View.VISIBLE
                     addApplicationPresenter!!.filterByMessaging()
                 }
             }
@@ -156,6 +160,8 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                 Comparator<InstalledApps> { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
             runOnUiThread {
                 (rv_apps_list?.adapter as AllAppsListAdapter).updateData(list)
+                progress_bar_add_app?.visibility = View.GONE
+                rv_apps_list?.visibility = View.VISIBLE
             }
         }catch (e:NullPointerException){
             e.printStackTrace()

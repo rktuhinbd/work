@@ -146,7 +146,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:fontFamily="@font/open_sans_regular"
-                    android:text="Alarm Repeat"
+                    android:text="@string/txt_alarm_repeat"
                     android:textColor="@color/colorTextRegular"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toTopOf="@id/txt_repeat_value"
@@ -219,7 +219,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:fontFamily="@font/open_sans_regular"
-                    android:text="Ringtone"
+                    android:text="Alarm Tone"
                     android:textColor="@color/colorTextRegular"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toTopOf="@id/txt_ringtone_value"
@@ -294,7 +294,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:fontFamily="@font/open_sans_regular"
-                    android:text="Vibrate On Alarm"
+                    android:text="Vibrate With Sound"
                     android:textColor="@color/colorTextRegular"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -310,11 +310,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
+                    android:trackTint="@color/track_color"
                     app:layout_constraintBottom_toBottomOf="@id/view_vibrate"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1"
                     app:layout_constraintStart_toEndOf="@id/txt_vibrate"
-                    app:layout_constraintTop_toTopOf="@id/view_vibrate" />
+                    app:layout_constraintTop_toTopOf="@id/view_vibrate"
+                    tools:targetApi="m" />
 
                 <View
                     android:layout_width="0dp"
@@ -386,8 +388,10 @@
                     app:layout_constraintBottom_toBottomOf="@id/view_just_vibrate"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1"
+                    android:trackTint="@color/track_color"
                     app:layout_constraintStart_toEndOf="@id/txt_just_vibrate"
-                    app:layout_constraintTop_toTopOf="@id/view_just_vibrate" />
+                    app:layout_constraintTop_toTopOf="@id/view_just_vibrate"
+                    tools:targetApi="m" />
 
                 <View
                     android:layout_width="0dp"
@@ -442,7 +446,7 @@
                     android:text="Custom Time"
                     android:textColor="@color/colorTextRegular"
                     android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/txt_custom_time_value"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toEndOf="@id/img_custom_time"
@@ -450,16 +454,33 @@
                     app:layout_constraintVertical_chainStyle="packed" />
 
 
+                <TextView
+                    android:id="@+id/txt_custom_time_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Within a single day"
+                    android:textSize="12sp"
+                    android:textColor="@color/default_text"
+                    app:layout_constraintBottom_toBottomOf="@id/view_custom_time"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="@id/txt_custom_time"
+                    app:layout_constraintTop_toBottomOf="@id/txt_custom_time" />
+
+
+
                 <Switch
                     android:id="@+id/switch_custom_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
+                    android:trackTint="@color/track_color"
                     app:layout_constraintBottom_toBottomOf="@id/view_custom_time"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1"
                     app:layout_constraintStart_toEndOf="@id/txt_custom_time"
-                    app:layout_constraintTop_toTopOf="@id/view_custom_time" />
+                    app:layout_constraintTop_toTopOf="@id/view_custom_time"
+                    tools:targetApi="m" />
 
                 <View
                     android:layout_width="0dp"
@@ -755,6 +776,7 @@
                     android:layout_marginEnd="16dp"
                     android:maxLines="2"
                     android:text="None"
+                    android:ellipsize="end"
                     android:textSize="12sp"
                     android:textColor="@color/default_text"
                     app:layout_constraintBottom_toBottomOf="@id/view_sender_name"
@@ -849,6 +871,7 @@
                     android:maxLines="2"
                     android:text="None"
                     android:textSize="12sp"
+                    android:ellipsize="end"
                     android:textColor="@color/default_text"
                     app:layout_constraintBottom_toBottomOf="@id/view_message_body"
                     app:layout_constraintEnd_toStartOf="@id/btn_message_body_clear"

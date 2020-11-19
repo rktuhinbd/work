@@ -76,5 +76,23 @@
     <string name="notify_channel_name">AlarmDismissName</string>
 
     <string name="notify_channel_description">AlarmDismissDescription</string>
+    <string name="txt_skip">Skip</string>
+    <string name="txt_desc_first">Click on the rounded + button, for adding application. Message from this applications, will play alarm!</string>
+    <string name="desc_quick_start_two">Filter by messaging, and choose application from the list. Choose preferences from the next screen and save application!</string>
+    <string name="desc_quick_start_third">Set custom time, set custom sender names, Only messages from this names will play alarm. Also you can filter alarm by message body!</string>
+    <string name="desc_quick_start_four">This sticky notification indicates that the application is alive and waiting for message, Click on the notification button to mute and un-mute application, The power button turn off the sticky notification and kills the service</string>
+    <string name="desc_quick_start_five">This is at setting page, set automatic mute time, application will be un-mute after that time. If your phone killing this application when app is in background. Click on that bottom button and follow the instruction</string>
+    <string name="txt_finish">Finish</string>
+    <string name="txt_add_sender_name">Add sender name</string>
+    <string name="txt_sender_name">Sender Name</string>
+    <string name="txt_save">Save</string>
+    <string name="txt_clear_message_body">Clear Message Body</string>
+    <string name="txt_desc_clear_message">Do you wants to clear message body?</string>
+    <string name="txt_clear_sender_name">Clear Sender Names</string>
+    <string name="txt_desc_clear_sender_namne">Do you wants to clear sender names?</string>
+    <string name="txt_alarm_repeat">Alarm Repeat</string>
+    <string name="txt_hint_sender_name">Hint: Please add complete name</string>
+    <string name="txt_dismiss">Dismiss</string>
+    <string name="txt_swipe_bottom_to_expand">Swipe bottom to expand</string>
 
 </resources>
