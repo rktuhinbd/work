@@ -107,7 +107,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.mnu_setting -> {
-                throw RuntimeException("Test Crash")
                 startActivity(Intent(this, SettingsActivity::class.java))
             }
             else -> {
