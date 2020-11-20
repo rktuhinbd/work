@@ -66,10 +66,11 @@ class MediaUtils {
                         it.start()
                     }
 
-                    mediaPlayer!!.prepareAsync()
+                    mediaPlayer!!.prepare()
 
                 }
                 once.run(runnable)
+
             } catch (e: IllegalStateException) {
                 e.printStackTrace()
             } catch (e: NullPointerException) {
@@ -89,8 +90,13 @@ class MediaUtils {
                     })
                 }
             }).start()
-            //stop playBack
-            stopPlayBackAfterDone(isLastIndex, context, packageName, appName)
+
+            val onceAgain = Once()
+            onceAgain.run(Runnable {
+                //stop playBack
+                stopPlayBackAfterDone(isLastIndex, context, packageName, appName)
+            })
+
         }
 
         private fun stopVibration() {
@@ -107,9 +113,12 @@ class MediaUtils {
         ) {
             try {
                 //here 30 is not static it will be from setting page, the values will be 1, 2, 3, or Full song
+                var count = 0
                 while (true) {
-                    val totalPlayBack = (mediaPlayer!!.currentPosition / 1000).toInt()
-                    if (totalPlayBack == 30) {
+                    count++
+                    //val totalPlayBack = (mediaPlayer!!.currentPosition / 1000).toInt()
+                    Thread.sleep(1000)
+                    if (count == 30) {
                         if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
                             if (isLastIndex) {
                                 mediaPlayer!!.stop()
@@ -120,10 +129,11 @@ class MediaUtils {
                                     packageName,
                                     appName
                                 )
+                                stopVibration()
                             } else {
+                                stopVibration()
                                 mediaPlayer!!.stop()
                             }
-                            stopVibration()
                             break
                         }
                     }

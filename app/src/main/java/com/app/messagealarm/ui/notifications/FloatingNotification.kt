@@ -64,13 +64,13 @@ class FloatingNotification {
                     val once = Once()
                     once.run(
                         Runnable {
-                            MediaUtils.playAlarm(
-                                isJustVibrate,
-                                isVibrate,
-                                context, tone, (x == (numberOfPlay - 1)),
-                                packageName,
-                                appName
-                            )
+                                MediaUtils.playAlarm(
+                                    isJustVibrate,
+                                    isVibrate,
+                                    context, tone, (x == (numberOfPlay - 1)),
+                                    packageName,
+                                    appName
+                                )
                             if (x == numberOfPlay - 1) {
                                 //done playing dismiss the activity now
                                 //send a notification that you missed the alarm
