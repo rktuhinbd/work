@@ -5,6 +5,7 @@ import android.media.AudioManager
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
+import android.util.Log
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.ui.notifications.FloatingNotification
 import com.app.messagealarm.ui.notifications.FloatingNotification.Companion.notifyMute
@@ -16,6 +17,9 @@ class MediaUtils {
 
     companion object {
 
+       // var isStopped = false
+        //var isLoop = true
+        var count = 0
         var mediaPlayer: MediaPlayer? = null
 
         fun playAlarm(
@@ -27,7 +31,7 @@ class MediaUtils {
             packageName: String,
             appName: String
         ) {
-
+            count = 0
             try {
                 //start full sound
                 val mobilemode =
@@ -49,6 +53,7 @@ class MediaUtils {
                         mediaPlayer!!.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
                         afd.close()
                     }
+
                     if (!isJustVibrate || (!isJustVibrate && !isVibrate)) {
                         mediaPlayer!!.setVolume(1.0f, 1.0f)
                     } else {
@@ -62,10 +67,21 @@ class MediaUtils {
                         }
                     })
 
+                   /* mediaPlayer!!.setOnCompletionListener(object :MediaPlayer.OnCompletionListener{
+                        override fun onCompletion(mp: MediaPlayer?) {
+                            if(isStopped){
+                                isLoop = false
+                            }
+                        }
+
+                    })*/
+
                     mediaPlayer!!.setOnPreparedListener {
+                        Log.e("PREPARED", "true")
                         it.start()
                     }
 
+                    Log.e("PREPARE_CALL", "true")
                     mediaPlayer!!.prepare()
 
                 }
@@ -93,10 +109,9 @@ class MediaUtils {
 
             val onceAgain = Once()
             onceAgain.run(Runnable {
-                //stop playBack
-                stopPlayBackAfterDone(isLastIndex, context, packageName, appName)
+                    //stop playBack
+                    stopPlayBackAfterDone(isLastIndex, context, packageName, appName)
             })
-
         }
 
         private fun stopVibration() {
@@ -112,13 +127,18 @@ class MediaUtils {
             appName: String
         ) {
             try {
+                /**
+                 * There is a bug when stopping the media player stopping by button before it's finishes.
+                 * It's starting the media player again
+                 *
+                 */
                 //here 30 is not static it will be from setting page, the values will be 1, 2, 3, or Full song
-                var count = 0
                 while (true) {
-                    count++
                     //val totalPlayBack = (mediaPlayer!!.currentPosition / 1000).toInt()
-                    Thread.sleep(1000)
+                    count++
+                    Log.e("PLAY_COUNT", count.toString())
                     if (count == 30) {
+                        count = 0
                         if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
                             if (isLastIndex) {
                                 mediaPlayer!!.stop()
@@ -137,6 +157,11 @@ class MediaUtils {
                             break
                         }
                     }
+                    try{
+                        Thread.sleep(1000)
+                    }catch (e: InterruptedException){
+
+                    }
                 }
             } catch (e: IllegalStateException) {
 
@@ -146,6 +171,7 @@ class MediaUtils {
         }
 
         fun stopAlarm() {
+            //isStopped = true
             if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
                 write(Constants.PreferenceKeys.IS_STOPPED, true)
                 mediaPlayer!!.stop()
