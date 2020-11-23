@@ -78,7 +78,8 @@ class AlarmActivity : BaseActivity() {
 
 
     private fun startPlaying(tone: String?) {
-        Thread(Runnable {
+        var thread:Thread? = null
+        thread = Thread(Runnable {
             //here i need run the loop of how much time need to play
             val numberOfPLay = intent?.extras!!.getInt(Constants.IntentKeys.NUMBER_OF_PLAY)
             for (x in 0 until numberOfPLay) {
@@ -87,7 +88,7 @@ class AlarmActivity : BaseActivity() {
                 }
                 val once = Once()
                 once.run(Runnable {
-                    MediaUtils.playAlarm(
+                    MediaUtils.playAlarm(thread!!,
                         intent?.extras!!.getBoolean(Constants.IntentKeys.IS_JUST_VIBRATE),
                         intent?.extras!!.getBoolean(Constants.IntentKeys.IS_VIBRATE),
                         this, tone,
@@ -105,7 +106,8 @@ class AlarmActivity : BaseActivity() {
                     }
                 })
             }
-        }).start()
+        })
+        thread.start()
     }
 
 

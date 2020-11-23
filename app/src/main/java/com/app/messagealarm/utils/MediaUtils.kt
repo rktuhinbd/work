@@ -17,12 +17,14 @@ class MediaUtils {
 
     companion object {
 
-       // var isStopped = false
-        //var isLoop = true
+       var isStopped = false
+       // var isLoop = true
         var count = 0
         var mediaPlayer: MediaPlayer? = null
+        var thread:Thread? = null
 
         fun playAlarm(
+            thread: Thread,
             isJustVibrate: Boolean,
             isVibrate: Boolean,
             context: Context,
@@ -31,6 +33,7 @@ class MediaUtils {
             packageName: String,
             appName: String
         ) {
+            this.thread = thread
             count = 0
             try {
                 //start full sound
@@ -111,7 +114,8 @@ class MediaUtils {
             onceAgain.run(Runnable {
                     //stop playBack
                     stopPlayBackAfterDone(isLastIndex, context, packageName, appName)
-            })
+                })
+
         }
 
         private fun stopVibration() {
@@ -135,8 +139,12 @@ class MediaUtils {
                 //here 30 is not static it will be from setting page, the values will be 1, 2, 3, or Full song
                 while (true) {
                     //val totalPlayBack = (mediaPlayer!!.currentPosition / 1000).toInt()
-                    count++
                     Log.e("PLAY_COUNT", count.toString())
+                    if(mediaPlayer != null){
+                        count++
+                    }else{
+                        break
+                    }
                     if (count == 30) {
                         count = 0
                         if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
@@ -150,11 +158,12 @@ class MediaUtils {
                                     appName
                                 )
                                 stopVibration()
+                                break
                             } else {
                                 stopVibration()
                                 mediaPlayer!!.stop()
+                                break
                             }
-                            break
                         }
                     }
                     try{
@@ -177,6 +186,9 @@ class MediaUtils {
                 mediaPlayer!!.stop()
                 mediaPlayer!!.release()
                 mediaPlayer = null
+                isStopped = false
+                thread!!.interrupt()
+                thread = null
                 stopVibration()
                 write(Constants.PreferenceKeys.IS_MUTED, true)
                 notifyMute(true)

@@ -55,7 +55,8 @@ class FloatingNotification {
             notificationManager: NotificationManagerCompat,
             numberOfPlay: Int
         ) {
-            Thread(Runnable {
+            var thread:Thread? = null
+         thread =   Thread(Runnable {
                 //here i need run the loop of how much time need to play
                 for (x in 0 until numberOfPlay) {
                     if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_STOPPED)) {
@@ -65,6 +66,7 @@ class FloatingNotification {
                     once.run(
                         Runnable {
                                 MediaUtils.playAlarm(
+                                    thread!!,
                                     isJustVibrate,
                                     isVibrate,
                                     context, tone, (x == (numberOfPlay - 1)),
@@ -82,7 +84,8 @@ class FloatingNotification {
                     )
 
                 }
-            }).start()
+            })
+            thread.start()
         }
 
 
