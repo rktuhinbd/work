@@ -640,9 +640,11 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         bitmap.toBitmap()
                     )
                 } catch (e: Exception) {
-                    requireActivity().runOnUiThread {
-                        hideProgressBar()
-                        Toasty.error(requireActivity(), e.message!!).show()
+                    if(isAdded){
+                        requireActivity().runOnUiThread {
+                            hideProgressBar()
+                            Toasty.error(requireActivity(), e.message!!).show()
+                        }
                     }
                 }
             }).start()
