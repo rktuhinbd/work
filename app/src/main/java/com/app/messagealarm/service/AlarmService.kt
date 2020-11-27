@@ -228,6 +228,7 @@ class AlarmService {
             sbn: StatusBarNotification?,
             app: ApplicationEntity
         ) {
+            var isExecute = false
             val titleName = sbn?.notification?.extras!!["android.title"]
             //when alarm is playing with activity and the thread is not finished then user dismissed the alarm, then it's playing with notification again
             //temporary fixed by reducing waiting time from 4 sec to 2 sec.
@@ -249,22 +250,28 @@ class AlarmService {
                     }
                 }).execute()
             })
-            val title = sbn?.notification!!.extras["android.title"].toString()
-            val desc = sbn.notification!!.extras["android.text"].toString()
-            val intent = Intent(service, AlarmActivity::class.java)
-            intent.putExtra(Constants.IntentKeys.NUMBER_OF_PLAY, app.numberOfPlay)
-            intent.putExtra(Constants.IntentKeys.APP_NAME, app.appName)
-            intent.putExtra(Constants.IntentKeys.IS_VIBRATE, app.isVibrateOnAlarm)
-            intent.putExtra(Constants.IntentKeys.PACKAGE_NAME, app.packageName)
-            intent.putExtra(Constants.IntentKeys.TONE, tone)
-            intent.putExtra(Constants.IntentKeys.IS_JUST_VIBRATE, app.isJustVibrate)
-            intent.putExtra(Constants.IntentKeys.IMAGE_PATH, app.bitmapPath)
-            intent.putExtra(Constants.IntentKeys.TITLE, title)
-            intent.putExtra(Constants.IntentKeys.DESC, desc)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-            service.startActivity(intent)
+
+            if(!isExecute){
+                isExecute = true
+                val title = sbn.notification!!.extras["android.title"].toString()
+                val desc = sbn.notification!!.extras["android.text"].toString()
+                val intent = Intent(service, AlarmActivity::class.java)
+                intent.putExtra(Constants.IntentKeys.NUMBER_OF_PLAY, app.numberOfPlay)
+                intent.putExtra(Constants.IntentKeys.APP_NAME, app.appName)
+                intent.putExtra(Constants.IntentKeys.IS_VIBRATE, app.isVibrateOnAlarm)
+                intent.putExtra(Constants.IntentKeys.PACKAGE_NAME, app.packageName)
+                intent.putExtra(Constants.IntentKeys.TONE, tone)
+                intent.putExtra(Constants.IntentKeys.IS_JUST_VIBRATE, app.isJustVibrate)
+                intent.putExtra(Constants.IntentKeys.IMAGE_PATH, app.bitmapPath)
+                intent.putExtra(Constants.IntentKeys.TITLE, title)
+                intent.putExtra(Constants.IntentKeys.DESC, desc)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                service.startActivity(intent)
+            }
+
+
         }
     }
 }

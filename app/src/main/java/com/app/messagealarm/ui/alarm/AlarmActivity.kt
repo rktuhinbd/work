@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
+import android.util.Log
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -32,6 +33,7 @@ class AlarmActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.e("SCREEN_STATUS", isScreenActive(this).toString())
         isIntractive = isScreenActive(this)
         setContentView(R.layout.activity_alarm)
         setupViews()
@@ -135,13 +137,9 @@ class AlarmActivity : BaseActivity() {
     }
 
 
-    fun isScreenActive(context: Context): Boolean {
+    private fun isScreenActive(context: Context): Boolean {
         val powerManager = context.getSystemService(POWER_SERVICE) as PowerManager
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            powerManager.isInteractive
-        } else {
-            powerManager.isScreenOn
-        }
+        return  powerManager.isInteractive
     }
 
     private fun tiltAnimation() {
@@ -219,9 +217,9 @@ class AlarmActivity : BaseActivity() {
         launchIntent?.let { startActivity(it) }
     }
 
-    override fun onNewIntent(intent: Intent?) {
+   /* override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         finish()
         startActivity(Intent(intent))
-    }
+    }*/
 }

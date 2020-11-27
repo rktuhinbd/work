@@ -40,12 +40,13 @@ class DialogUtils {
         }
 
         fun showDialog(context: Context, title: String, message: String, callback: Callback) {
-            AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
+          val dialog =  AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(
                     R.string.ok
                 ) { dialog, which ->
+                    dialog.dismiss()
                     callback.onPositive()
                 }
                 .setIcon(R.drawable.ic_dialog_info)
@@ -56,7 +57,7 @@ class DialogUtils {
                     callback.onNegative()
                 }
                 .setCancelable(false)
-                .show()
+            dialog?.show()
         }
 
         fun showSimpleListDialog(context: Context, callBack: RepeatCallBack) {
