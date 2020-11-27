@@ -1,18 +1,16 @@
 package com.app.messagealarm.ui.alarm
 
-import android.annotation.SuppressLint
 import android.app.KeyguardManager
 import android.content.Context
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
-import android.util.Log
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.app.messagealarm.BaseActivity
+import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.notifications.FloatingNotification
 import com.app.messagealarm.utils.Constants
@@ -33,7 +31,6 @@ class AlarmActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.e("SCREEN_STATUS", isScreenActive(this).toString())
         isIntractive = isScreenActive(this)
         setContentView(R.layout.activity_alarm)
         setupViews()
@@ -90,7 +87,8 @@ class AlarmActivity : BaseActivity() {
                 }
                 val once = Once()
                 once.run(Runnable {
-                    MediaUtils.playAlarm(thread!!,
+                    MediaUtils.playAlarm(
+                        thread!!,
                         intent?.extras!!.getBoolean(Constants.IntentKeys.IS_JUST_VIBRATE),
                         intent?.extras!!.getBoolean(Constants.IntentKeys.IS_VIBRATE),
                         this, tone,
@@ -112,6 +110,11 @@ class AlarmActivity : BaseActivity() {
         thread.start()
     }
 
+    private fun isDeviceLocked(): Boolean{
+        val myKM = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
+        return  myKM.isDeviceLocked
+    }
+
 
     private fun showPageDismissNotification() {
         FloatingNotification.showPageDismissNotification(
@@ -125,9 +128,9 @@ class AlarmActivity : BaseActivity() {
     override fun onPause() {
         if(!isSwiped){
             if(isIntractive){
-                showPageDismissNotification()
+                    showPageDismissNotification()
+                }
             }
-        }
         super.onPause()
     }
 
