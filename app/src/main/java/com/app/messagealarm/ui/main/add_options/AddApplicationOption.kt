@@ -25,6 +25,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import java.text.ParseException
@@ -35,6 +38,7 @@ import kotlin.collections.ArrayList
 
 class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionView {
 
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
     var once:Once? = null
     public var alarmTonePath:String? = null
     var ringtoneName:String? = null
@@ -47,6 +51,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         super.onCreate(savedInstanceState)
         addApplicationOptionPresenter = AddApplicationOptionPresenter(this)
         once = Once()
+        // Obtain the FirebaseAnalytics instance.
+        firebaseAnalytics = Firebase.analytics
     }
 
 
@@ -763,7 +769,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     txt_end_time_value?.text.toString()
                 )
             ){
-                addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
+                addApplicationOptionPresenter?.saveApplication(addApplicationEntity, firebaseAnalytics)
             }else{
                 requireActivity().runOnUiThread {
                     hideProgressBar()
@@ -771,7 +777,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 }
             }
         }else{
-            addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
+            addApplicationOptionPresenter?.saveApplication(addApplicationEntity, firebaseAnalytics)
         }
     }
 

@@ -17,6 +17,9 @@ import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.MediaUtils
 import com.app.messagealarm.utils.Once
 import com.app.messagealarm.utils.SharedPrefUtils
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.ncorti.slidetoact.SlideToActView
 import kotlinx.android.synthetic.main.activity_alarm.*
 import java.io.File
@@ -24,6 +27,7 @@ import java.io.File
 
 class AlarmActivity : BaseActivity() {
 
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
     var isIntractive = true
     var focus = true
     val once = Once()
@@ -33,12 +37,17 @@ class AlarmActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         isIntractive = isScreenActive(this)
         setContentView(R.layout.activity_alarm)
+        // Obtain the FirebaseAnalytics instance.
+        firebaseAnalytics = Firebase.analytics
         setupViews()
         val runnable = Runnable(){
             playMedia()
         }
         once.run(runnable)
         tiltAnimation()
+        val bundle = Bundle()
+        bundle.putString("alarm_by_activity", "true")
+        firebaseAnalytics.logEvent("alarm_type", bundle)
     }
 
     override fun onStart() {
@@ -128,6 +137,8 @@ class AlarmActivity : BaseActivity() {
     override fun onPause() {
         if(!isSwiped){
             if(isIntractive){
+                //we now know that only few devices getting the dismiss notification function called at lock screen startup
+                //need to know how much devices creating this issue
                     showPageDismissNotification()
                 }
             }

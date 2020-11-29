@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.widget.RemoteViews
@@ -17,6 +18,9 @@ import com.app.messagealarm.broadcast_receiver.*
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
 import java.util.*
 
@@ -31,6 +35,7 @@ class FloatingNotification {
         /**
          * Custom appearance of the notification, also updated.
          */
+        private var firebaseAnalytics: FirebaseAnalytics = Firebase.analytics
         var service: Service? = null
         var notificationView: RemoteViews? = null
         var notificationBuilder: NotificationCompat.Builder? = null
@@ -186,6 +191,9 @@ class FloatingNotification {
             appName: String, packageName: String, numberOfPlay: Int,
             isVibrate: Boolean, context: Service, mediaPath: String?
         ) {
+            val bundle = Bundle()
+            bundle.putString("alarm_by_notification", "true")
+            firebaseAnalytics.logEvent("alarm_type", bundle)
             // sending data to new activity
             val buttonOpenAppBroadcast = Intent(
                 context,

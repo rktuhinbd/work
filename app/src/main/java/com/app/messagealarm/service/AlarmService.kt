@@ -3,11 +3,15 @@ package com.app.messagealarm.service
 import android.app.Service
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.service.notification.StatusBarNotification
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.ui.alarm.AlarmActivity
 import com.app.messagealarm.ui.notifications.FloatingNotification
 import com.app.messagealarm.utils.*
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import java.util.*
 import java.util.regex.Pattern
 
@@ -15,6 +19,8 @@ import java.util.regex.Pattern
 class AlarmService {
 
     companion object {
+
+        private var firebaseAnalytics: FirebaseAnalytics = Firebase.analytics
 
         fun playAlarmOnNotification(
             sbn: StatusBarNotification?,
@@ -237,6 +243,9 @@ class AlarmService {
             once.run(Runnable {
                 AlarmCheckerThread(AlarmCheckerThread.PlayListener { s ->
                     if (!s) {
+                        val bundle = Bundle()
+                        bundle.putString("alarm_by_thread", "true")
+                        firebaseAnalytics.logEvent("alarm_type", bundle)
                         FloatingNotification.showFloatingNotification(
                             titleName.toString(),
                             app.isJustVibrate,
