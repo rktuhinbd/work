@@ -132,11 +132,6 @@ class AlarmActivity : BaseActivity() {
         thread.start()
     }
 
-    private fun isDeviceLocked(): Boolean{
-        val myKM = getSystemService(KEYGUARD_SERVICE) as KeyguardManager
-        return  myKM.isDeviceLocked
-    }
-
 
     private fun showPageDismissNotification() {
         FloatingNotification.showPageDismissNotification(
