@@ -12,7 +12,6 @@ public class PowerOffReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
             stopService(context);
             stopPowerSwitchInActivity(context);
-
     }
 
     private void stopService(Context context){

@@ -1,7 +1,10 @@
 package com.app.messagealarm.ui.alarm
 
 import android.app.KeyguardManager
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
@@ -22,11 +25,14 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.ncorti.slidetoact.SlideToActView
 import kotlinx.android.synthetic.main.activity_alarm.*
+import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
+import kotlin.system.exitProcess
 
 
 class AlarmActivity : BaseActivity() {
 
+    var mMessageReceiver: BroadcastReceiver? = null
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     var isIntractive = true
     var focus = true
@@ -48,6 +54,13 @@ class AlarmActivity : BaseActivity() {
         val bundle = Bundle()
         bundle.putString("alarm_by_activity", "true")
         firebaseAnalytics.logEvent("alarm_type", bundle)
+
+        mMessageReceiver =  object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                finishAffinity()
+                exitProcess(0)
+            }
+        }
     }
 
     override fun onStart() {
@@ -143,6 +156,7 @@ class AlarmActivity : BaseActivity() {
                 }
             }
         super.onPause()
+        this.unregisterReceiver(mMessageReceiver)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -213,6 +227,7 @@ class AlarmActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+        this.registerReceiver(mMessageReceiver,  IntentFilter("turn_off_switch"))
     }
 
 
