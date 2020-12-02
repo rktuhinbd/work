@@ -17,6 +17,9 @@ class AppsReader {
                 if (!getSysPackages && p.versionName == null) {
                     continue
                 }
+                if(p.packageName == "com.app.messagealarm"){
+                    continue
+                }
                 val app = InstalledApps(
                     p.applicationInfo.loadLabel(context.packageManager).toString(),
                     p.packageName,

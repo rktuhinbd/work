@@ -16,10 +16,10 @@ class VibratorUtils {
                 vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             if (Build.VERSION.SDK_INT >= 26) {
                 vibrator!!.vibrate(VibrationEffect.createWaveform(ConverterUtils.genVibratorPattern(1.0f,
-                    2000), 1))
+                    2000), 0))
             } else {
                 vibrator!!.vibrate(ConverterUtils.genVibratorPattern(1.0f,
-                    2000), 1)
+                    2000), 0)
             }
         }
 

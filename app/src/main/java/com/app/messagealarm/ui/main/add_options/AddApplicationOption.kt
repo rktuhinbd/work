@@ -25,6 +25,9 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import java.text.ParseException
@@ -35,6 +38,7 @@ import kotlin.collections.ArrayList
 
 class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionView {
 
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
     var once:Once? = null
     public var alarmTonePath:String? = null
     var ringtoneName:String? = null
@@ -47,6 +51,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         super.onCreate(savedInstanceState)
         addApplicationOptionPresenter = AddApplicationOptionPresenter(this)
         once = Once()
+        // Obtain the FirebaseAnalytics instance.
+        firebaseAnalytics = Firebase.analytics
     }
 
 
@@ -167,7 +173,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     private fun setListener() {
         btn_close?.setOnClickListener {
             if(checkForDefault()){
-                dismiss()
+                dismissAllowingStateLoss()
             }else{
                 showDiscardDialog()
             }
@@ -466,7 +472,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             }
         }
        txtDiscard.setOnClickListener {
-           dismiss()
+           dismissAllowingStateLoss()
            if (dialog.isShowing) {
                dialog.cancel()
            }
@@ -640,9 +646,11 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         bitmap.toBitmap()
                     )
                 } catch (e: Exception) {
-                    requireActivity().runOnUiThread {
-                        hideProgressBar()
-                        Toasty.error(requireActivity(), e.message!!).show()
+                    if(isAdded){
+                        requireActivity().runOnUiThread {
+                            hideProgressBar()
+                            Toasty.error(requireActivity(), e.message!!).show()
+                        }
                     }
                 }
             }).start()
@@ -712,7 +720,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     override fun onApplicationSaveSuccess() {
        requireActivity().runOnUiThread {
                Toasty.success(requireActivity(), getString(R.string.application_save_success)).show()
-               dismiss()
+                dismissAllowingStateLoss()
                requireActivity().finish()
        }
     }
@@ -727,10 +735,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
        requireActivity().runOnUiThread {
            Toasty.success(requireActivity(), getString(R.string.update_successful)).show()
            if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
-               dismiss()
+               dismissAllowingStateLoss()
                requireActivity().finish()
            }else{
-               dismiss()
+               dismissAllowingStateLoss()
            }
        }
     }
@@ -761,7 +769,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     txt_end_time_value?.text.toString()
                 )
             ){
-                addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
+                addApplicationOptionPresenter?.saveApplication(addApplicationEntity, firebaseAnalytics)
             }else{
                 requireActivity().runOnUiThread {
                     hideProgressBar()
@@ -769,7 +777,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 }
             }
         }else{
-            addApplicationOptionPresenter?.saveApplication(addApplicationEntity)
+            addApplicationOptionPresenter?.saveApplication(addApplicationEntity, firebaseAnalytics)
         }
     }
 
