@@ -197,8 +197,8 @@ class MediaUtils {
 
 
         fun isPlaying(): Boolean {
-            try {
-                return if (mediaPlayer != null) {
+            return try {
+                if (mediaPlayer != null) {
                     mediaPlayer!!.isPlaying
                     true
                 } else {
@@ -206,6 +206,7 @@ class MediaUtils {
                 }
             }catch (e:java.lang.IllegalStateException){
                 e.printStackTrace()
+                false
             }
         }
 
