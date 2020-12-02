@@ -173,7 +173,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     private fun setListener() {
         btn_close?.setOnClickListener {
             if(checkForDefault()){
-                dismiss()
+                dismissAllowingStateLoss()
             }else{
                 showDiscardDialog()
             }
@@ -472,7 +472,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             }
         }
        txtDiscard.setOnClickListener {
-           dismiss()
+           dismissAllowingStateLoss()
            if (dialog.isShowing) {
                dialog.cancel()
            }
@@ -720,7 +720,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     override fun onApplicationSaveSuccess() {
        requireActivity().runOnUiThread {
                Toasty.success(requireActivity(), getString(R.string.application_save_success)).show()
-               dismiss()
+                dismissAllowingStateLoss()
                requireActivity().finish()
        }
     }
@@ -735,10 +735,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
        requireActivity().runOnUiThread {
            Toasty.success(requireActivity(), getString(R.string.update_successful)).show()
            if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
-               dismiss()
+               dismissAllowingStateLoss()
                requireActivity().finish()
            }else{
-               dismiss()
+               dismissAllowingStateLoss()
            }
        }
     }
