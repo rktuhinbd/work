@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
 import android.os.Process
 import android.os.Process.killProcess
 import android.os.Process.myPid
@@ -22,9 +23,11 @@ import es.dmoral.toasty.Toasty
 class NotificationListener : NotificationListenerService(),
     NotificationListenerView {
 
+    var isThreadStarted = false
     var isPlayAble = true
     var isThreadExecuted = false
     val sbnList = ArrayList<StatusBarNotification>()
+
 
     companion object {
         private val MESSENGER_PKG = "com.facebook.orca"
@@ -48,15 +51,69 @@ class NotificationListener : NotificationListenerService(),
         Log.e("LISTENER", "PACKAGE = " + sbn!!.packageName.toString())
         Log.e("LISTENER", "TITLE = " + sbn.notification.extras["android.title"].toString())
         Log.e("LISTENER", "DESC = " + sbn.notification.extras["android.text"].toString())
-        //got an message stop all getting message process
-            if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)) {
-            NotificationListenerPresenter(this).filterByAppConstrains(
-                sbn.packageName.toString(), AndroidUtils.getCurrentLangCode(this),
-                sbn.notification.extras["android.title"].toString().trim(),
-                sbn.notification.extras["android.text"].toString().trim(), sbn
-            )
+        if (sbn.packageName.toString() != "com.app.messagealarm") {
+            if (sbn.notification.extras["android.title"].toString() != "WhatsApp") {
+                sbnList.add(sbn)
+                if (sbnList[0].packageName.toString() == sbn.packageName.toString()) {
+                    sbnList.add(sbn)
+                }
+                if (!isThreadStarted) {
+                    Thread(Runnable {
+                        checkForMessage()
+                    }).start()
+                }
+            }
+
+        }
+
+    }
+
+    private fun checkForMessage() {
+        isThreadStarted = true
+        var count = 0
+        while (count < 6) {
+            count++
+            Log.e("REAL_COUNT", count.toString())
+            Thread.sleep(1000)
+            if (count == 5) {
+                Handler(mainLooper).post(Runnable {
+                    //got an message stop all getting message process
+                    if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)) {
+                        Log.e("SBN_SIZE", sbnList.size.toString())
+                        if (sbnList.size > 0) {
+                            if (sbnList[0].packageName.toString() == WHATSAPP_PKG) {
+                                NotificationListenerPresenter(this).filterByAppConstrains(
+                                    sbnList[sbnList.size - 1].packageName.toString(),
+                                    AndroidUtils.getCurrentLangCode(this),
+                                    sbnList[sbnList.size - 1].notification.extras["android.title"].toString()
+                                        .trim(),
+                                    sbnList[sbnList.size - 1].notification.extras["android.text"].toString()
+                                        .trim(),
+                                    sbnList[sbnList.size - 1]
+                                )
+                                isThreadStarted = false
+                                sbnList.clear()
+                            } else {
+                                NotificationListenerPresenter(this).filterByAppConstrains(
+                                    sbnList[0].packageName.toString(),
+                                    AndroidUtils.getCurrentLangCode(this),
+                                    sbnList[0].notification.extras["android.title"].toString()
+                                        .trim(),
+                                    sbnList[0].notification.extras["android.text"].toString()
+                                        .trim(),
+                                    sbnList[0]
+                                )
+                                isThreadStarted = false
+                                sbnList.clear()
+                            }
+
+                        }
+                    }
+                })
+            }
         }
     }
+
 
     @Synchronized
     fun doMagic(sbn: StatusBarNotification?) {
