@@ -437,7 +437,7 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
 
             val buttonMuteHandler = Intent(context, UnMuteReceiver::class.java)
             val buttonSkipPendingIntent =
-                PendingIntent.getBroadcast(context, 0, buttonMuteHandler, 0)
+                PendingIntent.getBroadcast(context, 0, buttonMuteHandler, PendingIntent.FLAG_UPDATE_CURRENT)
             notificationView!!.setOnClickPendingIntent(
                 com.app.messagealarm.R.id.btn_mute_status,
                 buttonSkipPendingIntent
@@ -445,7 +445,7 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
 
             val buttonPowerHandler = Intent(context, PowerOffReceiver::class.java)
             val buttonPowerOffIntent =
-                PendingIntent.getBroadcast(context, 0, buttonPowerHandler, 0)
+                PendingIntent.getBroadcast(context, 0, buttonPowerHandler, PendingIntent.FLAG_UPDATE_CURRENT)
             notificationView!!.setOnClickPendingIntent(
                 com.app.messagealarm.R.id.btn_power,
                 buttonPowerOffIntent

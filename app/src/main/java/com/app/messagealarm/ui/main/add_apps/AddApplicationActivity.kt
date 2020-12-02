@@ -66,8 +66,10 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     private fun darkModePre(){
         if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
             spinner_drop_down?.setImageResource(R.drawable.ic_arrow_drop_down_white)
+            progress_bar_add_app?.setImageResource(R.drawable.gif_dark_mode)
         }else{
             spinner_drop_down?.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp)
+            progress_bar_add_app?.setImageResource(R.drawable.loader)
         }
     }
 
