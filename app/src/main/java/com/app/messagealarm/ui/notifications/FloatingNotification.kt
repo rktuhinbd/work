@@ -101,7 +101,7 @@ class FloatingNotification {
                 MissedAlarmReceiver::class.java
             ).putExtra(Constants.IntentKeys.PACKAGE_NAME, packageName)
             val buttonOpenApp =
-                PendingIntent.getBroadcast(context, 0, buttonOpenAppBroadcast, 0)
+                PendingIntent.getBroadcast(context, 0, buttonOpenAppBroadcast,  PendingIntent.FLAG_UPDATE_CURRENT)
 
             createChannel(context)
 
@@ -132,7 +132,7 @@ class FloatingNotification {
             ).putExtra(Constants.IntentKeys.PACKAGE_NAME, packageName)
                 .setAction("OPEN_APP")
             val buttonOpenApp =
-                PendingIntent.getBroadcast(context, 0, buttonOpenAppBroadcast, 0)
+                PendingIntent.getBroadcast(context, 0, buttonOpenAppBroadcast,  PendingIntent.FLAG_UPDATE_CURRENT)
 
 
             val btnCancel = Intent(
@@ -141,7 +141,7 @@ class FloatingNotification {
             ).putExtra(Constants.IntentKeys.PACKAGE_NAME, packageName)
                 .setAction("CANCEL")
             val btnCancelIntent =
-                PendingIntent.getBroadcast(context, 0, btnCancel, 0)
+                PendingIntent.getBroadcast(context, 0, btnCancel, PendingIntent.FLAG_UPDATE_CURRENT)
 
 
             createChannel(context)
@@ -202,7 +202,7 @@ class FloatingNotification {
                 .setAction("OPEN_APP")
 
             val buttonOpenApp =
-                PendingIntent.getBroadcast(context, 0, buttonOpenAppBroadcast, 0)
+                PendingIntent.getBroadcast(context, 0, buttonOpenAppBroadcast,  PendingIntent.FLAG_UPDATE_CURRENT)
 
             //just cancel the notification
 
@@ -211,7 +211,7 @@ class FloatingNotification {
                 OpenAppReceiver::class.java
             ).setAction("CANCEL")
             val btnCancelIntent =
-                PendingIntent.getBroadcast(context, 0, btnCancelCast, 0)
+                PendingIntent.getBroadcast(context, 0, btnCancelCast,  PendingIntent.FLAG_UPDATE_CURRENT)
 
             createChannel(context)
 
