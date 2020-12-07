@@ -5,14 +5,9 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
-import android.os.Process
-import android.os.Process.killProcess
-import android.os.Process.myPid
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
-import com.app.messagealarm.BaseApplication
-import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.service.AlarmService
 import com.app.messagealarm.ui.notifications.FloatingNotification
@@ -23,10 +18,12 @@ import es.dmoral.toasty.Toasty
 class NotificationListener : NotificationListenerService(),
     NotificationListenerView {
 
+    var isSecondThreadStarted = false
     var isThreadStarted = false
     var isPlayAble = true
     var isThreadExecuted = false
     val sbnList = ArrayList<StatusBarNotification>()
+    val tempList = ArrayList<StatusBarNotification>()
 
 
     companion object {
@@ -53,14 +50,32 @@ class NotificationListener : NotificationListenerService(),
         Log.e("LISTENER", "DESC = " + sbn.notification.extras["android.text"].toString())
         if (sbn.packageName.toString() != "com.app.messagealarm") {
             if (sbn.notification.extras["android.title"].toString() != "WhatsApp") {
-                sbnList.add(sbn)
-                if (sbnList[0].packageName.toString() == sbn.packageName.toString()) {
+                //sbnList.add(sbn)
+                if(sbnList.size > 0){
+                    if (sbnList[0].packageName.toString() == sbn.packageName.toString()) {
+                        sbnList.add(sbn)
+                    }else{
+                        if(isThreadStarted){
+                            tempList.add(sbn)
+                        }
+                    }
+                }else{
                     sbnList.add(sbn)
                 }
                 if (!isThreadStarted) {
                     Thread(Runnable {
-                        checkForMessage()
+                        checkForMessage(sbnList, false)
                     }).start()
+                }else{
+                    if(!isSecondThreadStarted){
+                        tempList.forEach {
+                            Log.e("TEMP_LIST", it.packageName + " = AND = " + it.notification.extras["android.title"])
+                        }
+                        Thread(Runnable {
+                            checkForMessage(tempList, true)
+                        }).start()
+                    }
+
                 }
             }
 
@@ -68,43 +83,62 @@ class NotificationListener : NotificationListenerService(),
 
     }
 
-    private fun checkForMessage() {
-        isThreadStarted = true
+    private fun checkForMessage(listItems: ArrayList<StatusBarNotification>, secondThread: Boolean) {
+        if(secondThread){
+            isSecondThreadStarted = true
+        }else{
+            isThreadStarted = true
+        }
         var count = 0
-        while (count < 6) {
+        while (count != 5) {
             count++
             Log.e("REAL_COUNT", count.toString())
             Thread.sleep(1000)
             if (count == 5) {
+                listItems.forEach {
+                    Log.e("HAVE_LIST", it.packageName + " = AND = " + it.notification.extras["android.title"])
+                }
                 Handler(mainLooper).post(Runnable {
                     //got an message stop all getting message process
                     if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)) {
-                        Log.e("SBN_SIZE", sbnList.size.toString())
-                        if (sbnList.size > 0) {
-                            if (sbnList[0].packageName.toString() == WHATSAPP_PKG) {
+                        Log.e("SBN_SIZE", listItems.size.toString())
+                        if (listItems.size > 0) {
+                            if (listItems[0].packageName.toString() == WHATSAPP_PKG) {
                                 NotificationListenerPresenter(this).filterByAppConstrains(
-                                    sbnList[sbnList.size - 1].packageName.toString(),
+                                    listItems[listItems.size - 1].packageName.toString(),
                                     AndroidUtils.getCurrentLangCode(this),
-                                    sbnList[sbnList.size - 1].notification.extras["android.title"].toString()
+                                    listItems[listItems.size - 1].notification.extras["android.title"].toString()
                                         .trim(),
-                                    sbnList[sbnList.size - 1].notification.extras["android.text"].toString()
+                                    listItems[listItems.size - 1].notification.extras["android.text"].toString()
                                         .trim(),
-                                    sbnList[sbnList.size - 1]
+                                    listItems[listItems.size - 1]
                                 )
-                                isThreadStarted = false
-                                sbnList.clear()
+                                if(secondThread){
+                                    isSecondThreadStarted = false
+                                    tempList.clear()
+                                }else{
+                                    isThreadStarted = false
+                                    this.sbnList.clear()
+                                }
+                                listItems.clear()
                             } else {
                                 NotificationListenerPresenter(this).filterByAppConstrains(
-                                    sbnList[0].packageName.toString(),
+                                    listItems[0].packageName.toString(),
                                     AndroidUtils.getCurrentLangCode(this),
-                                    sbnList[0].notification.extras["android.title"].toString()
+                                    listItems[0].notification.extras["android.title"].toString()
                                         .trim(),
-                                    sbnList[0].notification.extras["android.text"].toString()
+                                    listItems[0].notification.extras["android.text"].toString()
                                         .trim(),
-                                    sbnList[0]
+                                    listItems[0]
                                 )
-                                isThreadStarted = false
-                                sbnList.clear()
+                                if(secondThread){
+                                    isSecondThreadStarted = false
+                                    tempList.clear()
+                                }else{
+                                    isThreadStarted = false
+                                    this.sbnList.clear()
+                                }
+                                listItems.clear()
                             }
 
                         }
