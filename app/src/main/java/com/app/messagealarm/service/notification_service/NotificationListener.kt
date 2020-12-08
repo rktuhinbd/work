@@ -54,28 +54,29 @@ class NotificationListener : NotificationListenerService(),
                 if(sbnList.size > 0){
                     if (sbnList[0].packageName.toString() == sbn.packageName.toString()) {
                         sbnList.add(sbn)
+                        Log.e("SAME_N", "true")
                     }else{
-                        if(isThreadStarted){
-                            tempList.add(sbn)
+                        Log.e("SAME_D", "true")
+                        tempList.add(sbn)
+                        if(!isSecondThreadStarted){
+                            Log.e("THREAD_2", "true")
+                            tempList.forEach {
+                                Log.e("TEMP_LIST", it.packageName + " = AND = " + it.notification.extras["android.title"])
+                            }
+                            Thread(Runnable {
+                                checkForMessage(tempList, true)
+                            }).start()
                         }
                     }
                 }else{
                     sbnList.add(sbn)
+                    Log.e("SAME_F", "true")
                 }
                 if (!isThreadStarted) {
                     Thread(Runnable {
+                        Log.e("THREAD_1", "true")
                         checkForMessage(sbnList, false)
                     }).start()
-                }else{
-                    if(!isSecondThreadStarted){
-                        tempList.forEach {
-                            Log.e("TEMP_LIST", it.packageName + " = AND = " + it.notification.extras["android.title"])
-                        }
-                        Thread(Runnable {
-                            checkForMessage(tempList, true)
-                        }).start()
-                    }
-
                 }
             }
 
@@ -204,6 +205,13 @@ class NotificationListener : NotificationListenerService(),
         if (!isServiceStopped) {
             scheduleService()
         }
+    }
+
+    private fun resetValues(){
+        isThreadStarted = false
+        this.sbnList.clear()
+        isSecondThreadStarted = false
+        tempList.clear()
     }
 
     private fun scheduleService() {
