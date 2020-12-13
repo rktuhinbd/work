@@ -51,24 +51,27 @@ class NotificationListener : NotificationListenerService(),
         if (sbn.packageName.toString() != "com.app.messagealarm") {
             if (sbn.notification.extras["android.title"].toString() != "WhatsApp") {
                 //sbnList.add(sbn)
-                if(sbnList.size > 0){
+                if (sbnList.size > 0) {
                     if (sbnList[0].packageName.toString() == sbn.packageName.toString()) {
                         sbnList.add(sbn)
                         Log.e("SAME_N", "true")
-                    }else{
+                    } else {
                         Log.e("SAME_D", "true")
                         tempList.add(sbn)
-                        if(!isSecondThreadStarted){
+                        if (!isSecondThreadStarted) {
                             Log.e("THREAD_2", "true")
-                            tempList.forEach {
-                                Log.e("TEMP_LIST", it.packageName + " = AND = " + it.notification.extras["android.title"])
+                            for (x in tempList) {
+                                Log.e(
+                                    "TEMP_LIST",
+                                    x.packageName + " = AND = " + x.notification.extras["android.title"]
+                                )
                             }
                             Thread(Runnable {
                                 checkForMessage(tempList, true)
                             }).start()
                         }
                     }
-                }else{
+                } else {
                     sbnList.add(sbn)
                     Log.e("SAME_F", "true")
                 }
@@ -84,10 +87,13 @@ class NotificationListener : NotificationListenerService(),
 
     }
 
-    private fun checkForMessage(listItems: ArrayList<StatusBarNotification>, secondThread: Boolean) {
-        if(secondThread){
+    private fun checkForMessage(
+        listItems: ArrayList<StatusBarNotification>,
+        secondThread: Boolean
+    ) {
+        if (secondThread) {
             isSecondThreadStarted = true
-        }else{
+        } else {
             isThreadStarted = true
         }
         var count = 0
@@ -96,8 +102,11 @@ class NotificationListener : NotificationListenerService(),
             Log.e("REAL_COUNT", count.toString())
             Thread.sleep(1000)
             if (count == 5) {
-                listItems.forEach {
-                    Log.e("HAVE_LIST", it.packageName + " = AND = " + it.notification.extras["android.title"])
+                for (y in listItems) {
+                    Log.e(
+                        "HAVE_LIST",
+                        y.packageName + " = AND = " + y.notification.extras["android.title"]
+                    )
                 }
                 Handler(mainLooper).post(Runnable {
                     //got an message stop all getting message process
@@ -114,34 +123,40 @@ class NotificationListener : NotificationListenerService(),
                                         .trim(),
                                     listItems[listItems.size - 1]
                                 )
-                                if(secondThread){
+                                if (secondThread) {
                                     isSecondThreadStarted = false
                                     tempList.clear()
-                                }else{
+                                } else {
                                     isThreadStarted = false
                                     this.sbnList.clear()
                                 }
                                 listItems.clear()
                             } else {
-                                NotificationListenerPresenter(this).filterByAppConstrains(
-                                    listItems[0].packageName.toString(),
-                                    AndroidUtils.getCurrentLangCode(this),
-                                    listItems[0].notification.extras["android.title"].toString()
-                                        .trim(),
-                                    listItems[0].notification.extras["android.text"].toString()
-                                        .trim(),
-                                    listItems[0]
-                                )
-                                if(secondThread){
-                                    isSecondThreadStarted = false
-                                    tempList.clear()
-                                }else{
-                                    isThreadStarted = false
-                                    this.sbnList.clear()
+                                for (x in listItems) {
+                                    if (x.notification.extras["android.title"].toString() == "Chat heads active") {
+                                        continue
+                                    } else {
+                                        NotificationListenerPresenter(this).filterByAppConstrains(
+                                            x.packageName.toString(),
+                                            AndroidUtils.getCurrentLangCode(this),
+                                            x.notification.extras["android.title"].toString()
+                                                .trim(),
+                                            x.notification.extras["android.text"].toString()
+                                                .trim(),
+                                            x
+                                        )
+                                        if (secondThread) {
+                                            isSecondThreadStarted = false
+                                            tempList.clear()
+                                        } else {
+                                            isThreadStarted = false
+                                            this.sbnList.clear()
+                                        }
+                                        listItems.clear()
+                                        break
+                                    }
                                 }
-                                listItems.clear()
                             }
-
                         }
                     }
                 })
@@ -207,7 +222,7 @@ class NotificationListener : NotificationListenerService(),
         }
     }
 
-    private fun resetValues(){
+    private fun resetValues() {
         isThreadStarted = false
         this.sbnList.clear()
         isSecondThreadStarted = false
