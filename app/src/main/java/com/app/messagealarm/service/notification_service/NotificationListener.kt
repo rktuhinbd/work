@@ -58,6 +58,7 @@ class NotificationListener : NotificationListenerService(),
                     } else {
                         Log.e("SAME_D", "true")
                         tempList.add(sbn)
+                        Log.e("thread status", isSecondThreadStarted.toString())
                         if (!isSecondThreadStarted) {
                             Log.e("THREAD_2", "true")
                             for (x in tempList) {
@@ -123,14 +124,6 @@ class NotificationListener : NotificationListenerService(),
                                         .trim(),
                                     listItems[listItems.size - 1]
                                 )
-                                if (secondThread) {
-                                    isSecondThreadStarted = false
-                                    tempList.clear()
-                                } else {
-                                    isThreadStarted = false
-                                    this.sbnList.clear()
-                                }
-                                listItems.clear()
                             } else {
                                 for (x in listItems) {
                                     if (x.notification.extras["android.title"].toString() == "Chat heads active") {
@@ -145,20 +138,20 @@ class NotificationListener : NotificationListenerService(),
                                                 .trim(),
                                             x
                                         )
-                                        if (secondThread) {
-                                            isSecondThreadStarted = false
-                                            tempList.clear()
-                                        } else {
-                                            isThreadStarted = false
-                                            this.sbnList.clear()
-                                        }
-                                        listItems.clear()
                                         break
                                     }
                                 }
                             }
                         }
                     }
+                    if (secondThread) {
+                        isSecondThreadStarted = false
+                        tempList.clear()
+                    } else {
+                        isThreadStarted = false
+                        this.sbnList.clear()
+                    }
+                    listItems.clear()
                 })
             }
         }
