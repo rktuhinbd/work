@@ -316,7 +316,8 @@
                     app:layout_constraintHorizontal_bias="1"
                     app:layout_constraintStart_toEndOf="@id/txt_vibrate"
                     app:layout_constraintTop_toTopOf="@id/view_vibrate"
-                    tools:targetApi="m" />
+                    tools:targetApi="m"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
 
                 <View
                     android:layout_width="0dp"
