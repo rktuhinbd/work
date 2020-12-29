@@ -125,7 +125,7 @@ class DialogUtils {
             val list: MutableList<String> = ArrayList()
             // add a checkbox list
             val days = arrayOf(
-                "Saturday", "Sunday", "Monday", "Wednesday", "Tuesday",
+                "Saturday", "Sunday", "Monday","Tuesday", "Wednesday",
                 "Thursday", "Friday"
             )
             //check which days already added and create checked items

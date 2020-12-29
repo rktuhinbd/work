@@ -4,11 +4,13 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
+import androidx.appcompat.app.AppCompatDelegate
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.R
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.MenuTintUtils
 import com.app.messagealarm.utils.SharedPrefUtils
+import com.app.messagealarm.utils.VisitUrlUtils
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
@@ -19,6 +21,7 @@ class AboutActivity : BaseActivity() {
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        changeTheme()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
         setToolBar()
@@ -28,17 +31,31 @@ class AboutActivity : BaseActivity() {
         val bundle = Bundle()
         bundle.putString("open_about_screen", "yes")
         firebaseAnalytics.logEvent("about_page", bundle)
+        setListener()
     }
+
+    private fun changeTheme() {
+        if (!SharedPrefUtils.contains(Constants.PreferenceKeys.IS_DARK_MODE)) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        } else {
+            if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
+    }
+
 
     private fun setToolBar() {
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
+        if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)) {
             img_company_logo?.setImageResource(R.drawable.company_logo_white)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 toolbar.navigationIcon?.setTint(resources.getColor(R.color.color_white, theme))
                 toolbar.collapseIcon?.setTint(resources.getColor(R.color.color_white, theme))
-            }else{
+            } else {
                 img_company_logo?.setImageResource(R.drawable.company_logo)
                 toolbar.navigationIcon?.setTint(resources.getColor(R.color.color_white))
                 toolbar.collapseIcon?.setTint(resources.getColor(R.color.color_white))
@@ -48,5 +65,17 @@ class AboutActivity : BaseActivity() {
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         return super.onPrepareOptionsMenu(menu)
+    }
+
+    private fun setListener() {
+        btn_facebook?.setOnClickListener {
+            VisitUrlUtils.visitWebsite(this, "https://www.facebook.com/messagealarm")
+        }
+        btn_twitter?.setOnClickListener {
+            VisitUrlUtils.visitWebsite(this, "https://twitter.com/MessageAlarm")
+        }
+        btn_linked_in?.setOnClickListener {
+            VisitUrlUtils.visitWebsite(this, "https://www.linkedin.com/company/message-alarm-never-miss-an-important-message")
+        }
     }
 }

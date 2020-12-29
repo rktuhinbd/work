@@ -27,6 +27,7 @@ class SettingsActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        changeTheme()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.settings_activity)
         toolBarSetup()
@@ -35,6 +36,19 @@ class SettingsActivity : AppCompatActivity() {
             .replace(R.id.settings, SettingsFragment())
             .commit()
     }
+
+    private fun changeTheme() {
+        if (!SharedPrefUtils.contains(Constants.PreferenceKeys.IS_DARK_MODE)) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        } else {
+            if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
+    }
+
 
     private fun toolBarSetup() {
         setSupportActionBar(findViewById(R.id.toolbar))

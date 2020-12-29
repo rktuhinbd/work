@@ -13,6 +13,7 @@ import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -49,6 +50,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
     private val alarmAppPresenter = AlarmApplicationPresenter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        changeTheme()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setToolBar()
@@ -149,6 +151,19 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+
+    private fun changeTheme() {
+        if (!SharedPrefUtils.contains(Constants.PreferenceKeys.IS_DARK_MODE)) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        } else {
+            if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
     }
 
 
