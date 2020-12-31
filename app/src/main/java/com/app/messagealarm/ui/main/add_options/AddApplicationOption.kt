@@ -56,7 +56,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
 
-
     private fun darkMode(){
         if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
             btn_close?.setImageResource(R.drawable.ic_close_white)
@@ -405,21 +404,26 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                                 object : DialogUtils.CheckedListCallback {
                                     @SuppressLint("SetTextI18n")
                                     override fun onChecked(list: List<String>) {
-                                        var selectedDays: String = ""
-                                        list.forEach {
-                                            selectedDays += "${it.substring(0, 3)}, "
+                                        if(list.isEmpty()){
+                                            Toasty.info(requireActivity(), "Please select at least one day!").show()
+                                        }else{
+                                            var selectedDays: String = ""
+                                            list.forEach {
+                                                selectedDays += "${it.substring(0, 3)}, "
+                                            }
+                                            txt_repeat_value?.text = selectedDays.substring(
+                                                0,
+                                                selectedDays.length - 2
+                                            )
+                                            /**
+                                             * set alarm repeat days to data model
+                                             */
+                                            addApplicationEntity.repeatDays = selectedDays.substring(
+                                                0,
+                                                selectedDays.length - 2
+                                            )
                                         }
-                                        txt_repeat_value?.text = selectedDays.substring(
-                                            0,
-                                            selectedDays.length - 2
-                                        )
-                                        /**
-                                         * set alarm repeat days to data model
-                                         */
-                                        addApplicationEntity.repeatDays = selectedDays.substring(
-                                            0,
-                                            selectedDays.length - 2
-                                        )
+
                                     }
                                 },
                                 object : DialogUtils.Callback {
@@ -428,7 +432,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                                     }
 
                                     override fun onNegative() {
-
+                                        if(addApplicationEntity.repeatDays == null){
+                                            txt_repeat_value?.text = "Always"
+                                            addApplicationEntity.alarmRepeat = "Always"
+                                        }
                                     }
                                 }
                             )

@@ -64,15 +64,16 @@ class DialogUtils {
             // setup the alert builder
             val builder = AlertDialog.Builder(context,com.app.messagealarm.R.style.MyAlertDialogTheme)
             builder.setTitle("Alarm Repeat Time")
-            val animals = arrayOf("Once", "Daily", "Custom")
+            val animals = arrayOf( "Always", "Once", "Custom")
             builder.setItems(animals) { dialog, which ->
                 when (which) {
                     0 -> { /* Once */
-                        callBack.onClick("Once")
+                        callBack.onClick("Always")
                         dialog.dismiss()
+
                     }
                     1 -> { /* Daily   */
-                        callBack.onClick("Daily")
+                        callBack.onClick("Once")
                         dialog.dismiss()
                     }
                     2 -> { /* Custom */
@@ -157,6 +158,7 @@ class DialogUtils {
                 callback.onPositive()
                 checkedCallBack.onChecked(list)
             }
+
 
             builder.setNegativeButton("Cancel") { dialog, which ->
                 callback.onNegative()

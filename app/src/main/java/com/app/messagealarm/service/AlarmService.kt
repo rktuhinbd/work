@@ -196,7 +196,7 @@ class AlarmService {
                         AlarmServicePresenter.updateAppStatus(false, app.id)
                     }
                 }
-                "Daily" -> {
+                "Always" -> {
                     //play every date and every time
                     if (app.isRunningStatus) {
                         isPlayAble = true
