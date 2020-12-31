@@ -15,6 +15,7 @@ import com.app.messagealarm.ui.about.AboutActivity
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.SharedPrefUtils
 import com.app.messagealarm.utils.SupportUtils
+import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
@@ -161,6 +162,8 @@ class SettingsActivity : AppCompatActivity() {
                     firebaseAnalytics.logEvent("mute_options", bundle)
                     if(newValue == "Manual"){
                         WorkManager.getInstance(requireActivity()).cancelAllWorkByTag("MUTE")
+                    }else{
+                        WorkManagerUtils.scheduleWorks(requireActivity())
                     }
                     return true
                 }
