@@ -61,12 +61,13 @@ class NotificationListener : NotificationListenerService(),
                         Log.e("thread status", isSecondThreadStarted.toString())
                         if (!isSecondThreadStarted) {
                             Log.e("THREAD_2", "true")
-                            for (x in tempList) {
-                                Log.e(
-                                    "TEMP_LIST",
-                                    x.packageName + " = AND = " + x.notification.extras["android.title"]
-                                )
-                            }
+                            //closed by Mujahid 31th Dec 2020
+//                            for (x in tempList) {
+//                                Log.e(
+//                                    "TEMP_LIST",
+//                                    x.packageName + " = AND = " + x.notification.extras["android.title"]
+//                                )
+//                            }
                             Thread(Runnable {
                                 checkForMessage(tempList, true)
                             }).start()
@@ -103,12 +104,13 @@ class NotificationListener : NotificationListenerService(),
             Log.e("REAL_COUNT", count.toString())
             Thread.sleep(1000)
             if (count == 5) {
-                for (y in listItems) {
+                //closed by Mujahid 32 Dec 2020
+               /* for (y in listItems) {
                     Log.e(
                         "HAVE_LIST",
                         y.packageName + " = AND = " + y.notification.extras["android.title"]
                     )
-                }
+                }*/
                 Handler(mainLooper).post(Runnable {
                     //got an message stop all getting message process
                     if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)) {
