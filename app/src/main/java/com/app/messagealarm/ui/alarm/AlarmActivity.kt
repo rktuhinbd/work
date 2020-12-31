@@ -33,6 +33,8 @@ import kotlin.system.exitProcess
 class AlarmActivity : BaseActivity() {
 
     var mMessageReceiver: BroadcastReceiver? = null
+    var turnOffReceiver:BroadcastReceiver? = null
+
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     var isIntractive = true
     var focus = true
@@ -47,6 +49,7 @@ class AlarmActivity : BaseActivity() {
         firebaseAnalytics = Firebase.analytics
         setupViews()
         val runnable = Runnable(){
+            showPageDismissNotification()
             playMedia()
         }
         once.run(runnable)
@@ -59,6 +62,13 @@ class AlarmActivity : BaseActivity() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 finishAffinity()
                 exitProcess(0)
+            }
+        }
+
+        turnOffReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                finishAffinity()
+               // exitProcess(0)
             }
         }
     }
@@ -143,13 +153,13 @@ class AlarmActivity : BaseActivity() {
     }
 
     override fun onPause() {
-        if(!isSwiped){
+       /* if(!isSwiped){
             if(isIntractive){
                 //we now know that only few devices getting the dismiss notification function called at lock screen startup
                 //need to know how much devices creating this issue
-                    showPageDismissNotification()
+
                 }
-            }
+            }*/
         super.onPause()
         this.unregisterReceiver(mMessageReceiver)
     }
@@ -196,6 +206,7 @@ class AlarmActivity : BaseActivity() {
                 }
 
                 override fun onSlideCompleteAnimationEnded(view: SlideToActView) {
+                    FloatingNotification.cancelPageDismissNotification()
                     isSwiped = true
                     MediaUtils.stopAlarm()
                     openApp()
@@ -222,6 +233,7 @@ class AlarmActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+        this.registerReceiver(turnOffReceiver, IntentFilter("turn_off_activity"))
         this.registerReceiver(mMessageReceiver,  IntentFilter("turn_off_switch"))
     }
 
