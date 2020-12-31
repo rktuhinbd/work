@@ -32,11 +32,11 @@
             android:name=".ui.setting.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:excludeFromRecents="true"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:parentActivityName=".ui.main.alarm_applications.AlarmApplicationActivity"
-            />
+            tools:ignore="LockedOrientationActivity" />
 
         <activity
             android:name=".ui.main.add_apps.AddApplicationActivity"
@@ -82,11 +82,11 @@
         <activity
             android:name=".ui.about.AboutActivity"
             android:excludeFromRecents="true"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
             android:parentActivityName=".ui.setting.SettingsActivity"
-            />
+            tools:ignore="LockedOrientationActivity" />
 
         <service
             android:stopWithTask="false"
