@@ -163,7 +163,8 @@ class SettingsActivity : AppCompatActivity() {
                     if(newValue == "Manual"){
                         WorkManager.getInstance(requireActivity()).cancelAllWorkByTag("MUTE")
                     }else{
-                        WorkManagerUtils.scheduleWorks(requireActivity())
+                        val time = SharedPrefUtils.readString(Constants.PreferenceKeys.MUTE_TIME)
+                        WorkManagerUtils.scheduleWorkWithTime(newValue.toString(), requireActivity())
                     }
                     return true
                 }

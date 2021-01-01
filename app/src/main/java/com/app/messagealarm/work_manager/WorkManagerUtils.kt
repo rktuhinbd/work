@@ -32,6 +32,26 @@ class WorkManagerUtils {
             }
         }
 
+        fun scheduleWorkWithTime(time:String, context: Context){
+            //get mute time from preferences
+            if(time != Constants.Default.MANUAL){
+                var duration = 10
+                duration = try {
+                    time.split(" ")[0].toInt()
+                }catch (e:NumberFormatException){
+                    10
+                }
+                val muteDismissRequest = OneTimeWorkRequest
+                    .Builder(MuteDismissWorker::class.java)
+                    .addTag("MUTE")
+                    .setInitialDelay(duration.toLong(), TimeUnit.MINUTES)
+                    .build()
+                WorkManager.getInstance(context)
+                    .enqueueUniqueWork(Constants.Default.MUTE_TIMER,
+                        ExistingWorkPolicy.REPLACE, muteDismissRequest)
+            }
+        }
+
         fun scheduleSyncWork(context: Context, appSize:Int, langSize:Int, constrainSize:Int){
 
             val inputData = Data.Builder()
