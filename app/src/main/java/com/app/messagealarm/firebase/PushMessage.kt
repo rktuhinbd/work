@@ -27,8 +27,8 @@ import java.net.URL
 
 class PushMessage : FirebaseMessagingService(), PushMessageView {
 
-    override fun onMessageReceived(p0: RemoteMessage?) {
-        val data: Map<String, String> = p0!!.data
+    override fun onMessageReceived(p0: RemoteMessage) {
+        val data: Map<String, String> = p0.data
         createNotification(p0)
         if(data["action"] == Constants.ACTION.SYNC){
             val pushMessagePresenter = PushMessagePresenter(this)
@@ -36,7 +36,7 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
         }
     }
 
-    override fun onNewToken(p0: String?) {
+    override fun onNewToken(p0: String) {
         super.onNewToken(p0)
         val tokenCall = RetrofitClient.getApiService().registerToken(p0)
         tokenCall.execute()
@@ -76,13 +76,17 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
             .setContentTitle(remoteMessage!!.data["title"])
             .setContentText(remoteMessage.data["body"])
             .setAutoCancel(true)
-        // Set the image for the notification
-        val bitmap: Bitmap = getBitmapfromUrl(remoteMessage.data?.get("image"))!!
-        builder.setStyle(
-            NotificationCompat.BigPictureStyle()
-                .bigPicture(bitmap)
-                .bigLargeIcon(null)
-        ).setLargeIcon(bitmap)
+
+        if(remoteMessage.data["image"] != null){
+            // Set the image for the notification
+            val bitmap: Bitmap = getBitmapfromUrl(remoteMessage.data["image"])!!
+            builder.setStyle(
+                NotificationCompat.BigPictureStyle()
+                    .bigPicture(bitmap)
+                    .bigLargeIcon(null)
+            ).setLargeIcon(bitmap)
+        }
+
         notificationManager.notify(1, builder.build())
     }
 

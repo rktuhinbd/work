@@ -4,6 +4,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteException
 import android.graphics.Bitmap
+import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.util.Log
@@ -12,6 +13,7 @@ import com.app.messagealarm.R
 import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.utils.DataUtils
+import com.google.firebase.analytics.FirebaseAnalytics
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
@@ -22,7 +24,24 @@ import java.lang.NullPointerException
 
 class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApplicationOptionView) {
 
-    fun saveApplication(addApplicationEntity: ApplicationEntity){
+    fun saveApplication(addApplicationEntity: ApplicationEntity, firebaseAnalytics: FirebaseAnalytics){
+        //send data to analytics
+        val bundle = Bundle()
+        bundle.putString("app_name", addApplicationEntity.appName)
+        bundle.putString("package_name", addApplicationEntity.packageName)
+        bundle.putString("alarm_repeat", addApplicationEntity.alarmRepeat)
+        bundle.putString("repeat_days", addApplicationEntity.repeatDays)
+        bundle.putString("sender_names", addApplicationEntity.senderNames)
+        bundle.putString("message_body", addApplicationEntity.messageBody)
+        bundle.putString("is_custom_time", addApplicationEntity.isCustomTime.toString())
+        bundle.putString("is_just_vibrate", addApplicationEntity.isJustVibrate.toString())
+        bundle.putString("is_vibrate", addApplicationEntity.isVibrateOnAlarm.toString())
+        bundle.putString("start_time", addApplicationEntity.startTime.toString())
+        bundle.putString("end_time", addApplicationEntity.endTime.toString())
+        bundle.putString("number_of_play", addApplicationEntity.numberOfPlay.toString())
+        firebaseAnalytics.logEvent("save_application", bundle)
+
+        //save application
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread(
             Runnable {

@@ -3,11 +3,15 @@ package com.app.messagealarm.service
 import android.app.Service
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.service.notification.StatusBarNotification
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.ui.alarm.AlarmActivity
 import com.app.messagealarm.ui.notifications.FloatingNotification
 import com.app.messagealarm.utils.*
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import java.util.*
 import java.util.regex.Pattern
 
@@ -15,6 +19,8 @@ import java.util.regex.Pattern
 class AlarmService {
 
     companion object {
+
+        private var firebaseAnalytics: FirebaseAnalytics = Firebase.analytics
 
         fun playAlarmOnNotification(
             sbn: StatusBarNotification?,
@@ -190,7 +196,7 @@ class AlarmService {
                         AlarmServicePresenter.updateAppStatus(false, app.id)
                     }
                 }
-                "Daily" -> {
+                "Always" -> {
                     //play every date and every time
                     if (app.isRunningStatus) {
                         isPlayAble = true
@@ -228,6 +234,7 @@ class AlarmService {
             sbn: StatusBarNotification?,
             app: ApplicationEntity
         ) {
+            var isExecute = false
             val titleName = sbn?.notification?.extras!!["android.title"]
             //when alarm is playing with activity and the thread is not finished then user dismissed the alarm, then it's playing with notification again
             //temporary fixed by reducing waiting time from 4 sec to 2 sec.
@@ -236,6 +243,9 @@ class AlarmService {
             once.run(Runnable {
                 AlarmCheckerThread(AlarmCheckerThread.PlayListener { s ->
                     if (!s) {
+                        val bundle = Bundle()
+                        bundle.putString("alarm_by_thread", "true")
+                        firebaseAnalytics.logEvent("alarm_type", bundle)
                         FloatingNotification.showFloatingNotification(
                             titleName.toString(),
                             app.isJustVibrate,
@@ -249,22 +259,28 @@ class AlarmService {
                     }
                 }).execute()
             })
-            val title = sbn?.notification!!.extras["android.title"].toString()
-            val desc = sbn.notification!!.extras["android.text"].toString()
-            val intent = Intent(service, AlarmActivity::class.java)
-            intent.putExtra(Constants.IntentKeys.NUMBER_OF_PLAY, app.numberOfPlay)
-            intent.putExtra(Constants.IntentKeys.APP_NAME, app.appName)
-            intent.putExtra(Constants.IntentKeys.IS_VIBRATE, app.isVibrateOnAlarm)
-            intent.putExtra(Constants.IntentKeys.PACKAGE_NAME, app.packageName)
-            intent.putExtra(Constants.IntentKeys.TONE, tone)
-            intent.putExtra(Constants.IntentKeys.IS_JUST_VIBRATE, app.isJustVibrate)
-            intent.putExtra(Constants.IntentKeys.IMAGE_PATH, app.bitmapPath)
-            intent.putExtra(Constants.IntentKeys.TITLE, title)
-            intent.putExtra(Constants.IntentKeys.DESC, desc)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-            service.startActivity(intent)
+
+            if(!isExecute){
+                isExecute = true
+                val title = sbn.notification!!.extras["android.title"].toString()
+                val desc = sbn.notification!!.extras["android.text"].toString()
+                val intent = Intent(service, AlarmActivity::class.java)
+                intent.putExtra(Constants.IntentKeys.NUMBER_OF_PLAY, app.numberOfPlay)
+                intent.putExtra(Constants.IntentKeys.APP_NAME, app.appName)
+                intent.putExtra(Constants.IntentKeys.IS_VIBRATE, app.isVibrateOnAlarm)
+                intent.putExtra(Constants.IntentKeys.PACKAGE_NAME, app.packageName)
+                intent.putExtra(Constants.IntentKeys.TONE, tone)
+                intent.putExtra(Constants.IntentKeys.IS_JUST_VIBRATE, app.isJustVibrate)
+                intent.putExtra(Constants.IntentKeys.IMAGE_PATH, app.bitmapPath)
+                intent.putExtra(Constants.IntentKeys.TITLE, title)
+                intent.putExtra(Constants.IntentKeys.DESC, desc)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                service.startActivity(intent)
+            }
+
+
         }
     }
 }

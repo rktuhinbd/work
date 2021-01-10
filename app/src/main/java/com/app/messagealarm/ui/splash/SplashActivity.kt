@@ -20,34 +20,35 @@ import com.app.messagealarm.utils.SharedPrefUtils
 import kotlinx.android.synthetic.main.activity_splash.*
 
 
-
 class SplashActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        changeTheme()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
     }
 
-    private fun handlePermission(){
-        if(PermissionUtils.isNotificationAllowed()){
+    private fun handlePermission() {
+        if (PermissionUtils.isNotificationAllowed()) {
             val animation = AnimationUtils.loadAnimation(this, R.anim.bottom_to_top)
             txt_title?.startAnimation(animation)
             progress_bar_splash?.startAnimation(animation)
-            changeTheme()
             defaultPreferences()
             runProgressWithSteps()
             tryReconnectService()
-        }else{
-            if(!isFinishing){
+        } else {
+            if (!isFinishing) {
                 DialogUtils.showDialog(
                     this,
                     getString(R.string.txt_notification_permission),
                     getString(R.string.txt_notification_permission_message),
-                    object :DialogUtils.Callback{
+                    object : DialogUtils.Callback {
                         override fun onPositive() {
-                            val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+                            val intent =
+                                Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
                             startActivity(intent)
                         }
+
                         override fun onNegative() {
                             finish()
                         }
@@ -58,11 +59,15 @@ class SplashActivity : BaseActivity() {
         }
     }
 
-    private fun changeTheme(){
-        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        }else{
+    private fun changeTheme() {
+        if (!SharedPrefUtils.contains(Constants.PreferenceKeys.IS_DARK_MODE)) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        } else {
+            if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
         }
     }
 
@@ -95,14 +100,14 @@ class SplashActivity : BaseActivity() {
     }
 
 
-    private fun defaultPreferences(){
-        if(!SharedPrefUtils.contains(Constants.PreferenceKeys.THEME)){
+    private fun defaultPreferences() {
+        if (!SharedPrefUtils.contains(Constants.PreferenceKeys.THEME)) {
             SharedPrefUtils.write(Constants.PreferenceKeys.THEME, "Light")
         }
-        if(!SharedPrefUtils.contains(Constants.PreferenceKeys.MUTE_TIME)){
+        if (!SharedPrefUtils.contains(Constants.PreferenceKeys.MUTE_TIME)) {
             SharedPrefUtils.write(Constants.PreferenceKeys.MUTE_TIME, "10 min")
         }
-        if(!SharedPrefUtils.contains(Constants.PreferenceKeys.IS_MUTED)){
+        if (!SharedPrefUtils.contains(Constants.PreferenceKeys.IS_MUTED)) {
             SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, false)
         }
     }
@@ -113,20 +118,21 @@ class SplashActivity : BaseActivity() {
         handlePermission()
     }
 
-    private fun takeUserToHome(){
+    private fun takeUserToHome() {
         val intent = Intent(this, AlarmApplicationActivity::class.java)
         startActivity(intent)
         finish()
     }
 
-    private fun runProgressWithSteps(){
+    private fun runProgressWithSteps() {
         var progress = 0
         val total = 2000
-        object : CountDownTimer(total.toLong(),15) {
+        object : CountDownTimer(total.toLong(), 15) {
             override fun onFinish() {
                 //take user to app
                 takeUserToHome()
             }
+
             override fun onTick(millisUntilFinished: Long) {
                 progress += 1
                 progress_bar_splash?.progress = progress

@@ -8,8 +8,7 @@
     app:cardCornerRadius="8dp"
     android:layout_gravity="bottom"
     app:cardBackgroundColor="@color/card_view_color"
-    android:layout_margin="16dp"
-    >
+    android:layout_margin="16dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -50,8 +49,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_changes"
             android:background="@android:color/darker_gray"
-            android:layout_marginTop="16dp"
-            />
+            android:layout_marginTop="16dp"/>
 
        <LinearLayout
            android:layout_width="match_parent"
@@ -60,8 +58,7 @@
            app:layout_constraintBottom_toBottomOf="parent"
            app:layout_constraintStart_toStartOf="parent"
            app:layout_constraintEnd_toEndOf="parent"
-           android:orientation="horizontal"
-           >
+           android:orientation="horizontal">
 
            <TextView
                android:id="@+id/btn_cancel"

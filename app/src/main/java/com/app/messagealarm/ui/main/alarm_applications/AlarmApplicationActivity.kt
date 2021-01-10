@@ -13,6 +13,7 @@ import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,22 +29,28 @@ import com.app.messagealarm.ui.onboarding.OnboardingDialog
 import com.app.messagealarm.ui.setting.SettingsActivity
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import java.io.File
+import kotlin.system.exitProcess
 
 
 class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
     AddedAppsListAdapter.ItemClickListener {
 
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
     var mMessageReceiver:BroadcastReceiver? = null
     val bottomSheetModel = AddApplicationOption()
     val REQUEST_CODE_PICK_AUDIO = 1
     private val alarmAppPresenter = AlarmApplicationPresenter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        changeTheme()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setToolBar()
@@ -52,7 +59,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         handleService()
         setupAppsRecyclerView()
         lookForTablesSize()
-
+        // Obtain the FirebaseAnalytics instance.
+        firebaseAnalytics = Firebase.analytics
         //schedule quickstart
         Handler().postDelayed(Runnable {
             showQuickStartDialog()
@@ -76,7 +84,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
     override fun onResume() {
         super.onResume()
         lookForAlarmApplication()
-        this.registerReceiver(mMessageReceiver,  IntentFilter("turn_off_switch"));
+        val isServiceStopped =
+            SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)
+        switch_alarm_status?.isChecked = !isServiceStopped
+        this.registerReceiver(mMessageReceiver,  IntentFilter("turn_off_switch"))
     }
 
 
@@ -143,14 +154,24 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
     }
 
 
+    private fun changeTheme() {
+        if (!SharedPrefUtils.contains(Constants.PreferenceKeys.IS_DARK_MODE)) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        } else {
+            if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
+    }
+
+
     private fun handleService() {
         val isServiceStopped =
             SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)
         if (SharedPrefUtils.contains(Constants.PreferenceKeys.IS_SERVICE_STOPPED)) {
-            if (isServiceStopped) {
-                switch_alarm_status?.isChecked = false
-            } else {
-                switch_alarm_status?.isChecked = true
+            if (!isServiceStopped) {
                 startMagicService()
             }
         } else {

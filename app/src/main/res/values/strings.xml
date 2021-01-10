@@ -94,5 +94,6 @@
     <string name="txt_hint_sender_name">Hint: Please add complete name</string>
     <string name="txt_dismiss">Dismiss</string>
     <string name="txt_swipe_bottom_to_expand">Swipe bottom to expand</string>
+    <string name="alarm_service">Alarm Service</string>
 
 </resources>

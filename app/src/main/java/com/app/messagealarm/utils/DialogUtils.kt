@@ -40,12 +40,13 @@ class DialogUtils {
         }
 
         fun showDialog(context: Context, title: String, message: String, callback: Callback) {
-            AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
+          val dialog =  AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(
                     R.string.ok
                 ) { dialog, which ->
+                    dialog.dismiss()
                     callback.onPositive()
                 }
                 .setIcon(R.drawable.ic_dialog_info)
@@ -56,22 +57,23 @@ class DialogUtils {
                     callback.onNegative()
                 }
                 .setCancelable(false)
-                .show()
+            dialog?.show()
         }
 
         fun showSimpleListDialog(context: Context, callBack: RepeatCallBack) {
             // setup the alert builder
             val builder = AlertDialog.Builder(context,com.app.messagealarm.R.style.MyAlertDialogTheme)
             builder.setTitle("Alarm Repeat Time")
-            val animals = arrayOf("Once", "Daily", "Custom")
+            val animals = arrayOf( "Always", "Once", "Custom")
             builder.setItems(animals) { dialog, which ->
                 when (which) {
                     0 -> { /* Once */
-                        callBack.onClick("Once")
+                        callBack.onClick("Always")
                         dialog.dismiss()
+
                     }
                     1 -> { /* Daily   */
-                        callBack.onClick("Daily")
+                        callBack.onClick("Once")
                         dialog.dismiss()
                     }
                     2 -> { /* Custom */
@@ -124,7 +126,7 @@ class DialogUtils {
             val list: MutableList<String> = ArrayList()
             // add a checkbox list
             val days = arrayOf(
-                "Saturday", "Sunday", "Monday", "Wednesday", "Tuesday",
+                "Saturday", "Sunday", "Monday","Tuesday", "Wednesday",
                 "Thursday", "Friday"
             )
             //check which days already added and create checked items
@@ -156,6 +158,7 @@ class DialogUtils {
                 callback.onPositive()
                 checkedCallBack.onChecked(list)
             }
+
 
             builder.setNegativeButton("Cancel") { dialog, which ->
                 callback.onNegative()

@@ -1,8 +1,14 @@
 package com.app.messagealarm
 
+import android.app.Activity
+import android.app.Application
+import android.content.ComponentCallbacks2
 import android.content.Context
+import android.os.Bundle
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
+import com.app.messagealarm.BaseApplication.Companion.sInstance
+import com.app.messagealarm.ui.alarm.AlarmActivity
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.LanguageUtils
 import com.app.messagealarm.utils.SharedPrefUtils
@@ -14,7 +20,7 @@ import timber.log.Timber
  * @property sInstance an instance of this Application class
  * @author Al Mujahid Khan
  */
-class BaseApplication : MultiDexApplication() {
+class BaseApplication : MultiDexApplication(){
 
     init {
         sInstance = this

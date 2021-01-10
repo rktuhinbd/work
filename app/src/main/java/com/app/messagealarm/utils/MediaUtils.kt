@@ -5,6 +5,7 @@ import android.media.AudioManager
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
+import android.util.Log
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.ui.notifications.FloatingNotification
 import com.app.messagealarm.ui.notifications.FloatingNotification.Companion.notifyMute
@@ -16,9 +17,14 @@ class MediaUtils {
 
     companion object {
 
+       var isStopped = false
+       // var isLoop = true
+        var count = 0
         var mediaPlayer: MediaPlayer? = null
+        var thread:Thread? = null
 
         fun playAlarm(
+            thread: Thread,
             isJustVibrate: Boolean,
             isVibrate: Boolean,
             context: Context,
@@ -27,7 +33,8 @@ class MediaUtils {
             packageName: String,
             appName: String
         ) {
-
+            this.thread = thread
+            count = 0
             try {
                 //start full sound
                 val mobilemode =
@@ -49,6 +56,7 @@ class MediaUtils {
                         mediaPlayer!!.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
                         afd.close()
                     }
+
                     if (!isJustVibrate || (!isJustVibrate && !isVibrate)) {
                         mediaPlayer!!.setVolume(1.0f, 1.0f)
                     } else {
@@ -62,14 +70,26 @@ class MediaUtils {
                         }
                     })
 
+                   /* mediaPlayer!!.setOnCompletionListener(object :MediaPlayer.OnCompletionListener{
+                        override fun onCompletion(mp: MediaPlayer?) {
+                            if(isStopped){
+                                isLoop = false
+                            }
+                        }
+
+                    })*/
+
                     mediaPlayer!!.setOnPreparedListener {
+                        Log.e("PREPARED", "true")
                         it.start()
                     }
 
-                    mediaPlayer!!.prepareAsync()
+                    Log.e("PREPARE_CALL", "true")
+                    mediaPlayer!!.prepare()
 
                 }
                 once.run(runnable)
+
             } catch (e: IllegalStateException) {
                 e.printStackTrace()
             } catch (e: NullPointerException) {
@@ -89,8 +109,13 @@ class MediaUtils {
                     })
                 }
             }).start()
-            //stop playBack
-            stopPlayBackAfterDone(isLastIndex, context, packageName, appName)
+
+            val onceAgain = Once()
+            onceAgain.run(Runnable {
+                    //stop playBack
+                    stopPlayBackAfterDone(isLastIndex, context, packageName, appName)
+                })
+
         }
 
         private fun stopVibration() {
@@ -106,10 +131,22 @@ class MediaUtils {
             appName: String
         ) {
             try {
+                /**
+                 * There is a bug when stopping the media player stopping by button before it's finishes.
+                 * It's starting the media player again
+                 *
+                 */
                 //here 30 is not static it will be from setting page, the values will be 1, 2, 3, or Full song
                 while (true) {
-                    val totalPlayBack = (mediaPlayer!!.currentPosition / 1000).toInt()
-                    if (totalPlayBack == 30) {
+                    //val totalPlayBack = (mediaPlayer!!.currentPosition / 1000).toInt()
+                    Log.e("PLAY_COUNT", count.toString())
+                    if(mediaPlayer != null){
+                        count++
+                    }else{
+                        break
+                    }
+                    if (count == 30) {
+                        count = 0
                         if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
                             if (isLastIndex) {
                                 mediaPlayer!!.stop()
@@ -120,12 +157,19 @@ class MediaUtils {
                                     packageName,
                                     appName
                                 )
+                                stopVibration()
+                                break
                             } else {
+                                stopVibration()
                                 mediaPlayer!!.stop()
+                                break
                             }
-                            stopVibration()
-                            break
                         }
+                    }
+                    try{
+                        Thread.sleep(1000)
+                    }catch (e: InterruptedException){
+
                     }
                 }
             } catch (e: IllegalStateException) {
@@ -136,11 +180,15 @@ class MediaUtils {
         }
 
         fun stopAlarm() {
+            //isStopped = true
             if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
                 write(Constants.PreferenceKeys.IS_STOPPED, true)
                 mediaPlayer!!.stop()
                 mediaPlayer!!.release()
                 mediaPlayer = null
+                isStopped = false
+                thread!!.interrupt()
+                thread = null
                 stopVibration()
                 write(Constants.PreferenceKeys.IS_MUTED, true)
                 notifyMute(true)
@@ -149,10 +197,15 @@ class MediaUtils {
 
 
         fun isPlaying(): Boolean {
-            return if (mediaPlayer != null) {
-                mediaPlayer!!.isPlaying
-                true
-            } else {
+            return try {
+                if (mediaPlayer != null) {
+                    mediaPlayer!!.isPlaying
+                    true
+                } else {
+                    false
+                }
+            }catch (e:java.lang.IllegalStateException){
+                e.printStackTrace()
                 false
             }
         }

@@ -4,14 +4,10 @@ import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.os.Process
-import android.os.Process.killProcess
-import android.os.Process.myPid
+import android.os.Handler
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
-import com.app.messagealarm.BaseApplication
-import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.service.AlarmService
 import com.app.messagealarm.ui.notifications.FloatingNotification
@@ -22,9 +18,13 @@ import es.dmoral.toasty.Toasty
 class NotificationListener : NotificationListenerService(),
     NotificationListenerView {
 
+    var isSecondThreadStarted = false
+    var isThreadStarted = false
     var isPlayAble = true
     var isThreadExecuted = false
     val sbnList = ArrayList<StatusBarNotification>()
+    val tempList = ArrayList<StatusBarNotification>()
+
 
     companion object {
         private val MESSENGER_PKG = "com.facebook.orca"
@@ -48,15 +48,117 @@ class NotificationListener : NotificationListenerService(),
         Log.e("LISTENER", "PACKAGE = " + sbn!!.packageName.toString())
         Log.e("LISTENER", "TITLE = " + sbn.notification.extras["android.title"].toString())
         Log.e("LISTENER", "DESC = " + sbn.notification.extras["android.text"].toString())
-        //got an message stop all getting message process
-            if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)) {
-            NotificationListenerPresenter(this).filterByAppConstrains(
-                sbn.packageName.toString(), AndroidUtils.getCurrentLangCode(this),
-                sbn.notification.extras["android.title"].toString().trim(),
-                sbn.notification.extras["android.text"].toString().trim(), sbn
-            )
+        if (sbn.packageName.toString() != "com.app.messagealarm") {
+            if (sbn.notification.extras["android.title"].toString() != "WhatsApp") {
+                //sbnList.add(sbn)
+                if (sbnList.size > 0) {
+                    if (sbnList[0].packageName.toString() == sbn.packageName.toString()) {
+                        sbnList.add(sbn)
+                        Log.e("SAME_N", "true")
+                    } else {
+                        Log.e("SAME_D", "true")
+                        tempList.add(sbn)
+                        Log.e("thread status", isSecondThreadStarted.toString())
+                        if (!isSecondThreadStarted) {
+                            Log.e("THREAD_2", "true")
+                            //closed by Mujahid 31th Dec 2020
+//                            for (x in tempList) {
+//                                Log.e(
+//                                    "TEMP_LIST",
+//                                    x.packageName + " = AND = " + x.notification.extras["android.title"]
+//                                )
+//                            }
+                            Thread(Runnable {
+                                checkForMessage(tempList, true)
+                            }).start()
+                        }
+                    }
+                } else {
+                    sbnList.add(sbn)
+                    Log.e("SAME_F", "true")
+                }
+                if (!isThreadStarted) {
+                    Thread(Runnable {
+                        Log.e("THREAD_1", "true")
+                        checkForMessage(sbnList, false)
+                    }).start()
+                }
+            }
+
+        }
+
+    }
+
+    private fun checkForMessage(
+        listItems: ArrayList<StatusBarNotification>,
+        secondThread: Boolean
+    ) {
+        if (secondThread) {
+            isSecondThreadStarted = true
+        } else {
+            isThreadStarted = true
+        }
+        var count = 0
+        while (count != 5) {
+            count++
+            Log.e("REAL_COUNT", count.toString())
+            Thread.sleep(1000)
+            if (count == 5) {
+                //closed by Mujahid 32 Dec 2020
+               /* for (y in listItems) {
+                    Log.e(
+                        "HAVE_LIST",
+                        y.packageName + " = AND = " + y.notification.extras["android.title"]
+                    )
+                }*/
+                Handler(mainLooper).post(Runnable {
+                    //got an message stop all getting message process
+                    if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)) {
+                        Log.e("SBN_SIZE", listItems.size.toString())
+                        if (listItems.size > 0) {
+                            if (listItems[0].packageName.toString() == WHATSAPP_PKG) {
+                                NotificationListenerPresenter(this).filterByAppConstrains(
+                                    listItems[listItems.size - 1].packageName.toString(),
+                                    AndroidUtils.getCurrentLangCode(this),
+                                    listItems[listItems.size - 1].notification.extras["android.title"].toString()
+                                        .trim(),
+                                    listItems[listItems.size - 1].notification.extras["android.text"].toString()
+                                        .trim(),
+                                    listItems[listItems.size - 1]
+                                )
+                            } else {
+                                for (x in listItems) {
+                                    if (x.notification.extras["android.title"].toString() == "Chat heads active") {
+                                        continue
+                                    } else {
+                                        NotificationListenerPresenter(this).filterByAppConstrains(
+                                            x.packageName.toString(),
+                                            AndroidUtils.getCurrentLangCode(this),
+                                            x.notification.extras["android.title"].toString()
+                                                .trim(),
+                                            x.notification.extras["android.text"].toString()
+                                                .trim(),
+                                            x
+                                        )
+                                        break
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (secondThread) {
+                        isSecondThreadStarted = false
+                        tempList.clear()
+                    } else {
+                        isThreadStarted = false
+                        this.sbnList.clear()
+                    }
+                    listItems.clear()
+                })
+            }
         }
     }
+
 
     @Synchronized
     fun doMagic(sbn: StatusBarNotification?) {
@@ -113,6 +215,13 @@ class NotificationListener : NotificationListenerService(),
         if (!isServiceStopped) {
             scheduleService()
         }
+    }
+
+    private fun resetValues() {
+        isThreadStarted = false
+        this.sbnList.clear()
+        isSecondThreadStarted = false
+        tempList.clear()
     }
 
     private fun scheduleService() {

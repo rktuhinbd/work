@@ -1,9 +1,10 @@
 package com.app.messagealarm.ui.alarm
 
-import android.annotation.SuppressLint
 import android.app.KeyguardManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
@@ -12,19 +13,29 @@ import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.app.messagealarm.BaseActivity
+import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.notifications.FloatingNotification
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.MediaUtils
 import com.app.messagealarm.utils.Once
 import com.app.messagealarm.utils.SharedPrefUtils
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.ncorti.slidetoact.SlideToActView
 import kotlinx.android.synthetic.main.activity_alarm.*
+import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
+import kotlin.system.exitProcess
 
 
 class AlarmActivity : BaseActivity() {
 
+    var mMessageReceiver: BroadcastReceiver? = null
+    var turnOffReceiver:BroadcastReceiver? = null
+
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
     var isIntractive = true
     var focus = true
     val once = Once()
@@ -34,12 +45,32 @@ class AlarmActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         isIntractive = isScreenActive(this)
         setContentView(R.layout.activity_alarm)
+        // Obtain the FirebaseAnalytics instance.
+        firebaseAnalytics = Firebase.analytics
         setupViews()
         val runnable = Runnable(){
+            showPageDismissNotification()
             playMedia()
         }
         once.run(runnable)
         tiltAnimation()
+        val bundle = Bundle()
+        bundle.putString("alarm_by_activity", "true")
+        firebaseAnalytics.logEvent("alarm_type", bundle)
+
+        mMessageReceiver =  object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                finishAffinity()
+                exitProcess(0)
+            }
+        }
+
+        turnOffReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                finishAffinity()
+               // exitProcess(0)
+            }
+        }
     }
 
     override fun onStart() {
@@ -78,7 +109,8 @@ class AlarmActivity : BaseActivity() {
 
 
     private fun startPlaying(tone: String?) {
-        Thread(Runnable {
+        var thread:Thread? = null
+        thread = Thread(Runnable {
             //here i need run the loop of how much time need to play
             val numberOfPLay = intent?.extras!!.getInt(Constants.IntentKeys.NUMBER_OF_PLAY)
             for (x in 0 until numberOfPLay) {
@@ -88,6 +120,7 @@ class AlarmActivity : BaseActivity() {
                 val once = Once()
                 once.run(Runnable {
                     MediaUtils.playAlarm(
+                        thread!!,
                         intent?.extras!!.getBoolean(Constants.IntentKeys.IS_JUST_VIBRATE),
                         intent?.extras!!.getBoolean(Constants.IntentKeys.IS_VIBRATE),
                         this, tone,
@@ -105,7 +138,8 @@ class AlarmActivity : BaseActivity() {
                     }
                 })
             }
-        }).start()
+        })
+        thread.start()
     }
 
 
@@ -119,12 +153,15 @@ class AlarmActivity : BaseActivity() {
     }
 
     override fun onPause() {
-        if(!isSwiped){
+       /* if(!isSwiped){
             if(isIntractive){
-                showPageDismissNotification()
-            }
-        }
+                //we now know that only few devices getting the dismiss notification function called at lock screen startup
+                //need to know how much devices creating this issue
+
+                }
+            }*/
         super.onPause()
+        this.unregisterReceiver(mMessageReceiver)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -133,13 +170,9 @@ class AlarmActivity : BaseActivity() {
     }
 
 
-    fun isScreenActive(context: Context): Boolean {
+    private fun isScreenActive(context: Context): Boolean {
         val powerManager = context.getSystemService(POWER_SERVICE) as PowerManager
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            powerManager.isInteractive
-        } else {
-            powerManager.isScreenOn
-        }
+        return  powerManager.isInteractive
     }
 
     private fun tiltAnimation() {
@@ -173,6 +206,7 @@ class AlarmActivity : BaseActivity() {
                 }
 
                 override fun onSlideCompleteAnimationEnded(view: SlideToActView) {
+                    FloatingNotification.cancelPageDismissNotification()
                     isSwiped = true
                     MediaUtils.stopAlarm()
                     openApp()
@@ -199,6 +233,8 @@ class AlarmActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+        this.registerReceiver(turnOffReceiver, IntentFilter("turn_off_activity"))
+        this.registerReceiver(mMessageReceiver,  IntentFilter("turn_off_switch"))
     }
 
 
@@ -217,9 +253,9 @@ class AlarmActivity : BaseActivity() {
         launchIntent?.let { startActivity(it) }
     }
 
-    override fun onNewIntent(intent: Intent?) {
+   /* override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         finish()
         startActivity(Intent(intent))
-    }
+    }*/
 }

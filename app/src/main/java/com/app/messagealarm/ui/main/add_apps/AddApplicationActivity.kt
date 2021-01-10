@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
@@ -48,6 +49,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     val REQUEST_CODE_PICK_AUDIO = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        changeTheme()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_application)
         setupSpinner()
@@ -66,8 +68,23 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     private fun darkModePre(){
         if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
             spinner_drop_down?.setImageResource(R.drawable.ic_arrow_drop_down_white)
+            progress_bar_add_app?.setImageResource(R.drawable.gif_dark_mode)
         }else{
             spinner_drop_down?.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp)
+            progress_bar_add_app?.setImageResource(R.drawable.loader)
+        }
+    }
+
+
+    private fun changeTheme() {
+        if (!SharedPrefUtils.contains(Constants.PreferenceKeys.IS_DARK_MODE)) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        } else {
+            if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
         }
     }
 
