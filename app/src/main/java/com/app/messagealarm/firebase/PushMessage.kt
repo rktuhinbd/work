@@ -86,7 +86,6 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
                     .bigLargeIcon(null)
             ).setLargeIcon(bitmap)
         }
-
         notificationManager.notify(1, builder.build())
     }
 

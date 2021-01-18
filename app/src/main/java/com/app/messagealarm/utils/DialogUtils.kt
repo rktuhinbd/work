@@ -15,9 +15,7 @@ import android.util.Log
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.FrameLayout
-import com.awesomedroidapps.inappstoragereader.Utils
-import com.google.android.material.textfield.TextInputLayout
-import es.dmoral.toasty.Toasty
+
 import java.lang.NumberFormatException
 
 

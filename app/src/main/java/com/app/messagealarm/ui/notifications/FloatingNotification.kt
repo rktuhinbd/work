@@ -87,7 +87,6 @@ class FloatingNotification {
                             }
                         }
                     )
-
                 }
             })
             thread.start()
