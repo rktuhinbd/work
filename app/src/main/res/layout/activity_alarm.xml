@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/layout_base_splash"
+    android:background="@drawable/splash_background_gradient"
+    tools:context=".ui.splash.SplashActivity">
+
+    <com.app.messagealarm.ui.widget.CustomStatusBarView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/txt_message_from"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:maxLines="1"
+        android:layout_marginTop="50dp"
+        android:fontFamily="@font/open_sans_semi_bold"
+        tools:text="Rauf Waheed"
+        android:textColor="@color/color_white"
+        android:textSize="28sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/txt_message_desc"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+    <TextView
+        android:id="@+id/txt_message_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_white"
+        android:layout_marginStart="16dp"
+        android:textSize="18sp"
+        android:layout_marginEnd="16dp"
+        android:textAlignment="center"
+        android:maxLines="5"
+        android:fontFamily="@font/open_sans_light"
+        android:layout_marginTop="16dp"
+        tools:text="Hi, Mujahid. How is things going. I wants to talk with you soon, I need to know what's the progress of the current works. Let me know when you will be able to start in the morning?"
+        app:layout_constraintTop_toBottomOf="@id/txt_message_from"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+
+    <View
+        android:id="@+id/view_circle"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@drawable/alarm_image_circle"
+        app:layout_constraintBottom_toTopOf="@id/side_to_active"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_message_desc" />
+
+    <ImageView
+        android:id="@+id/img_app_icon"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:layout_constraintTop_toTopOf="@id/view_circle"
+        app:layout_constraintStart_toStartOf="@id/view_circle"
+        app:layout_constraintEnd_toEndOf="@id/view_circle"
+        android:src="@mipmap/ic_launcher"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@id/view_circle"
+        />
+
+
+    <com.ncorti.slidetoact.SlideToActView
+        android:id="@+id/side_to_active"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="48dp"
+        android:elevation="8dp"
+        app:animation_duration="250"
+        app:area_margin="4dp"
+        app:border_radius="16dp"
+        app:inner_color="@android:color/darker_gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:outer_color="@color/colorAccent"
+        app:slider_height="60dp"
+        app:text_style="bold"
+        app:slider_locked="false"
+        app:text_color="@color/color_white"
+        app:text=""
+        app:text_size="18sp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

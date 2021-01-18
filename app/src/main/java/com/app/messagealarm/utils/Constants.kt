@@ -1,0 +1,213 @@
+package com.app.messagealarm.utils
+
+/**
+ * This is a class that contains all the needed constants
+ * @author Al Mujahid Khan
+ * */
+class Constants {
+    class Invalid {
+        companion object {
+            const val INVALID_INTEGER: Int = -1
+            const val INVALID_LONG: Long = -1
+        }
+    }
+
+    class InputData{
+        companion object{
+            const val APP_SIZE = "app_size"
+            const val LANG_SIZE = "lang_size"
+            const val CONSTRAIN_SIZE = "constrain_size"
+
+        }
+    }
+
+    class Default {
+        companion object {
+            const val DEFAULT_STRING: String = ""
+            const val DEFAULT_INTEGER: Int = 0
+            const val DEFAULT_FLOAT: Float = 0.0f
+            const val DEFAULT_LONG: Long = 0
+            const val DEFAULT_BOOLEAN: Boolean = false
+            const val DEFAULT_LANGUAGE: String = "en"
+            const val TRUE_INTEGER: Int = 1
+            const val FALSE_INTEGER: Int = 0
+            const val SPACE_STRING: String = " "
+            const val TYPE_MISSED = 1
+            const val TYPE_ALARM = 2
+            const val MUTE_TIMER = "mute_timer"
+            const val SYNC = "sync"
+            const val MANUAL = "Manual"
+        }
+    }
+    class ACTION{
+        companion object{
+            const val ACTION_UN_MUTE = "un_mute"
+            const val SYNC = "SYNC"
+        }
+    }
+
+    class Common {
+        companion object {
+            const val DEVICE_TYPE_ANDROID = 1
+            const val PROPER_BASE_URL = "http://orion.tstaffs.com/"
+            const val PATH_SEGMENT_API = "api"
+            const val PATH_SEGMENT_SLASH = ""
+            const val HTTP = "http"
+            const val HTTPS = "https"
+            const val IMAGE_STORING_SUFFIX = ".png"
+            const val NEW_LINE_CHARACTER = "\n"
+            const val IMAGE_STORING_PREFIX = "share_image_"
+            const val DEVICE_TYPE = "android"
+            const val COMMA = ","
+            const val FIRST_BRACKET = "("
+            const val API_SECRET_CODE = "EH5m5%\$+3V\$7Ue4j3*Kc5UzA4Mq7TXEt8a!8^AJ#"
+            const val ANDROID_HASH_KEY = "Hash Key"
+            const val PLAIN_TEXT_MIME_TYPE = "text/plain"
+            const val PNG_IMAGE_MIME_TYPE = "image/png"
+            const val ALL_IMAGE_MIME_TYPE = "image/*"
+            const val JPEG_IMAGE_MIME_TYPE = "image/jpeg"
+            const val COMMON_TIME_ZONE = "UTC"
+            const val APP_COMMON_DATE_FORMAT: String = "yyyy-MM-dd HH:mm"
+            const val APP_PROFILE_DATE_FORMAT: String = "dd/MM/yyyy"
+            const val APP_COMMON_ONLY_DATE_FORMAT: String = "yyyy-MM-dd"
+            const val APP_COMMON_TIME_FORMAT: String = "hh:mm a"
+            const val APP_COMMON_DAY_FORMAT: String = "E"
+            const val APP_COMMON_MONTH_FORMAT: String = "MMM"
+            const val ALIGNMENT_LEFT: String = "left"
+            const val ALIGNMENT_RIGHT: String = "right"
+            const val ALIGNMENT_INHERIT: String = "inherit"
+            const val ROLE = "Bearer "
+            const val TELEPHONE_URI_STARTING = "tel:"
+            const val GOOGLE_DOC_TOOLBAR_REMOVING_URL = "javascript:(function() { " +
+                    "document.querySelector('[role=\"toolbar\"]').remove();" +
+                    "})()"
+            const val PREFIX_PDF_LOADING_URL = "https://docs.google.com/gview?embedded=true&url="
+            const val BASE_URL_APP_RESOURCES = "file:///android_res/"
+            const val HTML_JUSTIFIED_STYLE = "<html>" +
+                    "<style type='text/css'>" +
+                    "@font-face {" +
+                    "font-family: MyFont;" +
+                    "src: url('font/regular.ttf')" +
+                    "}" +
+                    "body {" +
+                    "margin: 0;" +
+                    "line-height: 1.5;" +
+                    "padding: 0;" +
+                    "font-family: MyFont;" +
+                    "font-size: 14px;" +
+                    "text-align: justify;" +
+                    "color: #434343" +
+                    "}" +
+                    "</style>" +
+                    "<body>%s" +
+                    "</body>" +
+                    "</html>"
+            const val HTML_SMALL_JUSTIFIED_STYLE = "<html>" +
+                    "<style type='text/css'>" +
+                    "@font-face {" +
+                    "font-family: MyFont;" +
+                    "src: url('font/raleway_regular.ttf')" +
+                    "}" +
+                    "body {" +
+                    "margin: 0;" +
+                    "line-height: 1.5;" +
+                    "padding: 0;" +
+                    "font-family: MyFont;" +
+                    "font-size: 12px;" +
+                    "text-align: justify;" +
+                    "color: #FFFFFF" +
+                    "}" +
+                    "</style>" +
+                    "<body>%s" +
+                    "</body>" +
+                    "</html>"
+            const val HTML_MIME_TYPE = "text/html"
+            const val HTML_ENCODING = "UTF-8"
+            const val PRODUCT_TYPE_BIDS = 2
+            const val PRODUCT_TYPE_SOFTWARE = 1
+        }
+    }
+
+    class File {
+        companion object {
+            const val PREFIX_IMAGE = "IMG_"
+            const val PREFIX_CROPPED_IMAGE = "IMG_CROPPED_"
+            const val SUFFIX_IMAGE = ".jpg"
+        }
+    }
+
+    class PreferenceKeys {
+        companion object {
+            const val IS_NOTIFICATION_SWIPED = "is_swiped"
+            const val IS_ACTIVITY_STARTED = "is_activity_started"
+            const val IS_STOPPED = "is_stopped"
+            const val IS_SERVICE_STOPPED = "service_stopped"
+            const val IS_DARK_MODE = "is_dark"
+            const val IS_MUTED = "is_muted"
+            const val MUTE_TIME = "mute"
+            const val THEME = "theme"
+            const val GOT_ONE_MESSAGE = "got_one_message"
+
+        }
+    }
+
+    class IntentKeys {
+        companion object {
+            const val TITLE = "title"
+            const val DESC = "desc"
+            const val IMAGE_PATH = "image"
+            const val PACKAGE_NAME = "package"
+            const val TYPE_ALARM = "type_alarm"
+            const val JUST_CANCEL = "just_cancel"
+            const val APP_NAME = "app_name"
+            const val TONE = "tone"
+            const val NUMBER_OF_PLAY = "number_of_play"
+            const val IS_VIBRATE = "is_vibrate"
+            const val IS_JUST_VIBRATE = "is_just_vibrate"
+        }
+    }
+
+
+    class BundleKeys{
+        companion object{
+            const val APP = "app"
+            const val IS_EDIT_MODE = "is_edit"
+            const val APP_NAME = "app_name"
+            const val PACKAGE_NAME = "package_name"
+            const val BITMAP = "bitmap"
+        }
+    }
+
+
+    class API{
+        companion object{
+            const val SYNC = "sync"
+            const val REGISTER_TOKEN = "token/"
+        }
+        class Body{
+            companion object{
+                const val APP_SIZE = "app_size"
+                const val LANG_SIZE = "lang_size"
+                const val CONSTRAIN_SIZE = "constrain_size"
+                const val TOKEN = "token"
+                const val LANG_CODE = "lang_code"
+            }
+        }
+        class ResponseFormat{
+            companion object{
+                const val JSON_RESPONSE = "Accept:application/json"
+            }
+        }
+    }
+
+
+
+
+    class LanguageCodes {
+        companion object {
+            const val ENGLISH = "en"
+            const val PORTUGUESE = "pt"
+        }
+    }
+
+}

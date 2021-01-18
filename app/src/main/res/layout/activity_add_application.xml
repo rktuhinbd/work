@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_screen"
+    tools:context=".ui.main.add_apps.AddApplicationActivity">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/toolbar_color"
+        android:elevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:title="@string/add_application"
+        app:titleTextColor="@color/colorTextRegular"
+        />
+    
+    
+    <Spinner
+        android:id="@+id/spinner_filter"
+        android:layout_width="150dp"
+        android:layout_height="45dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        android:layout_marginEnd="16dp"
+        android:background="@color/card_view_color"
+        android:layout_marginTop="8dp"
+        />
+
+    <ImageView
+        android:id="@+id/spinner_drop_down"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_arrow_drop_down_black_24dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
+        app:layout_constraintTop_toTopOf="@id/spinner_filter"
+        app:layout_constraintBottom_toBottomOf="@id/spinner_filter"
+        app:layout_constraintEnd_toEndOf="@id/spinner_filter"
+        app:layout_constraintStart_toStartOf="@id/spinner_filter"
+        app:layout_constraintHorizontal_bias="1"
+        android:layout_marginEnd="16dp"
+        />
+
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/spinner_filter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0"
+        android:layout_marginTop="8dp"
+        android:visibility="visible"
+        android:scrollbars="vertical"
+        android:id="@+id/rv_apps_list"
+        />
+
+  <!--  <ProgressBar
+        android:id="@+id/progress_bar_add_app"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />-->
+
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/progress_bar_add_app"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/loader"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
