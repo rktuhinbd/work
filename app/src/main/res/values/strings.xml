@@ -95,5 +95,6 @@
     <string name="txt_dismiss">Dismiss</string>
     <string name="txt_swipe_bottom_to_expand">Swipe bottom to expand</string>
     <string name="alarm_service">Alarm Service</string>
+    <string name="not_supperted">Sorry your device doesn\'t support this app!</string>
 
 </resources>

@@ -17,6 +17,7 @@ import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.DialogUtils
 import com.app.messagealarm.utils.PermissionUtils
 import com.app.messagealarm.utils.SharedPrefUtils
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_splash.*
 
 
@@ -44,11 +45,14 @@ class SplashActivity : BaseActivity() {
                     getString(R.string.txt_notification_permission_message),
                     object : DialogUtils.Callback {
                         override fun onPositive() {
-                            val intent =
-                                Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
-                            startActivity(intent)
+                            try{
+                                val intent =
+                                    Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+                                startActivity(intent)
+                            }catch (e:NoClassDefFoundError){
+                                Toasty.error(this@SplashActivity, getString(R.string.not_supperted)).show()
+                            }
                         }
-
                         override fun onNegative() {
                             finish()
                         }
