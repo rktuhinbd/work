@@ -32,7 +32,7 @@ class DialogUtils {
                 ) { dialog, which ->
                     dialog.dismiss()
                 }
-                .setIcon(R.drawable.ic_dialog_info)
+                .setIcon(com.app.messagealarm.R.drawable.ic_info)
                 .setCancelable(false)
                 .show()
         }
@@ -47,7 +47,7 @@ class DialogUtils {
                     dialog.dismiss()
                     callback.onPositive()
                 }
-                .setIcon(R.drawable.ic_dialog_info)
+                .setIcon(com.app.messagealarm.R.drawable.ic_info)
                 .setNegativeButton(
                     R.string.cancel
                 ) { dialog, which ->

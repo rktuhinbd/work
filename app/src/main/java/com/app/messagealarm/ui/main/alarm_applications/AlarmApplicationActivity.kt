@@ -10,6 +10,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -61,10 +62,13 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         lookForTablesSize()
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
+
         //schedule quickstart
-        Handler().postDelayed(Runnable {
-            showQuickStartDialog()
-        }, 5000)
+        if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_TUTORIAL_SHOW)){
+            Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                showQuickStartDialog()
+            }, 3000)
+        }
 
          mMessageReceiver =  object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
