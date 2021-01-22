@@ -48,6 +48,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     var addApplicationPresenter:AddApplicationPresenter? = null
     val bottomSheetModel = AddApplicationOption()
     val REQUEST_CODE_PICK_AUDIO = 1
+    var searchView: SearchView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         changeTheme()
@@ -57,6 +58,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         //setup toolbar
         toolBarSetup()
         //hide spinner
+        txt_filter_by?.visibility = View.INVISIBLE
         spinner_filter?.visibility = View.INVISIBLE
         spinner_drop_down?.visibility = View.INVISIBLE
         //setup presenter
@@ -106,6 +108,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                 rv_apps_list?.visibility = View.VISIBLE
                 initAllAppsRecyclerView(list)
                 spinner_filter?.visibility = View.VISIBLE
+                txt_filter_by?.visibility = View.VISIBLE
                 spinner_drop_down?.visibility = View.VISIBLE
             }
 
@@ -136,10 +139,16 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 if(p2 == 0){
+                    //clear search view
+                    searchView?.setQuery("", false)
+                    searchView?.isIconified = true
                     rv_apps_list?.visibility = View.GONE
                     progress_bar_add_app?.visibility = View.VISIBLE
                     addApplicationPresenter!!.getAllApplicationList()
                 }else{
+                    //clear search view
+                    searchView?.setQuery("", false)
+                    searchView?.isIconified = true
                     rv_apps_list?.visibility = View.GONE
                     progress_bar_add_app?.visibility = View.VISIBLE
                     addApplicationPresenter!!.filterByMessaging()
@@ -193,11 +202,11 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         menuInflater.inflate(R.menu.menu_add_app, menu)
         val searchItem: MenuItem? = menu?.findItem(R.id.mnu_search)
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val searchView: SearchView? = searchItem?.actionView as SearchView
+         searchView = searchItem?.actionView as SearchView
         // Assumes current activity is the searchable activity
         searchView?.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         setSearchViewEditTextBackgroundColor(this, searchView!!)
-        searchView.setOnQueryTextListener(object :
+        searchView?.setOnQueryTextListener(object :
             androidx.appcompat.widget.SearchView.OnQueryTextListener,
             SearchView.OnQueryTextListener {
 
@@ -226,17 +235,17 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             }
         })
         if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
-            val clearButton = searchView.context.resources.getIdentifier("android:id/search_close_btn",null,null)
-            val buttonId = searchView.context.resources.getIdentifier("android:id/search_button",null, null)
-            val id = searchView.context.resources.getIdentifier("android:id/search_src_text", null, null);
-            val textView = searchView.findViewById<TextView>(id)
-            val imageView = searchView.findViewById<ImageView>(buttonId)
-            val clearImage = searchView.findViewById<ImageView>(clearButton)
-            clearImage.setColorFilter(Color.WHITE)
-            imageView.setColorFilter(Color.WHITE)
-            textView.setTextColor(Color.WHITE)
-            textView.hint = getString(R.string.txt_search_app)
-            textView.setHintTextColor(Color.GRAY)
+            val clearButton = searchView?.context?.resources?.getIdentifier("android:id/search_close_btn",null,null)
+            val buttonId = searchView?.context?.resources?.getIdentifier("android:id/search_button",null, null)
+            val id = searchView?.context?.resources?.getIdentifier("android:id/search_src_text", null, null);
+            val textView = searchView?.findViewById<TextView>(id!!)
+            val imageView = searchView?.findViewById<ImageView>(buttonId!!)
+            val clearImage = searchView?.findViewById<ImageView>(clearButton!!)
+            clearImage?.setColorFilter(Color.WHITE)
+            imageView?.setColorFilter(Color.WHITE)
+            textView?.setTextColor(Color.WHITE)
+            textView?.hint = getString(R.string.txt_search_app)
+            textView?.setHintTextColor(Color.GRAY)
         }
         return super.onCreateOptionsMenu(menu)
 
