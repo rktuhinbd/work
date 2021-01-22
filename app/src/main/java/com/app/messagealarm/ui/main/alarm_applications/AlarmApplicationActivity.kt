@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.R
 import com.app.messagealarm.model.entity.ApplicationEntity
+import com.app.messagealarm.service.app_reader_intent_service.AppsReaderIntentService
 import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.ui.adapters.AddedAppsListAdapter
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
@@ -54,6 +55,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         changeTheme()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val mIntent = Intent(this, AppsReaderIntentService::class.java)
+        AppsReaderIntentService.enqueueWork(this, mIntent)
         setToolBar()
         setListener()
         askForPermission()

@@ -28,6 +28,8 @@
     android:theme="@style/AppTheme"
     tools:targetApi="q">
 
+
+
         <activity
             android:name=".ui.setting.SettingsActivity"
             android:label="@string/title_activity_settings"
@@ -144,10 +146,16 @@
 
         <service
             android:name=".firebase.PushMessage" android:exported="true">
+            <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
+                android:resource="@drawable/ic_notification" />
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
+
+        <service android:name=".service.app_reader_intent_service.AppsReaderIntentService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            />
 
 
         <receiver android:exported="false"

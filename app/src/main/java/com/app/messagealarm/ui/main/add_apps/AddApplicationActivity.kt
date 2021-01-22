@@ -25,6 +25,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
+import com.app.messagealarm.service.app_reader_intent_service.AppsReaderIntentService
 import com.app.messagealarm.ui.adapters.AllAppsListAdapter
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
 import com.app.messagealarm.utils.*
@@ -51,6 +52,8 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     override fun onCreate(savedInstanceState: Bundle?) {
         changeTheme()
         super.onCreate(savedInstanceState)
+        val mIntent = Intent(this, AppsReaderIntentService::class.java)
+        AppsReaderIntentService.enqueueWork(this, mIntent)
         setContentView(R.layout.activity_add_application)
         setupSpinner()
         //setup toolbar

@@ -9,8 +9,10 @@ import android.os.CountDownTimer
 import android.service.notification.NotificationListenerService.requestRebind
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.JobIntentService.enqueueWork
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.R
+import com.app.messagealarm.service.app_reader_intent_service.AppsReaderIntentService
 import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.Constants
@@ -27,6 +29,8 @@ class SplashActivity : BaseActivity() {
         changeTheme()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+        val mIntent = Intent(this, AppsReaderIntentService::class.java)
+        AppsReaderIntentService.enqueueWork(this, mIntent)
     }
 
     private fun handlePermission() {
@@ -45,14 +49,16 @@ class SplashActivity : BaseActivity() {
                     getString(R.string.txt_notification_permission_message),
                     object : DialogUtils.Callback {
                         override fun onPositive() {
-                            try{
+                            try {
                                 val intent =
                                     Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
                                 startActivity(intent)
-                            }catch (e:NoClassDefFoundError){
-                                Toasty.error(this@SplashActivity, getString(R.string.not_supperted)).show()
+                            } catch (e: NoClassDefFoundError) {
+                                Toasty.error(this@SplashActivity, getString(R.string.not_supperted))
+                                    .show()
                             }
                         }
+
                         override fun onNegative() {
                             finish()
                         }

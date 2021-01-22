@@ -71,7 +71,7 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
         // Set the notification parameters to the notification builder object
         builder
             .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.ic_notification)
             .setSound(defaultSoundUri)
             .setContentTitle(remoteMessage!!.data["title"])
             .setContentText(remoteMessage.data["body"])
