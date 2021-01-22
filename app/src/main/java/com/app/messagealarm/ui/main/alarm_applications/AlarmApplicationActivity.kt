@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.BaseActivity
+import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.service.app_reader_intent_service.AppsReaderIntentService
@@ -55,8 +56,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         changeTheme()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val mIntent = Intent(this, AppsReaderIntentService::class.java)
-        AppsReaderIntentService.enqueueWork(this, mIntent)
         setToolBar()
         setListener()
         askForPermission()
@@ -90,6 +89,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
 
     override fun onResume() {
         super.onResume()
+        if(BaseApplication.installedApps.isEmpty()){
+            val mIntent = Intent(this, AppsReaderIntentService::class.java)
+            AppsReaderIntentService.enqueueWork(this, mIntent)
+        }
         lookForAlarmApplication()
         val isServiceStopped =
             SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)

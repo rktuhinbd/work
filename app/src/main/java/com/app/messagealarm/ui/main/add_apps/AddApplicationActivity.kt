@@ -52,8 +52,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     override fun onCreate(savedInstanceState: Bundle?) {
         changeTheme()
         super.onCreate(savedInstanceState)
-        val mIntent = Intent(this, AppsReaderIntentService::class.java)
-        AppsReaderIntentService.enqueueWork(this, mIntent)
         setContentView(R.layout.activity_add_application)
         setupSpinner()
         //setup toolbar
