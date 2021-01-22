@@ -21,7 +21,22 @@
         app:title="@string/add_application"
         app:titleTextColor="@color/colorTextRegular"
         />
-    
+
+
+    <TextView
+        android:id="@+id/txt_filter_by"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Filter By: "
+        android:textColor="@color/colorTextRegular"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintTop_toTopOf="@id/spinner_filter"
+        app:layout_constraintBottom_toBottomOf="@id/spinner_filter"
+        app:layout_constraintEnd_toStartOf="@id/spinner_filter"
+        android:fontFamily="@font/open_sans_light"
+        />
     
     <Spinner
         android:id="@+id/spinner_filter"
