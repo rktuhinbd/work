@@ -405,7 +405,9 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                                     @SuppressLint("SetTextI18n")
                                     override fun onChecked(list: List<String>) {
                                         if(list.isEmpty()){
-                                            Toasty.info(requireActivity(), "Please select at least one day!").show()
+                                            Toasty.info(requireActivity(), "No day selected, Always set as default!").show()
+                                            txt_repeat_value?.text = "Always"
+                                            addApplicationEntity.alarmRepeat = "Always"
                                         }else{
                                             var selectedDays: String = ""
                                             list.forEach {
@@ -604,7 +606,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
 
     private fun defaultValuesToDataModel() : ApplicationEntity {
-        addApplicationEntity.alarmRepeat = "Once"
+        addApplicationEntity.alarmRepeat = "Always"
         addApplicationEntity.ringTone = "Default"
         addApplicationEntity.isVibrateOnAlarm = false
         addApplicationEntity.isJustVibrate = false
@@ -617,7 +619,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         addApplicationEntity.isRunningStatus = true
 
         //set this to holder object for checking default
-        holderEntity.alarmRepeat = "Once"
+        holderEntity.alarmRepeat = "Always"
         holderEntity.ringTone = "Default"
         holderEntity.isVibrateOnAlarm = false
         holderEntity.isJustVibrate = false
