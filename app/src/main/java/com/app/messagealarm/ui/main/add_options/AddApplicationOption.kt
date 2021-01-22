@@ -654,6 +654,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         app.packageName,
                         bitmap.toBitmap()
                     )
+                    addApplicationOptionPresenter?.checkForUnknownApp(addApplicationEntity.appName,
+                        addApplicationEntity.packageName)
                 } catch (e: Exception) {
                     if(isAdded){
                         requireActivity().runOnUiThread {
