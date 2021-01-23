@@ -15,6 +15,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -64,13 +65,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         lookForTablesSize()
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
-
-        //schedule quickstart
-        if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_TUTORIAL_SHOW)){
-            Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                showQuickStartDialog()
-            }, 1000)
-        }
 
          mMessageReceiver =  object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -190,21 +184,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
     }
 
     private fun askForPermission() {
-        PermissionUtils.requestPermission(
-            this, android.Manifest.permission.READ_EXTERNAL_STORAGE
-        )
-        PermissionUtils.requestPermission(
-            this,
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
-        PermissionUtils.requestPermission(
-            this,
-            android.Manifest.permission.SYSTEM_ALERT_WINDOW
-        )
-        PermissionUtils.requestPermission(
-            this,
-            android.Manifest.permission.RECEIVE_BOOT_COMPLETED
-        )
+        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            android.Manifest.permission.SYSTEM_ALERT_WINDOW,  android.Manifest.permission.RECEIVE_BOOT_COMPLETED),1)
     }
 
     private fun recyclerViewSwipeHandler() {
@@ -424,6 +406,23 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
 
     override fun onApplicationSwitch(boolean: Boolean, id: Int) {
         alarmAppPresenter.updateAppStatus(boolean, id)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == 1) {
+            //schedule quickstart
+            if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_TUTORIAL_SHOW)) {
+                Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                    showQuickStartDialog()
+                }, 1000)
+            }
+        }
+
+
     }
 
 }
