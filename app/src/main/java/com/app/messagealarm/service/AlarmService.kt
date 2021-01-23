@@ -168,12 +168,10 @@ class AlarmService {
         ): Boolean {
             val messageBody = sbn?.notification!!.extras["android.text"].toString()
             return if (app.messageBody != "None") {
-                messageBody.trim().toLowerCase(Locale.getDefault()).contains(
-                    app.messageBody.trim().toLowerCase(
+                messageBody.toLowerCase(Locale.getDefault()).contains(
+                    app.messageBody.toLowerCase(
                         Locale.getDefault()
                     )
-                ) || app.messageBody.trim().toLowerCase(Locale.getDefault()).contains(
-                    messageBody.trim().toLowerCase(Locale.getDefault())
                 )
             } else {
                 true
