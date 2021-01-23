@@ -62,6 +62,10 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
         notifyDataSetChanged()
     }
 
+    public fun adapterSize() : Int{
+        return appsList.size
+    }
+
 
     override fun onBindViewHolder(holder: AllAppsViewHolder, position: Int) {
         holder.bindItems(appsList[position])

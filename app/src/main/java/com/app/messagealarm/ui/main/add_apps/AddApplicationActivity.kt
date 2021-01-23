@@ -23,6 +23,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
@@ -75,10 +76,12 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             spinner_drop_down?.setImageResource(R.drawable.ic_arrow_drop_down_white)
             progress_bar_add_app?.setImageResource(R.drawable.gif_dark_mode)
             gif_no_internet?.setImageResource(R.drawable.no_internet_dark)
+            search_not_found?.setImageResource(R.drawable.ic_search_no_found_dark)
         }else{
             spinner_drop_down?.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp)
             progress_bar_add_app?.setImageResource(R.drawable.loader)
             gif_no_internet?.setImageResource(R.drawable.no_internet_white)
+            search_not_found?.setImageResource(R.drawable.ic_search_no_found_white)
         }
     }
 
@@ -248,6 +251,16 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         }
     }
 
+    private fun showSearchNotFound(){
+        search_not_found?.visibility = View.VISIBLE
+        txt_search_no_found?.visibility = View.VISIBLE
+    }
+
+    private fun hideSearchNotFound(){
+        search_not_found?.visibility = View.GONE
+        txt_search_no_found?.visibility = View.GONE
+    }
+
     private fun handleSyncedNotSuccess(){
         runOnUiThread {
             progress_bar_add_app?.visibility = View.GONE
@@ -274,6 +287,13 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             override fun onQueryTextSubmit(query: String?): Boolean {
                 try{
                     (rv_apps_list?.adapter as AllAppsListAdapter).filter(query!!)
+                    if((rv_apps_list?.adapter as AllAppsListAdapter).adapterSize() == 0 &&
+                        !gif_no_internet?.isVisibile()!! &&
+                        !progress_bar_add_app?.isVisibile()!!){
+                        showSearchNotFound()
+                    }else{
+                        hideSearchNotFound()
+                    }
                 }catch (e:TypeCastException){
                     e.printStackTrace()
                 }catch (e:NullPointerException){
@@ -286,6 +306,14 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             override fun onQueryTextChange(newText: String?): Boolean {
                 try{
                     (rv_apps_list?.adapter as AllAppsListAdapter).filter(newText!!)
+                    if((rv_apps_list?.adapter as AllAppsListAdapter).adapterSize() == 0 &&
+                        !gif_no_internet?.isVisibile()!! &&
+                            !progress_bar_add_app?.isVisibile()!!
+                            ){
+                        showSearchNotFound()
+                    }else{
+                        hideSearchNotFound()
+                    }
                 }catch (e:TypeCastException){
                     e.printStackTrace()
                 }catch (e:NullPointerException){
