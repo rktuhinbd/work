@@ -58,7 +58,6 @@ class SplashActivity : BaseActivity() {
                                     .show()
                             }
                         }
-
                         override fun onNegative() {
                             finish()
                         }

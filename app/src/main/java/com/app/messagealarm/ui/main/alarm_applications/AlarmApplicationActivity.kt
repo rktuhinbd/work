@@ -69,7 +69,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_TUTORIAL_SHOW)){
             Handler(Looper.getMainLooper()).postDelayed(Runnable {
                 showQuickStartDialog()
-            }, 3000)
+            }, 1000)
         }
 
          mMessageReceiver =  object : BroadcastReceiver() {

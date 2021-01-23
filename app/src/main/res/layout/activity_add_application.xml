@@ -82,6 +82,8 @@
         android:id="@+id/rv_apps_list"
         />
 
+
+
   <!--  <ProgressBar
         android:id="@+id/progress_bar_add_app"
         android:layout_width="wrap_content"
@@ -94,10 +96,59 @@
 
 
     <pl.droidsonroids.gif.GifImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/no_internet_white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintBottom_toTopOf="@id/txt_no_internet"
+        android:id="@+id/gif_no_internet"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/txt_no_internet"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Synchronize was impossible, Due to Internet!"
+        android:textColor="@color/colorTextRegular"
+        android:fontFamily="@font/open_sans_semi_bold"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="8dp"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/gif_no_internet"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btn_sync_now"
+        android:textAlignment="center"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:id="@+id/btn_sync_now"
+        android:text="Sync Now"
+        android:visibility="gone"
+        android:foreground="?selectableItemBackground"
+        app:layout_constraintTop_toBottomOf="@id/txt_no_internet"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0"
+        android:layout_marginTop="16dp"
+        android:background="@color/colorAccent"
+        tools:targetApi="m" />
+
+    <pl.droidsonroids.gif.GifImageView
         android:id="@+id/progress_bar_add_app"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:src="@drawable/loader"
+        android:visibility="visible"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -9,6 +9,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -65,6 +66,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         addApplicationPresenter = AddApplicationPresenter(this, this)
         filterListener()
         darkModePre()
+        setListener()
     }
 
 
@@ -72,9 +74,11 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
             spinner_drop_down?.setImageResource(R.drawable.ic_arrow_drop_down_white)
             progress_bar_add_app?.setImageResource(R.drawable.gif_dark_mode)
+            gif_no_internet?.setImageResource(R.drawable.no_internet_dark)
         }else{
             spinner_drop_down?.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp)
             progress_bar_add_app?.setImageResource(R.drawable.loader)
+            gif_no_internet?.setImageResource(R.drawable.no_internet_white)
         }
     }
 
@@ -88,6 +92,17 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
+        }
+    }
+
+    private fun setListener(){
+        btn_sync_now?.setOnClickListener {
+            if(AndroidUtils.isOnline(this)){
+                Toasty.success(this, "Sync started, please hold on!").show()
+            }
+            hideNotSyncedSuccess()
+            progress_bar_add_app?.visibility = View.VISIBLE
+            addApplicationPresenter?.sync()
         }
     }
 
@@ -139,6 +154,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 if(p2 == 0){
+                    hideNotSyncedSuccess()
                     //clear search view
                     searchView?.setQuery("", false)
                     searchView?.isIconified = true
@@ -182,19 +198,62 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     }
 
     override fun onApplicationFiltered(list: ArrayList<InstalledApps>) {
-        try{
-            Collections.sort(list,
-                Comparator<InstalledApps> { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
-            runOnUiThread {
-                (rv_apps_list?.adapter as AllAppsListAdapter).updateData(list)
-                progress_bar_add_app?.visibility = View.GONE
-                rv_apps_list?.visibility = View.VISIBLE
+        //there should be a logic that if internet is off then show handle sync not success
+        //or if loading is happening for more than 6 sec, then show sync not
+        runOnUiThread {
+            val countDownTimer = object  : CountDownTimer(5000, 1000){
+                override fun onTick(millisUntilFinished: Long) {
+
+                }
+                override fun onFinish() {
+                    if(list.isEmpty()){
+                        handleSyncedNotSuccess()
+                    }
+                }
             }
+            countDownTimer.start()
+        }
+            try{
+                list.sortWith(Comparator { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
+                runOnUiThread {
+                    (rv_apps_list?.adapter as AllAppsListAdapter).updateData(list)
+                    if(list.isNotEmpty()){
+                        progress_bar_add_app?.visibility = View.GONE
+                        rv_apps_list?.visibility = View.VISIBLE
+                    }
+                }
         }catch (e:NullPointerException){
             e.printStackTrace()
         }catch (e:TypeCastException){
             e.printStackTrace()
         }
+    }
+
+    override fun onSyncFailed(message: String) {
+        runOnUiThread {
+            progress_bar_add_app?.visibility = View.GONE
+            Toasty.error(this, message).show()
+        }
+        handleSyncedNotSuccess()
+
+    }
+
+    private fun hideNotSyncedSuccess(){
+        runOnUiThread {
+            gif_no_internet?.visibility = View.GONE
+            txt_no_internet?.visibility = View.GONE
+            btn_sync_now?.visibility = View.GONE
+        }
+    }
+
+    private fun handleSyncedNotSuccess(){
+        runOnUiThread {
+            progress_bar_add_app?.visibility = View.GONE
+            gif_no_internet?.visibility = View.VISIBLE
+            txt_no_internet?.visibility = View.VISIBLE
+            btn_sync_now?.visibility = View.VISIBLE
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
