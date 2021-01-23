@@ -198,6 +198,8 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     }
 
     override fun onApplicationFiltered(list: ArrayList<InstalledApps>) {
+        val holderList = ArrayList<InstalledApps>()
+        holderList.addAll(list)
         //there should be a logic that if internet is off then show handle sync not success
         //or if loading is happening for more than 6 sec, then show sync not
         runOnUiThread {
@@ -206,7 +208,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
                 }
                 override fun onFinish() {
-                    if(list.isEmpty()){
+                    if(holderList.isEmpty()){
                         handleSyncedNotSuccess()
                     }
                 }
