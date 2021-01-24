@@ -372,7 +372,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
 
     public fun notifyCurrentAdapter(){
         Handler(Looper.getMainLooper()).postDelayed(Runnable {
-            rv_application_list?.adapter?.notifyDataSetChanged()
+         lookForAlarmApplication()
         }, 1500)
     }
 
