@@ -2,6 +2,8 @@ package com.app.messagealarm.service
 
 import android.content.Context
 import android.content.pm.PackageInfo
+import com.app.messagealarm.BaseApplication
+import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.InstalledApps
 
 
@@ -34,4 +36,5 @@ class AppsReader {
             return res
         }
     }
+
 }

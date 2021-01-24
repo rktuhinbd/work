@@ -9,6 +9,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.graphics.drawable.toBitmap
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
+import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.utils.TimeUtils.Companion.isTimeConstrained
 import com.google.android.flexbox.FlexDirection
@@ -38,6 +40,7 @@ import kotlin.collections.ArrayList
 
 class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionView {
 
+    var shouldOnStatus = false
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     var once:Once? = null
     public var alarmTonePath:String? = null
@@ -180,7 +183,14 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
 
         btn_save?.setOnClickListener {
-                saveApplication()
+            if(checkForDefault()){
+               shouldOnStatus = false
+            }else{
+                //save application and turn switch on
+                addApplicationEntity.isRunningStatus = true
+                shouldOnStatus = true
+            }
+            saveApplication()
         }
 
         switch_custom_time?.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -749,6 +759,11 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                dismissAllowingStateLoss()
                requireActivity().finish()
            }else{
+               Log.e("FROM_EDIT", "TRUE")
+               if(shouldOnStatus){
+                   //notify adapter
+                   (activity as AlarmApplicationActivity).notifyCurrentAdapter()
+               }
                dismissAllowingStateLoss()
            }
        }
