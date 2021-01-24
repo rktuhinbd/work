@@ -71,6 +71,15 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     }
 
 
+    private fun deleteList(){
+        (rv_apps_list?.adapter as AllAppsListAdapter).cleanList()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        deleteList()
+    }
+
     private fun darkModePre(){
         if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
             spinner_drop_down?.setImageResource(R.drawable.ic_arrow_drop_down_white)
@@ -241,6 +250,13 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         }
         handleSyncedNotSuccess()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //clear search view
+        searchView?.setQuery("", false)
+        searchView?.isIconified = true
     }
 
     private fun hideNotSyncedSuccess(){

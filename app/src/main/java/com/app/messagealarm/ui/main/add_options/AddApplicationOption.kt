@@ -18,6 +18,7 @@ import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.service.AlarmServicePresenter
+import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.utils.TimeUtils.Companion.isTimeConstrained
@@ -742,8 +743,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     override fun onApplicationSaveSuccess() {
        requireActivity().runOnUiThread {
                Toasty.success(requireActivity(), getString(R.string.application_save_success)).show()
-                dismissAllowingStateLoss()
+           if(isAdded){
+               dismissAllowingStateLoss()
                requireActivity().finish()
+           }
        }
     }
 
@@ -760,15 +763,19 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                if(shouldOnStatus){
                    AlarmServicePresenter.updateAppStatus(true, holderEntity.id)
                }
-               dismissAllowingStateLoss()
-               requireActivity().finish()
+               if(isAdded){
+                   dismissAllowingStateLoss()
+                   requireActivity().finish()
+               }
            }else{
                if(shouldOnStatus){
                    AlarmServicePresenter.updateAppStatus(true, holderEntity.id)
                    //notify adapter
                    (activity as AlarmApplicationActivity).notifyCurrentAdapter()
                }
-               dismissAllowingStateLoss()
+               if(isAdded){
+                   dismissAllowingStateLoss()
+               }
            }
        }
     }
