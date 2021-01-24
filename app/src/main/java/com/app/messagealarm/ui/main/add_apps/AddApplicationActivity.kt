@@ -77,9 +77,12 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
     override fun onDestroy() {
         super.onDestroy()
-        if(rv_apps_list?.adapter != null){
-            deleteList()
+        if(rv_apps_list != null){
+            if(rv_apps_list?.adapter != null){
+                deleteList()
+            }
         }
+
     }
 
     private fun darkModePre(){
