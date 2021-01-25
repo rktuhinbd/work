@@ -426,6 +426,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         }
     }
 
+
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
