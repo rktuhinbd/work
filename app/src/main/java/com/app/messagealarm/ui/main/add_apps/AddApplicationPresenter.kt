@@ -3,6 +3,7 @@ package com.app.messagealarm.ui.main.add_apps
 import android.app.Activity
 import android.content.Intent
 import android.os.Looper
+import android.provider.Telephony
 import android.util.Log
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
@@ -91,6 +92,11 @@ class AddApplicationPresenter(
             for (x in installedAppsList) {
                 for (y in appList) {
                     if (x.packageName == y.appPackageName) {
+                        holder.add(x)
+                    }
+                }
+                if(x.packageName != "com.android.mms"){
+                    if(x.packageName == Telephony.Sms.getDefaultSmsPackage(activity)){
                         holder.add(x)
                     }
                 }
