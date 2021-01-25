@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -31,6 +32,7 @@ import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
 import com.app.messagealarm.ui.onboarding.OnboardingDialog
 import com.app.messagealarm.ui.setting.SettingsActivity
+import com.app.messagealarm.ui.widget.BottomSheetFragmentLang
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -59,10 +61,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         setContentView(R.layout.activity_main)
         setToolBar()
         setListener()
-        askForPermission()
         handleService()
         setupAppsRecyclerView()
         lookForTablesSize()
+        showLanguageDoesNotSupported()
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
 
@@ -415,6 +417,15 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         alarmAppPresenter.updateAppStatus(boolean, id)
     }
 
+    private fun showLanguageDoesNotSupported(){
+        if(AndroidUtils.getCurrentLangCode(this) != "en"){
+            val bottomSheet = BottomSheetFragmentLang()
+            bottomSheet.show(supportFragmentManager, bottomSheet.tag)
+        }else{
+            askForPermission()
+        }
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -424,7 +435,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
             //schedule quickstart
             if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_TUTORIAL_SHOW)) {
                 Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                    showQuickStartDialog()
+                   showQuickStartDialog()
                 }, 1000)
             }
         }

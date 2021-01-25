@@ -205,7 +205,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             /**
              * When in edit mode, and cleaning the name. then need to clean the holder entity. the bug is in edit mode
              */
-            Log.e("SENDER_NAME", senderName)
             if(packageName == Constants.APP.IMO_PACKAGE){
                 if(senderName == "None"){
                     Toasty.info(requireActivity(), "IMO can send notification without real message," +
