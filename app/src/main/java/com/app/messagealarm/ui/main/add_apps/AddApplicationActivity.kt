@@ -10,6 +10,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.provider.Telephony
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -222,7 +223,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         runOnUiThread {
             val countDownTimer = object  : CountDownTimer(5000, 1000){
                 override fun onTick(millisUntilFinished: Long) {
-
+                    //skipping the milliseconds as not needed
                 }
                 override fun onFinish() {
                     if(holderList.isEmpty()){
@@ -236,7 +237,11 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                 list.sortWith(Comparator { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
                 runOnUiThread {
                     (rv_apps_list?.adapter as AllAppsListAdapter).updateData(list)
-                    if(list.isNotEmpty()){
+                    if(holderList.size == 1 &&
+                            holderList[0].packageName ==
+                            Telephony.Sms.getDefaultSmsPackage(this@AddApplicationActivity)){
+                            handleSyncedNotSuccess()
+                        }else if(holderList.size > 1){
                         progress_bar_add_app?.visibility = View.GONE
                         rv_apps_list?.visibility = View.VISIBLE
                     }
@@ -284,6 +289,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
     private fun handleSyncedNotSuccess(){
         runOnUiThread {
+            rv_apps_list?.visibility = View.GONE
             progress_bar_add_app?.visibility = View.GONE
             gif_no_internet?.visibility = View.VISIBLE
             txt_no_internet?.visibility = View.VISIBLE

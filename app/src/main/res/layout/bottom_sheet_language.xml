@@ -27,7 +27,8 @@
             android:layout_width="150dip"
             android:layout_height="150dip"
             android:id="@+id/barcode_image"
-            android:src="@drawable/ic_robot"
+            android:src="@drawable/ic_cat"
+            android:padding="12dp"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="16dp"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -47,7 +48,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:textColor="#F43436"
-            android:layout_marginTop="16dp"
             />
 
         <androidx.appcompat.widget.AppCompatTextView
