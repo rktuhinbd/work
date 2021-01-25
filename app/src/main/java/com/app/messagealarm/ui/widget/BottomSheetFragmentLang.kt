@@ -1,13 +1,18 @@
 package com.app.messagealarm.ui.widget
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatTextView
 import com.app.messagealarm.R
 import com.app.messagealarm.utils.SupportUtils
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+
 
 class BottomSheetFragmentLang : BottomSheetDialogFragment(){
 
@@ -29,6 +34,20 @@ class BottomSheetFragmentLang : BottomSheetDialogFragment(){
             SupportUtils.sendEmailLanguage(requireActivity())
         }
         return v
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val bottomSheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+        bottomSheetDialog.setOnShowListener { dia ->
+            val dialog = dia as BottomSheetDialog
+            val bottomSheet =
+                dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            BottomSheetBehavior.from(bottomSheet!!).state =
+                BottomSheetBehavior.STATE_EXPANDED
+            BottomSheetBehavior.from(bottomSheet).skipCollapsed = true
+            BottomSheetBehavior.from(bottomSheet).isHideable = true
+        }
+        return bottomSheetDialog
     }
 
 }
