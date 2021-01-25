@@ -215,7 +215,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             }else{
                 saveApplication()
             }
-
         }
 
         switch_custom_time?.setOnCheckedChangeListener { buttonView, isChecked ->
