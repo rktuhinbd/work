@@ -192,7 +192,30 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 addApplicationEntity.isRunningStatus = true
                 shouldOnStatus = true
             }
-            saveApplication()
+            var packageName = ""
+            var senderName = ""
+            if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
+                val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
+                packageName = app.packageName
+                senderName = addApplicationEntity.senderNames
+            }else{
+                packageName = holderEntity.packageName
+                senderName = holderEntity.senderNames
+            }
+            /**
+             * When in edit mode, and cleaning the name. then need to clean the holder entity. the bug is in edit mode
+             */
+            if(packageName == Constants.APP.IMO_PACKAGE){
+                if(senderName == "None"){
+                    Toasty.info(requireActivity(), "IMO can send notification without real message," +
+                            " please add at least one sender name!").show()
+                }else{
+                    saveApplication()
+                }
+            }else{
+                saveApplication()
+            }
+
         }
 
         switch_custom_time?.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -859,6 +882,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     private fun convertToHolderEntity(app: ApplicationEntity){
+        holderEntity.packageName = app.packageName
         holderEntity.endTime = app.endTime
         holderEntity.startTime = app.startTime
         holderEntity.ringTone = app.ringTone

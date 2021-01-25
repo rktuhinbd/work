@@ -206,6 +206,12 @@ class Constants {
     }
 
 
+    class APP{
+        companion object{
+            const val IMO_PACKAGE = "com.imo.android.imoim"
+        }
+    }
+
 
 
     class LanguageCodes {
