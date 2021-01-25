@@ -205,6 +205,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             /**
              * When in edit mode, and cleaning the name. then need to clean the holder entity. the bug is in edit mode
              */
+            Log.e("SENDER_NAME", senderName)
             if(packageName == Constants.APP.IMO_PACKAGE){
                 if(senderName == "None"){
                     Toasty.info(requireActivity(), "IMO can send notification without real message," +
@@ -408,6 +409,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             DialogUtils.showDialog(requireActivity(), getString(R.string.txt_clear_sender_name),
                 getString(R.string.txt_desc_clear_sender_namne), object : DialogUtils.Callback {
                     override fun onPositive() {
+                        if(arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
+                            holderEntity.senderNames = "None"
+
+                        }
                         addApplicationEntity.senderNames = "None"
                         txt_sender_name_value?.text = "None"
                         btn_sender_name_clear?.visibility = View.GONE
@@ -588,6 +593,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 txt_sender_name_value?.text = name
                 btn_sender_name_clear?.visibility = View.VISIBLE
                 addApplicationEntity.senderNames = name
+                if(arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
+                    holderEntity.senderNames = name
+
+                }
                 dialog.dismiss()
             } else {
                 btn_sender_name_clear?.visibility = View.GONE
@@ -764,8 +773,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
     override fun onApplicationSaveSuccess() {
        requireActivity().runOnUiThread {
-               Toasty.success(requireActivity(), getString(R.string.application_save_success)).show()
            if(isAdded){
+               Toasty.success(requireActivity(), getString(R.string.application_save_success)).show()
                dismissAllowingStateLoss()
                requireActivity().finish()
            }
@@ -780,7 +789,9 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
     override fun onApplicationUpdateSuccess() {
        requireActivity().runOnUiThread {
-           Toasty.success(requireActivity(), getString(R.string.update_successful)).show()
+           if(isAdded){
+               Toasty.success(requireActivity(), getString(R.string.update_successful)).show()
+           }
            if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
                if(shouldOnStatus){
                    AlarmServicePresenter.updateAppStatus(true, holderEntity.id)
