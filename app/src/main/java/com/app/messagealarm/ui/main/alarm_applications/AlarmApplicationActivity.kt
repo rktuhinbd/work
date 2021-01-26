@@ -10,23 +10,29 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.BaseActivity
+import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.app.messagealarm.model.entity.ApplicationEntity
+import com.app.messagealarm.service.app_reader_intent_service.AppsReaderIntentService
 import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.ui.adapters.AddedAppsListAdapter
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
 import com.app.messagealarm.ui.onboarding.OnboardingDialog
 import com.app.messagealarm.ui.setting.SettingsActivity
+import com.app.messagealarm.ui.widget.BottomSheetFragmentLang
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -55,16 +61,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         setContentView(R.layout.activity_main)
         setToolBar()
         setListener()
-        askForPermission()
         handleService()
         setupAppsRecyclerView()
         lookForTablesSize()
+        showLanguageDoesNotSupported()
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
-        //schedule quickstart
-        Handler().postDelayed(Runnable {
-            showQuickStartDialog()
-        }, 5000)
 
          mMessageReceiver =  object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -83,6 +85,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
 
     override fun onResume() {
         super.onResume()
+        if(BaseApplication.installedApps.isEmpty()){
+            val mIntent = Intent(this, AppsReaderIntentService::class.java)
+            AppsReaderIntentService.enqueueWork(this, mIntent)
+        }
         lookForAlarmApplication()
         val isServiceStopped =
             SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)
@@ -180,21 +186,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
     }
 
     private fun askForPermission() {
-        PermissionUtils.requestPermission(
-            this, android.Manifest.permission.READ_EXTERNAL_STORAGE
-        )
-        PermissionUtils.requestPermission(
-            this,
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
-        PermissionUtils.requestPermission(
-            this,
-            android.Manifest.permission.SYSTEM_ALERT_WINDOW
-        )
-        PermissionUtils.requestPermission(
-            this,
-            android.Manifest.permission.RECEIVE_BOOT_COMPLETED
-        )
+        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            android.Manifest.permission.SYSTEM_ALERT_WINDOW,  android.Manifest.permission.RECEIVE_BOOT_COMPLETED),1)
     }
 
     private fun recyclerViewSwipeHandler() {
@@ -378,6 +372,13 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         }
     }
 
+    public fun notifyCurrentAdapter(){
+        Handler(Looper.getMainLooper()).postDelayed(Runnable {
+         lookForAlarmApplication()
+        }, 1500)
+    }
+
+
     override fun onAppStatusUpdateSuccess() {
 
     }
@@ -414,6 +415,34 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
 
     override fun onApplicationSwitch(boolean: Boolean, id: Int) {
         alarmAppPresenter.updateAppStatus(boolean, id)
+    }
+
+    private fun showLanguageDoesNotSupported(){
+        if(AndroidUtils.getCurrentLangCode(this) != "en"){
+            val bottomSheet = BottomSheetFragmentLang()
+            bottomSheet.show(supportFragmentManager, bottomSheet.tag)
+        }else{
+            askForPermission()
+        }
+    }
+
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == 1) {
+            //schedule quickstart
+            if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_TUTORIAL_SHOW)) {
+                Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                   showQuickStartDialog()
+                }, 1000)
+            }
+        }
+
+
     }
 
 }

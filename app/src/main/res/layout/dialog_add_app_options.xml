@@ -160,7 +160,7 @@
                     android:id="@+id/txt_repeat_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Once"
+                    android:text="Always"
                     android:textSize="12sp"
                     android:textColor="@color/default_text"
                     app:layout_constraintBottom_toBottomOf="@id/view_repeat_bg"

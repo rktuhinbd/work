@@ -11,9 +11,20 @@ class SupportUtils {
     companion object {
         fun sendEmail(activity: Activity) {
             val email = Intent(Intent.ACTION_SEND)
-            email.putExtra(Intent.EXTRA_EMAIL, arrayOf<String>("info@messagealarm.com"))
+            email.putExtra(Intent.EXTRA_EMAIL, arrayOf<String>("info@messagealarm.app"))
             email.putExtra(Intent.EXTRA_SUBJECT, "Hey, I need help!")
             email.putExtra(Intent.EXTRA_TEXT, message)
+//need this to prompts email client only
+            //need this to prompts email client only
+            email.type = "message/rfc822"
+            activity.startActivity(Intent.createChooser(email, "Choose an Email client :"))
+        }
+
+        fun sendEmailLanguage(activity: Activity) {
+            val email = Intent(Intent.ACTION_SEND)
+            email.putExtra(Intent.EXTRA_EMAIL, arrayOf<String>("info@messagealarm.app"))
+            email.putExtra(Intent.EXTRA_SUBJECT, "Hey, I wants you to add my language in this app!")
+            email.putExtra(Intent.EXTRA_TEXT, "Please mention your desired language name: ")
 //need this to prompts email client only
             //need this to prompts email client only
             email.type = "message/rfc822"

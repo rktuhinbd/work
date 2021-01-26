@@ -9,6 +9,8 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.provider.Telephony
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -22,9 +24,11 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
+import com.app.messagealarm.service.app_reader_intent_service.AppsReaderIntentService
 import com.app.messagealarm.ui.adapters.AllAppsListAdapter
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
 import com.app.messagealarm.utils.*
@@ -47,6 +51,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     var addApplicationPresenter:AddApplicationPresenter? = null
     val bottomSheetModel = AddApplicationOption()
     val REQUEST_CODE_PICK_AUDIO = 1
+    var searchView: SearchView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         changeTheme()
@@ -56,22 +61,42 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         //setup toolbar
         toolBarSetup()
         //hide spinner
+        txt_filter_by?.visibility = View.INVISIBLE
         spinner_filter?.visibility = View.INVISIBLE
         spinner_drop_down?.visibility = View.INVISIBLE
         //setup presenter
         addApplicationPresenter = AddApplicationPresenter(this, this)
         filterListener()
         darkModePre()
+        setListener()
     }
 
+
+    private fun deleteList(){
+        (rv_apps_list?.adapter as AllAppsListAdapter).cleanList()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if(rv_apps_list != null){
+            if(rv_apps_list?.adapter != null){
+                deleteList()
+            }
+        }
+
+    }
 
     private fun darkModePre(){
         if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
             spinner_drop_down?.setImageResource(R.drawable.ic_arrow_drop_down_white)
-            progress_bar_add_app?.setImageResource(R.drawable.gif_dark_mode)
+            progress_bar_add_app?.setImageResource(R.drawable.loader_dark)
+            gif_no_internet?.setImageResource(R.drawable.no_internet_dark)
+            search_not_found?.setImageResource(R.drawable.ic_search_no_found_dark)
         }else{
             spinner_drop_down?.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp)
-            progress_bar_add_app?.setImageResource(R.drawable.loader)
+            progress_bar_add_app?.setImageResource(R.drawable.loader_white)
+            gif_no_internet?.setImageResource(R.drawable.no_internet_white)
+            search_not_found?.setImageResource(R.drawable.ic_search_no_found_white)
         }
     }
 
@@ -85,6 +110,17 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
+        }
+    }
+
+    private fun setListener(){
+        btn_sync_now?.setOnClickListener {
+            if(AndroidUtils.isOnline(this)){
+                Toasty.success(this, "Sync started, please hold on!").show()
+            }
+            hideNotSyncedSuccess()
+            progress_bar_add_app?.visibility = View.VISIBLE
+            addApplicationPresenter?.sync()
         }
     }
 
@@ -105,6 +141,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                 rv_apps_list?.visibility = View.VISIBLE
                 initAllAppsRecyclerView(list)
                 spinner_filter?.visibility = View.VISIBLE
+                txt_filter_by?.visibility = View.VISIBLE
                 spinner_drop_down?.visibility = View.VISIBLE
             }
 
@@ -135,10 +172,17 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 if(p2 == 0){
+                    hideNotSyncedSuccess()
+                    //clear search view
+                    searchView?.setQuery("", false)
+                    searchView?.isIconified = true
                     rv_apps_list?.visibility = View.GONE
                     progress_bar_add_app?.visibility = View.VISIBLE
                     addApplicationPresenter!!.getAllApplicationList()
                 }else{
+                    //clear search view
+                    searchView?.setQuery("", false)
+                    searchView?.isIconified = true
                     rv_apps_list?.visibility = View.GONE
                     progress_bar_add_app?.visibility = View.VISIBLE
                     addApplicationPresenter!!.filterByMessaging()
@@ -172,14 +216,36 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     }
 
     override fun onApplicationFiltered(list: ArrayList<InstalledApps>) {
-        try{
-            Collections.sort(list,
-                Comparator<InstalledApps> { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
-            runOnUiThread {
-                (rv_apps_list?.adapter as AllAppsListAdapter).updateData(list)
-                progress_bar_add_app?.visibility = View.GONE
-                rv_apps_list?.visibility = View.VISIBLE
+        val holderList = ArrayList<InstalledApps>()
+        holderList.addAll(list)
+        //there should be a logic that if internet is off then show handle sync not success
+        //or if loading is happening for more than 6 sec, then show sync not
+        runOnUiThread {
+            val countDownTimer = object  : CountDownTimer(5000, 1000){
+                override fun onTick(millisUntilFinished: Long) {
+                    //skipping the milliseconds as not needed
+                }
+                override fun onFinish() {
+                    if(holderList.isEmpty()){
+                        handleSyncedNotSuccess()
+                    }
+                }
             }
+            countDownTimer.start()
+        }
+            try{
+                list.sortWith(Comparator { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
+                runOnUiThread {
+                    (rv_apps_list?.adapter as AllAppsListAdapter).updateData(list)
+                    if(holderList.size == 1 &&
+                            holderList[0].packageName ==
+                            Telephony.Sms.getDefaultSmsPackage(this@AddApplicationActivity)){
+                            handleSyncedNotSuccess()
+                        }else if(holderList.size > 1){
+                        progress_bar_add_app?.visibility = View.GONE
+                        rv_apps_list?.visibility = View.VISIBLE
+                    }
+                }
         }catch (e:NullPointerException){
             e.printStackTrace()
         }catch (e:TypeCastException){
@@ -187,22 +253,74 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         }
     }
 
+    override fun onSyncFailed(message: String) {
+        runOnUiThread {
+            progress_bar_add_app?.visibility = View.GONE
+            Toasty.error(this, message).show()
+        }
+        handleSyncedNotSuccess()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //clear search view
+        searchView?.setQuery("", false)
+        searchView?.isIconified = true
+    }
+
+    private fun hideNotSyncedSuccess(){
+        runOnUiThread {
+            gif_no_internet?.visibility = View.GONE
+            txt_no_internet?.visibility = View.GONE
+            btn_sync_now?.visibility = View.GONE
+        }
+    }
+
+    private fun showSearchNotFound(){
+        search_not_found?.visibility = View.VISIBLE
+        txt_search_no_found?.visibility = View.VISIBLE
+    }
+
+    private fun hideSearchNotFound(){
+        search_not_found?.visibility = View.GONE
+        txt_search_no_found?.visibility = View.GONE
+    }
+
+    private fun handleSyncedNotSuccess(){
+        runOnUiThread {
+            rv_apps_list?.visibility = View.GONE
+            progress_bar_add_app?.visibility = View.GONE
+            gif_no_internet?.visibility = View.VISIBLE
+            txt_no_internet?.visibility = View.VISIBLE
+            btn_sync_now?.visibility = View.VISIBLE
+        }
+
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         menuInflater.inflate(R.menu.menu_add_app, menu)
         val searchItem: MenuItem? = menu?.findItem(R.id.mnu_search)
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val searchView: SearchView? = searchItem?.actionView as SearchView
+         searchView = searchItem?.actionView as SearchView
         // Assumes current activity is the searchable activity
         searchView?.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         setSearchViewEditTextBackgroundColor(this, searchView!!)
-        searchView.setOnQueryTextListener(object :
+        searchView?.setOnQueryTextListener(object :
             androidx.appcompat.widget.SearchView.OnQueryTextListener,
             SearchView.OnQueryTextListener {
 
             override fun onQueryTextSubmit(query: String?): Boolean {
                 try{
                     (rv_apps_list?.adapter as AllAppsListAdapter).filter(query!!)
+                    if((rv_apps_list?.adapter as AllAppsListAdapter).adapterSize() == 0 &&
+                        !gif_no_internet?.isVisibile()!! &&
+                        !progress_bar_add_app?.isVisibile()!!){
+                        showSearchNotFound()
+                    }else{
+                        hideSearchNotFound()
+                    }
                 }catch (e:TypeCastException){
                     e.printStackTrace()
                 }catch (e:NullPointerException){
@@ -215,6 +333,14 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             override fun onQueryTextChange(newText: String?): Boolean {
                 try{
                     (rv_apps_list?.adapter as AllAppsListAdapter).filter(newText!!)
+                    if((rv_apps_list?.adapter as AllAppsListAdapter).adapterSize() == 0 &&
+                        !gif_no_internet?.isVisibile()!! &&
+                            !progress_bar_add_app?.isVisibile()!!
+                            ){
+                        showSearchNotFound()
+                    }else{
+                        hideSearchNotFound()
+                    }
                 }catch (e:TypeCastException){
                     e.printStackTrace()
                 }catch (e:NullPointerException){
@@ -225,17 +351,17 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             }
         })
         if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
-            val clearButton = searchView.context.resources.getIdentifier("android:id/search_close_btn",null,null)
-            val buttonId = searchView.context.resources.getIdentifier("android:id/search_button",null, null)
-            val id = searchView.context.resources.getIdentifier("android:id/search_src_text", null, null);
-            val textView = searchView.findViewById<TextView>(id)
-            val imageView = searchView.findViewById<ImageView>(buttonId)
-            val clearImage = searchView.findViewById<ImageView>(clearButton)
-            clearImage.setColorFilter(Color.WHITE)
-            imageView.setColorFilter(Color.WHITE)
-            textView.setTextColor(Color.WHITE)
-            textView.hint = getString(R.string.txt_search_app)
-            textView.setHintTextColor(Color.GRAY)
+            val clearButton = searchView?.context?.resources?.getIdentifier("android:id/search_close_btn",null,null)
+            val buttonId = searchView?.context?.resources?.getIdentifier("android:id/search_button",null, null)
+            val id = searchView?.context?.resources?.getIdentifier("android:id/search_src_text", null, null);
+            val textView = searchView?.findViewById<TextView>(id!!)
+            val imageView = searchView?.findViewById<ImageView>(buttonId!!)
+            val clearImage = searchView?.findViewById<ImageView>(clearButton!!)
+            clearImage?.setColorFilter(Color.WHITE)
+            imageView?.setColorFilter(Color.WHITE)
+            textView?.setTextColor(Color.WHITE)
+            textView?.hint = getString(R.string.txt_search_app)
+            textView?.setHintTextColor(Color.GRAY)
         }
         return super.onCreateOptionsMenu(menu)
 

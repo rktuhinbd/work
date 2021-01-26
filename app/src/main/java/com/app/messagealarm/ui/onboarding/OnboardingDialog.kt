@@ -10,6 +10,8 @@ import androidx.viewpager.widget.ViewPager
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.onboarding.adapter.QuickStartAdapter
 import com.app.messagealarm.ui.onboarding.fragments.*
+import com.app.messagealarm.utils.Constants
+import com.app.messagealarm.utils.SharedPrefUtils
 import kotlinx.android.synthetic.main.layout_dialog_onboarding.*
 
 class OnboardingDialog : DialogFragment(){
@@ -32,6 +34,7 @@ class OnboardingDialog : DialogFragment(){
 
     private fun setListener(){
         btn_skip?.setOnClickListener {
+            SharedPrefUtils.write(Constants.PreferenceKeys.IS_TUTORIAL_SHOW, true)
             dismiss()
         }
         btn_next?.setOnClickListener {
@@ -42,6 +45,7 @@ class OnboardingDialog : DialogFragment(){
         }
 
         btn_finish?.setOnClickListener {
+            SharedPrefUtils.write(Constants.PreferenceKeys.IS_TUTORIAL_SHOW, true)
             dismiss()
         }
     }

@@ -1,18 +1,15 @@
 package com.app.messagealarm
 
-import android.app.Activity
-import android.app.Application
-import android.content.ComponentCallbacks2
 import android.content.Context
-import android.os.Bundle
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.app.messagealarm.BaseApplication.Companion.sInstance
-import com.app.messagealarm.ui.alarm.AlarmActivity
+import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.LanguageUtils
 import com.app.messagealarm.utils.SharedPrefUtils
 import timber.log.Timber
+import java.util.*
 
 /**
  * This is the Application class of the project. As we want to enable multi-dex inorder to
@@ -28,6 +25,7 @@ class BaseApplication : MultiDexApplication(){
 
     companion object {
 
+        var installedApps: List<InstalledApps> = ArrayList()
         /**
          * check if the alarm activity is active or not
          */

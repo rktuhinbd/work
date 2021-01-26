@@ -138,6 +138,8 @@ class Constants {
 
     class PreferenceKeys {
         companion object {
+            const val FIREBASE_TOKEN = "firebase_token"
+            const val IS_TUTORIAL_SHOW = "is_tutorial"
             const val IS_NOTIFICATION_SWIPED = "is_swiped"
             const val IS_ACTIVITY_STARTED = "is_activity_started"
             const val IS_STOPPED = "is_stopped"
@@ -183,6 +185,7 @@ class Constants {
         companion object{
             const val SYNC = "sync"
             const val REGISTER_TOKEN = "token/"
+            const val UNKNOWN_APP = "unknownapp/"
         }
         class Body{
             companion object{
@@ -191,6 +194,8 @@ class Constants {
                 const val CONSTRAIN_SIZE = "constrain_size"
                 const val TOKEN = "token"
                 const val LANG_CODE = "lang_code"
+                const val APP_NAME = "app_name"
+                const val PACKAGE_NAME = "app_package_name"
             }
         }
         class ResponseFormat{
@@ -200,6 +205,12 @@ class Constants {
         }
     }
 
+
+    class APP{
+        companion object{
+            const val IMO_PACKAGE = "com.imo.android.imoim"
+        }
+    }
 
 
 

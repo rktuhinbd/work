@@ -46,7 +46,9 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
                 val appSize = appDatabase.appDao().totalCountOfApp
                 val langSize = appDatabase.languageDao().totalCountOfLanguage
                 val appConstrainSize = appDatabase.appConstrainDao().totalCountOfAppConstrain
-                alarmApplicationView.onTablesSizeRequestSuccess(appSize, langSize, appConstrainSize)
+                if(appSize == 0 || appConstrainSize == 0){
+                    alarmApplicationView.onTablesSizeRequestSuccess(appSize, langSize, appConstrainSize)
+                }
             }catch (e:SQLiteException){
 
             }catch (e:NullPointerException){

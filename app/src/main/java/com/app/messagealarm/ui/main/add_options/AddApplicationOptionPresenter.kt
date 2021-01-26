@@ -12,8 +12,13 @@ import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.entity.ApplicationEntity
+import com.app.messagealarm.networking.RetrofitClient
+import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.DataUtils
+import com.app.messagealarm.utils.SharedPrefUtils
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.gson.JsonParseException
+import org.json.JSONException
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
@@ -21,6 +26,7 @@ import java.io.IOException
 import java.lang.Exception
 import java.lang.IllegalStateException
 import java.lang.NullPointerException
+import java.net.SocketTimeoutException
 
 class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApplicationOptionView) {
 
@@ -96,6 +102,38 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
         }).start()
     }
 
+    fun checkForUnknownApp(appName:String, packageName:String){
+        val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
+        var count = 0
+        Thread(Runnable {
+            val appList = appDatabase.appDao().appsList
+            appList.forEach {
+                if(it.appPackageName == packageName){
+                    count++
+                }
+            }
+            if(count == 0){
+                //it's an unknown app
+                sendUnknownAppNameToServer(appName, packageName)
+            }
+        }).start()
+    }
+
+    private fun sendUnknownAppNameToServer(appName: String, packageName: String){
+        try{
+            RetrofitClient.getApiService().notifyUnknownApp(appName, packageName,
+                SharedPrefUtils.readString(Constants.PreferenceKeys.FIREBASE_TOKEN,"not_found")).execute()
+        }catch (e:JsonParseException){
+
+        }catch (e:SocketTimeoutException){
+
+        }catch (e:IOException){
+
+        }catch (e:JSONException){
+
+        }
+
+    }
 
     /*
       * this method save a bitmap to file
