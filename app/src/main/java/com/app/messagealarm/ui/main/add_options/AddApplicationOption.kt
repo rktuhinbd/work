@@ -9,6 +9,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.graphics.drawable.toBitmap
@@ -16,6 +17,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
+import com.app.messagealarm.service.AlarmServicePresenter
+import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
+import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.utils.TimeUtils.Companion.isTimeConstrained
 import com.google.android.flexbox.FlexDirection
@@ -38,6 +42,7 @@ import kotlin.collections.ArrayList
 
 class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionView {
 
+    var shouldOnStatus = false
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     var once:Once? = null
     public var alarmTonePath:String? = null
@@ -180,7 +185,36 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
 
         btn_save?.setOnClickListener {
+            if(checkForDefault()){
+               shouldOnStatus = false
+            }else{
+                //save application and turn switch on
+                addApplicationEntity.isRunningStatus = true
+                shouldOnStatus = true
+            }
+            var packageName = ""
+            var senderName = ""
+            if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
+                val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
+                packageName = app.packageName
+                senderName = addApplicationEntity.senderNames
+            }else{
+                packageName = holderEntity.packageName
+                senderName = holderEntity.senderNames
+            }
+            /**
+             * When in edit mode, and cleaning the name. then need to clean the holder entity. the bug is in edit mode
+             */
+            if(packageName == Constants.APP.IMO_PACKAGE){
+                if(senderName == "None"){
+                    Toasty.info(requireActivity(), "IMO can send notification without real message," +
+                            " please add at least one sender name!").show()
+                }else{
+                    saveApplication()
+                }
+            }else{
                 saveApplication()
+            }
         }
 
         switch_custom_time?.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -374,6 +408,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             DialogUtils.showDialog(requireActivity(), getString(R.string.txt_clear_sender_name),
                 getString(R.string.txt_desc_clear_sender_namne), object : DialogUtils.Callback {
                     override fun onPositive() {
+                        if(arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
+                            holderEntity.senderNames = "None"
+
+                        }
                         addApplicationEntity.senderNames = "None"
                         txt_sender_name_value?.text = "None"
                         btn_sender_name_clear?.visibility = View.GONE
@@ -405,7 +443,9 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                                     @SuppressLint("SetTextI18n")
                                     override fun onChecked(list: List<String>) {
                                         if(list.isEmpty()){
-                                            Toasty.info(requireActivity(), "Please select at least one day!").show()
+                                            Toasty.info(requireActivity(), "No day selected, Always set as default!").show()
+                                            txt_repeat_value?.text = "Always"
+                                            addApplicationEntity.alarmRepeat = "Always"
                                         }else{
                                             var selectedDays: String = ""
                                             list.forEach {
@@ -552,6 +592,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 txt_sender_name_value?.text = name
                 btn_sender_name_clear?.visibility = View.VISIBLE
                 addApplicationEntity.senderNames = name
+                if(arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
+                    holderEntity.senderNames = name
+
+                }
                 dialog.dismiss()
             } else {
                 btn_sender_name_clear?.visibility = View.GONE
@@ -604,7 +648,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
 
     private fun defaultValuesToDataModel() : ApplicationEntity {
-        addApplicationEntity.alarmRepeat = "Once"
+        addApplicationEntity.alarmRepeat = "Always"
         addApplicationEntity.ringTone = "Default"
         addApplicationEntity.isVibrateOnAlarm = false
         addApplicationEntity.isJustVibrate = false
@@ -617,7 +661,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         addApplicationEntity.isRunningStatus = true
 
         //set this to holder object for checking default
-        holderEntity.alarmRepeat = "Once"
+        holderEntity.alarmRepeat = "Always"
         holderEntity.ringTone = "Default"
         holderEntity.isVibrateOnAlarm = false
         holderEntity.isJustVibrate = false
@@ -652,6 +696,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         app.packageName,
                         bitmap.toBitmap()
                     )
+                    addApplicationOptionPresenter?.checkForUnknownApp(addApplicationEntity.appName,
+                        addApplicationEntity.packageName)
                 } catch (e: Exception) {
                     if(isAdded){
                         requireActivity().runOnUiThread {
@@ -726,9 +772,11 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
     override fun onApplicationSaveSuccess() {
        requireActivity().runOnUiThread {
+           if(isAdded){
                Toasty.success(requireActivity(), getString(R.string.application_save_success)).show()
-                dismissAllowingStateLoss()
+               dismissAllowingStateLoss()
                requireActivity().finish()
+           }
        }
     }
 
@@ -740,12 +788,26 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
     override fun onApplicationUpdateSuccess() {
        requireActivity().runOnUiThread {
-           Toasty.success(requireActivity(), getString(R.string.update_successful)).show()
+           if(isAdded){
+               Toasty.success(requireActivity(), getString(R.string.update_successful)).show()
+           }
            if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
-               dismissAllowingStateLoss()
-               requireActivity().finish()
+               if(shouldOnStatus){
+                   AlarmServicePresenter.updateAppStatus(true, holderEntity.id)
+               }
+               if(isAdded){
+                   dismissAllowingStateLoss()
+                   requireActivity().finish()
+               }
            }else{
-               dismissAllowingStateLoss()
+               if(shouldOnStatus){
+                   AlarmServicePresenter.updateAppStatus(true, holderEntity.id)
+                   //notify adapter
+                   (activity as AlarmApplicationActivity).notifyCurrentAdapter()
+               }
+               if(isAdded){
+                   dismissAllowingStateLoss()
+               }
            }
        }
     }
@@ -829,6 +891,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     private fun convertToHolderEntity(app: ApplicationEntity){
+        holderEntity.packageName = app.packageName
         holderEntity.endTime = app.endTime
         holderEntity.startTime = app.startTime
         holderEntity.ringTone = app.ringTone

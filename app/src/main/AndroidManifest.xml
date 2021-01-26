@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.app.messagealarm">
 
+    <uses-permission android:name="com.android.vending.BILLING"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
@@ -27,6 +29,8 @@
     android:supportsRtl="true"
     android:theme="@style/AppTheme"
     tools:targetApi="q">
+
+
 
         <activity
             android:name=".ui.setting.SettingsActivity"
@@ -144,10 +148,16 @@
 
         <service
             android:name=".firebase.PushMessage" android:exported="true">
+            <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
+                android:resource="@drawable/ic_notification" />
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
+
+        <service android:name=".service.app_reader_intent_service.AppsReaderIntentService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            />
 
 
         <receiver android:exported="false"

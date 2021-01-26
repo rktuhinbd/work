@@ -6,4 +6,5 @@ interface AddApplicationView {
     fun onAllApplicationGetSuccess(list: ArrayList<InstalledApps>)
     fun onAllApplicationGetError(message: String)
     fun onApplicationFiltered(list: ArrayList<InstalledApps>)
+    fun onSyncFailed(message:String)
 }

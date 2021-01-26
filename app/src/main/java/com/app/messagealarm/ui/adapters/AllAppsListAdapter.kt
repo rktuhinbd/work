@@ -45,6 +45,11 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
         notifyDataSetChanged()
     }
 
+    public fun cleanList(){
+        appsList.clear()
+        itemsCopy.clear()
+    }
+
     fun filter(text: String) {
         var text = text
         appsList.clear()
@@ -60,6 +65,10 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
             }
         }
         notifyDataSetChanged()
+    }
+
+    public fun adapterSize() : Int{
+        return appsList.size
     }
 
 

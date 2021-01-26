@@ -17,6 +17,7 @@ import com.app.messagealarm.R
 import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.DataUtils
+import com.app.messagealarm.utils.SharedPrefUtils
 import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -38,6 +39,8 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
 
     override fun onNewToken(p0: String) {
         super.onNewToken(p0)
+        //save token to shared preference
+        SharedPrefUtils.write(Constants.PreferenceKeys.FIREBASE_TOKEN, p0)
         val tokenCall = RetrofitClient.getApiService().registerToken(p0)
         tokenCall.execute()
     }
@@ -71,7 +74,7 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
         // Set the notification parameters to the notification builder object
         builder
             .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.ic_notification)
             .setSound(defaultSoundUri)
             .setContentTitle(remoteMessage!!.data["title"])
             .setContentText(remoteMessage.data["body"])

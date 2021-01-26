@@ -94,7 +94,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:outer_color="@color/colorAccent"
+        app:outer_color="#1436F5"
         app:slider_height="60dp"
         app:text_style="bold"
         app:slider_locked="false"

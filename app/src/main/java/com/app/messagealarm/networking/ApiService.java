@@ -1,6 +1,7 @@
 package com.app.messagealarm.networking;
 
 import com.app.messagealarm.model.response.TokenResponse;
+import com.app.messagealarm.model.response.UnknownAppResponse;
 import com.app.messagealarm.model.response.sync.SyncResponse;
 import com.app.messagealarm.utils.Constants;
 
@@ -27,4 +28,12 @@ public interface ApiService {
                                 @Query(Constants.API.Body.CONSTRAIN_SIZE) int constrainSize,
                                 @Query(Constants.API.Body.LANG_CODE) String langCode
                                 );
+
+    @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})
+    @FormUrlEncoded
+    @POST(Constants.API.UNKNOWN_APP)
+    Call<UnknownAppResponse> notifyUnknownApp(@Field(Constants.API.Body.APP_NAME)String appName,
+                                              @Field(Constants.API.Body.PACKAGE_NAME) String packageName,
+                                              @Field(Constants.API.Body.TOKEN) String token
+                                              );
 }
