@@ -147,7 +147,7 @@
         android:id="@+id/progress_bar_add_app"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/loader"
+        android:src="@drawable/loader_white"
         android:visibility="visible"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
