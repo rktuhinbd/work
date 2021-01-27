@@ -4,8 +4,7 @@
 
 
         <item android:id="@+id/mnu_pro"
-            android:title="Buy Pro"
-            android:icon="@drawable/ic_buy"
+            android:title="Pro"
             app:showAsAction="ifRoom"
             />
 
