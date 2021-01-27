@@ -36,6 +36,7 @@
         <activity android:name=".ui.buy_pro.BuyProActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
+            android:theme="@style/AppTheme.GradientStatusBar"
             tools:ignore="LockedOrientationActivity" />
 
         <activity
