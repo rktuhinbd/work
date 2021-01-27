@@ -11,7 +11,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -28,6 +27,7 @@ import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.service.app_reader_intent_service.AppsReaderIntentService
 import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.ui.adapters.AddedAppsListAdapter
+import com.app.messagealarm.ui.buy_pro.BuyProActivity
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
 import com.app.messagealarm.ui.onboarding.OnboardingDialog
@@ -43,7 +43,6 @@ import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import java.io.File
-import kotlin.system.exitProcess
 
 
 class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
@@ -65,12 +64,25 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         setupAppsRecyclerView()
         lookForTablesSize()
         showLanguageDoesNotSupported()
+        watchForPurchase()
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
 
          mMessageReceiver =  object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 switch_alarm_status?.isChecked = false
+            }
+        }
+    }
+
+
+
+    private fun watchForPurchase(){
+        if(intent != null && intent.hasExtra(Constants.IntentKeys.IS_PURCHASED)){
+            if(intent?.getBooleanExtra(Constants.IntentKeys.IS_PURCHASED, false)!!){
+                Toasty.success(this, "Thanks for purchase! You are now pro user!").show()
+            }else{
+                Toasty.error(this, "Your purchase is canceled!").show()
             }
         }
     }
@@ -93,7 +105,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         val isServiceStopped =
             SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)
         switch_alarm_status?.isChecked = !isServiceStopped
-        this.registerReceiver(mMessageReceiver,  IntentFilter("turn_off_switch"))
+        this.registerReceiver(mMessageReceiver, IntentFilter("turn_off_switch"))
     }
 
 
@@ -120,6 +132,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         when (item.itemId) {
             R.id.mnu_setting -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
+            }
+            R.id.mnu_pro -> {
+                startActivity(Intent(this, BuyProActivity::class.java))
             }
             else -> {
             }
@@ -186,9 +201,14 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
     }
 
     private fun askForPermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE,
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            android.Manifest.permission.SYSTEM_ALERT_WINDOW,  android.Manifest.permission.RECEIVE_BOOT_COMPLETED),1)
+        ActivityCompat.requestPermissions(
+            this, arrayOf(
+                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                android.Manifest.permission.SYSTEM_ALERT_WINDOW,
+                android.Manifest.permission.RECEIVE_BOOT_COMPLETED
+            ), 1
+        )
     }
 
     private fun recyclerViewSwipeHandler() {
@@ -373,8 +393,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
     }
 
     public fun notifyCurrentAdapter(){
+        //at this point getting the concurrent modification exception
         Handler(Looper.getMainLooper()).postDelayed(Runnable {
-         lookForAlarmApplication()
+            lookForAlarmApplication()
         }, 1500)
     }
 
@@ -400,13 +421,20 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
 
     override fun onItemClick(app: ApplicationEntity) {
         //refresh adapter first
-        if (!bottomSheetModel.isAdded) {
-            val bundle = Bundle()
-            bundle.putBoolean(Constants.BundleKeys.IS_EDIT_MODE, true)
-            bundle.putString(Constants.BundleKeys.PACKAGE_NAME, app.packageName)
-            bottomSheetModel.arguments = bundle
-            bottomSheetModel.show(supportFragmentManager, "MAIN")
+        if(!isFinishing){
+            try {
+                if (!bottomSheetModel.isAdded) {
+                    val bundle = Bundle()
+                    bundle.putBoolean(Constants.BundleKeys.IS_EDIT_MODE, true)
+                    bundle.putString(Constants.BundleKeys.PACKAGE_NAME, app.packageName)
+                    bottomSheetModel.arguments = bundle
+                    bottomSheetModel.show(supportFragmentManager, "MAIN")
+                }
+            }catch (e:java.lang.IllegalStateException){
+                //skip the crash
+            }
         }
+
     }
 
     override fun onLongClick(app: ApplicationEntity) {
@@ -437,7 +465,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
             //schedule quickstart
             if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_TUTORIAL_SHOW)) {
                 Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                   showQuickStartDialog()
+                    showQuickStartDialog()
                 }, 1000)
             }
         }

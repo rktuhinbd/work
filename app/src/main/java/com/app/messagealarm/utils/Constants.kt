@@ -138,6 +138,7 @@ class Constants {
 
     class PreferenceKeys {
         companion object {
+            const val IS_PURCHASED = "is_purchased"
             const val FIREBASE_TOKEN = "firebase_token"
             const val IS_TUTORIAL_SHOW = "is_tutorial"
             const val IS_NOTIFICATION_SWIPED = "is_swiped"
@@ -155,6 +156,7 @@ class Constants {
 
     class IntentKeys {
         companion object {
+            const val IS_PURCHASED = "is_purchased"
             const val TITLE = "title"
             const val DESC = "desc"
             const val IMAGE_PATH = "image"

@@ -25,6 +25,12 @@ public interface ApplicationDao {
     @Query("UPDATE applications SET running_status = :status WHERE id = :id")
     void updateAppStatus(boolean status, int id);
 
+    @Query("UPDATE applications SET vibrate_on_alarm = :status")
+    void disableVibrateToAllApp(boolean status);
+
+    @Query("UPDATE applications SET just_vibrate = :status")
+    void disableJustVibrateToAllApp(boolean status);
+
     @Delete
     void deleteApplication(ApplicationEntity applicationEntity);
 
