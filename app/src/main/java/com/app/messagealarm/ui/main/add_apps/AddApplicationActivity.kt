@@ -181,11 +181,14 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                     addApplicationPresenter!!.getAllApplicationList()
                 }else{
                     //clear search view
+                    spinner_filter?.isEnabled = false
+                    spinner_filter?.isClickable = false
                     searchView?.setQuery("", false)
                     searchView?.isIconified = true
                     rv_apps_list?.visibility = View.GONE
                     progress_bar_add_app?.visibility = View.VISIBLE
                     addApplicationPresenter!!.filterByMessaging()
+
                 }
             }
         }
@@ -245,12 +248,15 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                         progress_bar_add_app?.visibility = View.GONE
                         rv_apps_list?.visibility = View.VISIBLE
                     }
+                    spinner_filter?.isEnabled = true
+                    spinner_filter?.isClickable = true
                 }
         }catch (e:NullPointerException){
             e.printStackTrace()
         }catch (e:TypeCastException){
             e.printStackTrace()
         }
+
     }
 
     override fun onSyncFailed(message: String) {
