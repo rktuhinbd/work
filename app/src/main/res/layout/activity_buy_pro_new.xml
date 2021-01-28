@@ -293,8 +293,8 @@
 
             <ImageView
                 android:id="@+id/img_no_ads"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:src="@drawable/ic_no_ads"
                 android:scaleType="fitCenter"
                 app:layout_constraintTop_toBottomOf="@id/view_learn_more"
@@ -328,12 +328,11 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         android:background="@drawable/button_gradient"
         android:layout_gravity="bottom"
         android:text="BUY FOR $4.99"
         android:maxLines="1"
-        android:layout_margin="16dp"
         android:foreground="?selectableItemBackground"
         />
 
