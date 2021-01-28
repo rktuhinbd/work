@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#C6A566"
+    android:background="#C9A666"
     android:fitsSystemWindows="true"
     android:layout_alignParentTop="true"
     android:layout_alignParentStart="true">
@@ -61,7 +61,7 @@
 
                 <ImageView
                     android:id="@+id/image_king"
-                    android:layout_width="140dp"
+                    android:layout_width="150dp"
                     android:layout_height="130dp"
                     android:src="@drawable/header_top"
                     app:layout_constraintTop_toTopOf="@id/view_top"
@@ -127,7 +127,7 @@
                 android:text="Add Unlimited Apps"
                 android:textColor="@color/color_white"
                 android:fontFamily="@font/open_sans_bold"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintTop_toTopOf="@id/txt_point_one"
                 app:layout_constraintBottom_toBottomOf="@id/txt_point_one"
                 app:layout_constraintStart_toEndOf="@id/txt_point_one"
@@ -164,7 +164,7 @@
                 android:text="Get Vibration Option For Alarm"
                 android:textColor="@color/color_white"
                 android:fontFamily="@font/open_sans_bold"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintTop_toTopOf="@id/txt_point_two"
                 app:layout_constraintBottom_toBottomOf="@id/txt_point_two"
                 app:layout_constraintStart_toEndOf="@id/txt_point_two"
@@ -201,7 +201,7 @@
                 android:text="Get Dark Theme"
                 android:textColor="@color/color_white"
                 android:fontFamily="@font/open_sans_bold"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintTop_toTopOf="@id/txt_point_three"
                 app:layout_constraintBottom_toBottomOf="@id/txt_point_three"
                 app:layout_constraintStart_toEndOf="@id/txt_point_three"
@@ -335,6 +335,5 @@
         android:maxLines="1"
         android:foreground="?selectableItemBackground"
         />
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

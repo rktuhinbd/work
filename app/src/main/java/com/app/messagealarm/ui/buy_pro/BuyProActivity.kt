@@ -29,6 +29,8 @@ class BuyProActivity : AppCompatActivity() {
             Log.e("APP_BAR", "OFF_SET ${calculateAlpha(Math.abs(totalOffset), Math.abs(verticalOffset))}")
             image_king?.alpha = calculateAlpha(Math.abs(totalOffset), Math.abs(verticalOffset))
         })
+
+        setListener()
     }
 
     private fun calculateAlpha(totalOffset:Int, currentOffset:Int) : Float{
@@ -36,16 +38,20 @@ class BuyProActivity : AppCompatActivity() {
     }
 
     private fun setListener(){
-        btn_buy_pro?.setOnClickListener {
-            Toasty.success(this, "Thanks for purchase! You are now pro user!").show()
-            setIsPurchased(true)
-            finish()
-        }
+//        btn_buy_pro?.setOnClickListener {
+//            Toasty.success(this, "Thanks for purchase! You are now pro user!").show()
+//            setIsPurchased(true)
+//            finish()
+//        }
+//
+//        btn_cancel_pro?.setOnClickListener {
+//            Toasty.error(this, "Your purchase is canceled!").show()
+//            setIsPurchased(false)
+//            buyProPresenter?.turnOfVibrateAndJustVibrateFromAllAddedApp()
+//            finish()
+//        }
 
-        btn_cancel_pro?.setOnClickListener {
-            Toasty.error(this, "Your purchase is canceled!").show()
-            setIsPurchased(false)
-            buyProPresenter?.turnOfVibrateAndJustVibrateFromAllAddedApp()
+        toolbar?.setNavigationOnClickListener {
             finish()
         }
     }
