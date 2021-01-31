@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -170,10 +171,18 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
                     )
                 }
             }
+        }else if(requestCode == Constants.ACTION.ACTION_PURCHASE_FROM_MAIN){
+            //purchased
+            Toasty.success(this, "Thanks for purchase! You are now pro user!").show()
+            setIsPurchased(true)
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+
+    private fun setIsPurchased(boolean: Boolean){
+        SharedPrefUtils.write(Constants.PreferenceKeys.IS_PURCHASED, boolean)
+    }
 
     private fun changeTheme() {
         if (!SharedPrefUtils.contains(Constants.PreferenceKeys.IS_DARK_MODE)) {
@@ -419,7 +428,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         WorkManagerUtils.scheduleSyncWork(this, appSize, langSize, appConstrainSize)
     }
 
-    override fun onItemClick(app: ApplicationEntity) {
+    private fun showEditDialog(app:ApplicationEntity){
         //refresh adapter first
         if(!isFinishing){
             try {
@@ -435,6 +444,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
             }
         }
 
+    }
+
+
+    override fun onItemClick(app: ApplicationEntity) {
+        //refresh adapter first
+       showEditDialog(app)
     }
 
     override fun onLongClick(app: ApplicationEntity) {

@@ -35,6 +35,7 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
+import java.io.Serializable
 import java.lang.NullPointerException
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -176,7 +177,18 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     private fun visitProScreen(){
-        requireActivity().startActivity(Intent(requireActivity(), BuyProActivity::class.java))
+        if(activity is AlarmApplicationActivity){
+            dismissAllowingStateLoss()
+            val intent = Intent(activity, BuyProActivity::class.java)
+            requireActivity().startActivityForResult(intent,
+                Constants.ACTION.ACTION_PURCHASE_FROM_MAIN)
+        }else if(activity is AddApplicationActivity){
+            dismissAllowingStateLoss()
+            requireActivity().startActivityForResult(Intent(requireActivity(),
+                BuyProActivity::class.java),
+                Constants.ACTION.ACTION_PURCHASE_FROM_ADD)
+        }
+
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

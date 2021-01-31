@@ -41,6 +41,8 @@ class Constants {
     }
     class ACTION{
         companion object{
+            const val ACTION_PURCHASE_FROM_MAIN = 12
+            const val ACTION_PURCHASE_FROM_ADD = 13
             const val ACTION_UN_MUTE = "un_mute"
             const val SYNC = "SYNC"
         }
@@ -165,6 +167,7 @@ class Constants {
             const val JUST_CANCEL = "just_cancel"
             const val APP_NAME = "app_name"
             const val TONE = "tone"
+            const val TOTAL_APP = "total_app"
             const val NUMBER_OF_PLAY = "number_of_play"
             const val IS_VIBRATE = "is_vibrate"
             const val IS_JUST_VIBRATE = "is_just_vibrate"

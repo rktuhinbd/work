@@ -26,6 +26,7 @@ class BuyProActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buy_pro_new)
+        //changeStatusBarColorInLightMode()
        // setListener()
         buyProPresenter = BuyProPresenter()
         appBarLayout?.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout, verticalOffset ->
@@ -35,14 +36,16 @@ class BuyProActivity : AppCompatActivity() {
         setListener()
     }
 
+    private fun changeStatusBarColorInLightMode(){
+            window.statusBarColor = ContextCompat.getColor(this, android.R.color.transparent)
+    }
+
     private fun calculateAlpha(totalOffset:Int, currentOffset:Int) : Float{
         return (1.0 - ((currentOffset * 0.9999) / totalOffset)).toFloat()
     }
 
     private fun setListener(){
         btn_buy_pro_user?.setOnClickListener {
-            Toasty.success(this, "Thanks for purchase! You are now pro user!").show()
-            setIsPurchased(true)
             finish()
         }
 
