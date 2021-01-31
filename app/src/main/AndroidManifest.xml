@@ -35,6 +35,7 @@
 
         <activity android:name=".ui.buy_pro.BuyProActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/AppThemeBuy"
             android:launchMode="singleTop"
             tools:ignore="LockedOrientationActivity" />
 

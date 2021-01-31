@@ -1,9 +1,13 @@
 package com.app.messagealarm.ui.buy_pro
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.Constants
@@ -12,6 +16,7 @@ import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_buy_pro.*
 import kotlinx.android.synthetic.main.activity_buy_pro_new.*
+import kotlin.math.abs
 
 
 class BuyProActivity : AppCompatActivity() {
@@ -23,13 +28,10 @@ class BuyProActivity : AppCompatActivity() {
         setContentView(R.layout.activity_buy_pro_new)
        // setListener()
         buyProPresenter = BuyProPresenter()
-
         appBarLayout?.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout, verticalOffset ->
-            var totalOffset = appBarLayout.totalScrollRange
-            Log.e("APP_BAR", "OFF_SET ${calculateAlpha(Math.abs(totalOffset), Math.abs(verticalOffset))}")
-            image_king?.alpha = calculateAlpha(Math.abs(totalOffset), Math.abs(verticalOffset))
+            val totalOffset = appBarLayout.totalScrollRange
+            image_king?.alpha = calculateAlpha(abs(totalOffset), abs(verticalOffset))
         })
-
         setListener()
     }
 
@@ -38,18 +40,18 @@ class BuyProActivity : AppCompatActivity() {
     }
 
     private fun setListener(){
-//        btn_buy_pro?.setOnClickListener {
-//            Toasty.success(this, "Thanks for purchase! You are now pro user!").show()
-//            setIsPurchased(true)
-//            finish()
-//        }
-//
-//        btn_cancel_pro?.setOnClickListener {
-//            Toasty.error(this, "Your purchase is canceled!").show()
-//            setIsPurchased(false)
-//            buyProPresenter?.turnOfVibrateAndJustVibrateFromAllAddedApp()
-//            finish()
-//        }
+        btn_buy_pro_user?.setOnClickListener {
+            Toasty.success(this, "Thanks for purchase! You are now pro user!").show()
+            setIsPurchased(true)
+            finish()
+        }
+
+       txt_learn_more?.setOnClickListener {
+           Toasty.error(this, "Your purchase is canceled!").show()
+            setIsPurchased(false)
+           buyProPresenter?.turnOfVibrateAndJustVibrateFromAllAddedApp()
+            finish()
+       }
 
         toolbar?.setNavigationOnClickListener {
             finish()

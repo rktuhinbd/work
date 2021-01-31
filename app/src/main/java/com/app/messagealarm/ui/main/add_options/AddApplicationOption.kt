@@ -121,9 +121,9 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             txt_pro_vibrate?.visibility = View.GONE
         }else{
             switch_vibrate?.isChecked = false
+            switch_vibrate?.isEnabled = false
             switch_just_vibrate?.isChecked = false
             switch_just_vibrate?.isEnabled = false
-            switch_vibrate?.isEnabled = false
             txt_pro_just_vibrate?.visibility = View.VISIBLE
             txt_pro_vibrate?.visibility = View.VISIBLE
         }
