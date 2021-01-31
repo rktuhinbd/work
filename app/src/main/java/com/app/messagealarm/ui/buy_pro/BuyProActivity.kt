@@ -46,6 +46,7 @@ class BuyProActivity : AppCompatActivity() {
 
     private fun setListener(){
         btn_buy_pro_user?.setOnClickListener {
+            setIsPurchased(true)
             finish()
         }
 

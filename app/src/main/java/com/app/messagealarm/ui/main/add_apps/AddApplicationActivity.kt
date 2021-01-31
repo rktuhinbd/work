@@ -400,15 +400,17 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             }
         }else if(requestCode == Constants.ACTION.ACTION_PURCHASE_FROM_ADD){
             //purchased
-            Toasty.success(this, "Thanks for purchase! You are now pro user!").show()
-            setIsPurchased(true)
+            if(isPurchased()){
+                Toasty.success(this, "Thanks for purchase! You are now pro user!").show()
+            }
+
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun setIsPurchased(boolean: Boolean){
-        SharedPrefUtils.write(Constants.PreferenceKeys.IS_PURCHASED, boolean)
-    }
+   private fun isPurchased() : Boolean{
+       return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
+   }
 
     private fun setSearchViewEditTextBackgroundColor(
         context: Context,

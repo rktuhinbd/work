@@ -173,16 +173,17 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
             }
         }else if(requestCode == Constants.ACTION.ACTION_PURCHASE_FROM_MAIN){
             //purchased
-            Toasty.success(this, "Thanks for purchase! You are now pro user!").show()
-            setIsPurchased(true)
+            if(isPurchased()){
+                Toasty.success(this, "Thanks for purchase! You are now pro user!").show()
+            }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-
-    private fun setIsPurchased(boolean: Boolean){
-        SharedPrefUtils.write(Constants.PreferenceKeys.IS_PURCHASED, boolean)
+    private fun isPurchased(): Boolean{
+        return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
     }
+
 
     private fun changeTheme() {
         if (!SharedPrefUtils.contains(Constants.PreferenceKeys.IS_DARK_MODE)) {
@@ -318,9 +319,20 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
 
 
     private fun setListener() {
-
         fab_button_add_application?.setOnClickListener {
-            startActivity(Intent(this, AddApplicationActivity::class.java))
+            if(!isPurchased()){
+                if(rv_application_list?.adapter?.itemCount == 0){
+                    startActivity(Intent(this, AddApplicationActivity::class.java))
+                }else{
+                    Toasty.info(this, "Please buy pro version to add more apps!").show()
+                    //one app added now take user to buy
+                    val intent = Intent(this, BuyProActivity::class.java)
+                        startActivityForResult(intent,
+                        Constants.ACTION.ACTION_PURCHASE_FROM_MAIN)
+                }
+            }else{
+                startActivity(Intent(this, AddApplicationActivity::class.java))
+            }
         }
 
         switch_alarm_status?.setOnCheckedChangeListener { buttonView, isChecked ->
