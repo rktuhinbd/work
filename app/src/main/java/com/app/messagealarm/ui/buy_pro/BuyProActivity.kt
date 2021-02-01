@@ -26,7 +26,7 @@ class BuyProActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buy_pro_new)
-        //changeStatusBarColorInLightMode()
+        changeStatusBarColorInLightMode()
        // setListener()
         buyProPresenter = BuyProPresenter()
         appBarLayout?.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout, verticalOffset ->
@@ -37,7 +37,8 @@ class BuyProActivity : AppCompatActivity() {
     }
 
     private fun changeStatusBarColorInLightMode(){
-            window.statusBarColor = ContextCompat.getColor(this, android.R.color.transparent)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = ContextCompat.getColor(this, android.R.color.transparent)
     }
 
     private fun calculateAlpha(totalOffset:Int, currentOffset:Int) : Float{
@@ -60,6 +61,10 @@ class BuyProActivity : AppCompatActivity() {
         toolbar?.setNavigationOnClickListener {
             finish()
         }
+    }
+
+    override fun onBackPressed() {
+      finish()
     }
 
     private fun setIsPurchased(boolean: Boolean){

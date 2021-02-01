@@ -65,7 +65,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         setupAppsRecyclerView()
         lookForTablesSize()
         showLanguageDoesNotSupported()
-        watchForPurchase()
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
 
@@ -77,16 +76,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
     }
 
 
-
-    private fun watchForPurchase(){
-        if(intent != null && intent.hasExtra(Constants.IntentKeys.IS_PURCHASED)){
-            if(intent?.getBooleanExtra(Constants.IntentKeys.IS_PURCHASED, false)!!){
-                Toasty.success(this, "Thanks for purchase! You are now pro user!").show()
-            }else{
-                Toasty.error(this, "Your purchase is canceled!").show()
-            }
-        }
-    }
 
     private fun lookForTablesSize(){
         alarmAppPresenter.getRequiredTableSize()
@@ -135,7 +124,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
                 startActivity(Intent(this, SettingsActivity::class.java))
             }
             R.id.mnu_pro -> {
-                startActivity(Intent(this, BuyProActivity::class.java))
+                //one app added now take user to buy
+                val intent = Intent(this, BuyProActivity::class.java)
+                startActivityForResult(intent,
+                    Constants.ACTION.ACTION_PURCHASE_FROM_MAIN)
             }
             else -> {
             }

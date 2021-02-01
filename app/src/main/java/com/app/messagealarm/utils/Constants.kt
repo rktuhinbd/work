@@ -43,6 +43,7 @@ class Constants {
         companion object{
             const val ACTION_PURCHASE_FROM_MAIN = 12
             const val ACTION_PURCHASE_FROM_ADD = 13
+            const val ACTION_PURCHASE_FROM_SETTING = 14
             const val ACTION_UN_MUTE = "un_mute"
             const val SYNC = "SYNC"
         }
@@ -214,6 +215,7 @@ class Constants {
     class APP{
         companion object{
             const val IMO_PACKAGE = "com.imo.android.imoim"
+            const val XIAOMI_PACKAGE = "com.android.mms"
         }
     }
 
