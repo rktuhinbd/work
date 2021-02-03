@@ -11,15 +11,13 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:textSize="16sp"
         android:fontFamily="@font/open_sans_semi_bold"
         android:textColor="@color/colorAccent"
         />
 
     <View style="@style/Divider"
-        android:layout_marginBottom="8dp"
+        android:id="@+id/divide"
         />
 
 </LinearLayout>

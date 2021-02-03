@@ -4,13 +4,12 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
-import androidx.preference.ListPreference
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceScreen
+import androidx.preference.*
 import androidx.work.WorkManager
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.about.AboutActivity
@@ -44,6 +43,8 @@ class SettingsActivity : AppCompatActivity() {
             .commit()
     }
 
+
+
     private fun changeTheme() {
         if (!SharedPrefUtils.contains(Constants.PreferenceKeys.IS_DARK_MODE)) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -65,7 +66,6 @@ class SettingsActivity : AppCompatActivity() {
         if(requestCode == Constants.ACTION.ACTION_PURCHASE_FROM_SETTING){
             if(isPurchased()){
                 Toasty.success(this, "Thanks for purchase! You are now pro user!").show()
-                settingFragment!!.dismissThemeDialog()
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -106,12 +106,24 @@ class SettingsActivity : AppCompatActivity() {
             return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
         }
 
-        public fun dismissThemeDialog(){
-            val screen = preferenceScreen
-            screen.removePreference(findPreference("theme"))
-        }
-
         private fun setListener(){
+
+
+            //hide top line of preference category
+            val firstPreCategory = findPreference("buy_category") as PreferenceCategory?
+
+            val proFeature = findPreference("pro") as Preference?
+                proFeature!!.layoutResource = R.layout.layout_preference
+
+            proFeature.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                val bundle = Bundle()
+                bundle.putString("buy_pro", "yes")
+                firebaseAnalytics.logEvent("buy_pro_feature", bundle)
+                    val intent = Intent(activity, BuyProActivity::class.java)
+                    requireActivity().startActivityForResult(intent,
+                        Constants.ACTION.ACTION_PURCHASE_FROM_SETTING)
+                true
+            }
 
             val notWorkingBackground =
                 findPreference("background_not_working") as Preference?
@@ -161,19 +173,6 @@ class SettingsActivity : AppCompatActivity() {
 
             val themePre = findPreference("theme") as ListPreference?
             themePre!!.layoutResource = R.layout.layout_preference
-            themePre.onPreferenceClickListener = object : Preference.OnPreferenceClickListener{
-                override fun onPreferenceClick(preference: Preference?): Boolean {
-                    if(!isPurchased()){
-                     Toasty.info(requireActivity(), "Buy pro version to enable dark mode!").show()
-                    val intent = Intent(activity, BuyProActivity::class.java)
-                    requireActivity().startActivityForResult(intent,
-                        Constants.ACTION.ACTION_PURCHASE_FROM_SETTING)
-                    }
-                    return true
-                }
-
-            }
-            if(isPurchased()){
                 themePre.onPreferenceChangeListener = object :Preference.OnPreferenceChangeListener{
                     val bundle = Bundle()
                     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
@@ -193,10 +192,6 @@ class SettingsActivity : AppCompatActivity() {
                         return true
                     }
                 }
-            }else{
-                themePre.onPreferenceChangeListener = null
-            }
-
 
             val snoozePre = findPreference("mute") as ListPreference?
             snoozePre!!.layoutResource = R.layout.layout_preference
