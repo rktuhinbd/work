@@ -3,10 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-        <item android:id="@+id/mnu_pro"
-            android:title="Pro"
-            app:showAsAction="ifRoom"
-            />
 
               <item android:id="@+id/mnu_setting"
             android:title="Setting"

@@ -14,6 +14,7 @@ import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -46,6 +47,7 @@ import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import java.io.File
+import java.io.IOException
 
 
 class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, PurchasesUpdatedListener,
@@ -69,11 +71,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         setupAppsRecyclerView()
         lookForTablesSize()
         showLanguageDoesNotSupported()
-        if(isPurchased()){
             Thread(Runnable {
                 checkIfPurchaseIsMadeOrCanceledOrRefunded()
             }).start()
-        }
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
 
@@ -83,8 +83,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             }
         }
     }
-
-
 
     private fun checkIfPurchaseIsMadeOrCanceledOrRefunded(){
         // Establish connection to billing client
@@ -98,10 +96,13 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     val queryPurchase = billingClient!!.queryPurchases(SkuType.INAPP)
                     val queryPurchases =
                         queryPurchase.purchasesList
-                    if (queryPurchases != null || queryPurchases?.size == 0) {
-                        //purchase is canceled
-                        buyProPresenter.cancelPurchase()
+                    if (queryPurchases != null && queryPurchases.size > 0) {
+                        handlePurchases(queryPurchases)
+                    } else {
+                        setIsPurchased(false)
+                        recreate()
                     }
+
                 }
             }
 
@@ -110,6 +111,90 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             }
         })
     }
+
+
+    fun handlePurchases(purchases: List<Purchase>) {
+        for (purchase in purchases) {
+            //if item is purchased
+            if (Constants.Purchase.PRODUCT_ID == purchase.sku && purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+                if (!verifyValidSignature(purchase.originalJson, purchase.signature)) {
+                    // Invalid purchase
+                    // show error to user
+                    Toast.makeText(
+                        applicationContext,
+                        "Error : Invalid Purchase",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return
+                }
+                // else purchase is valid
+                //if item is purchased and not acknowledged
+                if (!purchase.isAcknowledged) {
+                    val acknowledgePurchaseParams =
+                        AcknowledgePurchaseParams.newBuilder()
+                            .setPurchaseToken(purchase.purchaseToken)
+                            .build()
+                    billingClient!!.acknowledgePurchase(acknowledgePurchaseParams, ackPurchase)
+                } else {
+                    // Grant entitlement to the user on item purchase
+                    // restart activity
+                    if (!isPurchased()) {
+                        setIsPurchased(true)
+                        recreate()
+                    }
+                }
+            } else if (Constants.Purchase.PRODUCT_ID == purchase.sku && purchase.purchaseState == Purchase.PurchaseState.PENDING) {
+                Toast.makeText(
+                    applicationContext,
+                    "Purchase is Pending. Please complete Transaction", Toast.LENGTH_SHORT
+                ).show()
+            } else if (Constants.Purchase.PRODUCT_ID == purchase.sku && purchase.purchaseState == Purchase.PurchaseState.UNSPECIFIED_STATE) {
+                setIsPurchased(false)
+                Toast.makeText(
+                    applicationContext,
+                    "Purchase Status Unknown",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    var ackPurchase =
+        AcknowledgePurchaseResponseListener { billingResult ->
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                //if purchase is acknowledged
+                // Grant entitlement to the user. and restart activity
+                setIsPurchased(true)
+                recreate()
+            }
+        }
+
+
+    private fun setIsPurchased(boolean: Boolean){
+        SharedPrefUtils.write(Constants.PreferenceKeys.IS_PURCHASED, boolean)
+    }
+
+
+    /**
+     * Verifies that the purchase was signed correctly for this developer's public key.
+     *
+     * Note: It's strongly recommended to perform such check on your backend since hackers can
+     * replace this method with "constant true" if they decompile/rebuild your app.
+     *
+     */
+    private fun verifyValidSignature(
+        signedData: String,
+        signature: String
+    ): Boolean {
+        return try {
+            // To get key go to Developer Console > Select your app > Development Tools > Services & APIs.
+            val base64Key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArYJvmLyxsJEJTWGhsAoJJCtDRYHk6iM94tsW6U61xkDnbmeyJzi43bhE8clftwbeWhsg67tbjHi1KgvV17Nn+jRbCSGvrkkRY9l9Uz2FdfiSC3UD7Lh9RGc7ZU0zy93Acj6ELvg71B+vZCm/wlZ2rPtaSpE+nhm+fJh887RReb5Rv1a69EFc8pq7IvVdeTVOVABD22ZELTciyM3BybasAwrzcKQ9FbUKdVuDm5Lzq+AlktXea95Wuhfh4NA82zk3uYO5xsXeFWhV9+uboewYGwADrrm+3Y7LmuMldOiDONScwDkOPdayiWRKGqFGAWYxs9udFWUGIzQ0HVycuT9F0wIDAQAB"
+            Security.verifyPurchase(base64Key, signedData, signature)
+        } catch (e: IOException) {
+            false
+        }
+    }
+
 
     private fun lookForTablesSize(){
         alarmAppPresenter.getRequiredTableSize()
@@ -156,12 +241,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         when (item.itemId) {
             R.id.mnu_setting -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
-            }
-            R.id.mnu_pro -> {
-                //one app added now take user to buy
-                val intent = Intent(this, BuyProActivity::class.java)
-                startActivityForResult(intent,
-                    Constants.ACTION.ACTION_PURCHASE_FROM_MAIN)
             }
             else -> {
             }

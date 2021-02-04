@@ -40,7 +40,11 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener {
         })
         setListener()
         checkPurchaseStatus()
-        initiatePurchase(false)
+    }
+
+    override fun onStart() {
+        super.onStart()
+
     }
 
     private fun checkPurchaseStatus(){
@@ -49,9 +53,13 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener {
         //to check if item already Purchased previously or refunded
         billingClient = BillingClient.newBuilder(this)
             .enablePendingPurchases().setListener(this).build()
-        billingClient!!.startConnection(object : BillingClientStateListener {
+        billingClient!!.startConnection(object : BillingClientStateListener{
+            override fun onBillingServiceDisconnected() {
+
+            }
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    initiatePurchase()
                     val queryPurchase = billingClient!!.queryPurchases(SkuType.INAPP)
                     val queryPurchases =
                         queryPurchase.purchasesList
@@ -60,19 +68,20 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener {
                     } else {
                         setIsPurchased(false)
                     }
+
                 }
             }
 
-            override fun onBillingServiceDisconnected() {}
         })
     }
+
 
     private fun isPurchased(): Boolean{
         return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
     }
 
     @SuppressLint("SetTextI18n")
-    private fun initiatePurchase(fromAuto: Boolean) {
+    private fun initiatePurchase() {
         val skuList: MutableList<String> =
             ArrayList()
         skuList.add(Constants.Purchase.PRODUCT_ID)
@@ -80,6 +89,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener {
         params.setSkusList(skuList).setType(SkuType.INAPP)
         billingClient!!.querySkuDetailsAsync(
             params.build()
+
         ) { billingResult, skuDetailsList ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 if (skuDetailsList != null && skuDetailsList.size > 0) {
@@ -88,13 +98,8 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener {
                         .build()
                     //set price
                     btn_buy_pro_user?.text =
-                        "Buy For ${skuDetailsList[0].priceCurrencyCode} ${skuDetailsList[0].price}"
+                        "Buy For ${skuDetailsList[0].price}"
                     progress_purchase?.visibility = View.GONE
-                    if(fromAuto){
-                        if(flowParams != null){
-                            billingClient!!.launchBillingFlow(this, flowParams!!)
-                        }
-                    }
                 } else {
                     //try to add item/product id "purchase" inside managed product in google play console
                     Toast.makeText(
@@ -139,12 +144,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener {
                     // restart activity
                     if (!isPurchased()) {
                         setIsPurchased(true)
-                        Toast.makeText(
-                            applicationContext,
-                            "Item Purchased",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        recreate()
+                        finish()
                     }
                 }
             } else if (Constants.Purchase.PRODUCT_ID == purchase.sku && purchase.purchaseState == Purchase.PurchaseState.PENDING) {
@@ -169,9 +169,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener {
                 //if purchase is acknowledged
                 // Grant entitlement to the user. and restart activity
                 setIsPurchased(true)
-                Toast.makeText(applicationContext, "Item Purchased", Toast.LENGTH_SHORT)
-                    .show()
-               recreate()
+                finish()
             }
         }
 
@@ -192,12 +190,13 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener {
                    billingClient!!.launchBillingFlow(this, flowParams!!)
                }
            }else{
+               Toasty.success(this, "here").show()
                billingClient =
                    BillingClient.newBuilder(this).enablePendingPurchases().setListener(this).build()
                billingClient!!.startConnection(object : BillingClientStateListener {
                    override fun onBillingSetupFinished(billingResult: BillingResult) {
                        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                           initiatePurchase(true)
+                           initiatePurchase()
                        } else {
                            Toast.makeText(
                                applicationContext,
@@ -271,6 +270,13 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener {
                 "Error " + billingResult.debugMessage,
                 Toast.LENGTH_SHORT
             ).show()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (billingClient != null) {
+            billingClient!!.endConnection()
         }
     }
 

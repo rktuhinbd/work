@@ -18,13 +18,6 @@ public class MenuTintUtils {
     public static void tintAllIcons(Menu menu, final int color) {
         for (int i = 0; i < menu.size(); ++i) {
             final MenuItem item = menu.getItem(i);
-            if(SharedPrefUtils.INSTANCE.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
-                if(item.getItemId() == R.id.mnu_pro){
-                    SpannableString s = new SpannableString("PRO");
-                    s.setSpan(new ForegroundColorSpan(Color.WHITE), 0, s.length(), 0);
-                    item.setTitle(s);
-                }
-            }
             tintMenuItemIcon(color, item);
             tintShareIconIfPresent(color, item);
         }
