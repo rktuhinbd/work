@@ -19,6 +19,7 @@
         app:title="@string/txt_themes"
         app:allowDividerBelow="false"
         app:allowDividerAbove="false"
+        android:key="theme_cat"
         app:layout="@layout/preference_category">
 
 

@@ -31,6 +31,9 @@ public interface ApplicationDao {
     @Query("UPDATE applications SET just_vibrate = :status")
     void disableJustVibrateToAllApp(boolean status);
 
+    @Query("DELETE FROM applications")
+    void deleteAllAppsWithoutTheFirstOne();
+
     @Delete
     void deleteApplication(ApplicationEntity applicationEntity);
 

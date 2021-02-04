@@ -21,6 +21,12 @@ class Constants {
         }
     }
 
+    class Purchase{
+        companion object{
+            const val PRODUCT_ID = "pro_feature"
+        }
+    }
+
     class Default {
         companion object {
             const val DEFAULT_STRING: String = ""

@@ -25,6 +25,7 @@ import dev.doubledot.doki.api.extensions.DONT_KILL_MY_APP_DEFAULT_MANUFACTURER
 import dev.doubledot.doki.ui.DokiActivity
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.settings_activity.*
+import java.lang.IllegalStateException
 
 
 class SettingsActivity : AppCompatActivity() {
@@ -67,6 +68,11 @@ class SettingsActivity : AppCompatActivity() {
             if(isPurchased()){
                 Toasty.success(this, "Thanks for purchase! You are now pro user!").show()
             }
+            recreate()
+            supportFragmentManager.beginTransaction()
+                .detach(SettingsFragment())
+                .attach(SettingsFragment())
+                .commitAllowingStateLoss()
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -107,13 +113,23 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         private fun setListener(){
-
-
             //hide top line of preference category
-            val firstPreCategory = findPreference("buy_category") as PreferenceCategory?
+            val themeCategory = findPreference("theme_cat") as PreferenceCategory?
+            themeCategory?.isEnabled = isPurchased()
+
+            val buyProCategory = findPreference("buy_category") as PreferenceCategory?
+            buyProCategory?.isEnabled = !isPurchased()
 
             val proFeature = findPreference("pro") as Preference?
-                proFeature!!.layoutResource = R.layout.layout_preference
+              proFeature!!.layoutResource = R.layout.layout_preference
+            //change the title and desc after the purchase is made
+            if(isPurchased()){
+                proFeature.title = "Pro User"
+                proFeature.summary = "You are already a pro user!"
+            }else{
+                proFeature.title = "Buy Pro"
+                proFeature.summary = "Enable dark mode and many others"
+            }
 
             proFeature.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 val bundle = Bundle()
@@ -171,7 +187,15 @@ class SettingsActivity : AppCompatActivity() {
             }
 
 
+
             val themePre = findPreference("theme") as ListPreference?
+            try {
+                if(!isPurchased()){
+                    themePre?.setValueIndex(0)
+                }
+            }catch (e:IllegalStateException){
+
+            }
             themePre!!.layoutResource = R.layout.layout_preference
                 themePre.onPreferenceChangeListener = object :Preference.OnPreferenceChangeListener{
                     val bundle = Bundle()

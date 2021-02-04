@@ -11,7 +11,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -21,6 +20,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.billingclient.api.*
+import com.android.billingclient.api.BillingClient.SkuType
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
@@ -29,6 +30,7 @@ import com.app.messagealarm.service.app_reader_intent_service.AppsReaderIntentSe
 import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.ui.adapters.AddedAppsListAdapter
 import com.app.messagealarm.ui.buy_pro.BuyProActivity
+import com.app.messagealarm.ui.buy_pro.BuyProPresenter
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
 import com.app.messagealarm.ui.onboarding.OnboardingDialog
@@ -46,14 +48,16 @@ import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import java.io.File
 
 
-class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
+class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, PurchasesUpdatedListener,
     AddedAppsListAdapter.ItemClickListener {
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     var mMessageReceiver:BroadcastReceiver? = null
     val bottomSheetModel = AddApplicationOption()
     val REQUEST_CODE_PICK_AUDIO = 1
+    private val buyProPresenter = BuyProPresenter()
     private val alarmAppPresenter = AlarmApplicationPresenter(this)
+    private var billingClient: BillingClient? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         changeTheme()
@@ -65,6 +69,11 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         setupAppsRecyclerView()
         lookForTablesSize()
         showLanguageDoesNotSupported()
+        if(isPurchased()){
+            Thread(Runnable {
+                checkIfPurchaseIsMadeOrCanceledOrRefunded()
+            }).start()
+        }
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
 
@@ -76,6 +85,31 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
     }
 
 
+
+    private fun checkIfPurchaseIsMadeOrCanceledOrRefunded(){
+        // Establish connection to billing client
+        //check purchase status from google play store cache
+        //to check if item already Purchased previously or refunded
+        billingClient = BillingClient.newBuilder(this)
+            .enablePendingPurchases().setListener(this).build()
+        billingClient!!.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(billingResult: BillingResult) {
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    val queryPurchase = billingClient!!.queryPurchases(SkuType.INAPP)
+                    val queryPurchases =
+                        queryPurchase.purchasesList
+                    if (queryPurchases != null || queryPurchases?.size == 0) {
+                        //purchase is canceled
+                        buyProPresenter.cancelPurchase()
+                    }
+                }
+            }
+
+            override fun onBillingServiceDisconnected() {
+
+            }
+        })
+    }
 
     private fun lookForTablesSize(){
         alarmAppPresenter.getRequiredTableSize()
@@ -489,6 +523,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
             }
         }
 
+
+    }
+
+    override fun onPurchasesUpdated(p0: BillingResult, p1: MutableList<Purchase>?) {
 
     }
 
