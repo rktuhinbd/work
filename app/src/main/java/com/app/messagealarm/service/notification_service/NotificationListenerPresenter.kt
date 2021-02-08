@@ -40,7 +40,7 @@ class NotificationListenerPresenter(private val view: NotificationListenerView) 
                 appDataBase.appConstrainDao().getAppConstrains(packageName, langCode)
             for (x in constrainList) {
                 if (x.title != null && x.description != null) {
-                    if (x.status == null || x.status.isEmpty()) {
+                    if (x.status == null) {
                         if (x.title == title || x.description == desc) {
                             isPlayAble = false
                             break
