@@ -8,10 +8,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.BuildConfig
 import com.app.messagealarm.R
-import com.app.messagealarm.utils.Constants
-import com.app.messagealarm.utils.MenuTintUtils
-import com.app.messagealarm.utils.SharedPrefUtils
-import com.app.messagealarm.utils.VisitUrlUtils
+import com.app.messagealarm.utils.*
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
@@ -82,6 +79,12 @@ class AboutActivity : BaseActivity() {
         }
         btn_linked_in?.setOnClickListener {
             VisitUrlUtils.visitWebsite(this, "https://www.linkedin.com/company/message-alarm-never-miss-an-important-message")
+        }
+        btn_website_mk7lab?.setOnClickListener {
+            VisitUrlUtils.visitWebsite(this, "https://www.mk7lab.com")
+        }
+        btn_contact_us?.setOnClickListener {
+            SupportUtils.sendEmailSell(this)
         }
     }
 }

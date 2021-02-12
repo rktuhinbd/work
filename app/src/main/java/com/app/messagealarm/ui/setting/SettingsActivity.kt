@@ -186,8 +186,6 @@ class SettingsActivity : AppCompatActivity() {
                 true
             }
 
-
-
             val themePre = findPreference("theme") as ListPreference?
             try {
                 if(!isPurchased()){
