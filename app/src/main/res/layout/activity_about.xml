@@ -113,7 +113,6 @@
                         app:layout_constraintTop_toBottomOf="@id/img_company_logo"
                         app:layout_constraintVertical_bias="0" />
 
-
                     <ImageView
                         android:id="@+id/img_location"
                         android:layout_width="35dp"
@@ -143,6 +142,73 @@
                         app:layout_constraintTop_toBottomOf="@id/txt_company_info"
                         app:layout_constraintVertical_bias="0" />
 
+                    <TextView
+                        android:id="@+id/txt_got_idea_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/open_sans_semi_bold"
+                        android:text="Got An Idea To Develop?"
+                        android:textColor="@color/colorTextRegular"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/img_location"
+                        app:layout_constraintVertical_bias="0" />
+
+
+                    <TextView
+                        android:id="@+id/txt_idea_development"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginTop="4dp"
+                        android:textColor="@color/default_text"
+                        android:text="@string/txt_idea_desc"
+                        android:textAlignment="center"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txt_got_idea_title"
+                        app:layout_constraintVertical_bias="0" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_website_mk7lab"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:textColor="@color/color_white"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:text="Visit Website"
+                        android:textAlignment="center"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txt_idea_development" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_contact_us"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:textColor="@color/color_white"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:text="Contact Us  "
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginBottom="16dp"
+                        android:gravity="center"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/btn_website_mk7lab" />
+
+
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.card.MaterialCardView>
@@ -162,7 +228,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
-
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -203,22 +268,22 @@
                         android:layout_marginTop="5dp"
                         android:textColor="@color/default_text"
                         android:fontFamily="@font/open_sans_semi_bold"
-                        android:text="@string/txt_version"
-                        app:layout_constraintBottom_toTopOf="@id/txt_desc"
+                        tools:text="@string/txt_version"
+                        app:layout_constraintBottom_toTopOf="@id/btn_website"
                         app:layout_constraintEnd_toEndOf="@id/txt_app_name"
                         app:layout_constraintStart_toStartOf="@id/txt_app_name"
                         app:layout_constraintTop_toBottomOf="@id/txt_app_name" />
 
-                    <TextView
-                        android:id="@+id/txt_desc"
-                        android:layout_width="0dp"
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_website"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
-                        android:textColor="@color/default_text"
+                        android:textColor="@color/color_white"
                         android:fontFamily="@font/open_sans_regular"
-                        android:text="@string/txt_app_bio"
+                        android:text="Visit Website"
                         android:textAlignment="center"
                         app:layout_constraintBottom_toTopOf="@id/btn_facebook"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -239,14 +304,14 @@
                         android:layout_marginEnd="8dp"
                         android:src="@drawable/facebook"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/btn_twitter"
+                        app:layout_constraintEnd_toStartOf="@id/btn_instagram"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/txt_desc"
+                        app:layout_constraintTop_toBottomOf="@id/btn_website"
                         app:layout_constraintHorizontal_chainStyle="packed"
                         tools:targetApi="m" />
 
                     <ImageButton
-                        android:id="@+id/btn_twitter"
+                        android:id="@+id/btn_instagram"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginTop="16dp"
@@ -256,11 +321,11 @@
                         android:foreground="?selectableItemBackground"
                         android:padding="2dp"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/twitter"
+                        android:src="@drawable/instagram"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/btn_linked_in"
                         app:layout_constraintStart_toEndOf="@id/btn_facebook"
-                        app:layout_constraintTop_toBottomOf="@id/txt_desc"
+                        app:layout_constraintTop_toBottomOf="@id/btn_website"
                         tools:targetApi="m" />
 
 
@@ -277,8 +342,8 @@
                         android:src="@drawable/linkedin"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/btn_twitter"
-                        app:layout_constraintTop_toBottomOf="@id/txt_desc"
+                        app:layout_constraintStart_toEndOf="@id/btn_instagram"
+                        app:layout_constraintTop_toBottomOf="@id/btn_website"
                         tools:targetApi="m" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

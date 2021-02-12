@@ -82,7 +82,7 @@
         <Preference
             app:icon="@drawable/ic_share_black_24dp"
             app:key="share"
-            app:summary="Share with your friends"
+            app:summary="Tell A Friend"
             app:title="Share This App" />
 
     </PreferenceCategory>

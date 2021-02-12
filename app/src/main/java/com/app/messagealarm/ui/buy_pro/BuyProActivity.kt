@@ -71,7 +71,6 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener {
 
                 }
             }
-
         })
     }
 
