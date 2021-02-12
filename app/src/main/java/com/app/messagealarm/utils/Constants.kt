@@ -198,6 +198,7 @@ class Constants {
             const val SYNC = "sync"
             const val REGISTER_TOKEN = "token/"
             const val UNKNOWN_APP = "unknownapp/"
+            const val VERIFY_PURCHASE = "verify_purchase/"
         }
         class Body{
             companion object{
@@ -208,6 +209,8 @@ class Constants {
                 const val LANG_CODE = "lang_code"
                 const val APP_NAME = "app_name"
                 const val PACKAGE_NAME = "app_package_name"
+                const val RECEIPT = "receipt"
+                const val SIGNATURE = "signature"
             }
         }
         class ResponseFormat{

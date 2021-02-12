@@ -2,7 +2,6 @@ package com.app.messagealarm.ui.buy_pro
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -22,7 +21,7 @@ import java.util.*
 import kotlin.math.abs
 
 
-class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener {
+class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView {
 
     private var billingClient: BillingClient? = null
     var buyProPresenter: BuyProPresenter? = null
@@ -33,7 +32,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener {
         setContentView(R.layout.activity_buy_pro_new)
         changeStatusBarColorInLightMode()
        // setListener()
-        buyProPresenter = BuyProPresenter()
+        buyProPresenter = BuyProPresenter(this)
         appBarLayout?.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout, verticalOffset ->
             val totalOffset = appBarLayout.totalScrollRange
             image_king?.alpha = calculateAlpha(abs(totalOffset), abs(verticalOffset))
@@ -88,7 +87,6 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener {
         params.setSkusList(skuList).setType(SkuType.INAPP)
         billingClient!!.querySkuDetailsAsync(
             params.build()
-
         ) { billingResult, skuDetailsList ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 if (skuDetailsList != null && skuDetailsList.size > 0) {
@@ -120,32 +118,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener {
         for (purchase in purchases) {
             //if item is purchased
             if (Constants.Purchase.PRODUCT_ID == purchase.sku && purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                if (!verifyValidSignature(purchase.originalJson, purchase.signature)) {
-                    // Invalid purchase
-                    // show error to user
-                    Toast.makeText(
-                        applicationContext,
-                        "Error : Invalid Purchase",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return
-                }
-                // else purchase is valid
-                //if item is purchased and not acknowledged
-                if (!purchase.isAcknowledged) {
-                    val acknowledgePurchaseParams =
-                        AcknowledgePurchaseParams.newBuilder()
-                            .setPurchaseToken(purchase.purchaseToken)
-                            .build()
-                    billingClient!!.acknowledgePurchase(acknowledgePurchaseParams, ackPurchase)
-                } else {
-                    // Grant entitlement to the user on item purchase
-                    // restart activity
-                    if (!isPurchased()) {
-                        setIsPurchased(true)
-                        finish()
-                    }
-                }
+                buyProPresenter?.verifyPurchase(purchase.originalJson, purchase.signature, purchase)
             } else if (Constants.Purchase.PRODUCT_ID == purchase.sku && purchase.purchaseState == Purchase.PurchaseState.PENDING) {
                 Toast.makeText(
                     applicationContext,
@@ -277,6 +250,36 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener {
         if (billingClient != null) {
             billingClient!!.endConnection()
         }
+    }
+
+    override fun verifyPurchaseStatus(boolean: Boolean, purchase: Purchase) {
+       if(boolean){
+           //complete purchase
+           //if item is purchased and not acknowledged
+           if (!purchase.isAcknowledged) {
+               val acknowledgePurchaseParams =
+                   AcknowledgePurchaseParams.newBuilder()
+                       .setPurchaseToken(purchase.purchaseToken)
+                       .build()
+               billingClient!!.acknowledgePurchase(acknowledgePurchaseParams, ackPurchase)
+           } else {
+               // Grant entitlement to the user on item purchase
+               // restart activity
+               if (!isPurchased()) {
+                   setIsPurchased(true)
+                   finish()
+               }
+           }
+       }else{
+           // Invalid purchase
+           // show error to user
+           Toast.makeText(
+               applicationContext,
+               "Error : Invalid Purchase",
+               Toast.LENGTH_SHORT
+           ).show()
+           return
+       }
     }
 
 }

@@ -14,7 +14,6 @@ import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -22,7 +21,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.billingclient.api.*
-import com.android.billingclient.api.BillingClient.SkuType
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
@@ -31,7 +29,6 @@ import com.app.messagealarm.service.app_reader_intent_service.AppsReaderIntentSe
 import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.ui.adapters.AddedAppsListAdapter
 import com.app.messagealarm.ui.buy_pro.BuyProActivity
-import com.app.messagealarm.ui.buy_pro.BuyProPresenter
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
 import com.app.messagealarm.ui.onboarding.OnboardingDialog
