@@ -31,7 +31,6 @@ class AddApplicationPresenter(
     fun getAllApplicationList() {
         Thread(Runnable {
             try {
-                Log.e("APP_L", BaseApplication.installedApps.size.toString())
                 if(BaseApplication.installedApps.isEmpty()){
                     addApplicationView.onAllApplicationGetSuccess(
                         AppsReader.getInstalledApps(false, activity)!!

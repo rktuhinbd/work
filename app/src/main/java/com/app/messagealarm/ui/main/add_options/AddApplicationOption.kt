@@ -130,8 +130,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
     }
 
-
-
     private fun handleEditAndViewMode(){
         try {
             defaultValuesToDataModel()
@@ -798,13 +796,14 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }else{
             holderEntity.alarmRepeat
         }
+
             if(txt_repeat_value?.text.toString().trim() == repeat){
                 if(txt_ringtone_value?.text.toString().trim() == holderEntity.ringTone){
                     if(switch_vibrate?.isChecked == holderEntity.isVibrateOnAlarm){
                         if(switch_just_vibrate?.isChecked == holderEntity.isJustVibrate) {
                             if (switch_custom_time?.isChecked == holderEntity.isCustomTime) {
-                                if (txt_number_of_play_value?.text.toString()
-                                        .trim()[0].toString() ==
+                                if (txt_number_of_play_value?.text.toString().split(" ")
+                                        [0].trim() ==
                                     holderEntity.numberOfPlay.toString()
                                 ) {
                                     if (txt_sender_name_value?.text.toString() == holderEntity.senderNames) {

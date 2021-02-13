@@ -183,7 +183,6 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
            }
         }
 
-
         toolbar?.setNavigationOnClickListener {
             finish()
         }
