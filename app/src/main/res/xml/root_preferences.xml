@@ -3,7 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        app:title="@string/txt_themes" app:layout="@layout/preference_category">
+        app:title="Buy Pro"
+        android:key="buy_category"
+        app:allowDividerBelow="false" app:allowDividerAbove="false" app:layout="@layout/preference_category">
+
+        <Preference
+            app:icon="@drawable/ic_premium"
+            app:key="pro"
+            app:summary="Enable dark mode and many others"
+            app:title="Buy Pro" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/txt_themes"
+        app:allowDividerBelow="false"
+        app:allowDividerAbove="false"
+        android:key="theme_cat"
+        app:layout="@layout/preference_category">
 
 
         <ListPreference
@@ -20,7 +37,10 @@
 
     <!--App Snooze-->
 
-    <PreferenceCategory app:layout="@layout/preference_category"  app:title="@string/txt_mute">
+    <PreferenceCategory
+        app:allowDividerBelow="false"
+        app:allowDividerAbove="false"
+        app:layout="@layout/preference_category"  app:title="@string/txt_mute">
 
         <ListPreference
             android:key="mute"
@@ -34,7 +54,10 @@
     </PreferenceCategory>
 
 
-    <PreferenceCategory app:layout="@layout/preference_category" app:title="Support">
+    <PreferenceCategory
+        app:allowDividerBelow="false"
+        app:allowDividerAbove="false"
+        app:layout="@layout/preference_category" app:title="Support">
 
         <Preference
             app:icon="@drawable/ic_email_black_24dp"
@@ -51,18 +74,23 @@
 
     </PreferenceCategory>
 
-
-    <PreferenceCategory app:layout="@layout/preference_category" app:title="Share">
+    <PreferenceCategory
+        app:allowDividerBelow="false"
+        app:allowDividerAbove="false"
+        app:layout="@layout/preference_category" app:title="Share">
 
         <Preference
             app:icon="@drawable/ic_share_black_24dp"
             app:key="share"
-            app:summary="Share with your friends"
+            app:summary="Tell A Friend"
             app:title="Share This App" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:layout="@layout/preference_category"  app:title="About">
+    <PreferenceCategory
+        app:allowDividerBelow="false"
+        app:allowDividerAbove="false"
+        app:layout="@layout/preference_category"  app:title="About">
 
         <Preference
             app:icon="@drawable/ic_info_black_24dp"

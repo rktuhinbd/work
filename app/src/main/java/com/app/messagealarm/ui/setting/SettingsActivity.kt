@@ -4,14 +4,16 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.preference.ListPreference
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
+import androidx.fragment.app.Fragment
+import androidx.preference.*
 import androidx.work.WorkManager
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.about.AboutActivity
+import com.app.messagealarm.ui.buy_pro.BuyProActivity
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.SharedPrefUtils
 import com.app.messagealarm.utils.SupportUtils
@@ -21,22 +23,28 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import dev.doubledot.doki.api.extensions.DONT_KILL_MY_APP_DEFAULT_MANUFACTURER
 import dev.doubledot.doki.ui.DokiActivity
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.settings_activity.*
+import java.lang.IllegalStateException
 
 
 class SettingsActivity : AppCompatActivity() {
 
+    var settingFragment:SettingsFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         changeTheme()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.settings_activity)
         toolBarSetup()
+        settingFragment = SettingsFragment()
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.settings, SettingsFragment())
+            .replace(R.id.settings, settingFragment!!)
             .commit()
     }
+
+
 
     private fun changeTheme() {
         if (!SharedPrefUtils.contains(Constants.PreferenceKeys.IS_DARK_MODE)) {
@@ -48,6 +56,25 @@ class SettingsActivity : AppCompatActivity() {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
         }
+    }
+
+    private fun isPurchased() : Boolean{
+        return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == Constants.ACTION.ACTION_PURCHASE_FROM_SETTING){
+            if(isPurchased()){
+                Toasty.success(this, "Thanks for purchase! You are now pro user!").show()
+            }
+            recreate()
+            supportFragmentManager.beginTransaction()
+                .detach(SettingsFragment())
+                .attach(SettingsFragment())
+                .commitAllowingStateLoss()
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
 
@@ -81,7 +108,38 @@ class SettingsActivity : AppCompatActivity() {
             firebaseAnalytics = Firebase.analytics
         }
 
+        private fun isPurchased() : Boolean{
+            return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
+        }
+
         private fun setListener(){
+            //hide top line of preference category
+            val themeCategory = findPreference("theme_cat") as PreferenceCategory?
+            themeCategory?.isEnabled = isPurchased()
+
+            val buyProCategory = findPreference("buy_category") as PreferenceCategory?
+            buyProCategory?.isEnabled = !isPurchased()
+
+            val proFeature = findPreference("pro") as Preference?
+              proFeature!!.layoutResource = R.layout.layout_preference
+            //change the title and desc after the purchase is made
+            if(isPurchased()){
+                proFeature.title = "Pro User"
+                proFeature.summary = "You are already a pro user!"
+            }else{
+                proFeature.title = "Buy Pro"
+                proFeature.summary = "Enable dark mode and many others"
+            }
+
+            proFeature.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                val bundle = Bundle()
+                bundle.putString("buy_pro", "yes")
+                firebaseAnalytics.logEvent("buy_pro_feature", bundle)
+                    val intent = Intent(activity, BuyProActivity::class.java)
+                    requireActivity().startActivityForResult(intent,
+                        Constants.ACTION.ACTION_PURCHASE_FROM_SETTING)
+                true
+            }
 
             val notWorkingBackground =
                 findPreference("background_not_working") as Preference?
@@ -128,30 +186,34 @@ class SettingsActivity : AppCompatActivity() {
                 true
             }
 
-
             val themePre = findPreference("theme") as ListPreference?
-            themePre!!.layoutResource = R.layout.layout_preference
-            themePre.setOnPreferenceChangeListener(object :Preference.OnPreferenceChangeListener{
-                val bundle = Bundle()
-                override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
-                    if(newValue == "Dark"){
-                        //enable dark mode
-                        SharedPrefUtils.write(Constants.PreferenceKeys.IS_DARK_MODE, true)
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                        bundle.putString("theme", "dark")
-                        firebaseAnalytics.logEvent("app_theme", bundle)
-                    }else if(newValue == "Light"){
-                        //enable light mode
-                        SharedPrefUtils.write(Constants.PreferenceKeys.IS_DARK_MODE, false)
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                        bundle.putString("theme", "light")
-                        firebaseAnalytics.logEvent("app_theme", bundle)
-                    }
-                    return true
+            try {
+                if(!isPurchased()){
+                    themePre?.setValueIndex(0)
                 }
+            }catch (e:IllegalStateException){
 
-            })
-
+            }
+            themePre!!.layoutResource = R.layout.layout_preference
+                themePre.onPreferenceChangeListener = object :Preference.OnPreferenceChangeListener{
+                    val bundle = Bundle()
+                    override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
+                        if(newValue == "Dark"){
+                            //enable dark mode
+                            SharedPrefUtils.write(Constants.PreferenceKeys.IS_DARK_MODE, true)
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                            bundle.putString("theme", "dark")
+                            firebaseAnalytics.logEvent("app_theme", bundle)
+                        }else if(newValue == "Light"){
+                            //enable light mode
+                            SharedPrefUtils.write(Constants.PreferenceKeys.IS_DARK_MODE, false)
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                            bundle.putString("theme", "light")
+                            firebaseAnalytics.logEvent("app_theme", bundle)
+                        }
+                        return true
+                    }
+                }
 
             val snoozePre = findPreference("mute") as ListPreference?
             snoozePre!!.layoutResource = R.layout.layout_preference

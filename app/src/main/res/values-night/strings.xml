@@ -28,7 +28,6 @@
     <string name="txt_app_info">App Info</string>
     <string name="txt_location_developer">9250 DM, Khulna, Bangladesh</string>
     <string name="txt_version">Version: 1.0.1</string>
-    <string name="txt_app_bio">Message Alarm is a cool application, which help by beautiful alarm, when there is a important message for you!</string>
     <string name="title_activity_settings">SettingsActivity</string>
 
     <!-- Preference Titles -->

@@ -18,6 +18,7 @@ import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.service.AlarmServicePresenter
+import com.app.messagealarm.ui.buy_pro.BuyProActivity
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.*
@@ -34,6 +35,8 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
+import java.io.Serializable
+import java.lang.NullPointerException
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -104,9 +107,31 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         setListener()
         handleEditAndViewMode()
         darkMode()
+        enableProMode()
+    }
+
+    private fun isProModeEnabled() : Boolean{
+        return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
+    }
+
+    private fun enableProMode(){
+        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)){
+            switch_just_vibrate?.isEnabled = true
+            switch_vibrate?.isEnabled = true
+            txt_pro_just_vibrate?.visibility = View.GONE
+            txt_pro_vibrate?.visibility = View.GONE
+        }else{
+            switch_vibrate?.isChecked = false
+            switch_vibrate?.isEnabled = false
+            switch_just_vibrate?.isChecked = false
+            switch_just_vibrate?.isEnabled = false
+            txt_pro_just_vibrate?.visibility = View.VISIBLE
+            txt_pro_vibrate?.visibility = View.VISIBLE
+        }
     }
 
     private fun handleEditAndViewMode(){
+        try {
             defaultValuesToDataModel()
             if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
                 if(arguments?.getSerializable(Constants.BundleKeys.APP) != null){
@@ -124,6 +149,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     )
                 }
             }
+        }catch (e: NullPointerException){
+            //skip the crash
+        }
+
     }
 
     override fun onResume() {
@@ -145,6 +174,21 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         })
     }
 
+    private fun visitProScreen(){
+        if(activity is AlarmApplicationActivity){
+            dismissAllowingStateLoss()
+            val intent = Intent(activity, BuyProActivity::class.java)
+            requireActivity().startActivityForResult(intent,
+                Constants.ACTION.ACTION_PURCHASE_FROM_MAIN)
+        }else if(activity is AddApplicationActivity){
+            dismissAllowingStateLoss()
+            requireActivity().startActivityForResult(Intent(requireActivity(),
+                BuyProActivity::class.java),
+                Constants.ACTION.ACTION_PURCHASE_FROM_ADD)
+        }
+
+    }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog.setOnShowListener { dialogInterface ->
@@ -155,6 +199,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     private fun setupFullHeight(bottomSheetDialog: BottomSheetDialog) {
+        try{
         val bottomSheet =
             bottomSheetDialog.findViewById<View>(R.id.design_bottom_sheet) as FrameLayout?
         val behavior: BottomSheetBehavior<*> = BottomSheetBehavior.from<FrameLayout?>(bottomSheet!!)
@@ -166,6 +211,9 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
         bottomSheet.layoutParams = layoutParams
         behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }catch (e:NullPointerException){
+
+        }
     }
 
     private fun pickAudioFromStorage() {
@@ -185,36 +233,43 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
 
         btn_save?.setOnClickListener {
-            if(checkForDefault()){
-               shouldOnStatus = false
-            }else{
-                //save application and turn switch on
-                addApplicationEntity.isRunningStatus = true
-                shouldOnStatus = true
-            }
-            var packageName = ""
-            var senderName = ""
-            if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
-                val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
-                packageName = app.packageName
-                senderName = addApplicationEntity.senderNames
-            }else{
-                packageName = holderEntity.packageName
-                senderName = holderEntity.senderNames
-            }
-            /**
-             * When in edit mode, and cleaning the name. then need to clean the holder entity. the bug is in edit mode
-             */
-            if(packageName == Constants.APP.IMO_PACKAGE){
-                if(senderName == "None"){
-                    Toasty.info(requireActivity(), "IMO can send notification without real message," +
-                            " please add at least one sender name!").show()
+            try{
+                if(checkForDefault()){
+                    shouldOnStatus = false
+                }else{
+                    //save application and turn switch on
+                    addApplicationEntity.isRunningStatus = true
+                    shouldOnStatus = true
+                }
+                var packageName = ""
+                var senderName = ""
+                if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
+                    val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
+                    packageName = app.packageName
+                    senderName = addApplicationEntity.senderNames
+                }else{
+                    if(holderEntity.packageName != null){
+                        packageName = holderEntity.packageName
+                    }
+                    senderName = holderEntity.senderNames
+                }
+                /**
+                 * When in edit mode, and cleaning the name. then need to clean the holder entity. the bug is in edit mode
+                 */
+                if(packageName == Constants.APP.IMO_PACKAGE){
+                    if(senderName == "None"){
+                        Toasty.info(requireActivity(), "IMO can send notification without real message," +
+                                " please add at least one sender name!").show()
+                    }else{
+                        saveApplication()
+                    }
                 }else{
                     saveApplication()
                 }
-            }else{
-                saveApplication()
+            }catch (e: NullPointerException){
+                //skip the crash
             }
+
         }
 
         switch_custom_time?.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -256,11 +311,22 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
 
         view_vibrate?.setOnClickListener {
-            switch_vibrate?.performClick()
+            if(isProModeEnabled()){
+                switch_vibrate?.performClick()
+            }else{
+                //trigger pro screen
+                visitProScreen()
+            }
         }
 
         view_just_vibrate?.setOnClickListener {
-            switch_just_vibrate?.performClick()
+            if(isProModeEnabled()){
+                switch_just_vibrate?.performClick()
+            }else{
+                //trigger pro screen
+                visitProScreen()
+            }
+
         }
 
         view_sender_name?.setOnClickListener {
@@ -683,33 +749,38 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
          */
         //start progress bar
         showProgressBar()
-        if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
-            val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
-            addApplicationEntity.appName = app.appName
-            addApplicationEntity.packageName = app.packageName
-            addApplicationEntity.tone_path = alarmTonePath
-            Thread(Runnable {
-                try {
-                    val bitmap = app.drawableIcon
-                    addApplicationOptionPresenter?.saveBitmapToFile(
-                        requireActivity(),
-                        app.packageName,
-                        bitmap.toBitmap()
-                    )
-                    addApplicationOptionPresenter?.checkForUnknownApp(addApplicationEntity.appName,
-                        addApplicationEntity.packageName)
-                } catch (e: Exception) {
-                    if(isAdded){
-                        requireActivity().runOnUiThread {
-                            hideProgressBar()
-                            Toasty.error(requireActivity(), e.message!!).show()
+        try {
+            if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
+                val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
+                addApplicationEntity.appName = app.appName
+                addApplicationEntity.packageName = app.packageName
+                addApplicationEntity.tone_path = alarmTonePath
+                Thread(Runnable {
+                    try {
+                        val bitmap = app.drawableIcon
+                        addApplicationOptionPresenter?.saveBitmapToFile(
+                            requireActivity(),
+                            app.packageName,
+                            bitmap.toBitmap()
+                        )
+                        addApplicationOptionPresenter?.checkForUnknownApp(addApplicationEntity.appName,
+                            addApplicationEntity.packageName)
+                    } catch (e: Exception) {
+                        if(isAdded){
+                            requireActivity().runOnUiThread {
+                                hideProgressBar()
+                                Toasty.error(requireActivity(), e.message!!).show()
+                            }
                         }
                     }
-                }
-            }).start()
-        }else{
-            saveWithTimeConstrain()
+                }).start()
+            }else{
+                saveWithTimeConstrain()
+            }
+        }catch (e: NullPointerException){
+            //skip the crash
         }
+
     }
 
     private fun showProgressBar(){
@@ -734,8 +805,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     if(switch_vibrate?.isChecked == holderEntity.isVibrateOnAlarm){
                         if(switch_just_vibrate?.isChecked == holderEntity.isJustVibrate) {
                             if (switch_custom_time?.isChecked == holderEntity.isCustomTime) {
-                                if (txt_number_of_play_value?.text.toString()
-                                        .trim()[0].toString() ==
+                                if (txt_number_of_play_value?.text.toString().split(" ")
+                                        [0].trim() ==
                                     holderEntity.numberOfPlay.toString()
                                 ) {
                                     if (txt_sender_name_value?.text.toString() == holderEntity.senderNames) {
@@ -771,51 +842,52 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     override fun onApplicationSaveSuccess() {
-       requireActivity().runOnUiThread {
-           if(isAdded){
-               Toasty.success(requireActivity(), getString(R.string.application_save_success)).show()
-               dismissAllowingStateLoss()
-               requireActivity().finish()
-           }
-       }
+        if(isAdded) {
+            requireActivity().runOnUiThread {
+                Toasty.success(requireActivity(), getString(R.string.application_save_success))
+                    .show()
+                dismissAllowingStateLoss()
+                requireActivity().finish()
+            }
+        }
     }
 
     override fun onApplicationSaveError(message: String) {
-     requireActivity().runOnUiThread {
-         Toasty.error(requireActivity(), message).show()
-     }
+        if(isAdded){
+            requireActivity().runOnUiThread {
+                Toasty.error(requireActivity(), message).show()
+            }
+        }
     }
 
     override fun onApplicationUpdateSuccess() {
-       requireActivity().runOnUiThread {
-           if(isAdded){
-               Toasty.success(requireActivity(), getString(R.string.update_successful)).show()
-           }
-           if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
-               if(shouldOnStatus){
-                   AlarmServicePresenter.updateAppStatus(true, holderEntity.id)
-               }
-               if(isAdded){
-                   dismissAllowingStateLoss()
-                   requireActivity().finish()
-               }
-           }else{
-               if(shouldOnStatus){
-                   AlarmServicePresenter.updateAppStatus(true, holderEntity.id)
-                   //notify adapter
-                   (activity as AlarmApplicationActivity).notifyCurrentAdapter()
-               }
-               if(isAdded){
-                   dismissAllowingStateLoss()
-               }
-           }
-       }
+        if(isAdded){
+            requireActivity().runOnUiThread {
+                Toasty.success(requireActivity(), getString(R.string.update_successful)).show()
+                if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
+                    if(shouldOnStatus){
+                        AlarmServicePresenter.updateAppStatus(true, holderEntity.id)
+                    }
+                    dismissAllowingStateLoss()
+                    requireActivity().finish()
+                }else{
+                    if(shouldOnStatus){
+                        AlarmServicePresenter.updateAppStatus(true, holderEntity.id)
+                        //notify adapter
+                        (activity as AlarmApplicationActivity).notifyCurrentAdapter()
+                    }
+                    dismissAllowingStateLoss()
+                }
+            }
+        }
     }
 
     override fun onApplicationUpdateError(message: String) {
-      requireActivity().runOnUiThread {
-          Toasty.error(requireActivity(), message).show()
-      }
+        if(isAdded){
+            requireActivity().runOnUiThread {
+                Toasty.error(requireActivity(), message).show()
+            }
+        }
     }
 
     override fun onBitmapSaveSuccess(path: String) {
@@ -824,8 +896,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
          * End of other values
          */
         saveWithTimeConstrain()
-        requireActivity().runOnUiThread {
-            hideProgressBar()
+        if(isAdded){
+            requireActivity().runOnUiThread {
+                hideProgressBar()
+            }
         }
     }
 
@@ -851,9 +925,11 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     override fun onBitmapSaveError() {
-        requireActivity().runOnUiThread {
-            Toasty.error(requireActivity(), DataUtils.getString(R.string.something_wrong)).show()
-            hideProgressBar()
+        if(isAdded){
+            requireActivity().runOnUiThread {
+                Toasty.error(requireActivity(), DataUtils.getString(R.string.something_wrong)).show()
+                hideProgressBar()
+            }
         }
     }
 
@@ -885,8 +961,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         addApplicationEntity = app
         alarmTonePath = app.tone_path
         convertToHolderEntity(addApplicationEntity)
-        requireActivity().runOnUiThread {
-            setPresetValueToUi(app)
+        if(isAdded){
+            requireActivity().runOnUiThread {
+                setPresetValueToUi(app)
+            }
         }
     }
 

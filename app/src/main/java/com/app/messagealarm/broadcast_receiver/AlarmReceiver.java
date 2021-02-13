@@ -12,7 +12,6 @@ import com.app.messagealarm.utils.SharedPrefUtils;
 public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.e("ALARM", "TRUE");
         SharedPrefUtils.INSTANCE.write(Constants.PreferenceKeys.IS_MUTED, false);
         FloatingNotification.Companion.notifyMute(false);
     }

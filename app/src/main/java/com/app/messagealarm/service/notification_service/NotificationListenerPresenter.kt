@@ -5,6 +5,7 @@ import android.service.notification.StatusBarNotification
 import android.util.Log
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.local_database.AppDatabase
+import com.app.messagealarm.utils.Constants
 import java.lang.NullPointerException
 
 class NotificationListenerPresenter(private val view: NotificationListenerView) {
@@ -38,7 +39,6 @@ class NotificationListenerPresenter(private val view: NotificationListenerView) 
             val constrainList =
                 appDataBase.appConstrainDao().getAppConstrains(packageName, langCode)
             for (x in constrainList) {
-
                 if (x.title != null && x.description != null) {
                     if (x.status == null) {
                         if (x.title == title || x.description == desc) {

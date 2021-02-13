@@ -2,6 +2,7 @@ package com.app.messagealarm.networking;
 
 import com.app.messagealarm.model.response.TokenResponse;
 import com.app.messagealarm.model.response.UnknownAppResponse;
+import com.app.messagealarm.model.response.VerifyPurchaseResponse;
 import com.app.messagealarm.model.response.sync.SyncResponse;
 import com.app.messagealarm.utils.Constants;
 
@@ -36,4 +37,11 @@ public interface ApiService {
                                               @Field(Constants.API.Body.PACKAGE_NAME) String packageName,
                                               @Field(Constants.API.Body.TOKEN) String token
                                               );
+
+    @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})
+    @FormUrlEncoded
+    @POST(Constants.API.VERIFY_PURCHASE)
+    Call<VerifyPurchaseResponse> verifyPurchase(@Field(Constants.API.Body.RECEIPT)String receipt,
+                                                @Field(Constants.API.Body.SIGNATURE) String signature
+                                                );
 }

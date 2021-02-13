@@ -58,14 +58,7 @@ class DataUtils private constructor() {
          * @param resourceId id of the string resource
          * */
         fun getLocalizedString(resourceId: Int): String {
-            return BaseApplication.getBaseApplicationContext().let {
-                it.createConfigurationContext(
-                    Configuration(it.resources.configuration)
-                        .apply {
-                            setLocale(Locale(LanguageUtils.getLanguage()))
-                        }
-                ).resources.getString(resourceId)
-            }
+            return BaseApplication.getBaseApplicationContext().resources.getString(resourceId)
         }
 
         /**

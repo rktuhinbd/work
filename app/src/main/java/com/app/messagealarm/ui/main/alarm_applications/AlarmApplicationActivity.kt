@@ -11,7 +11,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -21,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.billingclient.api.*
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
@@ -28,6 +28,7 @@ import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.service.app_reader_intent_service.AppsReaderIntentService
 import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.ui.adapters.AddedAppsListAdapter
+import com.app.messagealarm.ui.buy_pro.BuyProActivity
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
 import com.app.messagealarm.ui.onboarding.OnboardingDialog
@@ -35,6 +36,7 @@ import com.app.messagealarm.ui.setting.SettingsActivity
 import com.app.messagealarm.ui.widget.BottomSheetFragmentLang
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
+import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
@@ -43,10 +45,11 @@ import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import java.io.File
-import kotlin.system.exitProcess
+import java.io.IOException
+import java.lang.NullPointerException
 
 
-class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
+class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, PurchasesUpdatedListener,
     AddedAppsListAdapter.ItemClickListener {
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
@@ -65,6 +68,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         setupAppsRecyclerView()
         lookForTablesSize()
         showLanguageDoesNotSupported()
+        /**
+         * check for review
+         */
+        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIRST_TIME_ALARM_PLAYED)){
+            askForReview()
+        }
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
 
@@ -93,7 +102,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         val isServiceStopped =
             SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)
         switch_alarm_status?.isChecked = !isServiceStopped
-        this.registerReceiver(mMessageReceiver,  IntentFilter("turn_off_switch"))
+        this.registerReceiver(mMessageReceiver, IntentFilter("turn_off_switch"))
     }
 
 
@@ -155,8 +164,17 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
                     )
                 }
             }
+        }else if(requestCode == Constants.ACTION.ACTION_PURCHASE_FROM_MAIN){
+            //purchased
+            if(isPurchased()){
+                Toasty.success(this, "Thanks for purchase! You are now pro user!").show()
+            }
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun isPurchased(): Boolean{
+        return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
     }
 
 
@@ -186,9 +204,14 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
     }
 
     private fun askForPermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE,
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            android.Manifest.permission.SYSTEM_ALERT_WINDOW,  android.Manifest.permission.RECEIVE_BOOT_COMPLETED),1)
+        ActivityCompat.requestPermissions(
+            this, arrayOf(
+                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                android.Manifest.permission.SYSTEM_ALERT_WINDOW,
+                android.Manifest.permission.RECEIVE_BOOT_COMPLETED
+            ), 1
+        )
     }
 
     private fun recyclerViewSwipeHandler() {
@@ -289,9 +312,20 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
 
 
     private fun setListener() {
-
         fab_button_add_application?.setOnClickListener {
-            startActivity(Intent(this, AddApplicationActivity::class.java))
+            if(!isPurchased()){
+                if(rv_application_list?.adapter?.itemCount == 0){
+                    startActivity(Intent(this, AddApplicationActivity::class.java))
+                }else{
+                    Toasty.info(this, "Please buy pro version to add more apps!").show()
+                    //one app added now take user to buy
+                    val intent = Intent(this, BuyProActivity::class.java)
+                        startActivityForResult(intent,
+                        Constants.ACTION.ACTION_PURCHASE_FROM_MAIN)
+                }
+            }else{
+                startActivity(Intent(this, AddApplicationActivity::class.java))
+            }
         }
 
         switch_alarm_status?.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -318,14 +352,43 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
 
     override fun onGetAlarmApplicationSuccess(appsList: ArrayList<ApplicationEntity>) {
         runOnUiThread {
-            if (appsList.isNotEmpty()) {
-                (rv_application_list?.adapter as AddedAppsListAdapter).addItems(appsList)
-                recyclerViewSwipeHandler()
-                dataState()
-            } else {
-                emptyState()
+            try{
+                if (appsList.isNotEmpty()) {
+                    (rv_application_list?.adapter as AddedAppsListAdapter).addItems(appsList)
+                    recyclerViewSwipeHandler()
+                    dataState()
+                } else {
+                    emptyState()
+                }
+            }catch (e:NullPointerException){
+
             }
         }
+    }
+
+    /**
+     * Ask for review to user after first time alarm played
+     */
+    private fun askForReview(){
+        if(!SharedPrefUtils.contains(Constants.PreferenceKeys.IS_REVIEW_SCREEN_SHOWN) ||
+            !SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_REVIEW_SCREEN_SHOWN)){
+            val manager = ReviewManagerFactory.create(this)
+            val request = manager.requestReviewFlow()
+            request.addOnCompleteListener { request ->
+                if (request.isSuccessful) {
+                    // We got the ReviewInfo object
+                    val reviewInfo = request.result
+                    val flow = manager.launchReviewFlow(this, reviewInfo)
+                    flow.addOnCompleteListener { _ ->
+                        // The flow has finished. The API does not indicate whether the user
+                        // reviewed or not, or even whether the review dialog was shown. Thus, no
+                        // matter the result, we continue our app flow.
+                        SharedPrefUtils.write(Constants.PreferenceKeys.IS_REVIEW_SCREEN_SHOWN, true)
+                    }
+                }
+            }
+        }
+
     }
 
     private fun emptyState() {
@@ -373,8 +436,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
     }
 
     public fun notifyCurrentAdapter(){
+        //at this point getting the concurrent modification exception
         Handler(Looper.getMainLooper()).postDelayed(Runnable {
-         lookForAlarmApplication()
+            lookForAlarmApplication()
         }, 1500)
     }
 
@@ -398,15 +462,28 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
         WorkManagerUtils.scheduleSyncWork(this, appSize, langSize, appConstrainSize)
     }
 
+    private fun showEditDialog(app:ApplicationEntity){
+        //refresh adapter first
+        if(!isFinishing){
+            try {
+                if (!bottomSheetModel.isAdded) {
+                    val bundle = Bundle()
+                    bundle.putBoolean(Constants.BundleKeys.IS_EDIT_MODE, true)
+                    bundle.putString(Constants.BundleKeys.PACKAGE_NAME, app.packageName)
+                    bottomSheetModel.arguments = bundle
+                    bottomSheetModel.show(supportFragmentManager, "MAIN")
+                }
+            }catch (e:java.lang.IllegalStateException){
+                //skip the crash
+            }
+        }
+
+    }
+
+
     override fun onItemClick(app: ApplicationEntity) {
         //refresh adapter first
-        if (!bottomSheetModel.isAdded) {
-            val bundle = Bundle()
-            bundle.putBoolean(Constants.BundleKeys.IS_EDIT_MODE, true)
-            bundle.putString(Constants.BundleKeys.PACKAGE_NAME, app.packageName)
-            bottomSheetModel.arguments = bundle
-            bottomSheetModel.show(supportFragmentManager, "MAIN")
-        }
+       showEditDialog(app)
     }
 
     override fun onLongClick(app: ApplicationEntity) {
@@ -437,11 +514,15 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView,
             //schedule quickstart
             if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_TUTORIAL_SHOW)) {
                 Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                   showQuickStartDialog()
+                    showQuickStartDialog()
                 }, 1000)
             }
         }
 
+
+    }
+
+    override fun onPurchasesUpdated(p0: BillingResult, p1: MutableList<Purchase>?) {
 
     }
 

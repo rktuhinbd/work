@@ -20,6 +20,17 @@ class SupportUtils {
             activity.startActivity(Intent.createChooser(email, "Choose an Email client :"))
         }
 
+        fun sendEmailSell(activity: Activity){
+            val email = Intent(Intent.ACTION_SEND)
+            email.putExtra(Intent.EXTRA_EMAIL, arrayOf<String>("sales@mk7lab.com"))
+            email.putExtra(Intent.EXTRA_SUBJECT, "Hi, I have a project for you!")
+            email.putExtra(Intent.EXTRA_TEXT, message)
+//need this to prompts email client only
+            //need this to prompts email client only
+            email.type = "message/rfc822"
+            activity.startActivity(Intent.createChooser(email, "Choose an Email client :"))
+        }
+
         fun sendEmailLanguage(activity: Activity) {
             val email = Intent(Intent.ACTION_SEND)
             email.putExtra(Intent.EXTRA_EMAIL, arrayOf<String>("info@messagealarm.app"))

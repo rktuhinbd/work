@@ -26,13 +26,14 @@
             android:layout_height="match_parent">
 
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/btn_close"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginStart="16dp"
                 android:padding="9dp"
                 android:scaleType="fitCenter"
+                android:background="@android:color/transparent"
                 android:src="@drawable/ic_close"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -53,13 +54,14 @@
                 app:layout_constraintStart_toEndOf="@id/btn_close"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/btn_save"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginEnd="16dp"
                 android:padding="8dp"
                 android:scaleType="fitCenter"
+                android:background="@android:color/transparent"
                 android:src="@drawable/ic_tick"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -305,6 +307,24 @@
                     app:layout_constraintVertical_chainStyle="packed" />
 
 
+                <TextView
+                    android:id="@+id/txt_pro_vibrate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pro"
+                    android:fontFamily="@font/crimson_italic"
+                    android:textColor="@android:color/holo_red_light"
+                    app:layout_constraintTop_toTopOf="@id/view_vibrate"
+                    app:layout_constraintBottom_toBottomOf="@id/view_vibrate"
+                    app:layout_constraintStart_toEndOf="@id/txt_vibrate"
+                    app:layout_constraintEnd_toStartOf="@id/switch_vibrate"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintVertical_bias="0.4"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    />
+
                 <Switch
                     android:id="@+id/switch_vibrate"
                     android:layout_width="wrap_content"
@@ -380,6 +400,23 @@
                     app:layout_constraintTop_toTopOf="@id/view_just_vibrate"
                     app:layout_constraintVertical_chainStyle="packed" />
 
+                <TextView
+                    android:id="@+id/txt_pro_just_vibrate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pro"
+                    android:fontFamily="@font/crimson_italic"
+                    android:textColor="@android:color/holo_red_light"
+                    app:layout_constraintTop_toTopOf="@id/view_just_vibrate"
+                    app:layout_constraintBottom_toBottomOf="@id/view_just_vibrate"
+                    app:layout_constraintStart_toEndOf="@id/txt_just_vibrate"
+                    app:layout_constraintEnd_toStartOf="@id/switch_just_vibrate"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintVertical_bias="0.4"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    />
 
                 <Switch
                     android:id="@+id/switch_just_vibrate"
