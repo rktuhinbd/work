@@ -147,6 +147,8 @@ class Constants {
 
     class PreferenceKeys {
         companion object {
+            const val IS_FIRST_TIME_ALARM_PLAYED = "alarm_played"
+            const val IS_REVIEW_SCREEN_SHOWN = "review_asked"
             const val IS_PURCHASED = "is_purchased"
             const val FIREBASE_TOKEN = "firebase_token"
             const val IS_TUTORIAL_SHOW = "is_tutorial"

@@ -36,6 +36,7 @@ import com.app.messagealarm.ui.setting.SettingsActivity
 import com.app.messagealarm.ui.widget.BottomSheetFragmentLang
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
+import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
@@ -67,6 +68,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         setupAppsRecyclerView()
         lookForTablesSize()
         showLanguageDoesNotSupported()
+        /**
+         * check for review
+         */
+        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIRST_TIME_ALARM_PLAYED)){
+            askForReview()
+        }
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
 
@@ -357,6 +364,31 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
             }
         }
+    }
+
+    /**
+     * Ask for review to user after first time alarm played
+     */
+    private fun askForReview(){
+        if(!SharedPrefUtils.contains(Constants.PreferenceKeys.IS_REVIEW_SCREEN_SHOWN) ||
+            !SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_REVIEW_SCREEN_SHOWN)){
+            val manager = ReviewManagerFactory.create(this)
+            val request = manager.requestReviewFlow()
+            request.addOnCompleteListener { request ->
+                if (request.isSuccessful) {
+                    // We got the ReviewInfo object
+                    val reviewInfo = request.result
+                    val flow = manager.launchReviewFlow(this, reviewInfo)
+                    flow.addOnCompleteListener { _ ->
+                        // The flow has finished. The API does not indicate whether the user
+                        // reviewed or not, or even whether the review dialog was shown. Thus, no
+                        // matter the result, we continue our app flow.
+                        SharedPrefUtils.write(Constants.PreferenceKeys.IS_REVIEW_SCREEN_SHOWN, true)
+                    }
+                }
+            }
+        }
+
     }
 
     private fun emptyState() {
