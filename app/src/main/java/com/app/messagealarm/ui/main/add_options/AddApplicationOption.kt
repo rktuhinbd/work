@@ -199,6 +199,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     private fun setupFullHeight(bottomSheetDialog: BottomSheetDialog) {
+        try{
         val bottomSheet =
             bottomSheetDialog.findViewById<View>(R.id.design_bottom_sheet) as FrameLayout?
         val behavior: BottomSheetBehavior<*> = BottomSheetBehavior.from<FrameLayout?>(bottomSheet!!)
@@ -210,6 +211,9 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
         bottomSheet.layoutParams = layoutParams
         behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }catch (e:NullPointerException){
+
+        }
     }
 
     private fun pickAudioFromStorage() {
@@ -796,7 +800,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }else{
             holderEntity.alarmRepeat
         }
-
             if(txt_repeat_value?.text.toString().trim() == repeat){
                 if(txt_ringtone_value?.text.toString().trim() == holderEntity.ringTone){
                     if(switch_vibrate?.isChecked == holderEntity.isVibrateOnAlarm){

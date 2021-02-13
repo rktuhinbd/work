@@ -45,6 +45,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import java.io.File
 import java.io.IOException
+import java.lang.NullPointerException
 
 
 class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, PurchasesUpdatedListener,
@@ -344,12 +345,16 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     override fun onGetAlarmApplicationSuccess(appsList: ArrayList<ApplicationEntity>) {
         runOnUiThread {
-            if (appsList.isNotEmpty()) {
-                (rv_application_list?.adapter as AddedAppsListAdapter).addItems(appsList)
-                recyclerViewSwipeHandler()
-                dataState()
-            } else {
-                emptyState()
+            try{
+                if (appsList.isNotEmpty()) {
+                    (rv_application_list?.adapter as AddedAppsListAdapter).addItems(appsList)
+                    recyclerViewSwipeHandler()
+                    dataState()
+                } else {
+                    emptyState()
+                }
+            }catch (e:NullPointerException){
+
             }
         }
     }
