@@ -3,6 +3,8 @@ package com.app.messagealarm.ui.about
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.provider.Telephony
+import android.util.Log
 import android.view.Menu
 import androidx.appcompat.app.AppCompatDelegate
 import com.app.messagealarm.BaseActivity

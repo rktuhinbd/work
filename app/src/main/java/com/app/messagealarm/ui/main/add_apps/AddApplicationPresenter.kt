@@ -91,8 +91,12 @@ class AddApplicationPresenter(
                 val holder = ArrayList<InstalledApps>()
                 for (x in installedAppsList) {
                     for (y in appList) {
-                        if (x.packageName == y.appPackageName) {
-                            holder.add(x)
+                        if(x.packageName != "com.android.mms"){
+                            if (x.packageName == y.appPackageName &&
+                                y.appPackageName != Telephony.Sms.getDefaultSmsPackage(activity)
+                            ) {
+                                holder.add(x)
+                            }
                         }
                     }
                     if(x.packageName != "com.android.mms"){

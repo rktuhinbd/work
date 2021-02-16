@@ -1,5 +1,6 @@
 package com.app.messagealarm.ui.buy_pro
 
+import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import com.android.billingclient.api.Purchase
@@ -9,11 +10,12 @@ import com.app.messagealarm.model.response.VerifyPurchaseResponse
 import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.SharedPrefUtils
+import com.google.firebase.analytics.FirebaseAnalytics
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class BuyProPresenter(private val buyProView: BuyProView) {
+class BuyProPresenter(private val buyProView: BuyProView, private val firebaseAnalytics: FirebaseAnalytics) {
 
     /*
     * delete the turned of vibrate option
@@ -43,11 +45,12 @@ class BuyProPresenter(private val buyProView: BuyProView) {
         signature: String,
         purchase: Purchase
     ){
-        Log.e("RECEIPT", receipt)
-        Log.e("SIGNATURE", signature)
         RetrofitClient.getApiService().verifyPurchase(receipt, signature).enqueue(
             object : Callback<VerifyPurchaseResponse>{
                 override fun onFailure(call: Call<VerifyPurchaseResponse>, t: Throwable) {
+                    val bundle = Bundle()
+                    bundle.putString("purchase_server_internet_failed", "yes")
+                    firebaseAnalytics.logEvent("purchase_server_internet_failed", bundle)
                     buyProView.verifyPurchaseStatus(false, purchase)
                 }
                 override fun onResponse(
