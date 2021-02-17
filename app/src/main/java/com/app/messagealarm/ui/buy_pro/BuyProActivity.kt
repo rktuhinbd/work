@@ -10,10 +10,7 @@ import androidx.core.content.ContextCompat
 import com.android.billingclient.api.*
 import com.android.billingclient.api.BillingClient.SkuType
 import com.app.messagealarm.R
-import com.app.messagealarm.utils.Constants
-import com.app.messagealarm.utils.Security
-import com.app.messagealarm.utils.SharedPrefUtils
-import com.app.messagealarm.utils.VisitUrlUtils
+import com.app.messagealarm.utils.*
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
@@ -49,12 +46,23 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
             image_king?.alpha = calculateAlpha(abs(totalOffset), abs(verticalOffset))
         })
         setListener()
-        checkPurchaseStatus()
+        buyingProcess()
     }
 
     override fun onStart() {
         super.onStart()
 
+    }
+
+
+    private fun buyingProcess(){
+        if(AndroidUtils.isOnline(this)){
+            progress_purchase?.visibility = View.VISIBLE
+            checkPurchaseStatus()
+        }else{
+            btn_buy_pro_user.text = "No Internet!"
+            progress_purchase?.visibility = View.GONE
+        }
     }
 
     private fun checkPurchaseStatus(){
@@ -175,33 +183,39 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         }
 
         btn_buy_pro_user?.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putString("click_on_buy_button", "yes")
-            firebaseAnalytics.logEvent("click_on_buy_button", bundle)
-           if(billingClient?.isReady!!){
-               if(flowParams != null){
-                   billingClient!!.launchBillingFlow(this, flowParams!!)
-               }
-           }else{
-               Toasty.success(this, "here").show()
-               billingClient =
-                   BillingClient.newBuilder(this).enablePendingPurchases().setListener(this).build()
-               billingClient!!.startConnection(object : BillingClientStateListener {
-                   override fun onBillingSetupFinished(billingResult: BillingResult) {
-                       if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                           initiatePurchase()
-                       } else {
-                           Toast.makeText(
-                               applicationContext,
-                               "Error " + billingResult.debugMessage,
-                               Toast.LENGTH_SHORT
-                           ).show()
-                       }
-                   }
+            if(AndroidUtils.isOnline(this)){
+                val bundle = Bundle()
+                bundle.putString("click_on_buy_button", "yes")
+                firebaseAnalytics.logEvent("click_on_buy_button", bundle)
+                if(billingClient?.isReady!!){
+                    if(flowParams != null){
+                        billingClient!!.launchBillingFlow(this, flowParams!!)
+                    }
+                }else{
+                    Toasty.success(this, "here").show()
+                    billingClient =
+                        BillingClient.newBuilder(this).enablePendingPurchases().setListener(this).build()
+                    billingClient!!.startConnection(object : BillingClientStateListener {
+                        override fun onBillingSetupFinished(billingResult: BillingResult) {
+                            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                                initiatePurchase()
+                            } else {
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Error " + billingResult.debugMessage,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
 
-                   override fun onBillingServiceDisconnected() {}
-               })
-           }
+                        override fun onBillingServiceDisconnected() {}
+                    })
+                }
+            }else{
+                Toasty.info(this, "No Internet!").show()
+                checkPurchaseStatus()
+            }
+
         }
 
         toolbar?.setNavigationOnClickListener {

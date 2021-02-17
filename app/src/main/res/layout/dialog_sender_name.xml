@@ -32,7 +32,6 @@
             android:textStyle="bold"
             />
 
-
         <TextView
             android:id="@+id/txt_hint_sender_name"
             android:layout_width="wrap_content"

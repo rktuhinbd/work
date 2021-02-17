@@ -51,7 +51,7 @@ class SupportUtils {
                     "Message Alarm - Never miss an important message"
                 )
                 var shareMessage =
-                    "\nI am using this application, it's helping me not missing any clients and important messages!\n\n"
+                    "\nHi, I am using Message Alarm, it's helping me not missing any important message's from any clients or friends!\n\n"
                 shareMessage =
                     shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n"
                 shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
