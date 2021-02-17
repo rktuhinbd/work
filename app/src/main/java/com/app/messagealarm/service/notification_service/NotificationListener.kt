@@ -128,14 +128,14 @@ class NotificationListener : NotificationListenerService(),
                                 )
                             } else {
                                 for (x in listItems) {
-                                   /* if(x.packageName.toString() == Constants.APP.XIAOMI_PACKAGE) {
+                                    if(x.packageName.toString() == Constants.APP.XIAOMI_PACKAGE) {
                                         //TODO(Mujahid) if package name com.android.mms and have two constrain continue the loop
                                         if (x.notification.extras["android.title"].toString() == "Messaging is running" &&
                                             x.notification.extras["android.text"].toString() == "Tap for more information or to stop the app."
                                         ) {
                                             continue
                                         }
-                                    }*/
+                                    }
                                     if (x.notification.extras["android.title"].toString() == "Chat heads active") {
                                         continue
                                     }else {

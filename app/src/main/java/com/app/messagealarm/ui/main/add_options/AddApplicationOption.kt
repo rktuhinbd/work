@@ -76,8 +76,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             img_number_of_play?.setImageResource(R.drawable.ic_loop_white)
             img_sender_name?.setImageResource(R.drawable.ic_name_white)
             img_message_body?.setImageResource(R.drawable.ic_message_white)
-            img_start_time?.setImageResource(R.drawable.ic_watch_white)
-            img_end_time?.setImageResource(R.drawable.ic_watch_white)
+            img_start_time?.setImageResource(R.drawable.ic_start_time_white)
+            img_end_time?.setImageResource(R.drawable.ic_end_time_white)
         }else{
             btn_close?.setImageResource(R.drawable.ic_close)
             btn_save?.setImageResource(R.drawable.ic_tick)
@@ -89,8 +89,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             img_number_of_play?.setImageResource(R.drawable.ic_refresh)
             img_sender_name?.setImageResource(R.drawable.ic_name)
             img_message_body?.setImageResource(R.drawable.ic_message)
-            img_start_time?.setImageResource(R.drawable.ic_stopwatch)
-            img_end_time?.setImageResource(R.drawable.ic_stopwatch)
+            img_start_time?.setImageResource(R.drawable.ic_start_time)
+            img_end_time?.setImageResource(R.drawable.ic_end_time)
         }
     }
 

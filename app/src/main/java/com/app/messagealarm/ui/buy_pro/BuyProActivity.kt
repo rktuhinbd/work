@@ -10,10 +10,11 @@ import androidx.core.content.ContextCompat
 import com.android.billingclient.api.*
 import com.android.billingclient.api.BillingClient.SkuType
 import com.app.messagealarm.R
-import com.app.messagealarm.utils.Constants
-import com.app.messagealarm.utils.Security
-import com.app.messagealarm.utils.SharedPrefUtils
+import com.app.messagealarm.utils.*
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_buy_pro_new.*
 import java.io.IOException
@@ -26,24 +27,42 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     private var billingClient: BillingClient? = null
     var buyProPresenter: BuyProPresenter? = null
     var flowParams:BillingFlowParams? = null
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buy_pro_new)
         changeStatusBarColorInLightMode()
+        // Obtain the FirebaseAnalytics instance.
+        firebaseAnalytics = Firebase.analytics
+        //log about screen open log
+        val bundle = Bundle()
+        bundle.putString("open_buy_page", "yes")
+        firebaseAnalytics.logEvent("open_buy_page", bundle)
        // setListener()
-        buyProPresenter = BuyProPresenter(this)
+        buyProPresenter = BuyProPresenter(this, firebaseAnalytics)
         appBarLayout?.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout, verticalOffset ->
             val totalOffset = appBarLayout.totalScrollRange
             image_king?.alpha = calculateAlpha(abs(totalOffset), abs(verticalOffset))
         })
         setListener()
-        checkPurchaseStatus()
+        buyingProcess()
     }
 
     override fun onStart() {
         super.onStart()
 
+    }
+
+
+    private fun buyingProcess(){
+        if(AndroidUtils.isOnline(this)){
+            progress_purchase?.visibility = View.VISIBLE
+            checkPurchaseStatus()
+        }else{
+            btn_buy_pro_user.text = "No Internet!"
+            progress_purchase?.visibility = View.GONE
+        }
     }
 
     private fun checkPurchaseStatus(){
@@ -156,43 +175,52 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     }
 
     private fun setListener(){
-        btn_buy_pro_user?.setOnClickListener {
-           if(billingClient?.isReady!!){
-               if(flowParams != null){
-                   billingClient!!.launchBillingFlow(this, flowParams!!)
-               }
-           }else{
-               Toasty.success(this, "here").show()
-               billingClient =
-                   BillingClient.newBuilder(this).enablePendingPurchases().setListener(this).build()
-               billingClient!!.startConnection(object : BillingClientStateListener {
-                   override fun onBillingSetupFinished(billingResult: BillingResult) {
-                       if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                           initiatePurchase()
-                       } else {
-                           Toast.makeText(
-                               applicationContext,
-                               "Error " + billingResult.debugMessage,
-                               Toast.LENGTH_SHORT
-                           ).show()
-                       }
-                   }
+        txt_learn_more?.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("click_on_learn_more", "yes")
+            firebaseAnalytics.logEvent("click_on_learn_more", bundle)
+            VisitUrlUtils.visitWebsite(this, "https://www.mk7lab.com/charity")
+        }
 
-                   override fun onBillingServiceDisconnected() {}
-               })
-           }
+        btn_buy_pro_user?.setOnClickListener {
+            if(AndroidUtils.isOnline(this)){
+                val bundle = Bundle()
+                bundle.putString("click_on_buy_button", "yes")
+                firebaseAnalytics.logEvent("click_on_buy_button", bundle)
+                if(billingClient?.isReady!!){
+                    if(flowParams != null){
+                        billingClient!!.launchBillingFlow(this, flowParams!!)
+                    }
+                }else{
+                    Toasty.success(this, "here").show()
+                    billingClient =
+                        BillingClient.newBuilder(this).enablePendingPurchases().setListener(this).build()
+                    billingClient!!.startConnection(object : BillingClientStateListener {
+                        override fun onBillingSetupFinished(billingResult: BillingResult) {
+                            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                                initiatePurchase()
+                            } else {
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Error " + billingResult.debugMessage,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+
+                        override fun onBillingServiceDisconnected() {}
+                    })
+                }
+            }else{
+                Toasty.info(this, "No Internet!").show()
+                checkPurchaseStatus()
+            }
+
         }
 
         toolbar?.setNavigationOnClickListener {
             finish()
         }
-    }
-
-    private fun cancelPurchase(){
-        Toasty.error(this, "Your purchase is canceled!").show()
-        setIsPurchased(false)
-        buyProPresenter?.cancelPurchase()
-        finish()
     }
 
     override fun onBackPressed() {
@@ -265,11 +293,17 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                // Grant entitlement to the user on item purchase
                // restart activity
                if (!isPurchased()) {
+                   val bundle = Bundle()
+                   bundle.putString("item_sold", "yes")
+                   firebaseAnalytics.logEvent("item_sold", bundle)
                    setIsPurchased(true)
                    finish()
                }
            }
        }else{
+           val bundle = Bundle()
+           bundle.putString("invalid_purchase", "yes")
+           firebaseAnalytics.logEvent("invalid_purchase", bundle)
            // Invalid purchase
            // show error to user
            Toast.makeText(

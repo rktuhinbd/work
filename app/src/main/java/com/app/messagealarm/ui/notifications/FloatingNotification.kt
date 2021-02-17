@@ -1,19 +1,19 @@
 package com.app.messagealarm.ui.notifications
 
-import android.R
 import android.annotation.SuppressLint
 import android.app.*
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
+import android.os.PowerManager
 import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.work.impl.utils.WakeLocks.newWakeLock
 import com.app.messagealarm.broadcast_receiver.*
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.*
@@ -60,6 +60,13 @@ class FloatingNotification {
             notificationManager: NotificationManagerCompat,
             numberOfPlay: Int
         ) {
+
+            Thread(Runnable {
+                /**
+                 * turn screen on
+                 */
+
+            }).start()
             var thread:Thread? = null
          thread =   Thread(Runnable {
                 //here i need run the loop of how much time need to play
