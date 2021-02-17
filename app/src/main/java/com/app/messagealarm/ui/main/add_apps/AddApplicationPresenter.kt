@@ -31,7 +31,6 @@ class AddApplicationPresenter(
     fun getAllApplicationList() {
         Thread(Runnable {
             try {
-                Log.e("APP_L", BaseApplication.installedApps.size.toString())
                 if(BaseApplication.installedApps.isEmpty()){
                     addApplicationView.onAllApplicationGetSuccess(
                         AppsReader.getInstalledApps(false, activity)!!
@@ -86,22 +85,27 @@ class AddApplicationPresenter(
             }else{
                 BaseApplication.installedApps
             }
-            val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
-            val appList = appDatabase.appDao().appsList
-            val holder = ArrayList<InstalledApps>()
-            for (x in installedAppsList) {
-                for (y in appList) {
-                    if (x.packageName == y.appPackageName) {
-                        holder.add(x)
+            try {
+                val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
+                val appList = appDatabase.appDao().appsList
+                val holder = ArrayList<InstalledApps>()
+                for (x in installedAppsList) {
+                    for (y in appList) {
+                        if (x.packageName == y.appPackageName) {
+                                holder.add(x)
+                        }
+                    }
+                    if(x.packageName != "com.android.mms"){
+                        if(x.packageName == Telephony.Sms.getDefaultSmsPackage(activity)){
+                            holder.add(x)
+                        }
                     }
                 }
-                if(x.packageName != "com.android.mms"){
-                    if(x.packageName == Telephony.Sms.getDefaultSmsPackage(activity)){
-                        holder.add(x)
-                    }
-                }
+                addApplicationView.onApplicationFiltered(holder.distinct() as ArrayList<InstalledApps>)
+            }catch (e:ConcurrentModificationException){
+                //skip the crash
             }
-            addApplicationView.onApplicationFiltered(holder)
+
         }).start()
 
     }

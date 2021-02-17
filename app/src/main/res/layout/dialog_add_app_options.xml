@@ -26,13 +26,14 @@
             android:layout_height="match_parent">
 
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/btn_close"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginStart="16dp"
-                android:padding="9dp"
+                android:padding="5dp"
                 android:scaleType="fitCenter"
+                android:background="@android:color/transparent"
                 android:src="@drawable/ic_close"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -53,13 +54,14 @@
                 app:layout_constraintStart_toEndOf="@id/btn_close"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/btn_save"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginEnd="16dp"
-                android:padding="8dp"
+                android:padding="5dp"
                 android:scaleType="fitCenter"
+                android:background="@android:color/transparent"
                 android:src="@drawable/ic_tick"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -130,7 +132,7 @@
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_marginStart="8dp"
-                    android:padding="8dp"
+                    android:padding="5dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_repeat"
                     app:layout_constraintBottom_toBottomOf="@id/view_repeat_bg"
@@ -203,7 +205,7 @@
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_marginStart="8dp"
-                    android:padding="8dp"
+                    android:padding="5dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_music"
                     app:layout_constraintBottom_toBottomOf="@id/view_ringtone"
@@ -278,7 +280,7 @@
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_marginStart="8dp"
-                    android:padding="8dp"
+                    android:padding="6dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_vibration"
                     app:layout_constraintBottom_toBottomOf="@id/view_vibrate"
@@ -304,6 +306,24 @@
                     app:layout_constraintTop_toTopOf="@id/view_vibrate"
                     app:layout_constraintVertical_chainStyle="packed" />
 
+
+                <TextView
+                    android:id="@+id/txt_pro_vibrate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pro"
+                    android:fontFamily="@font/crimson_italic"
+                    android:textColor="@android:color/holo_red_light"
+                    app:layout_constraintTop_toTopOf="@id/view_vibrate"
+                    app:layout_constraintBottom_toBottomOf="@id/view_vibrate"
+                    app:layout_constraintStart_toEndOf="@id/txt_vibrate"
+                    app:layout_constraintEnd_toStartOf="@id/switch_vibrate"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintVertical_bias="0.4"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    />
 
                 <Switch
                     android:id="@+id/switch_vibrate"
@@ -354,7 +374,7 @@
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_marginStart="8dp"
-                    android:padding="8dp"
+                    android:padding="6dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_vibration"
                     app:layout_constraintBottom_toBottomOf="@id/view_just_vibrate"
@@ -380,6 +400,23 @@
                     app:layout_constraintTop_toTopOf="@id/view_just_vibrate"
                     app:layout_constraintVertical_chainStyle="packed" />
 
+                <TextView
+                    android:id="@+id/txt_pro_just_vibrate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pro"
+                    android:fontFamily="@font/crimson_italic"
+                    android:textColor="@android:color/holo_red_light"
+                    app:layout_constraintTop_toTopOf="@id/view_just_vibrate"
+                    app:layout_constraintBottom_toBottomOf="@id/view_just_vibrate"
+                    app:layout_constraintStart_toEndOf="@id/txt_just_vibrate"
+                    app:layout_constraintEnd_toStartOf="@id/switch_just_vibrate"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintVertical_bias="0.4"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    />
 
                 <Switch
                     android:id="@+id/switch_just_vibrate"
@@ -428,7 +465,7 @@
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_marginStart="8dp"
-                    android:padding="8dp"
+                    android:padding="5dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_clock"
                     app:layout_constraintBottom_toBottomOf="@id/view_custom_time"
@@ -518,9 +555,9 @@
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_marginStart="8dp"
-                    android:padding="8dp"
+                    android:padding="5dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_stopwatch"
+                    android:src="@drawable/ic_start_time"
                     app:layout_constraintBottom_toBottomOf="@id/view_start_time"
                     app:layout_constraintEnd_toEndOf="@id/view_start_time"
                     app:layout_constraintHorizontal_bias="0"
@@ -592,9 +629,9 @@
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_marginStart="8dp"
-                    android:padding="8dp"
+                    android:padding="5dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_stopwatch"
+                    android:src="@drawable/ic_end_time"
                     app:layout_constraintBottom_toBottomOf="@id/view_end_time"
                     app:layout_constraintEnd_toEndOf="@id/view_end_time"
                     app:layout_constraintHorizontal_bias="0"
@@ -666,7 +703,7 @@
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_marginStart="8dp"
-                    android:padding="8dp"
+                    android:padding="5dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_refresh"
                     app:layout_constraintBottom_toBottomOf="@id/view_number_of_play"
@@ -744,7 +781,7 @@
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_marginStart="8dp"
-                    android:padding="8dp"
+                    android:padding="5dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_name"
                     app:layout_constraintBottom_toBottomOf="@id/view_sender_name"
@@ -838,7 +875,7 @@
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_marginStart="8dp"
-                    android:padding="8dp"
+                    android:padding="5dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_message"
                     app:layout_constraintBottom_toBottomOf="@id/view_message_body"

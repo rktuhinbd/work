@@ -13,19 +13,19 @@ import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.app.messagealarm.BaseActivity
-import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.notifications.FloatingNotification
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.MediaUtils
 import com.app.messagealarm.utils.Once
 import com.app.messagealarm.utils.SharedPrefUtils
+import com.app.messagealarm.utils.SharedPrefUtils.contains
+import com.app.messagealarm.utils.SharedPrefUtils.write
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.ncorti.slidetoact.SlideToActView
 import kotlinx.android.synthetic.main.activity_alarm.*
-import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -206,6 +206,12 @@ class AlarmActivity : BaseActivity() {
                 }
 
                 override fun onSlideCompleteAnimationEnded(view: SlideToActView) {
+                    if (!contains(Constants.PreferenceKeys.IS_FIRST_TIME_ALARM_PLAYED)) {
+                        write(
+                            Constants.PreferenceKeys.IS_FIRST_TIME_ALARM_PLAYED,
+                            true
+                        )
+                    }
                     FloatingNotification.cancelPageDismissNotification()
                     isSwiped = true
                     MediaUtils.stopAlarm()

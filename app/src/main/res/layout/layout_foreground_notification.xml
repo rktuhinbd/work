@@ -70,7 +70,7 @@
             android:src="@drawable/ic_snooze"
             android:layout_gravity="center"
             android:layout_marginEnd="16dp"
-            android:padding="5dp" />
+            android:padding="2dp" />
 
         <ImageView
             android:id="@+id/btn_power"
@@ -79,7 +79,7 @@
             android:src="@drawable/ic_start"
             android:layout_gravity="center"
             android:layout_marginEnd="16dp"
-            android:padding="5dp" />
+            android:padding="2dp" />
 
     </LinearLayout>
 

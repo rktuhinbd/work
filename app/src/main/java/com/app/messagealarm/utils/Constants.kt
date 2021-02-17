@@ -21,6 +21,12 @@ class Constants {
         }
     }
 
+    class Purchase{
+        companion object{
+            const val PRODUCT_ID = "pro_feature"
+        }
+    }
+
     class Default {
         companion object {
             const val DEFAULT_STRING: String = ""
@@ -41,6 +47,9 @@ class Constants {
     }
     class ACTION{
         companion object{
+            const val ACTION_PURCHASE_FROM_MAIN = 12
+            const val ACTION_PURCHASE_FROM_ADD = 13
+            const val ACTION_PURCHASE_FROM_SETTING = 14
             const val ACTION_UN_MUTE = "un_mute"
             const val SYNC = "SYNC"
         }
@@ -138,6 +147,9 @@ class Constants {
 
     class PreferenceKeys {
         companion object {
+            const val IS_FIRST_TIME_ALARM_PLAYED = "alarm_played"
+            const val IS_REVIEW_SCREEN_SHOWN = "review_asked"
+            const val IS_PURCHASED = "is_purchased"
             const val FIREBASE_TOKEN = "firebase_token"
             const val IS_TUTORIAL_SHOW = "is_tutorial"
             const val IS_NOTIFICATION_SWIPED = "is_swiped"
@@ -155,6 +167,7 @@ class Constants {
 
     class IntentKeys {
         companion object {
+            const val IS_PURCHASED = "is_purchased"
             const val TITLE = "title"
             const val DESC = "desc"
             const val IMAGE_PATH = "image"
@@ -163,6 +176,7 @@ class Constants {
             const val JUST_CANCEL = "just_cancel"
             const val APP_NAME = "app_name"
             const val TONE = "tone"
+            const val TOTAL_APP = "total_app"
             const val NUMBER_OF_PLAY = "number_of_play"
             const val IS_VIBRATE = "is_vibrate"
             const val IS_JUST_VIBRATE = "is_just_vibrate"
@@ -186,6 +200,7 @@ class Constants {
             const val SYNC = "sync"
             const val REGISTER_TOKEN = "token/"
             const val UNKNOWN_APP = "unknownapp/"
+            const val VERIFY_PURCHASE = "verify_purchase/"
         }
         class Body{
             companion object{
@@ -196,6 +211,8 @@ class Constants {
                 const val LANG_CODE = "lang_code"
                 const val APP_NAME = "app_name"
                 const val PACKAGE_NAME = "app_package_name"
+                const val RECEIPT = "receipt"
+                const val SIGNATURE = "signature"
             }
         }
         class ResponseFormat{
@@ -209,6 +226,7 @@ class Constants {
     class APP{
         companion object{
             const val IMO_PACKAGE = "com.imo.android.imoim"
+            const val XIAOMI_PACKAGE = "com.android.mms"
         }
     }
 

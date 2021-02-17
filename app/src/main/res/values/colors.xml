@@ -16,4 +16,5 @@
     <color name="track_color">#696969</color>
     <color name="delete_item">#D11A2A</color>
     <color name="success_color">#4BB543</color>
+    <color name="setting_icon">#6200EE</color>
 </resources>

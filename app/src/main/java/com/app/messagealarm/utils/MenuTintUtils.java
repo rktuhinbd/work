@@ -1,6 +1,9 @@
 package com.app.messagealarm.utils;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;

@@ -70,21 +70,10 @@ class MediaUtils {
                         }
                     })
 
-                   /* mediaPlayer!!.setOnCompletionListener(object :MediaPlayer.OnCompletionListener{
-                        override fun onCompletion(mp: MediaPlayer?) {
-                            if(isStopped){
-                                isLoop = false
-                            }
-                        }
-
-                    })*/
-
                     mediaPlayer!!.setOnPreparedListener {
-                        Log.e("PREPARED", "true")
                         it.start()
                     }
 
-                    Log.e("PREPARE_CALL", "true")
                     mediaPlayer!!.prepare()
 
                 }
@@ -138,8 +127,6 @@ class MediaUtils {
                  */
                 //here 30 is not static it will be from setting page, the values will be 1, 2, 3, or Full song
                 while (true) {
-                    //val totalPlayBack = (mediaPlayer!!.currentPosition / 1000).toInt()
-                    Log.e("PLAY_COUNT", count.toString())
                     if(mediaPlayer != null){
                         count++
                     }else{
@@ -179,8 +166,8 @@ class MediaUtils {
             }
         }
 
-        fun stopAlarm() {
-            //isStopped = true
+        fun stopAlarm( ) {
+            //first time alarm played and stopped, should ask user for review
             if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
                 write(Constants.PreferenceKeys.IS_STOPPED, true)
                 mediaPlayer!!.stop()
