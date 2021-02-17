@@ -91,12 +91,8 @@ class AddApplicationPresenter(
                 val holder = ArrayList<InstalledApps>()
                 for (x in installedAppsList) {
                     for (y in appList) {
-                        if(x.packageName != "com.android.mms"){
-                            if (x.packageName == y.appPackageName &&
-                                y.appPackageName != Telephony.Sms.getDefaultSmsPackage(activity)
-                            ) {
+                        if (x.packageName == y.appPackageName) {
                                 holder.add(x)
-                            }
                         }
                     }
                     if(x.packageName != "com.android.mms"){
@@ -105,7 +101,7 @@ class AddApplicationPresenter(
                         }
                     }
                 }
-                addApplicationView.onApplicationFiltered(holder)
+                addApplicationView.onApplicationFiltered(holder.distinct() as ArrayList<InstalledApps>)
             }catch (e:ConcurrentModificationException){
                 //skip the crash
             }

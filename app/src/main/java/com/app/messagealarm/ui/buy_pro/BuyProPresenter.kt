@@ -28,7 +28,6 @@ class BuyProPresenter(private val buyProView: BuyProView, private val firebaseAn
         }).start()
     }
 
-
     fun cancelPurchase(){
         turnOfVibrateAndJustVibrateFromAllAddedApp()
         deleteAddedApps()
