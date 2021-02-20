@@ -5,6 +5,6 @@ import com.app.messagealarm.model.InstalledApps
 interface AddApplicationView {
     fun onAllApplicationGetSuccess(list: ArrayList<InstalledApps>)
     fun onAllApplicationGetError(message: String)
-    fun onApplicationFiltered(list: ArrayList<InstalledApps>)
+    fun onApplicationFiltered(list: List<InstalledApps>)
     fun onSyncFailed(message:String)
 }
