@@ -218,7 +218,9 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         }
     }
 
-    override fun onApplicationFiltered(list: ArrayList<InstalledApps>) {
+    override fun onApplicationFiltered(list: List<InstalledApps>) {
+        val mainList = ArrayList<InstalledApps>()
+        mainList.addAll(list)
         val holderList = ArrayList<InstalledApps>()
         holderList.addAll(list)
         //there should be a logic that if internet is off then show handle sync not success
@@ -237,9 +239,9 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             countDownTimer.start()
         }
             try{
-                list.sortWith(Comparator { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
+                mainList.sortWith(Comparator { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
                 runOnUiThread {
-                    (rv_apps_list?.adapter as AllAppsListAdapter).updateData(list)
+                    (rv_apps_list?.adapter as AllAppsListAdapter).updateData(mainList)
                     if(holderList.size == 1 &&
                             holderList[0].packageName ==
                             Telephony.Sms.getDefaultSmsPackage(this@AddApplicationActivity)){

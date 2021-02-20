@@ -101,7 +101,7 @@ class AddApplicationPresenter(
                         }
                     }
                 }
-                addApplicationView.onApplicationFiltered(holder.distinct() as ArrayList<InstalledApps>)
+                addApplicationView.onApplicationFiltered(holder.distinct())
             }catch (e:ConcurrentModificationException){
                 //skip the crash
             }

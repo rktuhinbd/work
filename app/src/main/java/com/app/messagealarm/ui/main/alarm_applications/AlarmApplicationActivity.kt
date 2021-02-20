@@ -68,12 +68,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         setupAppsRecyclerView()
         lookForTablesSize()
         showLanguageDoesNotSupported()
-        /**
-         * check for review
-         */
-        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIRST_TIME_ALARM_PLAYED)){
-            askForReview()
-        }
+
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
 
@@ -103,6 +98,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)
         switch_alarm_status?.isChecked = !isServiceStopped
         this.registerReceiver(mMessageReceiver, IntentFilter("turn_off_switch"))
+        /**
+         * check for review
+         */
+        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIRST_TIME_ALARM_PLAYED)){
+            askForReview()
+        }
     }
 
 
@@ -370,8 +371,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
      * Ask for review to user after first time alarm played
      */
     private fun askForReview(){
-        if(!SharedPrefUtils.contains(Constants.PreferenceKeys.IS_REVIEW_SCREEN_SHOWN) ||
-            !SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_REVIEW_SCREEN_SHOWN)){
+        if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_REVIEW_SCREEN_SHOWN)){
             val manager = ReviewManagerFactory.create(this)
             val request = manager.requestReviewFlow()
             request.addOnCompleteListener { request ->
