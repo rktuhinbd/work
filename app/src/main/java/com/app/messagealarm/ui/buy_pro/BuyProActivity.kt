@@ -192,7 +192,6 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                         billingClient!!.launchBillingFlow(this, flowParams!!)
                     }
                 }else{
-                    Toasty.success(this, "here").show()
                     billingClient =
                         BillingClient.newBuilder(this).enablePendingPurchases().setListener(this).build()
                     billingClient!!.startConnection(object : BillingClientStateListener {
