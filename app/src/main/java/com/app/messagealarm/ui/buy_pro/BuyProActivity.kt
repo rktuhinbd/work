@@ -179,7 +179,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
             val bundle = Bundle()
             bundle.putString("click_on_learn_more", "yes")
             firebaseAnalytics.logEvent("click_on_learn_more", bundle)
-            VisitUrlUtils.visitWebsite(this, "https://www.mk7lab.com/charity")
+            VisitUrlUtils.visitWebsite(this, "https://www.mk7lab.com/Company/charity/")
         }
 
         btn_buy_pro_user?.setOnClickListener {
@@ -225,26 +225,6 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
 
     override fun onBackPressed() {
       finish()
-    }
-
-    /**
-     * Verifies that the purchase was signed correctly for this developer's public key.
-     *
-     * Note: It's strongly recommended to perform such check on your backend since hackers can
-     * replace this method with "constant true" if they decompile/rebuild your app.
-     *
-     */
-    private fun verifyValidSignature(
-        signedData: String,
-        signature: String
-    ): Boolean {
-        return try {
-            // To get key go to Developer Console > Select your app > Development Tools > Services & APIs.
-            val base64Key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArYJvmLyxsJEJTWGhsAoJJCtDRYHk6iM94tsW6U61xkDnbmeyJzi43bhE8clftwbeWhsg67tbjHi1KgvV17Nn+jRbCSGvrkkRY9l9Uz2FdfiSC3UD7Lh9RGc7ZU0zy93Acj6ELvg71B+vZCm/wlZ2rPtaSpE+nhm+fJh887RReb5Rv1a69EFc8pq7IvVdeTVOVABD22ZELTciyM3BybasAwrzcKQ9FbUKdVuDm5Lzq+AlktXea95Wuhfh4NA82zk3uYO5xsXeFWhV9+uboewYGwADrrm+3Y7LmuMldOiDONScwDkOPdayiWRKGqFGAWYxs9udFWUGIzQ0HVycuT9F0wIDAQAB"
-            Security.verifyPurchase(base64Key, signedData, signature)
-        } catch (e: IOException) {
-            false
-        }
     }
 
     private fun setIsPurchased(boolean: Boolean){
