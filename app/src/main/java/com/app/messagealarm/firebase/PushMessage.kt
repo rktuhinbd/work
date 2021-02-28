@@ -3,18 +3,20 @@ package com.app.messagealarm.firebase
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.app.messagealarm.R
 import com.app.messagealarm.networking.RetrofitClient
+import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.DataUtils
 import com.app.messagealarm.utils.SharedPrefUtils
@@ -72,6 +74,10 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
         }
         val defaultSoundUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         // Set the notification parameters to the notification builder object
+        val contentIntent = PendingIntent.getActivity(
+            this, 0,
+            Intent(this, AlarmApplicationActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT
+        )
         builder
             .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
             .setSmallIcon(R.drawable.ic_notification)
@@ -79,6 +85,8 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
             .setContentTitle(remoteMessage!!.data["title"])
             .setContentText(remoteMessage.data["body"])
             .setAutoCancel(true)
+            .setContentIntent(contentIntent)
+
 
         if(remoteMessage.data["image"] != null){
             // Set the image for the notification

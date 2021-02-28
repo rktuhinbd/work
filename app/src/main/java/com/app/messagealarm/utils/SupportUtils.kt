@@ -23,7 +23,7 @@ class SupportUtils {
         fun sendEmailSell(activity: Activity){
             val email = Intent(Intent.ACTION_SEND)
             email.putExtra(Intent.EXTRA_EMAIL, arrayOf<String>("sales@mk7lab.com"))
-            email.putExtra(Intent.EXTRA_SUBJECT, "Hi, I have a project for you!")
+            email.putExtra(Intent.EXTRA_SUBJECT, "Hi, I have a project for Mk7Lab!")
             email.putExtra(Intent.EXTRA_TEXT, message)
 //need this to prompts email client only
             //need this to prompts email client only

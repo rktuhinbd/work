@@ -16,7 +16,6 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 import static android.os.Build.VERSION_CODES.R;
 
 public class RetrofitClient {
-
     /**
      * Get Retrofit Instance
      */
