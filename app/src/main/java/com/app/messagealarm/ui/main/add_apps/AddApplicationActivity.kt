@@ -171,25 +171,30 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             }
 
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                if(p2 == 0){
-                    hideNotSyncedSuccess()
-                    //clear search view
-                    searchView?.setQuery("", false)
-                    searchView?.isIconified = true
-                    rv_apps_list?.visibility = View.GONE
-                    progress_bar_add_app?.visibility = View.VISIBLE
-                    addApplicationPresenter!!.getAllApplicationList()
-                }else{
-                    //clear search view
-                    spinner_filter?.isEnabled = false
-                    spinner_filter?.isClickable = false
-                    searchView?.setQuery("", false)
-                    searchView?.isIconified = true
-                    rv_apps_list?.visibility = View.GONE
-                    progress_bar_add_app?.visibility = View.VISIBLE
-                    addApplicationPresenter!!.filterByMessaging()
+                try{
+                    if(p2 == 0){
+                        hideNotSyncedSuccess()
+                        //clear search view
+                        searchView?.setQuery("", false)
+                        searchView?.isIconified = true
+                        rv_apps_list?.visibility = View.GONE
+                        progress_bar_add_app?.visibility = View.VISIBLE
+                        addApplicationPresenter!!.getAllApplicationList()
+                    }else{
+                        //clear search view
+                        spinner_filter?.isEnabled = false
+                        spinner_filter?.isClickable = false
+                        searchView?.setQuery("", false)
+                        searchView?.isIconified = true
+                        rv_apps_list?.visibility = View.GONE
+                        progress_bar_add_app?.visibility = View.VISIBLE
+                        addApplicationPresenter!!.filterByMessaging()
 
+                    }
+                }catch (e:NullPointerException){
+                    //skip the crash
                 }
+
             }
         }
     }
