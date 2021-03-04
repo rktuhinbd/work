@@ -16,7 +16,6 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 import static android.os.Build.VERSION_CODES.R;
 
 public class RetrofitClient {
-
     /**
      * Get Retrofit Instance
      */
@@ -27,8 +26,6 @@ public class RetrofitClient {
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(1, TimeUnit.MINUTES)
                 .readTimeout(1, TimeUnit.MINUTES)
-                .addInterceptor(new HttpLoggingInterceptor()
-                        .setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
         return new Retrofit.Builder()
                 .baseUrl(DataUtils.Companion.getString(com.app.messagealarm.R.string.base_url))

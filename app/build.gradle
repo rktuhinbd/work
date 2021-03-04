@@ -12,7 +12,7 @@ android {
         applicationId "com.app.messagealarm"
         minSdkVersion 22
         targetSdkVersion 30
-        versionCode 10
+        versionCode 11
         versionName "2.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -117,7 +117,7 @@ dependencies {
 
     implementation 'com.tbuonomo.andrui:viewpagerdotsindicator:4.1.2'
 
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.22'
 
     implementation 'com.google.android:flexbox:1.0.0'
 

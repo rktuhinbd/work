@@ -52,7 +52,7 @@ class MediaUtils {
                         mediaPlayer!!.setDataSource(mediaPath)
                     } else {
                         val afd =
-                            context.resources.openRawResourceFd(com.app.messagealarm.R.raw.default_ringtone)
+                            context.resources.openRawResourceFd(com.app.messagealarm.R.raw.alarm_tone)
                         mediaPlayer!!.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
                         afd.close()
                     }
