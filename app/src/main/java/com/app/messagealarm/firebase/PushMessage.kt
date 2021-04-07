@@ -14,6 +14,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import com.app.messagealarm.BuildConfig
 import com.app.messagealarm.R
 import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
@@ -44,7 +45,10 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
         //save token to shared preference
         SharedPrefUtils.write(Constants.PreferenceKeys.FIREBASE_TOKEN, p0)
         val tokenCall = RetrofitClient.getApiService().registerToken(p0)
-        tokenCall.execute()
+        //if app is build in debug mode don't call this function
+        if(!BuildConfig.DEBUG){
+            tokenCall.execute()
+        }
     }
 
 
