@@ -94,7 +94,7 @@ class MediaUtils {
                 if (isVibrate || isJustVibrate) {
                     val once = Once()
                     once.run(Runnable {
-                        VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext())
+                        VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext(),2000)
                     })
                 }
             }).start()
