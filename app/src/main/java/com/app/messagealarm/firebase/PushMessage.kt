@@ -49,11 +49,8 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
         SharedPrefUtils.write(Constants.PreferenceKeys.FIREBASE_TOKEN, p0)
         val tokenCall = RetrofitClient.getApiService().registerToken(p0)
         //if app is build in debug mode don't call this function
-        if(!BuildConfig.DEBUG){
+        if(!BuildConfig.DEBUG) {
             tokenCall.execute()
-        }else{
-            //log the token
-            Log.e("TOKEN", p0)
         }
     }
 
@@ -80,8 +77,6 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
     private fun createNotification(
         remoteMessage: RemoteMessage?
     ) {
-        //start vibrations
-        createNotificationVibration()
         // notification builder object
         val builder: NotificationCompat.Builder =
             NotificationCompat.Builder(this, DataUtils.getString(R.string.notification_channel))
@@ -116,8 +111,6 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
             .setAutoCancel(true)
             .setContentIntent(contentIntent)
 
-
-
         if(remoteMessage.data["image"] != null){
             // Set the image for the notification
             val bitmap: Bitmap = getBitmapfromUrl(remoteMessage.data["image"])!!
@@ -128,6 +121,8 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
             ).setLargeIcon(bitmap)
         }
         notificationManager.notify(1, builder.build())
+        //start vibrations
+        createNotificationVibration()
     }
 
     private fun getBitmapfromUrl(imageUrl: String?): Bitmap? {
