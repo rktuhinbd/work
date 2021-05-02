@@ -27,6 +27,7 @@ import com.google.firebase.ktx.Firebase
 import com.ncorti.slidetoact.SlideToActView
 import kotlinx.android.synthetic.main.activity_alarm.*
 import java.io.File
+import java.lang.NullPointerException
 import kotlin.system.exitProcess
 
 
@@ -153,13 +154,6 @@ class AlarmActivity : BaseActivity() {
     }
 
     override fun onPause() {
-       /* if(!isSwiped){
-            if(isIntractive){
-                //we now know that only few devices getting the dismiss notification function called at lock screen startup
-                //need to know how much devices creating this issue
-
-                }
-            }*/
         super.onPause()
         this.unregisterReceiver(mMessageReceiver)
     }
@@ -206,17 +200,21 @@ class AlarmActivity : BaseActivity() {
                 }
 
                 override fun onSlideCompleteAnimationEnded(view: SlideToActView) {
-                    if (!contains(Constants.PreferenceKeys.IS_FIRST_TIME_ALARM_PLAYED)) {
-                        write(
-                            Constants.PreferenceKeys.IS_FIRST_TIME_ALARM_PLAYED,
-                            true
-                        )
+                    try{
+                        if (!contains(Constants.PreferenceKeys.IS_FIRST_TIME_ALARM_PLAYED)) {
+                            write(
+                                Constants.PreferenceKeys.IS_FIRST_TIME_ALARM_PLAYED,
+                                true
+                            )
+                        }
+                        FloatingNotification.cancelPageDismissNotification()
+                        isSwiped = true
+                        MediaUtils.stopAlarm()
+                        openApp()
+                        finish()
+                    }catch (e:NullPointerException){
+                        //skip the crash due to null
                     }
-                    FloatingNotification.cancelPageDismissNotification()
-                    isSwiped = true
-                    MediaUtils.stopAlarm()
-                    openApp()
-                    finish()
                 }
 
                 override fun onSlideCompleteAnimationStarted(

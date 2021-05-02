@@ -167,21 +167,24 @@ class MediaUtils {
         }
 
         fun stopAlarm( ) {
-            //first time alarm played and stopped, should ask user for review
-            if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
-                write(Constants.PreferenceKeys.IS_STOPPED, true)
-                mediaPlayer!!.stop()
-                mediaPlayer!!.release()
-                mediaPlayer = null
-                isStopped = false
-                thread!!.interrupt()
-                thread = null
-                stopVibration()
-                write(Constants.PreferenceKeys.IS_MUTED, true)
-                notifyMute(true)
+            try{
+                //first time alarm played and stopped, should ask user for review
+                if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+                    write(Constants.PreferenceKeys.IS_STOPPED, true)
+                    mediaPlayer!!.stop()
+                    mediaPlayer!!.release()
+                    mediaPlayer = null
+                    isStopped = false
+                    thread!!.interrupt()
+                    thread = null
+                    stopVibration()
+                    write(Constants.PreferenceKeys.IS_MUTED, true)
+                    notifyMute(true)
+                }
+            }catch (e:java.lang.NullPointerException){
+                //skip the crash
             }
         }
-
 
         fun isPlaying(): Boolean {
             return try {

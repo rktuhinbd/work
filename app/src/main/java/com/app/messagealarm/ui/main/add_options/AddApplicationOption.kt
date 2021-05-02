@@ -5,11 +5,11 @@ import android.app.Activity
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.app.TimePickerDialog.OnTimeSetListener
+import android.content.ActivityNotFoundException
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.graphics.drawable.toBitmap
@@ -35,8 +35,6 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
-import java.io.Serializable
-import java.lang.NullPointerException
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -178,13 +176,19 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         if(activity is AlarmApplicationActivity){
             dismissAllowingStateLoss()
             val intent = Intent(activity, BuyProActivity::class.java)
-            requireActivity().startActivityForResult(intent,
-                Constants.ACTION.ACTION_PURCHASE_FROM_MAIN)
+            requireActivity().startActivityForResult(
+                intent,
+                Constants.ACTION.ACTION_PURCHASE_FROM_MAIN
+            )
         }else if(activity is AddApplicationActivity){
             dismissAllowingStateLoss()
-            requireActivity().startActivityForResult(Intent(requireActivity(),
-                BuyProActivity::class.java),
-                Constants.ACTION.ACTION_PURCHASE_FROM_ADD)
+            requireActivity().startActivityForResult(
+                Intent(
+                    requireActivity(),
+                    BuyProActivity::class.java
+                ),
+                Constants.ACTION.ACTION_PURCHASE_FROM_ADD
+            )
         }
 
     }
@@ -211,15 +215,28 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
         bottomSheet.layoutParams = layoutParams
         behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        }catch (e:NullPointerException){
+        }catch (e: NullPointerException){
 
         }
     }
 
     private fun pickAudioFromStorage() {
-        val intent =
-            Intent(Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI)
-        requireActivity().startActivityForResult(intent, REQUEST_CODE_PICK_AUDIO)
+        try {
+            if(isAdded){
+                val intent =
+                    Intent(
+                        Intent.ACTION_PICK,
+                        android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                    )
+                    requireActivity().startActivityForResult(intent, REQUEST_CODE_PICK_AUDIO)
+            }
+        }catch (e: ActivityNotFoundException){
+            //skip the crash
+            val intent = Intent()
+            intent.type = "audio/*"
+            intent.action = Intent.ACTION_PICK
+            requireActivity().startActivityForResult(intent, REQUEST_CODE_PICK_AUDIO)
+        }
     }
 
     private fun setListener() {
@@ -258,8 +275,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                  */
                 if(packageName == Constants.APP.IMO_PACKAGE){
                     if(senderName == "None"){
-                        Toasty.info(requireActivity(), "IMO can send notification without real message," +
-                                " please add at least one sender name!").show()
+                        Toasty.info(
+                            requireActivity(), "IMO can send notification without real message," +
+                                    " please add at least one sender name!"
+                        ).show()
                     }else{
                         saveApplication()
                     }
@@ -372,13 +391,13 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 object : DialogUtils.RepeatCallBack {
                     override fun onClick(name: String) {
                         if (name.contains("Select a song")) {
-                            if(PermissionUtils.isAllowed(android.Manifest.permission.READ_EXTERNAL_STORAGE)){
+                            if (PermissionUtils.isAllowed(android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
                                 pickAudioFromStorage()
                                 /**
                                  * set custom alarm tone type to data model
                                  */
                                 addApplicationEntity.ringTone = "Default"
-                            }else{
+                            } else {
                                 askForPermission()
                             }
                         } else {
@@ -474,7 +493,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             DialogUtils.showDialog(requireActivity(), getString(R.string.txt_clear_sender_name),
                 getString(R.string.txt_desc_clear_sender_namne), object : DialogUtils.Callback {
                     override fun onPositive() {
-                        if(arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
+                        if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
                             holderEntity.senderNames = "None"
 
                         }
@@ -508,11 +527,14 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                                 object : DialogUtils.CheckedListCallback {
                                     @SuppressLint("SetTextI18n")
                                     override fun onChecked(list: List<String>) {
-                                        if(list.isEmpty()){
-                                            Toasty.info(requireActivity(), "No day selected, Always set as default!").show()
+                                        if (list.isEmpty()) {
+                                            Toasty.info(
+                                                requireActivity(),
+                                                "No day selected, Always set as default!"
+                                            ).show()
                                             txt_repeat_value?.text = "Always"
                                             addApplicationEntity.alarmRepeat = "Always"
-                                        }else{
+                                        } else {
                                             var selectedDays: String = ""
                                             list.forEach {
                                                 selectedDays += "${it.substring(0, 3)}, "
@@ -524,10 +546,11 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                                             /**
                                              * set alarm repeat days to data model
                                              */
-                                            addApplicationEntity.repeatDays = selectedDays.substring(
-                                                0,
-                                                selectedDays.length - 2
-                                            )
+                                            addApplicationEntity.repeatDays =
+                                                selectedDays.substring(
+                                                    0,
+                                                    selectedDays.length - 2
+                                                )
                                         }
 
                                     }
@@ -538,7 +561,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                                     }
 
                                     override fun onNegative() {
-                                        if(addApplicationEntity.repeatDays == null){
+                                        if (addApplicationEntity.repeatDays == null) {
                                             txt_repeat_value?.text = "Always"
                                             addApplicationEntity.alarmRepeat = "Always"
                                         }
@@ -763,10 +786,12 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                             app.packageName,
                             bitmap.toBitmap()
                         )
-                        addApplicationOptionPresenter?.checkForUnknownApp(addApplicationEntity.appName,
-                            addApplicationEntity.packageName)
+                        addApplicationOptionPresenter?.checkForUnknownApp(
+                            addApplicationEntity.appName,
+                            addApplicationEntity.packageName
+                        )
                     } catch (e: Exception) {
-                        if(isAdded){
+                        if (isAdded) {
                             requireActivity().runOnUiThread {
                                 hideProgressBar()
                                 Toasty.error(requireActivity(), e.message!!).show()
@@ -806,7 +831,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         if(switch_just_vibrate?.isChecked == holderEntity.isJustVibrate) {
                             if (switch_custom_time?.isChecked == holderEntity.isCustomTime) {
                                 if (txt_number_of_play_value?.text.toString().split(" ")
-                                        [0].trim() ==
+                                            [0].trim() ==
                                     holderEntity.numberOfPlay.toString()
                                 ) {
                                     if (txt_sender_name_value?.text.toString() == holderEntity.senderNames) {
@@ -912,7 +937,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     txt_end_time_value?.text.toString()
                 )
             ){
-                addApplicationOptionPresenter?.saveApplication(addApplicationEntity, firebaseAnalytics)
+                addApplicationOptionPresenter?.saveApplication(
+                    addApplicationEntity,
+                    firebaseAnalytics
+                )
             }else{
                 requireActivity().runOnUiThread {
                     hideProgressBar()
