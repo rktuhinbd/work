@@ -105,7 +105,6 @@ class AddApplicationPresenter(
             }catch (e:ConcurrentModificationException){
                 //skip the crash
             }
-
         }).start()
 
     }

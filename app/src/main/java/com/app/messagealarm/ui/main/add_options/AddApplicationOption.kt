@@ -9,7 +9,9 @@ import android.content.ActivityNotFoundException
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.graphics.drawable.toBitmap
@@ -226,7 +228,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 val intent =
                     Intent(
                         Intent.ACTION_PICK,
-                        android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
                     )
                     requireActivity().startActivityForResult(intent, REQUEST_CODE_PICK_AUDIO)
             }
@@ -234,7 +236,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             //skip the crash
             val intent = Intent()
             intent.type = "audio/*"
-            intent.action = Intent.ACTION_PICK
+            intent.action = Intent.ACTION_GET_CONTENT
             requireActivity().startActivityForResult(intent, REQUEST_CODE_PICK_AUDIO)
         }
     }

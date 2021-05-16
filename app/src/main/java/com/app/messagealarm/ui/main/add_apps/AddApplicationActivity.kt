@@ -165,11 +165,9 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
     private fun filterListener() {
         spinner_filter?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-
             override fun onNothingSelected(p0: AdapterView<*>?) {
 
             }
-
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 try{
                     if(p2 == 0){
@@ -189,12 +187,10 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                         rv_apps_list?.visibility = View.GONE
                         progress_bar_add_app?.visibility = View.VISIBLE
                         addApplicationPresenter!!.filterByMessaging()
-
                     }
                 }catch (e:NullPointerException){
                     //skip the crash
                 }
-
             }
         }
     }
@@ -243,8 +239,8 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             }
             countDownTimer.start()
         }
-            try{
-                mainList.sortWith(Comparator { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
+        try{
+            mainList.sortWith(Comparator { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
                 runOnUiThread {
                     (rv_apps_list?.adapter as AllAppsListAdapter).updateData(mainList)
                     if(holderList.size == 1 &&
@@ -263,7 +259,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         }catch (e:TypeCastException){
             e.printStackTrace()
         }
-
     }
 
     override fun onSyncFailed(message: String) {
@@ -272,7 +267,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             Toasty.error(this, message).show()
         }
         handleSyncedNotSuccess()
-
     }
 
     override fun onResume() {
@@ -323,7 +317,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         searchView?.setOnQueryTextListener(object :
             androidx.appcompat.widget.SearchView.OnQueryTextListener,
             SearchView.OnQueryTextListener {
-
             override fun onQueryTextSubmit(query: String?): Boolean {
                 try{
                     (rv_apps_list?.adapter as AllAppsListAdapter).filter(query!!)
@@ -339,10 +332,8 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                 }catch (e:NullPointerException){
                     e.printStackTrace()
                 }
-
                 return true
             }
-
             override fun onQueryTextChange(newText: String?): Boolean {
                 try{
                     (rv_apps_list?.adapter as AllAppsListAdapter).filter(newText!!)
@@ -359,7 +350,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                 }catch (e:NullPointerException){
                     e.printStackTrace()
                 }
-
                 return true
             }
         })
@@ -377,7 +367,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             textView?.setHintTextColor(Color.GRAY)
         }
         return super.onCreateOptionsMenu(menu)
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -403,14 +392,12 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                     DialogUtils.showSimpleDialog(this, getString(R.string.txt_music),
                         getString(R.string.txt_try_again))
                 }
-
             }
         }else if(requestCode == Constants.ACTION.ACTION_PURCHASE_FROM_ADD){
             //purchased
             if(isPurchased()){
                 Toasty.success(this, "Thanks for purchase! You are now pro user!").show()
             }
-
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
