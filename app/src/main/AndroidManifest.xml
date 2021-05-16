@@ -33,6 +33,9 @@
         tools:targetApi="q">
 
 
+        <!--audio picker-->
+        <activity android:name="xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity" />
+
         <activity android:name=".ui.buy_pro.BuyProActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeBuy"

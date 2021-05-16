@@ -100,5 +100,6 @@
     <string name="sell_notice">5% of every sells goes to poor   \n children of Bangladesh!</string>
     <string name="better_exprience">We don\'t show ads, for your \n better experience!</string>
     <string name="txt_idea_desc">We can help you develop your dream project into real, with our dedicated team we are always focused on quality</string>
+    <string name="missing_file">File is missing!</string>
 
 </resources>

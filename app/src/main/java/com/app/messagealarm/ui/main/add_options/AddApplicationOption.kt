@@ -8,6 +8,7 @@ import android.app.TimePickerDialog.OnTimeSetListener
 import android.content.ActivityNotFoundException
 import android.content.DialogInterface
 import android.content.Intent
+import android.media.RingtoneManager
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.DisplayMetrics
@@ -37,6 +38,8 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
+import xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity
+import xyz.aprildown.ultimateringtonepicker.UltimateRingtonePicker
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -225,19 +228,44 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     private fun pickAudioFromStorage() {
         try {
             if(isAdded){
-                val intent =
+               val settings =  UltimateRingtonePicker.Settings(
+                    systemRingtonePicker = UltimateRingtonePicker.SystemRingtonePicker(
+                        customSection = UltimateRingtonePicker.SystemRingtonePicker.CustomSection(),
+                        defaultSection = UltimateRingtonePicker.SystemRingtonePicker.DefaultSection(
+                            showSilent = false,
+                            defaultTitle = "Default Ringtone"
+                        ),
+                        ringtoneTypes = listOf(
+                        )
+                    ),
+                    deviceRingtonePicker = UltimateRingtonePicker.DeviceRingtonePicker(
+                        deviceRingtoneTypes = listOf(
+                            UltimateRingtonePicker.RingtoneCategoryType.All
+                        ),
+                        false
+                    )
+                )
+             /*   val intent =
                     Intent(
                         Intent.ACTION_PICK,
                         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
                     )
-                    requireActivity().startActivityForResult(intent, REQUEST_CODE_PICK_AUDIO)
+                    requireActivity().startActivityForResult(intent, REQUEST_CODE_PICK_AUDIO)*/
+                requireActivity().startActivityForResult(
+                    RingtonePickerActivity.getIntent(
+                        context = requireActivity(),
+                        settings = settings,
+                        windowTitle = "Alarm Tone"
+                    ),
+                    REQUEST_CODE_PICK_AUDIO
+                )
             }
         }catch (e: ActivityNotFoundException){
             //skip the crash
             val intent = Intent()
             intent.type = "audio/*"
             intent.action = Intent.ACTION_GET_CONTENT
-            requireActivity().startActivityForResult(intent, REQUEST_CODE_PICK_AUDIO)
+          //  requireActivity().startActivityForResult(intent, REQUEST_CODE_PICK_AUDIO)
         }
     }
 
