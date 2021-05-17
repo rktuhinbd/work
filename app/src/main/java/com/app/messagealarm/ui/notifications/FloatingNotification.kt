@@ -38,9 +38,9 @@ class FloatingNotification {
         private var firebaseAnalytics: FirebaseAnalytics = Firebase.analytics
         var service: Service? = null
         var notificationView: RemoteViews? = null
-        var notificationBuilder: NotificationCompat.Builder? = null
+        private var notificationBuilder: NotificationCompat.Builder? = null
         val NOTIFICATION_ID = 12
-        var notificationManager: NotificationManagerCompat? = null
+        private var notificationManager: NotificationManagerCompat? = null
 
         /**
          * end of remote notification
