@@ -22,6 +22,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
+import java.lang.NullPointerException
 import java.util.*
 
 
@@ -473,27 +474,32 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
 
         fun notifyMute(isMuted: Boolean) {
             if (notificationView == null || notificationBuilder == null) return
-            val iconID: Int =
-                if (isMuted) com.app.messagealarm.R.drawable.ic_silence else com.app.messagealarm.R.drawable.ic_snooze
-            val textString: String = if (!isMuted) {
-                DataUtils.getString(com.app.messagealarm.R.string.waiting_for_messages)
-            } else DataUtils.getString(com.app.messagealarm.R.string.txt_application_muted)
-            try {
-                notificationView!!.setImageViewResource(
-                    com.app.messagealarm.R.id.btn_mute_status,
-                    iconID
-                )
-                notificationView!!.setTextViewText(com.app.messagealarm.R.id.txt_desc, textString)
-                notificationBuilder!!.setContent(notificationView)
-                service!!.startForeground(NOTIFICATION_ID, notificationBuilder!!.build())
-            } catch (e: ArrayIndexOutOfBoundsException) {
+            try{
+                val iconID: Int =
+                    if (isMuted) com.app.messagealarm.R.drawable.ic_silence else com.app.messagealarm.R.drawable.ic_snooze
+                val textString: String = if (!isMuted) {
+                    DataUtils.getString(com.app.messagealarm.R.string.waiting_for_messages)
+                } else DataUtils.getString(com.app.messagealarm.R.string.txt_application_muted)
+                try {
+                    notificationView!!.setImageViewResource(
+                        com.app.messagealarm.R.id.btn_mute_status,
+                        iconID
+                    )
+                    notificationView!!.setTextViewText(com.app.messagealarm.R.id.txt_desc, textString)
+                    notificationBuilder!!.setContent(notificationView)
+                    service!!.startForeground(NOTIFICATION_ID, notificationBuilder!!.build())
+                } catch (e: ArrayIndexOutOfBoundsException) {
 
+                }
+                if (isMuted) {
+                    showToastToUser(service!!)
+                    //start alarm to dismiss mute
+                    WorkManagerUtils.scheduleWorks(service!!)
+                }
+            }catch (e: NullPointerException){
+                //skip the crash
             }
-            if (isMuted) {
-                showToastToUser(service!!)
-                //start alarm to dismiss mute
-                WorkManagerUtils.scheduleWorks(service!!)
-            }
+
         }
 
 

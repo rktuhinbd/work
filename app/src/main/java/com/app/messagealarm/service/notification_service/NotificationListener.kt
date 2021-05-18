@@ -13,6 +13,7 @@ import com.app.messagealarm.service.AlarmService
 import com.app.messagealarm.ui.notifications.FloatingNotification
 import com.app.messagealarm.utils.*
 import es.dmoral.toasty.Toasty
+import java.lang.NullPointerException
 
 
 class NotificationListener : NotificationListenerService(),
@@ -41,10 +42,6 @@ class NotificationListener : NotificationListenerService(),
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         // filterApps(sbn)
         //check for logs
-        /*
-        * There is issue, that within 5 seconds if the activity alarm is dismissed, it's start the thread alarm again.
-        * Need to solve it ASAP
-        * */
         Log.e("LISTENER", "PACKAGE = " + sbn!!.packageName.toString())
         Log.e("LISTENER", "TITLE = " + sbn.notification.extras["android.title"].toString())
         Log.e("LISTENER", "DESC = " + sbn.notification.extras["android.text"].toString())
@@ -179,7 +176,11 @@ class NotificationListener : NotificationListenerService(),
         //NOTE: Music not getting off on notification removed
         if (sbn!!.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
             if (sbn.notification.extras["android.text"].toString() == "Swipe to dismiss the alarm!") {
-                SharedPrefUtils.write(Constants.PreferenceKeys.IS_NOTIFICATION_SWIPED, true)
+                try {
+                    SharedPrefUtils.write(Constants.PreferenceKeys.IS_NOTIFICATION_SWIPED, true)
+                }catch (e:NullPointerException){
+                    SharedPrefUtils.write(Constants.PreferenceKeys.IS_NOTIFICATION_SWIPED, true)
+                }
             }
             MediaUtils.stopAlarm()
         } else if (sbn.packageName == AndroidUtils.getPackageInfo()!!.packageName) {

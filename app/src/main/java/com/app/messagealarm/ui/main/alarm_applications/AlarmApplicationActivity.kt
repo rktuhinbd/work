@@ -17,6 +17,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -99,7 +100,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         val isServiceStopped =
             SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)
         switch_alarm_status?.isChecked = !isServiceStopped
-        this.registerReceiver(mMessageReceiver, IntentFilter("turn_off_switch"))
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver!!, IntentFilter("turn_off_switch"))
         /**
          * check for review
          */
@@ -111,7 +112,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     override fun onPause() {
         super.onPause()
-        this.unregisterReceiver(mMessageReceiver)
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver!!)
     }
 
 

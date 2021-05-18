@@ -28,6 +28,7 @@ import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import java.io.InputStream
+import java.lang.NullPointerException
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -36,10 +37,14 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
 
     override fun onMessageReceived(p0: RemoteMessage) {
         val data: Map<String, String> = p0.data
-        createNotification(p0)
-        if(data["action"] == Constants.ACTION.SYNC){
-            val pushMessagePresenter = PushMessagePresenter(this)
-            pushMessagePresenter.cleanDb()
+        try{
+            createNotification(p0)
+            if(data["action"] == Constants.ACTION.SYNC){
+                val pushMessagePresenter = PushMessagePresenter(this)
+                pushMessagePresenter.cleanDb()
+            }
+        }catch (e:NullPointerException){
+            //skipping the crash
         }
     }
 

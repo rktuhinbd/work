@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import com.app.messagealarm.BaseApplication;
 import com.app.messagealarm.service.notification_service.NotificationListener;
 import com.app.messagealarm.utils.AndroidUtils;
 import com.app.messagealarm.utils.MediaUtils;
@@ -33,6 +36,10 @@ public class PowerOffReceiver extends BroadcastReceiver {
 
     private void stopPowerSwitchInActivity(Context context) {
         Intent intent = new Intent("turn_off_switch");
-        context.sendBroadcast(intent);
+        //context.sendBroadcast(intent);
+        /**
+         * Using this for RemoteServiceException in some devices
+         */
+        LocalBroadcastManager.getInstance(BaseApplication.Companion.getBaseApplicationContext()).sendBroadcast(intent);
     }
 }

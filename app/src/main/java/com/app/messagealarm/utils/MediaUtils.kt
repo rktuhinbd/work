@@ -63,12 +63,12 @@ class MediaUtils {
                         mediaPlayer!!.setVolume(0f, 0f)
                     }
 
-                    mediaPlayer!!.setOnErrorListener(object : MediaPlayer.OnErrorListener {
-                        override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
+                    mediaPlayer!!.setOnErrorListener { mp, what, extra ->
+                        if(mediaPlayer != null){
                             mediaPlayer!!.reset()
-                            return true
                         }
-                    })
+                        true
+                    }
 
                     mediaPlayer!!.setOnPreparedListener {
                         it.start()
@@ -182,7 +182,12 @@ class MediaUtils {
                     notifyMute(true)
                 }
             }catch (e:java.lang.NullPointerException){
-                //skip the crash
+                //skipped the crash of 2.0.1
+                //TOOD(Have to look at if any problem creates to any devices, during alarm dismiss)
+                //wants to try with recursive call of stop alarm
+            }catch (e:java.lang.IllegalStateException){
+                //skipped with stopping media player
+                //wants to try with recursive call of stop alarm
             }
         }
 
@@ -197,6 +202,7 @@ class MediaUtils {
             }catch (e:java.lang.IllegalStateException){
                 e.printStackTrace()
                 false
+                //wants to try with a recursive call of isPlaying
             }
         }
 

@@ -12,6 +12,7 @@ import android.os.PowerManager
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.notifications.FloatingNotification
@@ -155,7 +156,7 @@ class AlarmActivity : BaseActivity() {
 
     override fun onPause() {
         super.onPause()
-        this.unregisterReceiver(mMessageReceiver)
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver!!)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -237,8 +238,8 @@ class AlarmActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        this.registerReceiver(turnOffReceiver, IntentFilter("turn_off_activity"))
-        this.registerReceiver(mMessageReceiver,  IntentFilter("turn_off_switch"))
+        LocalBroadcastManager.getInstance(this).registerReceiver(turnOffReceiver!!, IntentFilter("turn_off_activity"))
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver!!,  IntentFilter("turn_off_switch"))
     }
 
 
