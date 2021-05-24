@@ -473,7 +473,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     bundle.putBoolean(Constants.BundleKeys.IS_EDIT_MODE, true)
                     bundle.putString(Constants.BundleKeys.PACKAGE_NAME, app.packageName)
                     bottomSheetModel.arguments = bundle
-                    bottomSheetModel.show(supportFragmentManager, "MAIN")
+                    bottomSheetModel.show(supportFragmentManager, "OPTIONS")
                 }
             }catch (e:java.lang.IllegalStateException){
                 //skip the crash

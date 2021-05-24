@@ -17,4 +17,5 @@
     <color name="delete_item">#D11A2A</color>
     <color name="success_color">#4BB543</color>
     <color name="setting_icon">#6200EE</color>
+    <color name="color_hint">#99000000</color>
 </resources>

@@ -10,6 +10,8 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.util.Log
@@ -18,6 +20,7 @@ import android.widget.*
 import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.R
+import com.app.messagealarm.model.Hint
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.service.AlarmServicePresenter
@@ -44,6 +47,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionView {
@@ -65,6 +69,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
     }
+
 
 
     private fun darkMode(){
@@ -111,6 +116,26 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         handleEditAndViewMode()
         darkMode()
         enableProMode()
+        Handler(Looper.getMainLooper()).postDelayed(Runnable {
+            HintUtils.showHintsToUser(requireActivity(), getOptionTutorialHintText(), R.layout.layout_target,"OPTIONS",
+                img_repeat, img_ringtone, img_vibrate, img_just_vibrate, img_custom_time,
+                img_number_of_play, img_sender_name, img_exclude_sender_name, img_message_body)
+        },1500)
+
+    }
+
+    private fun getOptionTutorialHintText() : List<Hint>{
+        val map = ArrayList<Hint>()
+        map.add(Hint("Alarm Repeat","Select how often the Alarm should repeat"))
+        map.add(Hint("Alarm Tone","Select the music for your Alarm"))
+        map.add(Hint("Vibrate With Sound","Vibrate phone with music on Alarm"))
+        map.add(Hint("Just Vibrate, No Sound","Vibrate phone without music on Alarm"))
+        map.add(Hint("Custom Time","Select start time and end time for Alarm, Messages within the time range will play Alarm"))
+        map.add(Hint("Number Of Play","The number of time the music will play on Alarm, each session is 30 seconds long"))
+        map.add(Hint("Add Sender Name","Add sender names, only messages from those persons will play Alarm"))
+        map.add(Hint("Exclude Sender Name","Exclude sender names, Messages from this persons will be ignored for the Alarm"))
+        map.add(Hint("Message Body","If the message contains this texts only then the Alarm will be played"))
+        return map
     }
 
     private fun isProModeEnabled() : Boolean{
@@ -388,6 +413,20 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             }
         }
 
+        /**
+         * exclude sender name function
+         */
+
+        view_exclude_sender_name?.setOnClickListener {
+            if(txt_exclude_sender_name_value?.text != "None"){
+                val nameList = txt_sender_name_value?.text.toString().split(", ")
+                excludeSenderNameDialog(nameList.toMutableList() as ArrayList<String>)
+            }else{
+                val list = ArrayList<String>()
+                excludeSenderNameDialog(list)
+            }
+        }
+
 
         view_message_body?.setOnClickListener {
             DialogUtils.showMessageBodyDialog(
@@ -654,6 +693,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
 
+    /**
+     * @param List of String
+     * This function shows the sender name dialog
+     */
     private fun senderNameDialog(list: ArrayList<String>){
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -665,7 +708,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         val saveButton = dialog.findViewById<MaterialButton>(R.id.btn_save)
         val placeHolder = dialog.findViewById<ImageView>(R.id.img_placeholder)
         val etName = dialog.findViewById<EditText>(R.id.et_sender_name)
-        val imageButton = dialog.findViewById<ImageButton>(R.id.btn_add)
+        val imageButton = dialog.findViewById<TextView>(R.id.btn_add)
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.recycler_view_sender_name)
         val layoutManager = FlexboxLayoutManager(requireActivity())
         val adapter = SenderNameAdapter(list, object : SenderNameAdapter.ItemClickListener {
@@ -728,6 +771,84 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
     }
 
+
+    /**
+     * @param List of String
+     * This function shows the exclude sender name dialog
+     */
+    private fun excludeSenderNameDialog(list:ArrayList<String>){
+        val dialog = Dialog(requireActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_exclude_sender_name)
+        //init views
+        val cancelButton = dialog.findViewById<MaterialButton>(R.id.btn_cancel)
+        val saveButton = dialog.findViewById<MaterialButton>(R.id.btn_save)
+        val placeHolder = dialog.findViewById<ImageView>(R.id.img_placeholder)
+        val etName = dialog.findViewById<EditText>(R.id.et_sender_name)
+        val imageButton = dialog.findViewById<TextView>(R.id.btn_add)
+        val recyclerView = dialog.findViewById<RecyclerView>(R.id.recycler_view_sender_name)
+        val layoutManager = FlexboxLayoutManager(requireActivity())
+        val adapter = SenderNameAdapter(list, object : SenderNameAdapter.ItemClickListener {
+            override fun onAllItemRemoved() {
+                saveButton.isEnabled = false
+                placeHolder.visibility = View.VISIBLE
+                recyclerView.visibility = View.INVISIBLE
+            }
+        })
+        //list not empty
+        if(list.size != 0){
+            recyclerView.visibility = View.VISIBLE
+            placeHolder.visibility = View.INVISIBLE
+            saveButton.isEnabled = true
+        }
+        layoutManager.flexDirection = FlexDirection.COLUMN
+        layoutManager.justifyContent = JustifyContent.FLEX_START
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = adapter
+
+        imageButton.setOnClickListener {
+            if(etName.text.toString().isNotEmpty()){
+                adapter.addName(etName.text.toString())
+                etName.setText("")
+                saveButton.isEnabled = true
+                placeHolder.visibility = View.INVISIBLE
+                recyclerView.visibility = View.VISIBLE
+                recyclerView.post { recyclerView.smoothScrollToPosition(adapter.itemCount - 1) }
+            }else{
+                Toasty.info(requireActivity(), "Name can't be empty!").show()
+            }
+        }
+
+        saveButton.setOnClickListener {
+            val name =  adapter.convertList()
+            if (name.isNotEmpty()) {
+                txt_sender_name_value?.text = name
+                btn_sender_name_clear?.visibility = View.VISIBLE
+                addApplicationEntity.senderNames = name
+                if(arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
+                    holderEntity.senderNames = name
+                }
+                dialog.dismiss()
+            } else {
+                btn_sender_name_clear?.visibility = View.GONE
+                txt_sender_name_value?.text = "None"
+                addApplicationEntity.senderNames = "None"
+                dialog.dismiss()
+            }
+        }
+
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
+        val window: Window = dialog.window!!
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        //
+        if(!dialog.isShowing){
+            dialog.show()
+        }
+    }
 
     @SuppressLint("SimpleDateFormat")
     fun startTimeCalender():Calendar{
