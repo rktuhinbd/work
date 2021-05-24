@@ -657,7 +657,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     private fun senderNameDialog(list: ArrayList<String>){
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.getWindow()?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.setCancelable(false)
         dialog.setContentView(R.layout.dialog_sender_name)
         //init views
@@ -674,23 +674,17 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 placeHolder.visibility = View.VISIBLE
                 recyclerView.visibility = View.INVISIBLE
             }
-
         })
-
-
         //list not empty
         if(list.size != 0){
             recyclerView.visibility = View.VISIBLE
             placeHolder.visibility = View.INVISIBLE
             saveButton.isEnabled = true
         }
-
         layoutManager.flexDirection = FlexDirection.COLUMN
         layoutManager.justifyContent = JustifyContent.FLEX_START
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
-
-
 
         imageButton.setOnClickListener {
             if(etName.text.toString().isNotEmpty()){
@@ -713,7 +707,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 addApplicationEntity.senderNames = name
                 if(arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
                     holderEntity.senderNames = name
-
                 }
                 dialog.dismiss()
             } else {

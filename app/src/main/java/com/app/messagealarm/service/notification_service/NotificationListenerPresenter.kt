@@ -68,7 +68,6 @@ class NotificationListenerPresenter(private val view: NotificationListenerView) 
                         }
                     }
                 }
-
                 if (x.title == null) {
                     if (x.status == null) {
                         if (x.description == desc) {
