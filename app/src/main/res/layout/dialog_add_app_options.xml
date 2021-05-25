@@ -307,22 +307,18 @@
                     app:layout_constraintVertical_chainStyle="packed" />
 
 
-                <TextView
+                <pl.droidsonroids.gif.GifImageView
                     android:id="@+id/txt_pro_vibrate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Pro"
-                    android:fontFamily="@font/crimson_italic"
-                    android:textColor="@android:color/holo_red_light"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     app:layout_constraintTop_toTopOf="@id/view_vibrate"
                     app:layout_constraintBottom_toBottomOf="@id/view_vibrate"
                     app:layout_constraintStart_toEndOf="@id/txt_vibrate"
                     app:layout_constraintEnd_toStartOf="@id/switch_vibrate"
                     android:layout_marginStart="8dp"
+                    android:src="@drawable/img_pro"
+                    android:padding="2dp"
                     app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintVertical_bias="0.4"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
                     />
 
                 <Switch
@@ -400,22 +396,18 @@
                     app:layout_constraintTop_toTopOf="@id/view_just_vibrate"
                     app:layout_constraintVertical_chainStyle="packed" />
 
-                <TextView
+                <pl.droidsonroids.gif.GifImageView
                     android:id="@+id/txt_pro_just_vibrate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Pro"
-                    android:fontFamily="@font/crimson_italic"
-                    android:textColor="@android:color/holo_red_light"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     app:layout_constraintTop_toTopOf="@id/view_just_vibrate"
                     app:layout_constraintBottom_toBottomOf="@id/view_just_vibrate"
                     app:layout_constraintStart_toEndOf="@id/txt_just_vibrate"
                     app:layout_constraintEnd_toStartOf="@id/switch_just_vibrate"
                     android:layout_marginStart="8dp"
+                    android:src="@drawable/img_pro"
+                    android:padding="2dp"
                     app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintVertical_bias="0.4"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
                     />
 
                 <Switch
@@ -876,7 +868,7 @@
                     android:layout_marginStart="8dp"
                     android:padding="5dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_name"
+                    android:src="@drawable/ic_ignore"
                     app:layout_constraintBottom_toBottomOf="@id/view_exclude_sender_name"
                     app:layout_constraintEnd_toEndOf="@id/view_exclude_sender_name"
                     app:layout_constraintHorizontal_bias="0"
@@ -890,7 +882,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:fontFamily="@font/open_sans_regular"
-                    android:text="Exclude Sender Name"
+                    android:text="Ignored Sender Name"
                     android:textColor="@color/colorTextRegular"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toTopOf="@id/txt_exclude_sender_name_value"
@@ -899,6 +891,21 @@
                     app:layout_constraintStart_toEndOf="@id/img_exclude_sender_name"
                     app:layout_constraintTop_toTopOf="@id/view_exclude_sender_name"
                     app:layout_constraintVertical_chainStyle="packed" />
+
+                <pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/txt_pro_ignored_name"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    app:layout_constraintTop_toTopOf="@id/txt_exclude_sender_name"
+                    app:layout_constraintBottom_toBottomOf="@id/txt_exclude_sender_name"
+                    app:layout_constraintStart_toEndOf="@id/txt_exclude_sender_name"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="8dp"
+                    android:src="@drawable/img_pro"
+                    android:padding="2dp"
+                    app:layout_constraintHorizontal_bias="0"
+                    />
+
 
                 <TextView
                     android:id="@+id/txt_exclude_sender_name_value"

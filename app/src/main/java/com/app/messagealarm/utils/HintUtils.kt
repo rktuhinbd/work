@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.app.messagealarm.model.Hint
 import com.takusemba.spotlight.OnSpotlightListener
@@ -73,10 +74,10 @@ class HintUtils {
                 .setAnimation(DecelerateInterpolator(1f))
                 .setOnSpotlightListener(object : OnSpotlightListener {
                     override fun onStarted() {
-
+                        BaseApplication.isHintShowing = true
                     }
                     override fun onEnded() {
-
+                        BaseApplication.isHintShowing = false
                     }
                 })
                 .setContainer(rootView)

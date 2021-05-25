@@ -19,6 +19,7 @@ import android.view.*
 import android.widget.*
 import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
+import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.app.messagealarm.model.Hint
 import com.app.messagealarm.model.InstalledApps
@@ -86,6 +87,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             img_message_body?.setImageResource(R.drawable.ic_message_white)
             img_start_time?.setImageResource(R.drawable.ic_start_time_white)
             img_end_time?.setImageResource(R.drawable.ic_end_time_white)
+            img_exclude_sender_name?.setImageResource(R.drawable.ic_ignore_white)
         }else{
             btn_close?.setImageResource(R.drawable.ic_close)
             btn_save?.setImageResource(R.drawable.ic_tick)
@@ -99,6 +101,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             img_message_body?.setImageResource(R.drawable.ic_message)
             img_start_time?.setImageResource(R.drawable.ic_start_time)
             img_end_time?.setImageResource(R.drawable.ic_end_time)
+            img_exclude_sender_name?.setImageResource(R.drawable.ic_ignore)
         }
     }
 
@@ -296,16 +299,19 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
     private fun setListener() {
         btn_close?.setOnClickListener {
-            if(checkForDefault()){
-                dismissAllowingStateLoss()
-            }else{
-                showDiscardDialog()
+            if(!BaseApplication.isHintShowing){
+                if(checkForDefault()){
+                    dismissAllowingStateLoss()
+                }else{
+                    showDiscardDialog()
+                }
             }
         }
 
 
         btn_save?.setOnClickListener {
-            try{
+            if(!BaseApplication.isHintShowing){
+                 try{
                 if(checkForDefault()){
                     shouldOnStatus = false
                 }else{
@@ -344,17 +350,21 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 //skip the crash
             }
 
+            }
+
         }
 
         switch_custom_time?.setOnCheckedChangeListener { buttonView, isChecked ->
             /**
              * set is custom time to data model
              */
-            addApplicationEntity.isCustomTime = isChecked
+            if(!BaseApplication.isHintShowing){
+                  addApplicationEntity.isCustomTime = isChecked
             if (isChecked) {
                 visibleCustomTimeLayout()
             } else {
                 hideCustomTimeLayout()
+            }
             }
         }
 
@@ -362,54 +372,63 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             /**
              * set vibrate option to data model
              */
-            addApplicationEntity.isVibrateOnAlarm = isChecked
+            if(!BaseApplication.isHintShowing){
+                 addApplicationEntity.isVibrateOnAlarm = isChecked
 
             if(switch_vibrate.isChecked){
                 switch_just_vibrate.isChecked = false
             }
-
+            }
         }
 
 
         switch_just_vibrate?.setOnCheckedChangeListener{ buttonView, isChecked ->
-
-            addApplicationEntity.isJustVibrate = isChecked
-
+            if(!BaseApplication.isHintShowing){
+                 addApplicationEntity.isJustVibrate = isChecked
             if(isChecked){
                 switch_vibrate.isChecked = false
+            }
             }
         }
 
         view_custom_time?.setOnClickListener {
-            switch_custom_time?.performClick()
+            if(!BaseApplication.isHintShowing){
+                switch_custom_time?.performClick()
+            }
         }
 
         view_vibrate?.setOnClickListener {
-            if(isProModeEnabled()){
+            if(!BaseApplication.isHintShowing){
+                 if(isProModeEnabled()){
                 switch_vibrate?.performClick()
             }else{
                 //trigger pro screen
                 visitProScreen()
             }
+            }
         }
 
         view_just_vibrate?.setOnClickListener {
-            if(isProModeEnabled()){
+            if(!BaseApplication.isHintShowing){
+                 if(isProModeEnabled()){
                 switch_just_vibrate?.performClick()
             }else{
                 //trigger pro screen
                 visitProScreen()
             }
 
+            }
         }
 
         view_sender_name?.setOnClickListener {
-            if(txt_sender_name_value?.text != "None"){
+            if(!BaseApplication.isHintShowing){
+                 if(txt_sender_name_value?.text != "None"){
                 val nameList = txt_sender_name_value?.text.toString().split(", ")
                 senderNameDialog(nameList.toMutableList() as ArrayList<String>)
             }else{
                 val list = ArrayList<String>()
                 senderNameDialog(list)
+            }
             }
         }
 
@@ -418,18 +437,21 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
          */
 
         view_exclude_sender_name?.setOnClickListener {
-            if(txt_exclude_sender_name_value?.text != "None"){
+            if(!BaseApplication.isHintShowing){
+                  if(txt_exclude_sender_name_value?.text != "None"){
                 val nameList = txt_sender_name_value?.text.toString().split(", ")
                 excludeSenderNameDialog(nameList.toMutableList() as ArrayList<String>)
             }else{
                 val list = ArrayList<String>()
                 excludeSenderNameDialog(list)
             }
+            }
         }
 
 
         view_message_body?.setOnClickListener {
-            DialogUtils.showMessageBodyDialog(
+            if(!BaseApplication.isHintShowing){
+                DialogUtils.showMessageBodyDialog(
                 requireActivity(),
                 txt_message_body_value?.text.toString(),
                 object : DialogUtils.RepeatCallBack {
@@ -452,10 +474,12 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     }
 
                 })
+            }
         }
 
         view_ringtone?.setOnClickListener {
-            DialogUtils.showRingToneSelectDialog(
+            if(!BaseApplication.isHintShowing){
+                 DialogUtils.showRingToneSelectDialog(
                 requireActivity(),
                 object : DialogUtils.RepeatCallBack {
                     override fun onClick(name: String) {
@@ -479,6 +503,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         }
                     }
                 })
+            }
+
         }
 
         view_start_time?.setOnClickListener {
@@ -525,7 +551,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
 
         view_number_of_play?.setOnClickListener {
-            DialogUtils.showInputDialog(requireActivity(),
+            if(!BaseApplication.isHintShowing){
+              DialogUtils.showInputDialog(requireActivity(),
                 txt_number_of_play_value.text.toString().replace(" times", ""),
                 "Select number of play",
                 object : DialogUtils.RepeatCallBack {
@@ -538,6 +565,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         txt_number_of_play_value?.text = """$name times"""
                     }
                 })
+            }
         }
 
 
@@ -580,66 +608,68 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
 
         view_repeat_bg?.setOnClickListener {
-            DialogUtils.showSimpleListDialog(
-                requireActivity(),
-                object : DialogUtils.RepeatCallBack {
-                    override fun onClick(name: String) {
-                        txt_repeat_value?.text = name
-                        /**
-                         * set alarm repeat value to data model
-                         */
-                        addApplicationEntity.alarmRepeat = name
-                        if (name.contains("Custom")) {
-                            DialogUtils.showCheckedItemListDialog(
-                                addApplicationEntity.repeatDays,
-                                activity!!,
-                                object : DialogUtils.CheckedListCallback {
-                                    @SuppressLint("SetTextI18n")
-                                    override fun onChecked(list: List<String>) {
-                                        if (list.isEmpty()) {
-                                            Toasty.info(
-                                                requireActivity(),
-                                                "No day selected, Always set as default!"
-                                            ).show()
-                                            txt_repeat_value?.text = "Always"
-                                            addApplicationEntity.alarmRepeat = "Always"
-                                        } else {
-                                            var selectedDays: String = ""
-                                            list.forEach {
-                                                selectedDays += "${it.substring(0, 3)}, "
-                                            }
-                                            txt_repeat_value?.text = selectedDays.substring(
-                                                0,
-                                                selectedDays.length - 2
-                                            )
-                                            /**
-                                             * set alarm repeat days to data model
-                                             */
-                                            addApplicationEntity.repeatDays =
-                                                selectedDays.substring(
+            if(!BaseApplication.isHintShowing){
+                DialogUtils.showSimpleListDialog(
+                    requireActivity(),
+                    object : DialogUtils.RepeatCallBack {
+                        override fun onClick(name: String) {
+                            txt_repeat_value?.text = name
+                            /**
+                             * set alarm repeat value to data model
+                             */
+                            addApplicationEntity.alarmRepeat = name
+                            if (name.contains("Custom")) {
+                                DialogUtils.showCheckedItemListDialog(
+                                    addApplicationEntity.repeatDays,
+                                    activity!!,
+                                    object : DialogUtils.CheckedListCallback {
+                                        @SuppressLint("SetTextI18n")
+                                        override fun onChecked(list: List<String>) {
+                                            if (list.isEmpty()) {
+                                                Toasty.info(
+                                                    requireActivity(),
+                                                    "No day selected, Always set as default!"
+                                                ).show()
+                                                txt_repeat_value?.text = "Always"
+                                                addApplicationEntity.alarmRepeat = "Always"
+                                            } else {
+                                                var selectedDays: String = ""
+                                                list.forEach {
+                                                    selectedDays += "${it.substring(0, 3)}, "
+                                                }
+                                                txt_repeat_value?.text = selectedDays.substring(
                                                     0,
                                                     selectedDays.length - 2
                                                 )
+                                                /**
+                                                 * set alarm repeat days to data model
+                                                 */
+                                                addApplicationEntity.repeatDays =
+                                                    selectedDays.substring(
+                                                        0,
+                                                        selectedDays.length - 2
+                                                    )
+                                            }
+
+                                        }
+                                    },
+                                    object : DialogUtils.Callback {
+                                        override fun onPositive() {
+
                                         }
 
-                                    }
-                                },
-                                object : DialogUtils.Callback {
-                                    override fun onPositive() {
-
-                                    }
-
-                                    override fun onNegative() {
-                                        if (addApplicationEntity.repeatDays == null) {
-                                            txt_repeat_value?.text = "Always"
-                                            addApplicationEntity.alarmRepeat = "Always"
+                                        override fun onNegative() {
+                                            if (addApplicationEntity.repeatDays == null) {
+                                                txt_repeat_value?.text = "Always"
+                                                addApplicationEntity.alarmRepeat = "Always"
+                                            }
                                         }
                                     }
-                                }
-                            )
+                                )
+                            }
                         }
-                    }
-                })
+                    })
+            }
         }
     }
 
