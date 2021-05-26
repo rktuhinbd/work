@@ -119,12 +119,14 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         handleEditAndViewMode()
         darkMode()
         enableProMode()
-        Handler(Looper.getMainLooper()).postDelayed(Runnable {
-            HintUtils.showHintsToUser(requireActivity(), getOptionTutorialHintText(), R.layout.layout_target,"OPTIONS",
-                img_repeat, img_ringtone, img_vibrate, img_just_vibrate, img_custom_time,
-                img_number_of_play, img_sender_name, img_exclude_sender_name, img_message_body)
-        },1500)
-
+        //should show after at least 2 seconds and need to fix the not attached to activity crash
+        /*Handler(Looper.getMainLooper()).postDelayed(Runnable {
+            if(isAdded){
+                HintUtils.showHintsToUser(requireActivity(), getOptionTutorialHintText(), R.layout.layout_target,"OPTIONS",
+                    img_repeat, img_ringtone, img_vibrate, img_just_vibrate, img_custom_time,
+                    img_number_of_play, img_sender_name, img_exclude_sender_name, img_message_body)
+            }
+        },500)*/
     }
 
     private fun getOptionTutorialHintText() : List<Hint>{
@@ -761,7 +763,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
         imageButton.setOnClickListener {
             if(etName.text.toString().isNotEmpty()){
-                adapter.addName(etName.text.toString())
+                adapter.addName(etName.text.toString().trim())
                 etName.setText("")
                 saveButton.isEnabled = true
                 placeHolder.visibility = View.INVISIBLE

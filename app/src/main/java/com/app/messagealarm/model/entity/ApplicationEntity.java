@@ -50,6 +50,8 @@ public class ApplicationEntity implements Serializable {
     private String tone_path;
     @ColumnInfo(name = "bitmap_path")
     private String bitmapPath;
+    @ColumnInfo(name = "ignored_names")
+    private String ignored_names;
 
 
     /**
@@ -57,6 +59,10 @@ public class ApplicationEntity implements Serializable {
      *
      * @return
      */
+
+    public String getIgnored_names(){
+        return ignored_names;
+    }
 
     public String getBitmapPath() {
         return bitmapPath;
@@ -132,6 +138,10 @@ public class ApplicationEntity implements Serializable {
     /**
      * Setter methods
      */
+
+    public void setIgnored_names(String ignored_names){
+        this.ignored_names = ignored_names;
+    }
 
     public void setJustVibrate(boolean justVibrate) {
         this.justVibrate = justVibrate;

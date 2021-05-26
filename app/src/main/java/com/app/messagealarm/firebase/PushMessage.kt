@@ -39,9 +39,18 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
         val data: Map<String, String> = p0.data
         try{
             createNotification(p0)
-            if(data["action"] == Constants.ACTION.SYNC){
-                val pushMessagePresenter = PushMessagePresenter(this)
-                pushMessagePresenter.cleanDb()
+            when {
+                data["action"] == Constants.ACTION.SYNC -> {
+                    val pushMessagePresenter = PushMessagePresenter(this)
+                    pushMessagePresenter.cleanDb()
+                }
+                data["action"] == Constants.ACTION.BUY -> {
+                    //Open and Show the Buy Screen of the app
+                }
+                data["action"] == Constants.ACTION.UPDATE -> {
+                    //Open the play store with our app link so user can update the app
+                    //First Open a dialog in MainActivity then take the user the play store from the dialog
+                }
             }
         }catch (e:NullPointerException){
             //skipping the crash
