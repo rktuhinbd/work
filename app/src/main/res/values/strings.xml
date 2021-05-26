@@ -89,7 +89,9 @@
     <string name="txt_clear_message_body">Clear Message Body</string>
     <string name="txt_desc_clear_message">Do you wants to clear message body?</string>
     <string name="txt_clear_sender_name">Clear Sender Names</string>
+    <string name="txt_clear_ignore_name">Clear Ignored names</string>
     <string name="txt_desc_clear_sender_namne">Do you wants to clear sender names?</string>
+    <string name="txt_desc_clear_ignored_namne">Do you wants to clear ignored names?</string>
     <string name="txt_alarm_repeat">Alarm Repeat</string>
     <string name="txt_hint_sender_name">Hint: Please add complete name with space!</string>
     <string name="txt_dismiss">Dismiss</string>

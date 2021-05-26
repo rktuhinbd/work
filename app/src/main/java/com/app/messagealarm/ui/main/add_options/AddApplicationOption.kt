@@ -322,6 +322,9 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     shouldOnStatus = true
                 }
                 var packageName = ""
+                     /**
+                      * this is an special case where sender name is used but ignore names are not
+                      */
                 var senderName = ""
                 if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
                     val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
@@ -441,7 +444,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         view_exclude_sender_name?.setOnClickListener {
             if(!BaseApplication.isHintShowing){
                   if(txt_exclude_sender_name_value?.text != "None"){
-                val nameList = txt_sender_name_value?.text.toString().split(", ")
+                val nameList = txt_exclude_sender_name_value?.text.toString().split(", ")
                 excludeSenderNameDialog(nameList.toMutableList() as ArrayList<String>)
             }else{
                 val list = ArrayList<String>()
@@ -599,6 +602,26 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         addApplicationEntity.senderNames = "None"
                         txt_sender_name_value?.text = "None"
                         btn_sender_name_clear?.visibility = View.GONE
+                    }
+
+                    override fun onNegative() {
+
+                    }
+
+                })
+        }
+
+        btn_exclude_sender_name_clear?.setOnClickListener {
+            DialogUtils.showDialog(requireActivity(), getString(R.string.txt_clear_ignore_name),
+                getString(R.string.txt_desc_clear_ignored_namne), object : DialogUtils.Callback {
+                    override fun onPositive() {
+                        if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                            holderEntity.ignored_names = "None"
+
+                        }
+                        addApplicationEntity.ignored_names = "None"
+                        txt_exclude_sender_name_value?.text = "None"
+                        btn_exclude_sender_name_clear?.visibility = View.GONE
                     }
 
                     override fun onNegative() {
@@ -856,17 +879,17 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         saveButton.setOnClickListener {
             val name =  adapter.convertList()
             if (name.isNotEmpty()) {
-                txt_sender_name_value?.text = name
-                btn_sender_name_clear?.visibility = View.VISIBLE
-                addApplicationEntity.senderNames = name
+                txt_exclude_sender_name_value?.text = name
+                btn_exclude_sender_name_clear?.visibility = View.VISIBLE
+                addApplicationEntity.ignored_names = name
                 if(arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
-                    holderEntity.senderNames = name
+                    holderEntity.ignored_names = name
                 }
                 dialog.dismiss()
             } else {
-                btn_sender_name_clear?.visibility = View.GONE
-                txt_sender_name_value?.text = "None"
-                addApplicationEntity.senderNames = "None"
+                btn_exclude_sender_name_clear?.visibility = View.GONE
+                txt_exclude_sender_name_value?.text = "None"
+                addApplicationEntity.ignored_names = "None"
                 dialog.dismiss()
             }
         }
@@ -922,6 +945,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         addApplicationEntity.startTime = "6:00 AM"
         addApplicationEntity.endTime = "12:00 PM"
         addApplicationEntity.senderNames = "None"
+        addApplicationEntity.ignored_names = "None"
         addApplicationEntity.messageBody = "None"
         addApplicationEntity.isRunningStatus = true
 
@@ -935,6 +959,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         holderEntity.startTime = "6:00 AM"
         holderEntity.endTime = "12:00 PM"
         holderEntity.senderNames = "None"
+        holderEntity.ignored_names = "None"
         holderEntity.messageBody = "None"
         holderEntity.isRunningStatus = true
 
@@ -1011,8 +1036,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                                     holderEntity.numberOfPlay.toString()
                                 ) {
                                     if (txt_sender_name_value?.text.toString() == holderEntity.senderNames) {
-                                        if (txt_message_body_value?.text.toString() == holderEntity.messageBody) {
+                                        if(txt_exclude_sender_name_value?.text.toString() == holderEntity.ignored_names){
+                                              if (txt_message_body_value?.text.toString() == holderEntity.messageBody) {
                                             isDefault = true
+                                        }
                                         }
                                     }
                                 }
@@ -1151,6 +1178,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         txt_end_time_value?.text = app.endTime
         txt_number_of_play_value?.text = String.format("%d times", app.numberOfPlay)
         txt_sender_name_value?.text = app.senderNames
+        txt_exclude_sender_name_value?.text = app.ignored_names
         txt_message_body_value?.text = app.messageBody
     }
 
@@ -1161,6 +1189,9 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
         if(app.messageBody != "None"){
             btn_message_body_clear?.visibility = View.VISIBLE
+        }
+        if(app.ignored_names != "None"){
+            btn_exclude_sender_name_clear?.visibility = View.VISIBLE
         }
         addApplicationEntity = app
         alarmTonePath = app.tone_path
@@ -1181,6 +1212,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         holderEntity.bitmapPath = app.bitmapPath
         holderEntity.messageBody = app.messageBody
         holderEntity.senderNames = app.senderNames
+        holderEntity.ignored_names = app.ignored_names
         holderEntity.isCustomTime = app.isCustomTime
         holderEntity.isJustVibrate = app.isJustVibrate
         holderEntity.isVibrateOnAlarm = app.isVibrateOnAlarm
