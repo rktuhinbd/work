@@ -134,9 +134,14 @@ class AlarmActivity : BaseActivity() {
                         //done playing dismiss the activity now
                         //send a notification that you missed the alarm
                         finish()
-                        SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
-                        FloatingNotification.notifyMute(true)
                         FloatingNotification.cancelPageDismissNotification()
+                        /**
+                         * The bottom two lines were making the app mute when the alarm was finished without touch
+                         * Now it's ignored by Mujahid By 1 June 2021
+                         */
+                       // SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
+                        //FloatingNotification.notifyMute(true)
+
                     }
                 })
             }

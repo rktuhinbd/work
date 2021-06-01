@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.work.WorkManager
 import androidx.work.impl.utils.WakeLocks.newWakeLock
 import com.app.messagealarm.broadcast_receiver.*
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
@@ -90,8 +91,12 @@ class FloatingNotification {
                                 //done playing dismiss the activity now
                                 //send a notification that you missed the alarm
                                 notificationManager.cancel(225)
-                                SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
-                                notifyMute(true)
+                                /**
+                                 * The bottom two lines were making the app mute when the alarm was finished without touch
+                                 * Now it's ignored by Mujahid By 1 June 2021
+                                 */
+                                //SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
+                                //notifyMute(true)
                             }
                         }
                     )
@@ -495,6 +500,9 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
                     showToastToUser(service!!)
                     //start alarm to dismiss mute
                     WorkManagerUtils.scheduleWorks(service!!)
+                }else{
+                    showUnMuteToastToUser(service!!)
+                    WorkManager.getInstance(service!!).cancelAllWorkByTag("MUTE")
                 }
             }catch (e: NullPointerException){
                 //skip the crash
@@ -515,7 +523,18 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
                 ).show()
             }
             handler.post(runnable)
+        }
 
+        @SuppressLint("CheckResult")
+        fun showUnMuteToastToUser(context: Service) {
+            val handler = Handler(context.mainLooper)
+            val runnable = Runnable() {
+                Toasty.info(
+                    context, String.format(
+                        "Application unmuted!")
+                ).show()
+            }
+            handler.post(runnable)
         }
 
     }
