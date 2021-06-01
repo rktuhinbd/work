@@ -47,21 +47,23 @@ class AlarmService {
                                 //check for title not null
                                 if (sbn.notification.extras["android.title"] != null) {
                                     if (checkBySenderName(app, sbn)) {
-                                        if (checkByMessageBody(app, sbn)) {
-                                            //check if app is in not muted
-                                            if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_MUTED)) {
-                                                if (alarmRepeatOutput(app.alarmRepeat, app)) {
-                                                    if (!MediaUtils.isPlaying()) {
-                                                    //save activity started as false
-                                                    SharedPrefUtils.write(
-                                                        Constants.PreferenceKeys.IS_ACTIVITY_STARTED,
-                                                        false
-                                                    )
-                                                    magicPlay(app.ringTone, service, sbn, app)
+                                        if(checkByIgnoredName(app, sbn)){
+                                            if (checkByMessageBody(app, sbn)) {
+                                                //check if app is in not muted
+                                                if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_MUTED)) {
+                                                    if (alarmRepeatOutput(app.alarmRepeat, app)) {
+                                                        if (!MediaUtils.isPlaying()) {
+                                                            //save activity started as false
+                                                            SharedPrefUtils.write(
+                                                                Constants.PreferenceKeys.IS_ACTIVITY_STARTED,
+                                                                false
+                                                            )
+                                                            magicPlay(app.ringTone, service, sbn, app)
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
-                                    }
                                 }
                             }
                         }
@@ -148,6 +150,39 @@ class AlarmService {
                             )
                     ) {
                         result = true
+                        break
+                    } else {
+                        continue
+                    }
+                }
+            } else {
+                result = true
+            }
+            return result
+        }
+
+        /**
+         * This function ignore alarm with ignored names
+         * @param app app from local db
+         * @param sbn notification object
+         */
+        private fun checkByIgnoredName(app: ApplicationEntity,
+                                        sbn: StatusBarNotification?): Boolean{
+            var result = true
+            val title = sbn?.notification?.extras!!["android.title"]
+            val nameArray = app.ignored_names.trim().split(", ")
+            if (app.ignored_names != "None") {
+                for (x in nameArray) {
+                    if (title.toString().trim().toLowerCase(Locale.getDefault())
+                            .contains(
+                                x.trim().toLowerCase(Locale.getDefault())
+                            )
+                        || x.trim().toLowerCase(Locale.getDefault())
+                            .contains(
+                                title.toString().trim().toLowerCase(Locale.getDefault())
+                            )
+                    ) {
+                        result = false
                         break
                     } else {
                         continue
