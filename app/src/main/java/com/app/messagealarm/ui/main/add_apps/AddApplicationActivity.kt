@@ -6,6 +6,7 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
@@ -44,6 +45,7 @@ import xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity
 import java.io.File
 import java.io.Serializable
 import java.lang.IllegalArgumentException
+import java.lang.IndexOutOfBoundsException
 import java.lang.NullPointerException
 import java.util.*
 import kotlin.Comparator
@@ -377,9 +379,9 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (REQUEST_CODE_PICK_AUDIO == requestCode) {
             if (resultCode == Activity.RESULT_OK) {
-                val alarmTone = RingtonePickerActivity.getPickerResult(data!!)
-                val fileName = File(PathUtils.getPath(this, alarmTone[0].uri)!!).name
                 try {
+                    val alarmTone = RingtonePickerActivity.getPickerResult(data!!)
+                    val fileName = File(PathUtils.getPath(this, alarmTone[0].uri)!!).name
                     if(MediaUtils.getDurationOfMediaFle(PathUtils.getPath(this, alarmTone[0].uri)!!) >= 30){
                         bottomSheetModel.txt_ringtone_value?.text = fileName
                         bottomSheetModel.setToneName(fileName)
@@ -397,6 +399,11 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                     bottomSheetModel.alarmTonePath = null
                     DialogUtils.showSimpleDialog(this, getString(R.string.txt_music),
                         getString(R.string.txt_try_again))
+                }catch (e:IndexOutOfBoundsException){
+                    bottomSheetModel.txt_ringtone_value?.text = "Default"
+                    bottomSheetModel.setToneName("Default")
+                    bottomSheetModel.alarmTonePath = null
+                    bottomSheetModel.askForPermission()
                 }
             }
         }else if(requestCode == Constants.ACTION.ACTION_PURCHASE_FROM_ADD){
@@ -485,5 +492,24 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         Toasty.info(this, app.appName).show()
     }
 
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        var isGranted = true
+        if (requestCode == PermissionUtils.REQUEST_CODE_PERMISSION_DEFAULT) {
+            for (element in grantResults) {
+                if (element != PackageManager.PERMISSION_GRANTED) {
+                    isGranted = false
+                }
+            }
+            if (isGranted) {
+                bottomSheetModel.pickAudioFromStorage()
+            }
+        }
+    }
 
 }

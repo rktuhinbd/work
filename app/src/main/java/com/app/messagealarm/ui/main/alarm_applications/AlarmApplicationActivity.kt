@@ -5,12 +5,14 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -49,6 +51,7 @@ import xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity
 import java.io.File
 import java.io.IOException
 import java.lang.IllegalArgumentException
+import java.lang.IndexOutOfBoundsException
 import java.lang.NullPointerException
 
 
@@ -71,10 +74,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         setupAppsRecyclerView()
         lookForTablesSize()
         showLanguageDoesNotSupported()
-
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
-
          mMessageReceiver =  object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 switch_alarm_status?.isChecked = false
@@ -143,9 +144,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (REQUEST_CODE_PICK_AUDIO == requestCode) {
             if (resultCode == Activity.RESULT_OK) {
-                val alarmTone = RingtonePickerActivity.getPickerResult(data!!)
-                val fileName = File(PathUtils.getPath(this, alarmTone[0].uri)!!).name
                 try {
+                    val alarmTone = RingtonePickerActivity.getPickerResult(data!!)
+                    val fileName = File(PathUtils.getPath(this, alarmTone[0].uri)!!).name
                     if(MediaUtils.getDurationOfMediaFle(PathUtils.getPath(this, alarmTone[0].uri)!!) >= 30){
                         bottomSheetModel.txt_ringtone_value?.text = fileName
                         bottomSheetModel.setToneName(fileName)
@@ -163,6 +164,11 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     bottomSheetModel.alarmTonePath = null
                     DialogUtils.showSimpleDialog(this, getString(R.string.txt_music),
                         getString(R.string.txt_try_again))
+                }catch (e: IndexOutOfBoundsException){
+                    bottomSheetModel.txt_ringtone_value?.text = "Default"
+                    bottomSheetModel.setToneName("Default")
+                    bottomSheetModel.alarmTonePath = null
+                    bottomSheetModel.askForPermission()
                 }
             }
         }else if(requestCode == Constants.ACTION.ACTION_PURCHASE_FROM_MAIN){
@@ -177,7 +183,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     private fun isPurchased(): Boolean{
         return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
     }
-
 
     private fun changeTheme() {
         if (!SharedPrefUtils.contains(Constants.PreferenceKeys.IS_DARK_MODE)) {
@@ -218,7 +223,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     private fun recyclerViewSwipeHandler() {
         val callback: ItemTouchHelper.SimpleCallback = object :
             ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -226,7 +230,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             ): Boolean {
                 return false
             }
-
             override fun onChildDraw(
                 c: Canvas,
                 recyclerView: RecyclerView,
@@ -236,7 +239,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 actionState: Int,
                 isCurrentlyActive: Boolean
             ) {
-
                 RecyclerViewSwipeDecorator.Builder(
                     c,
                     recyclerView,
@@ -264,7 +266,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     isCurrentlyActive
                 )
             }
-
             override fun onSwiped(
                 viewHolder: RecyclerView.ViewHolder,
                 direction: Int
@@ -281,7 +282,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                                 viewHolder.adapterPosition
                             )
                         }
-
                         override fun onNegative() {
                             rv_application_list?.adapter?.notifyDataSetChanged()
                         }
@@ -383,7 +383,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                         // The flow has finished. The API does not indicate whether the user
                         // reviewed or not, or even whether the review dialog was shown. Thus, no
                         // matter the result, we continue our app flow.
-                        SharedPrefUtils.write(Constants.PreferenceKeys.IS_REVIEW_SCREEN_SHOWN, true)
+                    SharedPrefUtils.write(Constants.PreferenceKeys.IS_REVIEW_SCREEN_SHOWN, true)
                     }
                 }
             }
@@ -437,9 +437,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         }
     }
 
-    public fun notifyCurrentAdapter(){
+    fun notifyCurrentAdapter(){
         //at this point getting the concurrent modification exception
-        Handler(Looper.getMainLooper()).postDelayed(Runnable {
+        Handler(Looper.getMainLooper()).postDelayed({
             lookForAlarmApplication()
         }, 1500)
     }
@@ -479,7 +479,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 //skip the crash
             }
         }
-
     }
 
 
@@ -501,7 +500,13 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             val bottomSheet = BottomSheetFragmentLang()
             bottomSheet.show(supportFragmentManager, bottomSheet.tag)
         }else{
-            askForPermission()
+            //schedule quickstart
+            if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_TUTORIAL_SHOW)) {
+                Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                    showQuickStartDialog()
+                }, 1000)
+            }
+           // askForPermission()
         }
     }
 
@@ -512,16 +517,19 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        if (requestCode == 1) {
-            //schedule quickstart
-            if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_TUTORIAL_SHOW)) {
-                Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                    showQuickStartDialog()
-                }, 1000)
+        Log.e("R_CALL", "TRUE")
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+            var isGranted = true
+            if (requestCode == PermissionUtils.REQUEST_CODE_PERMISSION_DEFAULT) {
+                for (element in grantResults) {
+                    if (element != PackageManager.PERMISSION_GRANTED) {
+                        isGranted = false
+                    }
+                }
+                if (isGranted) {
+                    bottomSheetModel.pickAudioFromStorage()
+                }
             }
-        }
-
-
     }
 
     override fun onPurchasesUpdated(p0: BillingResult, p1: MutableList<Purchase>?) {

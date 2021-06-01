@@ -4,9 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.ui.adapters.AllAppsListAdapter
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.item_all_apps.view.*
 import kotlinx.android.synthetic.main.item_sender_name.view.*
 import java.lang.StringBuilder
@@ -44,7 +46,19 @@ class SenderNameAdapter(list:ArrayList<String>,
         return builder.toString().substring(0, builder.toString().length - 2)
     }
 
-    fun addName(name:String){
+    /**
+     * @param name of the sender
+     * @param constrainOfOpposite if addName is working for sender name then opposite is ignored name and the opposite of ignored name is sender name
+     */
+    fun addName(name:String, constrainOfOpposite:String){
+        val constrainArray = constrainOfOpposite.split(", ")
+        for(nameValue in constrainArray){
+            if(nameValue == name){
+                Toasty.info(BaseApplication.getBaseApplicationContext(), "" +
+                        "Sender name and Ignored name can't have smilier names").show()
+                return
+            }
+        }
         nameList.add(name)
         notifyDataSetChanged()
     }

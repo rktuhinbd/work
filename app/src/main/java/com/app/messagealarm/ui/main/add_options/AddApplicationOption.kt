@@ -17,6 +17,7 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.core.app.ActivityCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.BaseApplication
@@ -255,7 +256,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
     }
 
-    private fun pickAudioFromStorage() {
+    public fun pickAudioFromStorage() {
         try {
             if(isAdded){
                val settings =  UltimateRingtonePicker.Settings(
@@ -290,12 +291,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     REQUEST_CODE_PICK_AUDIO
                 )
             }
-        }catch (e: ActivityNotFoundException){
-            //skip the crash
-            val intent = Intent()
-            intent.type = "audio/*"
-            intent.action = Intent.ACTION_GET_CONTENT
-          //  requireActivity().startActivityForResult(intent, REQUEST_CODE_PICK_AUDIO)
+        }catch (e: Exception){
+
         }
     }
 
@@ -698,14 +695,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
     }
 
-    private fun askForPermission() {
-        PermissionUtils.requestPermission(
-            this, android.Manifest.permission.READ_EXTERNAL_STORAGE
-        )
-        PermissionUtils.requestPermission(
-            this,
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
+    fun askForPermission() {
+        PermissionUtils.requestPermission(requireActivity(),  android.Manifest.permission.READ_EXTERNAL_STORAGE)
     }
 
    fun setToneName(name: String){
@@ -786,12 +777,14 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
         imageButton.setOnClickListener {
             if(etName.text.toString().isNotEmpty()){
-                adapter.addName(etName.text.toString().trim())
+                adapter.addName(etName.text.toString().trim(), txt_exclude_sender_name_value?.text.toString())
                 etName.setText("")
                 saveButton.isEnabled = true
                 placeHolder.visibility = View.INVISIBLE
                 recyclerView.visibility = View.VISIBLE
-                recyclerView.post { recyclerView.smoothScrollToPosition(adapter.itemCount - 1) }
+                if(adapter.itemCount > 0){
+                    recyclerView.post { recyclerView.smoothScrollToPosition(adapter.itemCount - 1) }
+                }
             }else{
                 Toasty.info(requireActivity(), "Name can't be empty!").show()
             }
@@ -865,12 +858,14 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
         imageButton.setOnClickListener {
             if(etName.text.toString().isNotEmpty()){
-                adapter.addName(etName.text.toString())
+                adapter.addName(etName.text.toString(), txt_sender_name_value?.text.toString())
                 etName.setText("")
                 saveButton.isEnabled = true
                 placeHolder.visibility = View.INVISIBLE
                 recyclerView.visibility = View.VISIBLE
-                recyclerView.post { recyclerView.smoothScrollToPosition(adapter.itemCount - 1) }
+                if(adapter.itemCount > 0){
+                    recyclerView.post { recyclerView.smoothScrollToPosition(adapter.itemCount - 1) }
+                }
             }else{
                 Toasty.info(requireActivity(), "Name can't be empty!").show()
             }

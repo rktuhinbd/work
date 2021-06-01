@@ -43,13 +43,11 @@ class OnboardingDialog : DialogFragment(){
                     it1, true)
             }
         }
-
         btn_finish?.setOnClickListener {
             SharedPrefUtils.write(Constants.PreferenceKeys.IS_TUTORIAL_SHOW, true)
             dismiss()
         }
     }
-
 
     private fun initViewPager(){
         val fragmentList = ArrayList<Fragment>()
@@ -61,7 +59,6 @@ class OnboardingDialog : DialogFragment(){
        val quickStartAdapter= QuickStartAdapter(childFragmentManager, fragmentList)
         quick_start_pager?.adapter = quickStartAdapter
         dots_indicator?.setViewPager(quick_start_pager)
-
         //listener
         quick_start_pager?.addOnPageChangeListener(object :ViewPager.OnPageChangeListener{
             override fun onPageScrolled(
@@ -71,7 +68,6 @@ class OnboardingDialog : DialogFragment(){
             ) {
 
             }
-
             override fun onPageSelected(position: Int) {
                     if(position == ((quick_start_pager?.adapter as QuickStartAdapter).count - 1)){
                         btn_next?.visibility = View.INVISIBLE
@@ -81,11 +77,9 @@ class OnboardingDialog : DialogFragment(){
                         btn_finish?.visibility = View.INVISIBLE
                     }
             }
-
             override fun onPageScrollStateChanged(state: Int) {
 
             }
-
         })
     }
 
@@ -93,6 +87,6 @@ class OnboardingDialog : DialogFragment(){
 
     override fun onStart() {
         super.onStart()
-        dialog?.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        dialog?.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
     }
 }
