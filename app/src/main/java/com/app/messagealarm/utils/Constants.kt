@@ -52,6 +52,8 @@ class Constants {
             const val ACTION_PURCHASE_FROM_SETTING = 14
             const val ACTION_UN_MUTE = "un_mute"
             const val SYNC = "SYNC"
+            const val UPDATE = "UPDATE"
+            const val BUY = "BUY"
         }
     }
 

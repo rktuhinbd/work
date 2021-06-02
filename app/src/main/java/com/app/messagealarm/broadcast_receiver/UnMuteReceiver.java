@@ -9,6 +9,8 @@ import com.app.messagealarm.utils.Constants;
 import com.app.messagealarm.utils.MuteUtils;
 import com.app.messagealarm.utils.SharedPrefUtils;
 
+import es.dmoral.toasty.Toasty;
+
 public class UnMuteReceiver extends BroadcastReceiver {
 
     @Override
@@ -20,8 +22,6 @@ public class UnMuteReceiver extends BroadcastReceiver {
             SharedPrefUtils.INSTANCE.write(Constants.PreferenceKeys.IS_MUTED, false);
             FloatingNotification.Companion.notifyMute(false);
         }
-
-
     }
 
 }

@@ -12,14 +12,16 @@ class VibratorUtils {
         var totalPlayBack = 0
         var vibrator:Vibrator? = null
 
-        fun startVibrate(context: Context){
+        fun startVibrate(context: Context, duration:Int){
                 vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             if (Build.VERSION.SDK_INT >= 26) {
                 vibrator!!.vibrate(VibrationEffect.createWaveform(ConverterUtils.genVibratorPattern(1.0f,
-                    2000), 0))
+                    duration.toLong()
+                ), 0))
             } else {
                 vibrator!!.vibrate(ConverterUtils.genVibratorPattern(1.0f,
-                    2000), 0)
+                    duration.toLong()
+                ), 0)
             }
         }
 

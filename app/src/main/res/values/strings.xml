@@ -83,13 +83,15 @@
     <string name="desc_quick_start_four">This sticky notification indicates that the application is alive and waiting for message, Click on the notification button to mute and un-mute application, The power button turn off the sticky notification and kills the service</string>
     <string name="desc_quick_start_five">This is at setting page, set automatic mute time, application will be un-mute after that time. If your phone killing this application when app is in background. Click on that bottom button and follow the instruction</string>
     <string name="txt_finish">Finish</string>
-    <string name="txt_add_sender_name">Add sender name</string>
+    <string name="txt_add_sender_name">Add Sender Name</string>
     <string name="txt_sender_name">Sender Name</string>
     <string name="txt_save">Save</string>
     <string name="txt_clear_message_body">Clear Message Body</string>
     <string name="txt_desc_clear_message">Do you wants to clear message body?</string>
     <string name="txt_clear_sender_name">Clear Sender Names</string>
+    <string name="txt_clear_ignore_name">Clear Ignored names</string>
     <string name="txt_desc_clear_sender_namne">Do you wants to clear sender names?</string>
+    <string name="txt_desc_clear_ignored_namne">Do you wants to clear ignored names?</string>
     <string name="txt_alarm_repeat">Alarm Repeat</string>
     <string name="txt_hint_sender_name">Hint: Please add complete name with space!</string>
     <string name="txt_dismiss">Dismiss</string>
@@ -100,5 +102,6 @@
     <string name="sell_notice">5% of every sells goes to poor   \n children of Bangladesh!</string>
     <string name="better_exprience">We don\'t show ads, for your \n better experience!</string>
     <string name="txt_idea_desc">We can help you develop your dream project into real, with our dedicated team we are always focused on quality</string>
+    <string name="missing_file">File is missing!</string>
 
 </resources>

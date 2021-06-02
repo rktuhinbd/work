@@ -5,6 +5,8 @@ import android.app.Activity
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
@@ -33,12 +35,17 @@ import com.app.messagealarm.ui.adapters.AllAppsListAdapter
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
 import com.app.messagealarm.utils.*
 import com.google.android.material.appbar.MaterialToolbar
+import com.greentoad.turtlebody.mediapicker.MediaPicker
+import com.greentoad.turtlebody.mediapicker.core.MediaPickerConfig
 import es.dmoral.toasty.Toasty
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_add_application.*
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
+import xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity
 import java.io.File
 import java.io.Serializable
 import java.lang.IllegalArgumentException
+import java.lang.IndexOutOfBoundsException
 import java.lang.NullPointerException
 import java.util.*
 import kotlin.Comparator
@@ -165,11 +172,9 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
     private fun filterListener() {
         spinner_filter?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-
             override fun onNothingSelected(p0: AdapterView<*>?) {
 
             }
-
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 try{
                     if(p2 == 0){
@@ -189,12 +194,10 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                         rv_apps_list?.visibility = View.GONE
                         progress_bar_add_app?.visibility = View.VISIBLE
                         addApplicationPresenter!!.filterByMessaging()
-
                     }
                 }catch (e:NullPointerException){
                     //skip the crash
                 }
-
             }
         }
     }
@@ -243,8 +246,8 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             }
             countDownTimer.start()
         }
-            try{
-                mainList.sortWith(Comparator { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
+        try{
+            mainList.sortWith(Comparator { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
                 runOnUiThread {
                     (rv_apps_list?.adapter as AllAppsListAdapter).updateData(mainList)
                     if(holderList.size == 1 &&
@@ -263,7 +266,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         }catch (e:TypeCastException){
             e.printStackTrace()
         }
-
     }
 
     override fun onSyncFailed(message: String) {
@@ -272,7 +274,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             Toasty.error(this, message).show()
         }
         handleSyncedNotSuccess()
-
     }
 
     override fun onResume() {
@@ -323,7 +324,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         searchView?.setOnQueryTextListener(object :
             androidx.appcompat.widget.SearchView.OnQueryTextListener,
             SearchView.OnQueryTextListener {
-
             override fun onQueryTextSubmit(query: String?): Boolean {
                 try{
                     (rv_apps_list?.adapter as AllAppsListAdapter).filter(query!!)
@@ -339,10 +339,8 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                 }catch (e:NullPointerException){
                     e.printStackTrace()
                 }
-
                 return true
             }
-
             override fun onQueryTextChange(newText: String?): Boolean {
                 try{
                     (rv_apps_list?.adapter as AllAppsListAdapter).filter(newText!!)
@@ -359,7 +357,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                 }catch (e:NullPointerException){
                     e.printStackTrace()
                 }
-
                 return true
             }
         })
@@ -377,18 +374,18 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             textView?.setHintTextColor(Color.GRAY)
         }
         return super.onCreateOptionsMenu(menu)
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (REQUEST_CODE_PICK_AUDIO == requestCode) {
-            if (resultCode == Activity.RESULT_OK && data!!.data != null) {
-                val fileName = File(PathUtils.getPath(this, data.data!!)!!).name
+            if (resultCode == Activity.RESULT_OK) {
                 try {
-                    if(MediaUtils.getDurationOfMediaFle(PathUtils.getPath(this, data.data!!)!!) >= 30){
+                    val alarmTone = RingtonePickerActivity.getPickerResult(data!!)
+                    val fileName = File(PathUtils.getPath(this, alarmTone[0].uri)!!).name
+                    if(MediaUtils.getDurationOfMediaFle(PathUtils.getPath(this, alarmTone[0].uri)!!) >= 30){
                         bottomSheetModel.txt_ringtone_value?.text = fileName
                         bottomSheetModel.setToneName(fileName)
-                        bottomSheetModel.alarmTonePath = PathUtils.getPath(this, data.data!!)!!
+                        bottomSheetModel.alarmTonePath = PathUtils.getPath(this, alarmTone[0].uri)!!
                     }else{
                         bottomSheetModel.txt_ringtone_value?.text = "Default"
                         bottomSheetModel.setToneName("Default")
@@ -402,17 +399,67 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                     bottomSheetModel.alarmTonePath = null
                     DialogUtils.showSimpleDialog(this, getString(R.string.txt_music),
                         getString(R.string.txt_try_again))
+                }catch (e:IndexOutOfBoundsException){
+                    bottomSheetModel.txt_ringtone_value?.text = "Default"
+                    bottomSheetModel.setToneName("Default")
+                    bottomSheetModel.alarmTonePath = null
+                    bottomSheetModel.askForPermission()
                 }
-
             }
         }else if(requestCode == Constants.ACTION.ACTION_PURCHASE_FROM_ADD){
             //purchased
             if(isPurchased()){
                 Toasty.success(this, "Thanks for purchase! You are now pro user!").show()
             }
-
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+
+    @SuppressLint("CheckResult")
+    fun pickAudioFromStorage(){
+        val pickerConfig = MediaPickerConfig()
+            .setAllowMultiSelection(false)
+            .setUriPermanentAccess(false)
+            .setShowConfirmationDialog(true)
+            .setScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+        MediaPicker.with(this, MediaPicker.MediaTypes.AUDIO)
+            .setConfig(pickerConfig)
+            .setFileMissingListener(object : MediaPicker.MediaPickerImpl.OnMediaListener{
+                override fun onMissingFileWarning() {
+                    bottomSheetModel.txt_ringtone_value?.text = "Default"
+                    bottomSheetModel.setToneName("Default")
+                    bottomSheetModel.alarmTonePath = null
+                    DialogUtils.showSimpleDialog(this@AddApplicationActivity, getString(R.string.missing_file),
+                        getString(R.string.txt_try_again))
+                }
+            })
+            .onResult()
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                val fileName = File(PathUtils.getPath(this, it[0])!!).name
+                if(MediaUtils.getDurationOfMediaFle(PathUtils.getPath(this, it[0])!!) >= 30){
+                    bottomSheetModel.txt_ringtone_value?.text = fileName
+                    bottomSheetModel.setToneName(fileName)
+                    bottomSheetModel.alarmTonePath = PathUtils.getPath(this, it[0])!!
+                }else{
+                    bottomSheetModel.txt_ringtone_value?.text = "Default"
+                    bottomSheetModel.setToneName("Default")
+                    bottomSheetModel.alarmTonePath = null
+                    DialogUtils.showSimpleDialog(this, getString(R.string.txt_wrong_duration),
+                        getString(R.string.txt_selected_music_duration))
+                }
+            },{
+                bottomSheetModel.txt_ringtone_value?.text = "Default"
+                bottomSheetModel.setToneName("Default")
+                bottomSheetModel.alarmTonePath = null
+                DialogUtils.showSimpleDialog(this, it.message!!,
+                    getString(R.string.txt_try_again))
+            },{
+
+            },{
+
+            })
     }
 
    private fun isPurchased() : Boolean{
@@ -445,5 +492,24 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         Toasty.info(this, app.appName).show()
     }
 
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        var isGranted = true
+        if (requestCode == PermissionUtils.REQUEST_CODE_PERMISSION_DEFAULT) {
+            for (element in grantResults) {
+                if (element != PackageManager.PERMISSION_GRANTED) {
+                    isGranted = false
+                }
+            }
+            if (isGranted) {
+                bottomSheetModel.pickAudioFromStorage()
+            }
+        }
+    }
 
 }

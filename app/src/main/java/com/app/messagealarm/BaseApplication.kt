@@ -25,6 +25,7 @@ class BaseApplication : MultiDexApplication(){
 
     companion object {
 
+        var isHintShowing: Boolean = false
         var installedApps: List<InstalledApps> = ArrayList()
         /**
          * check if the alarm activity is active or not

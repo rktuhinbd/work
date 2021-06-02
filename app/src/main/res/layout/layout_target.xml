@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="false"
+    android:clickable="false"
+    >
+
+
+    <TextView
+        android:id="@+id/custom_text_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans_bold"
+        android:gravity="center"
+        android:text="Alarm Options Tutorial"
+        android:textAlignment="center"
+        android:textColor="@color/color_white"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/close_target"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        android:layout_marginTop="32dp"
+        />
+
+    <TextView
+        android:id="@+id/custom_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/open_sans_semi_bold"
+        android:gravity="center"
+        android:text="Offline Login"
+        android:textAlignment="center"
+        android:textColor="@color/color_white"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/close_target"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.936"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/custom_text_title"
+        app:layout_constraintVertical_bias="0.075" />
+
+    <TextView
+        android:id="@+id/custom_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:textColor="@color/color_white"
+        android:paddingStart="64dp"
+        android:layout_marginTop="16dp"
+        android:text="Offline login is only activated when there is no active internet connection!"
+        android:textAlignment="textEnd"
+        android:textSize="20sp"
+        android:textStyle="normal"
+        android:fontFamily="@font/open_sans_light"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/custom_text"
+        app:layout_constraintVertical_bias="0.051" />
+
+    <Button
+        android:id="@+id/close_target"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="64dp"
+        android:text="Next"
+        android:enabled="true"
+        android:gravity="center"
+        android:clickable="true"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.154"
+        app:layout_constraintStart_toStartOf="parent"
+        android:focusable="true" />
+
+    <Button
+        android:id="@+id/close_spotlight"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="64dp"
+
+        android:text="Skip"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.886"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

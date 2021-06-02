@@ -217,20 +217,33 @@ class SettingsActivity : AppCompatActivity() {
 
             val snoozePre = findPreference("mute") as ListPreference?
             snoozePre!!.layoutResource = R.layout.layout_preference
-            snoozePre.setOnPreferenceChangeListener(object :Preference.OnPreferenceChangeListener{
+            snoozePre.onPreferenceChangeListener = object :Preference.OnPreferenceChangeListener{
                 val bundle = Bundle()
                 override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
                     bundle.putString("mute_status", newValue.toString())
                     firebaseAnalytics.logEvent("mute_options", bundle)
                     if(newValue == "Manual"){
-                        WorkManager.getInstance(requireActivity()).cancelAllWorkByTag("MUTE")
+                        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_MUTED)){
+                            Toasty.info(requireActivity(), "Application will never unmute automatically," +
+                                    " unmute from notification bar!").show()
+                            WorkManager.getInstance(requireActivity()).cancelAllWorkByTag("MUTE")
+                        }else{
+                            Toasty.info(requireActivity(), "Mute time changed to Manual").show()
+                            WorkManager.getInstance(requireActivity()).cancelAllWorkByTag("MUTE")
+                        }
                     }else{
-                        val time = SharedPrefUtils.readString(Constants.PreferenceKeys.MUTE_TIME)
-                        WorkManagerUtils.scheduleWorkWithTime(newValue.toString(), requireActivity())
+                      //  val time = SharedPrefUtils.readString(Constants.PreferenceKeys.MUTE_TIME)
+                          if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_MUTED)){
+                              Toasty.info(requireActivity(), String.format("App will unmute after %s", newValue.toString())).show()
+                              WorkManagerUtils.scheduleWorkWithTime(newValue.toString(), requireActivity())
+                          }else{
+                              Toasty.info(requireActivity(), String.format("Mute time changed to %s", newValue.toString())).show()
+                              WorkManager.getInstance(requireActivity()).cancelAllWorkByTag("MUTE")
+                          }
                     }
                     return true
                 }
-            })
+            }
         }
     }
 }

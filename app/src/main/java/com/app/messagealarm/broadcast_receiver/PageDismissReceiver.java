@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import com.app.messagealarm.BaseApplication;
 import com.app.messagealarm.ui.notifications.FloatingNotification;
 import com.app.messagealarm.utils.Constants;
 
@@ -30,6 +33,10 @@ public class PageDismissReceiver extends BroadcastReceiver {
 
     private void turnOffAlarmActivity(Context context){
         Intent intent = new Intent("turn_off_activity");
-        context.sendBroadcast(intent);
+        //context.sendBroadcast(intent);
+        /**
+         * Using this for RemoteServiceException in some devices
+         */
+        LocalBroadcastManager.getInstance(BaseApplication.Companion.getBaseApplicationContext()).sendBroadcast(intent);
     }
 }

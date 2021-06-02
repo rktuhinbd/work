@@ -12,6 +12,7 @@ import android.os.PowerManager
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.notifications.FloatingNotification
@@ -27,6 +28,7 @@ import com.google.firebase.ktx.Firebase
 import com.ncorti.slidetoact.SlideToActView
 import kotlinx.android.synthetic.main.activity_alarm.*
 import java.io.File
+import java.lang.NullPointerException
 import kotlin.system.exitProcess
 
 
@@ -132,9 +134,14 @@ class AlarmActivity : BaseActivity() {
                         //done playing dismiss the activity now
                         //send a notification that you missed the alarm
                         finish()
-                        SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
-                        FloatingNotification.notifyMute(true)
                         FloatingNotification.cancelPageDismissNotification()
+                        /**
+                         * The bottom two lines were making the app mute when the alarm was finished without touch
+                         * Now it's ignored by Mujahid By 1 June 2021
+                         */
+                       // SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
+                        //FloatingNotification.notifyMute(true)
+
                     }
                 })
             }
@@ -153,15 +160,8 @@ class AlarmActivity : BaseActivity() {
     }
 
     override fun onPause() {
-       /* if(!isSwiped){
-            if(isIntractive){
-                //we now know that only few devices getting the dismiss notification function called at lock screen startup
-                //need to know how much devices creating this issue
-
-                }
-            }*/
         super.onPause()
-        this.unregisterReceiver(mMessageReceiver)
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver!!)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -206,17 +206,21 @@ class AlarmActivity : BaseActivity() {
                 }
 
                 override fun onSlideCompleteAnimationEnded(view: SlideToActView) {
-                    if (!contains(Constants.PreferenceKeys.IS_FIRST_TIME_ALARM_PLAYED)) {
-                        write(
-                            Constants.PreferenceKeys.IS_FIRST_TIME_ALARM_PLAYED,
-                            true
-                        )
+                    try{
+                        if (!contains(Constants.PreferenceKeys.IS_FIRST_TIME_ALARM_PLAYED)) {
+                            write(
+                                Constants.PreferenceKeys.IS_FIRST_TIME_ALARM_PLAYED,
+                                true
+                            )
+                        }
+                        FloatingNotification.cancelPageDismissNotification()
+                        isSwiped = true
+                        MediaUtils.stopAlarm()
+                        openApp()
+                        finish()
+                    }catch (e:NullPointerException){
+                        //skip the crash due to null
                     }
-                    FloatingNotification.cancelPageDismissNotification()
-                    isSwiped = true
-                    MediaUtils.stopAlarm()
-                    openApp()
-                    finish()
                 }
 
                 override fun onSlideCompleteAnimationStarted(
@@ -239,8 +243,8 @@ class AlarmActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        this.registerReceiver(turnOffReceiver, IntentFilter("turn_off_activity"))
-        this.registerReceiver(mMessageReceiver,  IntentFilter("turn_off_switch"))
+        LocalBroadcastManager.getInstance(this).registerReceiver(turnOffReceiver!!, IntentFilter("turn_off_activity"))
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver!!,  IntentFilter("turn_off_switch"))
     }
 
 

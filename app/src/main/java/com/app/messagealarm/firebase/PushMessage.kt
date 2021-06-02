@@ -12,18 +12,23 @@ import android.graphics.Color
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import com.app.messagealarm.BaseApplication
+import com.app.messagealarm.BuildConfig
 import com.app.messagealarm.R
 import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.DataUtils
 import com.app.messagealarm.utils.SharedPrefUtils
+import com.app.messagealarm.utils.VibratorUtils
 import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import java.io.InputStream
+import java.lang.NullPointerException
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -32,10 +37,23 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
 
     override fun onMessageReceived(p0: RemoteMessage) {
         val data: Map<String, String> = p0.data
-        createNotification(p0)
-        if(data["action"] == Constants.ACTION.SYNC){
-            val pushMessagePresenter = PushMessagePresenter(this)
-            pushMessagePresenter.cleanDb()
+        try{
+            createNotification(p0)
+            when {
+                data["action"] == Constants.ACTION.SYNC -> {
+                    val pushMessagePresenter = PushMessagePresenter(this)
+                    pushMessagePresenter.cleanDb()
+                }
+                data["action"] == Constants.ACTION.BUY -> {
+                    //Open and Show the Buy Screen of the app
+                }
+                data["action"] == Constants.ACTION.UPDATE -> {
+                    //Open the play store with our app link so user can update the app
+                    //First Open a dialog in MainActivity then take the user the play store from the dialog
+                }
+            }
+        }catch (e:NullPointerException){
+            //skipping the crash
         }
     }
 
@@ -44,13 +62,35 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
         //save token to shared preference
         SharedPrefUtils.write(Constants.PreferenceKeys.FIREBASE_TOKEN, p0)
         val tokenCall = RetrofitClient.getApiService().registerToken(p0)
-        tokenCall.execute()
+        //if app is build in debug mode don't call this function
+        if(!BuildConfig.DEBUG) {
+            tokenCall.execute()
+        }
     }
 
 
+    private fun createNotificationVibration(){
+        var count = 0
+        //create vibration for 4 seconds
+        Thread(Runnable {
+            //start vibration
+            VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext(), 3000)
+            while (count < 3){
+                Thread.sleep(1000)
+                count++
+                if(count == 2){
+                    //stop vibration
+                    VibratorUtils.stopVibrate()
+                    count = 0
+                    break
+                }
+            }
+        }).start()
+    }
+
     private fun createNotification(
         remoteMessage: RemoteMessage?
-    ) { // Let's create a
+    ) {
         // notification builder object
         val builder: NotificationCompat.Builder =
             NotificationCompat.Builder(this, DataUtils.getString(R.string.notification_channel))
@@ -67,8 +107,6 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
             // Set properties to notification channel
             notificationChannel.enableLights(true)
             notificationChannel.lightColor = Color.RED
-            notificationChannel.enableVibration(true)
-            notificationChannel.vibrationPattern = longArrayOf(100, 200, 300)
             // Pass the notificationChannel object to notificationManager
             notificationManager.createNotificationChannel(notificationChannel)
         }
@@ -87,7 +125,6 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
             .setAutoCancel(true)
             .setContentIntent(contentIntent)
 
-
         if(remoteMessage.data["image"] != null){
             // Set the image for the notification
             val bitmap: Bitmap = getBitmapfromUrl(remoteMessage.data["image"])!!
@@ -98,6 +135,8 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
             ).setLargeIcon(bitmap)
         }
         notificationManager.notify(1, builder.build())
+        //start vibrations
+        createNotificationVibration()
     }
 
     private fun getBitmapfromUrl(imageUrl: String?): Bitmap? {

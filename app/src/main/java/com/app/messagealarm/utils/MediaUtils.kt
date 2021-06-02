@@ -63,12 +63,12 @@ class MediaUtils {
                         mediaPlayer!!.setVolume(0f, 0f)
                     }
 
-                    mediaPlayer!!.setOnErrorListener(object : MediaPlayer.OnErrorListener {
-                        override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
+                    mediaPlayer!!.setOnErrorListener { mp, what, extra ->
+                        if(mediaPlayer != null){
                             mediaPlayer!!.reset()
-                            return true
                         }
-                    })
+                        true
+                    }
 
                     mediaPlayer!!.setOnPreparedListener {
                         it.start()
@@ -94,7 +94,7 @@ class MediaUtils {
                 if (isVibrate || isJustVibrate) {
                     val once = Once()
                     once.run(Runnable {
-                        VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext())
+                        VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext(),2000)
                     })
                 }
             }).start()
@@ -167,21 +167,29 @@ class MediaUtils {
         }
 
         fun stopAlarm( ) {
-            //first time alarm played and stopped, should ask user for review
-            if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
-                write(Constants.PreferenceKeys.IS_STOPPED, true)
-                mediaPlayer!!.stop()
-                mediaPlayer!!.release()
-                mediaPlayer = null
-                isStopped = false
-                thread!!.interrupt()
-                thread = null
-                stopVibration()
-                write(Constants.PreferenceKeys.IS_MUTED, true)
-                notifyMute(true)
+            try{
+                //first time alarm played and stopped, should ask user for review
+                if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+                    write(Constants.PreferenceKeys.IS_STOPPED, true)
+                    mediaPlayer!!.stop()
+                    mediaPlayer!!.release()
+                    mediaPlayer = null
+                    isStopped = false
+                    thread!!.interrupt()
+                    thread = null
+                    stopVibration()
+                    write(Constants.PreferenceKeys.IS_MUTED, true)
+                    notifyMute(true)
+                }
+            }catch (e:java.lang.NullPointerException){
+                //skipped the crash of 2.0.1
+                //TOOD(Have to look at if any problem creates to any devices, during alarm dismiss)
+                //wants to try with recursive call of stop alarm
+            }catch (e:java.lang.IllegalStateException){
+                //skipped with stopping media player
+                //wants to try with recursive call of stop alarm
             }
         }
-
 
         fun isPlaying(): Boolean {
             return try {
@@ -194,6 +202,7 @@ class MediaUtils {
             }catch (e:java.lang.IllegalStateException){
                 e.printStackTrace()
                 false
+                //wants to try with a recursive call of isPlaying
             }
         }
 

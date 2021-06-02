@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.work.WorkManager
 import androidx.work.impl.utils.WakeLocks.newWakeLock
 import com.app.messagealarm.broadcast_receiver.*
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
@@ -22,6 +23,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
+import java.lang.NullPointerException
 import java.util.*
 
 
@@ -38,9 +40,9 @@ class FloatingNotification {
         private var firebaseAnalytics: FirebaseAnalytics = Firebase.analytics
         var service: Service? = null
         var notificationView: RemoteViews? = null
-        var notificationBuilder: NotificationCompat.Builder? = null
+        private var notificationBuilder: NotificationCompat.Builder? = null
         val NOTIFICATION_ID = 12
-        var notificationManager: NotificationManagerCompat? = null
+        private var notificationManager: NotificationManagerCompat? = null
 
         /**
          * end of remote notification
@@ -89,8 +91,12 @@ class FloatingNotification {
                                 //done playing dismiss the activity now
                                 //send a notification that you missed the alarm
                                 notificationManager.cancel(225)
-                                SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
-                                notifyMute(true)
+                                /**
+                                 * The bottom two lines were making the app mute when the alarm was finished without touch
+                                 * Now it's ignored by Mujahid By 1 June 2021
+                                 */
+                                //SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
+                                //notifyMute(true)
                             }
                         }
                     )
@@ -473,27 +479,35 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
 
         fun notifyMute(isMuted: Boolean) {
             if (notificationView == null || notificationBuilder == null) return
-            val iconID: Int =
-                if (isMuted) com.app.messagealarm.R.drawable.ic_silence else com.app.messagealarm.R.drawable.ic_snooze
-            val textString: String = if (!isMuted) {
-                DataUtils.getString(com.app.messagealarm.R.string.waiting_for_messages)
-            } else DataUtils.getString(com.app.messagealarm.R.string.txt_application_muted)
-            try {
-                notificationView!!.setImageViewResource(
-                    com.app.messagealarm.R.id.btn_mute_status,
-                    iconID
-                )
-                notificationView!!.setTextViewText(com.app.messagealarm.R.id.txt_desc, textString)
-                notificationBuilder!!.setContent(notificationView)
-                service!!.startForeground(NOTIFICATION_ID, notificationBuilder!!.build())
-            } catch (e: ArrayIndexOutOfBoundsException) {
+            try{
+                val iconID: Int =
+                    if (isMuted) com.app.messagealarm.R.drawable.ic_silence else com.app.messagealarm.R.drawable.ic_snooze
+                val textString: String = if (!isMuted) {
+                    DataUtils.getString(com.app.messagealarm.R.string.waiting_for_messages)
+                } else DataUtils.getString(com.app.messagealarm.R.string.txt_application_muted)
+                try {
+                    notificationView!!.setImageViewResource(
+                        com.app.messagealarm.R.id.btn_mute_status,
+                        iconID
+                    )
+                    notificationView!!.setTextViewText(com.app.messagealarm.R.id.txt_desc, textString)
+                    notificationBuilder!!.setContent(notificationView)
+                    service!!.startForeground(NOTIFICATION_ID, notificationBuilder!!.build())
+                } catch (e: ArrayIndexOutOfBoundsException) {
 
+                }
+                if (isMuted) {
+                    showToastToUser(service!!)
+                    //start alarm to dismiss mute
+                    WorkManagerUtils.scheduleWorks(service!!)
+                }else{
+                    showUnMuteToastToUser(service!!)
+                    WorkManager.getInstance(service!!).cancelAllWorkByTag("MUTE")
+                }
+            }catch (e: NullPointerException){
+                //skip the crash
             }
-            if (isMuted) {
-                showToastToUser(service!!)
-                //start alarm to dismiss mute
-                WorkManagerUtils.scheduleWorks(service!!)
-            }
+
         }
 
 
@@ -509,7 +523,18 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
                 ).show()
             }
             handler.post(runnable)
+        }
 
+        @SuppressLint("CheckResult")
+        fun showUnMuteToastToUser(context: Service) {
+            val handler = Handler(context.mainLooper)
+            val runnable = Runnable() {
+                Toasty.info(
+                    context, String.format(
+                        "Application unmuted!")
+                ).show()
+            }
+            handler.post(runnable)
         }
 
     }
