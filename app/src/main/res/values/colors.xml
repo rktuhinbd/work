@@ -3,6 +3,7 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#1436F5</color>
+    <color name="colorAccentTransparent">#991436F5</color>
     <color name="dottedLine">#C8C9CB</color>
     <color name="color_white">#ffffff</color>
     <color name="colorTextRegular">#111111</color>

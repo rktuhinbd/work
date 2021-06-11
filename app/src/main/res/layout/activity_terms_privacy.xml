@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.terms_privacy.TermsPrivacyActivity">
+
+    <com.app.messagealarm.ui.widget.CustomStatusBarView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/card_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!--        constraint on child..-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/image_privacy"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="32dp"
+                android:src="@drawable/demo_pri_pol"
+                app:layout_constraintBottom_toTopOf="@+id/text_title_privacy"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_title_privacy"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/text_title_privacy"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/open_sans_bold"
+                android:text="Your privacy is important us"
+                android:textColor="@color/md_black_1000"
+                android:textSize="@dimen/font_16"
+                app:layout_constraintBottom_toTopOf="@+id/text_sub_title_privacy"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image_privacy" />
+
+            <TextView
+                android:id="@+id/text_sub_title_privacy"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/open_sans_regular"
+                android:text="@string/text_sub_title_privacy"
+                android:textColor="@color/md_black_1000"
+                android:textSize="@dimen/font_14"
+                app:layout_constraintBottom_toTopOf="@+id/text_data_title_process"
+                app:layout_constraintEnd_toEndOf="@+id/text_title_privacy"
+                app:layout_constraintStart_toStartOf="@+id/text_title_privacy"
+                app:layout_constraintTop_toBottomOf="@id/text_title_privacy" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/text_data_title_process"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/open_sans_bold"
+                android:text="Data We process"
+                android:textColor="@color/md_black_1000"
+                android:textSize="@dimen/font_16"
+                app:layout_constraintBottom_toTopOf="@+id/text_data_sub_process"
+                app:layout_constraintEnd_toEndOf="@+id/text_sub_title_privacy"
+                app:layout_constraintStart_toStartOf="@+id/text_sub_title_privacy"
+                app:layout_constraintTop_toBottomOf="@+id/text_sub_title_privacy" />
+
+            <TextView
+                android:id="@+id/text_data_sub_process"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/open_sans_regular"
+                android:text="We process your profile data(name, phone, number etc.)We process your profile dataWe process your profile dataWe process your profile data"
+                android:textColor="@color/md_black_1000"
+                android:textSize="@dimen/font_14"
+                app:layout_constraintBottom_toTopOf="@+id/text_use_data"
+                app:layout_constraintEnd_toEndOf="@+id/text_data_title_process"
+                app:layout_constraintStart_toStartOf="@+id/text_data_title_process"
+                app:layout_constraintTop_toBottomOf="@+id/text_data_title_process" />
+
+            <TextView
+                android:id="@+id/text_use_data"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans_bold"
+                android:text="How we use your data"
+                android:textColor="@color/md_black_1000"
+                android:textSize="@dimen/font_16"
+                app:layout_constraintBottom_toTopOf="@+id/text_use_sub_data"
+                app:layout_constraintEnd_toEndOf="@+id/text_data_sub_process"
+                app:layout_constraintStart_toStartOf="@+id/text_data_sub_process"
+                app:layout_constraintTop_toBottomOf="@+id/text_data_sub_process" />
+
+            <TextView
+                android:id="@+id/text_use_sub_data"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/open_sans_regular"
+                android:text="We use your data for the purposes set in our privacy policy includng."
+                android:textColor="@color/md_black_1000"
+                android:textSize="@dimen/font_14"
+                app:layout_constraintBottom_toTopOf="@+id/text_one"
+                app:layout_constraintEnd_toEndOf="@+id/text_use_data"
+                app:layout_constraintStart_toStartOf="@+id/text_use_data"
+                app:layout_constraintTop_toBottomOf="@+id/text_use_data" />
+
+            <TextView
+                android:id="@+id/text_one"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/open_sans_regular"
+                android:text=".Providing, improving, analyzing and personalizing our services."
+                android:textColor="@color/md_black_1000"
+                android:textSize="@dimen/font_14"
+                app:layout_constraintEnd_toEndOf="@+id/text_use_sub_data"
+                app:layout_constraintStart_toStartOf="@+id/text_use_sub_data"
+                app:layout_constraintTop_toBottomOf="@+id/text_use_sub_data" />
+
+            <TextView
+                android:id="@+id/text_two"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/open_sans_regular"
+                android:text=".Providing, improving, analyzing and personalizing our services."
+                android:textColor="@color/md_black_1000"
+                android:textSize="@dimen/font_14"
+                app:layout_constraintEnd_toEndOf="@+id/text_use_sub_data"
+                app:layout_constraintStart_toStartOf="@+id/text_use_sub_data"
+                app:layout_constraintTop_toBottomOf="@+id/text_use_sub_data" />
+
+            <TextView
+                android:id="@+id/text_three"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/open_sans_regular"
+                android:text=".Providing, improving, analyzing and personalizing our services."
+                android:textColor="@color/md_black_1000"
+                android:textSize="@dimen/font_14"
+                app:layout_constraintBottom_toTopOf="@+id/text_four"
+                app:layout_constraintEnd_toEndOf="@+id/text_use_sub_data"
+                app:layout_constraintStart_toStartOf="@+id/text_use_sub_data"
+                app:layout_constraintTop_toBottomOf="@+id/text_two" />
+
+            <TextView
+                android:id="@+id/text_four"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/open_sans_regular"
+                android:text=".Providing, improving, analyzing and personalizing our services."
+                android:textColor="@color/md_black_1000"
+                android:textSize="@dimen/font_14"
+                app:layout_constraintBottom_toTopOf="@+id/text_five"
+                app:layout_constraintEnd_toEndOf="@+id/text_three"
+                app:layout_constraintStart_toStartOf="@+id/text_three"
+                app:layout_constraintTop_toBottomOf="@+id/text_three" />
+
+            <TextView
+                android:id="@+id/text_five"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="24dp"
+                android:fontFamily="@font/open_sans_regular"
+                android:text=".Providing, improving, analyzing and personalizing our services."
+                android:textColor="@color/md_black_1000"
+                android:textSize="@dimen/font_14"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/text_four"
+                app:layout_constraintStart_toStartOf="@+id/text_four"
+                app:layout_constraintTop_toBottomOf="@+id/text_four" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="72sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scroll_view"
+       >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans_regular"
+                android:background="@color/color_white"
+                android:gravity="center"
+                android:padding="8dp"
+                android:elevation="12dp"
+                android:text="By clicking Agree and Continue you agree to our Privacy Policy and Terms of Service. "
+                android:textSize="14sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:elevation="12dp"
+                android:backgroundTint="#01C652"
+                android:insetLeft="0dp"
+                android:insetTop="-2dp"
+                android:insetRight="0dp"
+                android:insetBottom="-2dp"
+                android:fontFamily="@font/open_sans_regular"
+                android:gravity="center"
+                android:textColor="@color/color_white"
+                android:text="Agree  &amp; Continue"
+                android:textSize="14sp" />
+
+
+        </LinearLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

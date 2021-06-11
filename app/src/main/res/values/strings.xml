@@ -103,5 +103,7 @@
     <string name="better_exprience">We don\'t show ads, for your \n better experience!</string>
     <string name="txt_idea_desc">We can help you develop your dream project into real, with our dedicated team we are always focused on quality</string>
     <string name="missing_file">File is missing!</string>
+    <string name="text_terms_policy">By clicking \'Get Started\' if you reside in the EU, EEA or Switzerland you accept the Terms of Services and if you reside in any other country you accept the Terms of <u>Service</u> and <u>Privacy Policy</u></string>
+    <string name="text_sub_title_privacy">Please take time to review below the key points of our Privacy Policy and Terms of Service</string>
 
 </resources>

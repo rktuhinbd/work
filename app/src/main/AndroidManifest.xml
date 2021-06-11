@@ -7,8 +7,10 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
+
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -30,37 +32,15 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="q">
+        <activity android:name=".ui.terms_privacy.TermsPrivacyActivity">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-
-        <!--audio picker-->
-        <activity android:name="xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity" />
-
-        <activity android:name=".ui.buy_pro.BuyProActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeBuy"
-            android:launchMode="singleTop"
-            tools:ignore="LockedOrientationActivity" />
-
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
         <activity
-            android:name=".ui.setting.SettingsActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:excludeFromRecents="true"
-            android:label="@string/title_activity_settings"
-            android:launchMode="singleTop"
-            android:parentActivityName=".ui.main.alarm_applications.AlarmApplicationActivity"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
-
-        <activity
-            android:name=".ui.main.add_apps.AddApplicationActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTop"
-            android:parentActivityName=".ui.main.alarm_applications.AlarmApplicationActivity"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
-
-        <activity
-            android:name=".ui.splash.SplashActivity"
+            android:name=".ui.splash.SplashGettingStarted"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:launchMode="singleTop"
@@ -72,8 +52,38 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
+        </activity> <!-- audio picker -->
+        <activity android:name="xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity" />
+        <activity
+            android:name=".ui.buy_pro.BuyProActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeBuy"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ui.setting.SettingsActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true"
+            android:label="@string/title_activity_settings"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.main.alarm_applications.AlarmApplicationActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ui.main.add_apps.AddApplicationActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.main.alarm_applications.AlarmApplicationActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ui.splash.SplashActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.GradientStatusBar"
+            tools:ignore="LockedOrientationActivity"></activity>
         <activity
             android:name=".ui.main.alarm_applications.AlarmApplicationActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -81,7 +91,6 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-
         <activity
             android:name=".ui.alarm.AlarmActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -90,7 +99,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.GradientStatusBar"
             tools:ignore="LockedOrientationActivity" />
-
         <activity
             android:name=".ui.about.AboutActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
