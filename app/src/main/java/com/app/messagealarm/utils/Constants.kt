@@ -54,6 +54,7 @@ class Constants {
             const val SYNC = "SYNC"
             const val UPDATE = "UPDATE"
             const val BUY = "BUY"
+            const val OPEN_SERVICE = "OPEN_SERVICE"
         }
     }
 

@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Handler
+import android.os.Looper
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
@@ -172,6 +174,18 @@ class NotificationListener : NotificationListenerService(),
     }
 
 
+    private fun startMagicService(context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val intent = Intent(context, NotificationListener::class.java)
+            context.startForegroundService(intent)
+        } else {
+            val intent = Intent(context, NotificationListener::class.java)
+            context.startService(intent)
+        }
+    }
+
+
+
     override fun onNotificationRemoved(sbn: StatusBarNotification?) {
         //NOTE: Music not getting off on notification removed
         if (sbn!!.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
@@ -222,7 +236,7 @@ class NotificationListener : NotificationListenerService(),
         val isServiceStopped =
             SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)
         if (!isServiceStopped) {
-            scheduleService()
+           scheduleService()
         }
     }
 
