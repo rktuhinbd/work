@@ -25,7 +25,7 @@
         <!--        constraint on child..-->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -44,8 +44,9 @@
                 android:id="@+id/text_title_privacy"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
+                android:layout_marginStart="32dp"
                 android:layout_marginTop="18dp"
+                android:layout_marginEnd="32dp"
                 android:fontFamily="@font/roboto_bold"
                 android:text="Your privacy is important us"
                 android:textColor="@color/md_black_1000"
@@ -59,7 +60,7 @@
                 android:id="@+id/text_sub_title_privacy"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="8dp"
                 android:fontFamily="@font/roboto_regular"
                 android:text="@string/text_sub_title_privacy"
                 android:textColor="@color/md_black_1000"
@@ -73,7 +74,7 @@
                 android:id="@+id/text_data_title_process"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:fontFamily="@font/roboto_bold"
                 android:text="Data We process"
                 android:textColor="@color/md_black_1000"
@@ -87,7 +88,7 @@
                 android:id="@+id/text_data_sub_process"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="8dp"
                 android:fontFamily="@font/roboto_regular"
                 android:text="We process your profile data(name, phone, number etc.)We process your profile dataWe process your profile dataWe process your profile data"
                 android:textColor="@color/md_black_1000"
@@ -101,6 +102,7 @@
                 android:id="@+id/text_use_data"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:fontFamily="@font/roboto_bold"
                 android:text="How we use your data"
                 android:textColor="@color/md_black_1000"
@@ -114,9 +116,9 @@
                 android:id="@+id/text_use_sub_data"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="8dp"
                 android:fontFamily="@font/roboto_regular"
-                android:text="We use your data for the purposes set in our privacy policy includng."
+                android:text="We use your data for the purposes set in our privacy policy including."
                 android:textColor="@color/md_black_1000"
                 android:textSize="@dimen/font_14"
                 app:layout_constraintBottom_toTopOf="@+id/text_one"
@@ -161,54 +163,26 @@
                 android:text="@string/text_demo_providing"
                 android:textColor="@color/md_black_1000"
                 android:textSize="@dimen/font_14"
-                app:layout_constraintBottom_toTopOf="@+id/text_four"
+                app:layout_constraintBottom_toTopOf="@+id/text_six"
                 app:layout_constraintEnd_toEndOf="@+id/text_two"
                 app:layout_constraintStart_toStartOf="@+id/text_two"
                 app:layout_constraintTop_toBottomOf="@+id/text_two" />
 
-            <TextView
-                android:id="@+id/text_four"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:fontFamily="@font/roboto_regular"
-                android:text="@string/text_demo_providing"
-                android:textColor="@color/md_black_1000"
-                android:textSize="@dimen/font_14"
-                app:layout_constraintBottom_toTopOf="@+id/text_five"
-                app:layout_constraintEnd_toEndOf="@+id/text_three"
-                app:layout_constraintStart_toStartOf="@+id/text_three"
-                app:layout_constraintTop_toBottomOf="@+id/text_three" />
-
-            <TextView
-                android:id="@+id/text_five"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
-                android:fontFamily="@font/roboto_regular"
-                android:text="@string/text_demo_providing"
-                android:textColor="@color/md_black_1000"
-                android:textSize="@dimen/font_14"
-                app:layout_constraintBottom_toTopOf="@id/text_six"
-                app:layout_constraintEnd_toEndOf="@+id/text_four"
-                app:layout_constraintStart_toStartOf="@+id/text_four"
-                app:layout_constraintTop_toBottomOf="@+id/text_four" />
 
             <TextView
                 android:id="@+id/text_six"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="24dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="16dp"
                 android:fontFamily="@font/roboto_regular"
                 android:text="The above data is necessary to provide our service if you do not wish to accept to all of our work to do."
                 android:textColor="@color/md_black_1000"
                 android:textSize="@dimen/font_14"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/text_five"
-                app:layout_constraintStart_toStartOf="@+id/text_five"
-                app:layout_constraintTop_toBottomOf="@+id/text_five" />
+                app:layout_constraintEnd_toEndOf="@+id/text_three"
+                app:layout_constraintStart_toStartOf="@+id/text_three"
+                app:layout_constraintTop_toBottomOf="@+id/text_three" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -218,43 +192,44 @@
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="72sp"
+        app:cardBackgroundColor="@color/color_white"
+        app:cardElevation="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scroll_view"
-       >
+        app:layout_constraintTop_toBottomOf="@+id/scroll_view">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:elevation="82dp"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans_regular"
-                android:background="@color/color_white"
+                android:background="@drawable/custom_bg_terms_condition"
+                android:elevation="100dp"
+                android:fontFamily="@font/roboto_regular"
                 android:gravity="center"
-                android:padding="8dp"
-                android:elevation="12dp"
+                android:padding="12dp"
                 android:text="By clicking Agree and Continue you agree to our Privacy Policy and Terms of Service. "
-                android:textSize="14sp" />
+                android:textSize="@dimen/font_10" />
 
             <com.google.android.material.button.MaterialButton
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="12dp"
-                android:elevation="12dp"
                 android:backgroundTint="#01C652"
+                android:elevation="12dp"
+                android:fontFamily="@font/roboto_bold"
+                android:gravity="center"
                 android:insetLeft="0dp"
                 android:insetTop="-2dp"
                 android:insetRight="0dp"
                 android:insetBottom="-2dp"
-                android:fontFamily="@font/open_sans_regular"
-                android:gravity="center"
-                android:textColor="@color/color_white"
+                android:padding="12dp"
                 android:text="Agree  &amp; Continue"
+                android:textColor="@color/color_white"
                 android:textSize="14sp" />
 
 
