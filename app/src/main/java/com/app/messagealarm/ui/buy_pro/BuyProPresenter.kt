@@ -44,7 +44,9 @@ class BuyProPresenter(private val buyProView: BuyProView, private val firebaseAn
         signature: String,
         purchase: Purchase
     ){
-        RetrofitClient.getApiService().verifyPurchase(receipt, signature).enqueue(
+         Log.e("RECEIPT",receipt)
+        Log.e("SIGNATURE", signature)
+        /*RetrofitClient.getApiService().verifyPurchase(receipt, signature).enqueue(
             object : Callback<VerifyPurchaseResponse>{
                 override fun onFailure(call: Call<VerifyPurchaseResponse>, t: Throwable) {
                     val bundle = Bundle()
@@ -68,7 +70,7 @@ class BuyProPresenter(private val buyProView: BuyProView, private val firebaseAn
                 }
 
             }
-        )
+        )*/
     }
 
 

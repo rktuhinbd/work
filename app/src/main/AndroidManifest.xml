@@ -32,7 +32,14 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="q">
-        <activity android:name=".ui.terms_privacy.TermsPrivacyActivity">
+        <activity android:name=".ui.terms_privacy.TermsPrivacyActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.GradientStatusBar"
+            tools:ignore="LockedOrientationActivity"
+            >
             <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -47,11 +54,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.GradientStatusBar"
             tools:ignore="LockedOrientationActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity> <!-- audio picker -->
         <activity android:name="xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity" />
         <activity
@@ -83,7 +85,14 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.GradientStatusBar"
-            tools:ignore="LockedOrientationActivity"></activity>
+            tools:ignore="LockedOrientationActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ui.main.alarm_applications.AlarmApplicationActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

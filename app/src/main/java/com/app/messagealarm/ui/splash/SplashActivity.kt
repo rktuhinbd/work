@@ -43,8 +43,11 @@ class SplashActivity : BaseActivity() {
             tryReconnectService()
         } else {
             /**
-             * send notification
+             * take user to getting started page
              */
+           /* val intent = Intent(this, SplashGettingStarted::class.java)
+            startActivity(intent)
+            finish()*/
             if (!isFinishing) {
                 DialogUtils.showDialog(
                     this,
