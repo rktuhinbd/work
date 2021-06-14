@@ -517,7 +517,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        Log.e("R_CALL", "TRUE")
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
             var isGranted = true
             if (requestCode == PermissionUtils.REQUEST_CODE_PERMISSION_DEFAULT) {
