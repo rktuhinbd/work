@@ -42,6 +42,9 @@ class SplashActivity : BaseActivity() {
             runProgressWithSteps()
             tryReconnectService()
         } else {
+            /**
+             * send notification
+             */
             if (!isFinishing) {
                 DialogUtils.showDialog(
                     this,

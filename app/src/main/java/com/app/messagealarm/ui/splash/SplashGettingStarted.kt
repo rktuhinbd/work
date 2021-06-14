@@ -12,16 +12,11 @@ class SplashGettingStarted : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_getting_started)
-
         val button = findViewById<Button>(R.id.btn_get_started)
-
         button?.setOnClickListener()
         {
             // displaying a toast message
             val intent = Intent(this, TermsPrivacyActivity::class.java)
-
             startActivity(intent)
-    }
-
-    }
+    }}
 }
