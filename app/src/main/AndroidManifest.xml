@@ -54,6 +54,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.GradientStatusBar"
             tools:ignore="LockedOrientationActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
         </activity> <!-- audio picker -->
         <activity android:name="xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity" />
         <activity
@@ -87,11 +93,11 @@
             android:theme="@style/AppTheme.GradientStatusBar"
             tools:ignore="LockedOrientationActivity">
 
-            <intent-filter>
+           <!-- <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <activity
             android:name=".ui.main.alarm_applications.AlarmApplicationActivity"
