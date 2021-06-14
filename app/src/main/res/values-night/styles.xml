@@ -16,8 +16,6 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <item name="android:statusBarColor" tools:targetApi="lollipop">@color/background_screen</item>
-        <item name="android:navigationBarColor" tools:targetApi="o_mr1">@color/colorOfNavigationBar
-        </item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
     </style>
 
@@ -27,8 +25,6 @@
         <item name="colorAccent">#C9A666</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="android:statusBarColor" tools:targetApi="lollipop">@color/colorBackground</item>
-        <item name="android:navigationBarColor" tools:targetApi="o_mr1">@color/colorOfNavigationBar
-        </item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
     </style>
 
