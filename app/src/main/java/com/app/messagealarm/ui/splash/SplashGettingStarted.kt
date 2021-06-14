@@ -15,7 +15,6 @@ class SplashGettingStarted : AppCompatActivity() {
         val button = findViewById<Button>(R.id.btn_get_started)
         button?.setOnClickListener()
         {
-            // displaying a toast message
             val intent = Intent(this, TermsPrivacyActivity::class.java)
             startActivity(intent)
     }}
