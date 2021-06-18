@@ -11,7 +11,12 @@ class AppsReaderIntentService : JobIntentService() {
     private val TAG = "MyJobIntentService"
 
     override fun onHandleWork(intent: Intent) {
-        BaseApplication.installedApps = AppsReader.getInstalledApps(false, this)!!
+        /**
+         * send the task to background thread, fix by Mujahid : 18 Jun 2021
+         */
+        Thread {
+            BaseApplication.installedApps = AppsReader.getInstalledApps(false, this)!!
+        }.start()
     }
 
     companion object{
