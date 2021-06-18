@@ -214,14 +214,14 @@
                 android:id="@+id/txt_one_time_payment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="It's One Time Payment"
+                android:text="One time payment, Lifetime access"
                 android:fontFamily="@font/open_sans_light"
                 android:textColor="@color/color_white"
                 android:layout_marginTop="22dp"
                 app:layout_constraintTop_toBottomOf="@id/txt_point_three"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@id/view_underline_one_time_payment"
                 />
 
