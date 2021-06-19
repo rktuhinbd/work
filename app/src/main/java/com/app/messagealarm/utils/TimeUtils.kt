@@ -39,6 +39,107 @@ class TimeUtils private constructor() {
            return SimpleDateFormat("EE", Locale.ENGLISH).format(date.time)
         }
 
+       private fun getCurrentDayNameBDTime() : String{
+            val calendar = Calendar.getInstance()
+            calendar.timeZone = TimeZone.getTimeZone("BST")
+            val date = calendar.time
+            return SimpleDateFormat("EE", Locale.ENGLISH).format(date.time)
+        }
+
+       private fun getCurrentHourBDTime() : Int{
+           val calendar = Calendar.getInstance()
+           calendar.timeZone = TimeZone.getTimeZone("BST")
+           return calendar.get(Calendar.HOUR_OF_DAY)
+       }
+
+        /**
+         * Office Time : 30 minutes
+         * Not Office Time : 1 hours
+         * Sleeping Time: 11 PM -> 8AM : 4 hours
+         * Weekend Day Time: 2 hour
+         * Note: All times are in BST time
+         */
+        fun getPossibleReplyTime() : String{
+            var possibleTime: String
+            when(getCurrentDayNameBDTime()){
+                /**
+                 * Weekends
+                 */
+                "FRI", "SAT" -> {
+                    when {
+                        getCurrentHourBDTime() in 10..19 -> {
+                            /**
+                             * office hours
+                             */
+                            /**
+                             * office hours
+                             */
+                            possibleTime = "1.5 hours"
+                        }
+                        getCurrentHourBDTime() in 20..23 -> {
+                            /**
+                             * office off hours
+                             */
+                            /**
+                             * office off hours
+                             */
+                            possibleTime = "2 hours"
+                        }
+                        getCurrentHourBDTime() in 6..9 -> {
+                            /**
+                             * office off hours
+                             */
+                            /**
+                             * office off hours
+                             */
+                            possibleTime = "2.5 hours"
+                        }
+                        else -> {
+                            possibleTime = "4 hours"
+                        }
+                    }
+                }
+                else ->{
+                    /**
+                     * Office day
+                     */
+                    when {
+                        getCurrentHourBDTime() in 10..19 -> {
+                            /**
+                             * office hours
+                             */
+                            /**
+                             * office hours
+                             */
+                            possibleTime = "30 minutes"
+                        }
+                        getCurrentHourBDTime() in 20..23 -> {
+                            /**
+                             * office off hours
+                             */
+                            /**
+                             * office off hours
+                             */
+                            possibleTime = "1 hour"
+                        }
+                        getCurrentHourBDTime() in 6..9 -> {
+                            /**
+                             * office off hours
+                             */
+                            /**
+                             * office off hours
+                             */
+                            possibleTime = "2 hours"
+                        }
+                        else -> {
+                            possibleTime = "3 hours"
+                        }
+                    }
+                }
+            }
+            return possibleTime
+        }
+
         /**
          * This method provides the first day of the current year in milliseconds
          *

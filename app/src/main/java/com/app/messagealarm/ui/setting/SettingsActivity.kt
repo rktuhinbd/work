@@ -14,10 +14,7 @@ import androidx.work.WorkManager
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.about.AboutActivity
 import com.app.messagealarm.ui.buy_pro.BuyProActivity
-import com.app.messagealarm.utils.Constants
-import com.app.messagealarm.utils.LiveChatUtils
-import com.app.messagealarm.utils.SharedPrefUtils
-import com.app.messagealarm.utils.SupportUtils
+import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
@@ -128,8 +125,8 @@ class SettingsActivity : AppCompatActivity() {
                 proFeature.title = "Pro User"
                 proFeature.summary = "You are already a pro user!"
             }else{
-                proFeature.title = "Live Chat"
-                proFeature.summary = "Possible reply time 2 hours"
+                proFeature.title = "Live Chat (Support & Sales)"
+                proFeature.summary = "Possible reply time ${TimeUtils.getPossibleReplyTime()}"
             }
 
             proFeature.onPreferenceClickListener = Preference.OnPreferenceClickListener {
