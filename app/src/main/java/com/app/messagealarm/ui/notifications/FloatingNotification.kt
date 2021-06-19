@@ -115,7 +115,7 @@ class FloatingNotification {
                         PowerManager.ON_AFTER_RELEASE, "appname::WakeLock"
             )
             //acquire will turn on the display
-            wakeLock.acquire(1*60*1000L /*10 minutes*/)
+            wakeLock.acquire(1 * 60 * 1000L /*10 minutes*/)
         }
 
 
