@@ -12,9 +12,7 @@ import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.work.WorkManager
-import androidx.work.impl.utils.WakeLocks.newWakeLock
 import com.app.messagealarm.broadcast_receiver.*
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.*
@@ -23,7 +21,6 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
-import java.lang.NullPointerException
 import java.util.*
 
 
@@ -52,6 +49,9 @@ class FloatingNotification {
         private const val CHANNEL_ID = "alarm channel"
         private const val CHANNEL_NAME = "alarm app channel"
 
+
+
+
         private fun startPlaying(
             isJustVibrate: Boolean,
             appName: String,
@@ -62,47 +62,60 @@ class FloatingNotification {
             notificationManager: NotificationManagerCompat,
             numberOfPlay: Int
         ) {
+            /**
+             * Turn on screen for few seconds
+             */
+            turnOnScreen(context)
 
-            Thread(Runnable {
-                /**
-                 * turn screen on
-                 */
-
-            }).start()
             var thread:Thread? = null
          thread =   Thread(Runnable {
-                //here i need run the loop of how much time need to play
-                for (x in 0 until numberOfPlay) {
-                    if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_STOPPED)) {
-                        break
-                    }
-                    val once = Once()
-                    once.run(
-                        Runnable {
-                                MediaUtils.playAlarm(
-                                    thread!!,
-                                    isJustVibrate,
-                                    isVibrate,
-                                    context, tone, (x == (numberOfPlay - 1)),
-                                    packageName,
-                                    appName
-                                )
-                            if (x == numberOfPlay - 1) {
-                                //done playing dismiss the activity now
-                                //send a notification that you missed the alarm
-                                notificationManager.cancel(225)
-                                /**
-                                 * The bottom two lines were making the app mute when the alarm was finished without touch
-                                 * Now it's ignored by Mujahid By 1 June 2021
-                                 */
-                                //SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
-                                //notifyMute(true)
-                            }
-                        }
-                    )
-                }
-            })
+             //here i need run the loop of how much time need to play
+             for (x in 0 until numberOfPlay) {
+                 if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_STOPPED)) {
+                     break
+                 }
+                 val once = Once()
+                 once.run(
+                     Runnable {
+                         MediaUtils.playAlarm(
+                             thread!!,
+                             isJustVibrate,
+                             isVibrate,
+                             context, tone, (x == (numberOfPlay - 1)),
+                             packageName,
+                             appName
+                         )
+                         if (x == numberOfPlay - 1) {
+                             //done playing dismiss the activity now
+                             //send a notification that you missed the alarm
+                             notificationManager.cancel(225)
+                             /**
+                              * The bottom two lines were making the app mute when the alarm was finished without touch
+                              * Now it's ignored by Mujahid By 1 June 2021
+                              */
+                             //SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
+                             //notifyMute(true)
+                         }
+                     }
+                 )
+             }
+         })
             thread.start()
+        }
+
+        private fun turnOnScreen(context: Service){
+            /**
+             * Turn phone screen on
+             */
+            val powerManager: PowerManager =
+                context.getSystemService(Context.POWER_SERVICE) as PowerManager
+            val wakeLock = powerManager.newWakeLock(
+                PowerManager.FULL_WAKE_LOCK or
+                        PowerManager.ACQUIRE_CAUSES_WAKEUP or
+                        PowerManager.ON_AFTER_RELEASE, "appname::WakeLock"
+            )
+            //acquire will turn on the display
+            wakeLock.acquire(1*60*1000L /*10 minutes*/)
         }
 
 
@@ -113,7 +126,12 @@ class FloatingNotification {
                 MissedAlarmReceiver::class.java
             ).putExtra(Constants.IntentKeys.PACKAGE_NAME, packageName)
             val buttonOpenApp =
-                PendingIntent.getBroadcast(context, 0, buttonOpenAppBroadcast,  PendingIntent.FLAG_UPDATE_CURRENT)
+                PendingIntent.getBroadcast(
+                    context,
+                    0,
+                    buttonOpenAppBroadcast,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
 
             createChannel(context)
 
@@ -136,7 +154,12 @@ class FloatingNotification {
         }
 
 
-        fun showPageDismissNotification(title: String, context: Context, packageName: String, appName: String) {
+        fun showPageDismissNotification(
+            title: String,
+            context: Context,
+            packageName: String,
+            appName: String
+        ) {
 
             val buttonOpenAppBroadcast = Intent(
                 context,
@@ -144,7 +167,12 @@ class FloatingNotification {
             ).putExtra(Constants.IntentKeys.PACKAGE_NAME, packageName)
                 .setAction("OPEN_APP")
             val buttonOpenApp =
-                PendingIntent.getBroadcast(context, 0, buttonOpenAppBroadcast,  PendingIntent.FLAG_UPDATE_CURRENT)
+                PendingIntent.getBroadcast(
+                    context,
+                    0,
+                    buttonOpenAppBroadcast,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
 
 
             val btnCancel = Intent(
@@ -159,26 +187,44 @@ class FloatingNotification {
             createChannel(context)
 
             //remote view stating
-            val notificationView = RemoteViews(context.packageName, com.app.messagealarm.R.layout.layout_incoming_notification_collapsed)
+            val notificationView = RemoteViews(
+                context.packageName,
+                com.app.messagealarm.R.layout.layout_incoming_notification_collapsed
+            )
 
-            val notificationViewFloatingNotification = RemoteViews(context.packageName, com.app.messagealarm.R.layout.layout_incoming_notification)
+            val notificationViewFloatingNotification = RemoteViews(
+                context.packageName,
+                com.app.messagealarm.R.layout.layout_incoming_notification
+            )
 
-            notificationViewFloatingNotification.setTextViewText(com.app.messagealarm.R.id.txt_notification_title,
+            notificationViewFloatingNotification.setTextViewText(
+                com.app.messagealarm.R.id.txt_notification_title,
                 "Message from $appName"
             )
 
-            notificationViewFloatingNotification.setTextViewText(com.app.messagealarm.R.id.txt_notification_desc,
+            notificationViewFloatingNotification.setTextViewText(
+                com.app.messagealarm.R.id.txt_notification_desc,
                 "$title sent you a message"
             )
 
-            notificationView.setTextViewText(com.app.messagealarm.R.id.txt_notification_title,
+            notificationView.setTextViewText(
+                com.app.messagealarm.R.id.txt_notification_title,
                 "Message from $appName"
             )
 
-            notificationViewFloatingNotification.setTextViewText(com.app.messagealarm.R.id.btn_notification_action, "Open $appName")
+            notificationViewFloatingNotification.setTextViewText(
+                com.app.messagealarm.R.id.btn_notification_action,
+                "Open $appName"
+            )
 
-            notificationViewFloatingNotification.setOnClickPendingIntent(com.app.messagealarm.R.id.btn_notification_action, buttonOpenApp)
-            notificationViewFloatingNotification.setOnClickPendingIntent(com.app.messagealarm.R.id.btn_notification_cancel, btnCancelIntent)
+            notificationViewFloatingNotification.setOnClickPendingIntent(
+                com.app.messagealarm.R.id.btn_notification_action,
+                buttonOpenApp
+            )
+            notificationViewFloatingNotification.setOnClickPendingIntent(
+                com.app.messagealarm.R.id.btn_notification_cancel,
+                btnCancelIntent
+            )
             //remote view ending
 
             var notificationBuilder: NotificationCompat.Builder? = null
@@ -198,7 +244,7 @@ class FloatingNotification {
         }
 
         fun showFloatingNotification(
-            title:String,
+            title: String,
             isJustVibrate: Boolean,
             appName: String, packageName: String, numberOfPlay: Int,
             isVibrate: Boolean, context: Service, mediaPath: String?
@@ -214,7 +260,12 @@ class FloatingNotification {
                 .setAction("OPEN_APP")
 
             val buttonOpenApp =
-                PendingIntent.getBroadcast(context, 0, buttonOpenAppBroadcast,  PendingIntent.FLAG_UPDATE_CURRENT)
+                PendingIntent.getBroadcast(
+                    context,
+                    0,
+                    buttonOpenAppBroadcast,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
 
             //just cancel the notification
 
@@ -223,30 +274,53 @@ class FloatingNotification {
                 OpenAppReceiver::class.java
             ).setAction("CANCEL")
             val btnCancelIntent =
-                PendingIntent.getBroadcast(context, 0, btnCancelCast,  PendingIntent.FLAG_UPDATE_CURRENT)
+                PendingIntent.getBroadcast(
+                    context,
+                    0,
+                    btnCancelCast,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
 
             createChannel(context)
 
-            val notificationView = RemoteViews(context.packageName, com.app.messagealarm.R.layout.layout_incoming_notification_collapsed)
+            val notificationView = RemoteViews(
+                context.packageName,
+                com.app.messagealarm.R.layout.layout_incoming_notification_collapsed
+            )
 
-            val notificationViewFloatingNotification = RemoteViews(context.packageName, com.app.messagealarm.R.layout.layout_incoming_notification)
+            val notificationViewFloatingNotification = RemoteViews(
+                context.packageName,
+                com.app.messagealarm.R.layout.layout_incoming_notification
+            )
 
-            notificationViewFloatingNotification.setTextViewText(com.app.messagealarm.R.id.txt_notification_title,
-                "Message from $appName"
-                )
-
-            notificationViewFloatingNotification.setTextViewText(com.app.messagealarm.R.id.txt_notification_desc,
-                "$title sent you a message"
-                )
-
-            notificationView.setTextViewText(com.app.messagealarm.R.id.txt_notification_title,
+            notificationViewFloatingNotification.setTextViewText(
+                com.app.messagealarm.R.id.txt_notification_title,
                 "Message from $appName"
             )
 
-            notificationViewFloatingNotification.setTextViewText(com.app.messagealarm.R.id.btn_notification_action, "Open $appName")
+            notificationViewFloatingNotification.setTextViewText(
+                com.app.messagealarm.R.id.txt_notification_desc,
+                "$title sent you a message"
+            )
 
-            notificationViewFloatingNotification.setOnClickPendingIntent(com.app.messagealarm.R.id.btn_notification_action, buttonOpenApp)
-            notificationViewFloatingNotification.setOnClickPendingIntent(com.app.messagealarm.R.id.btn_notification_cancel, btnCancelIntent)
+            notificationView.setTextViewText(
+                com.app.messagealarm.R.id.txt_notification_title,
+                "Message from $appName"
+            )
+
+            notificationViewFloatingNotification.setTextViewText(
+                com.app.messagealarm.R.id.btn_notification_action,
+                "Open $appName"
+            )
+
+            notificationViewFloatingNotification.setOnClickPendingIntent(
+                com.app.messagealarm.R.id.btn_notification_action,
+                buttonOpenApp
+            )
+            notificationViewFloatingNotification.setOnClickPendingIntent(
+                com.app.messagealarm.R.id.btn_notification_cancel,
+                btnCancelIntent
+            )
 
             var notificationBuilder: NotificationCompat.Builder? = null
 
@@ -449,7 +523,12 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
 
             val buttonMuteHandler = Intent(context, UnMuteReceiver::class.java)
             val buttonSkipPendingIntent =
-                PendingIntent.getBroadcast(context, 0, buttonMuteHandler, PendingIntent.FLAG_UPDATE_CURRENT)
+                PendingIntent.getBroadcast(
+                    context,
+                    0,
+                    buttonMuteHandler,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
             notificationView!!.setOnClickPendingIntent(
                 com.app.messagealarm.R.id.btn_mute_status,
                 buttonSkipPendingIntent
@@ -457,7 +536,12 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
 
             val buttonPowerHandler = Intent(context, PowerOffReceiver::class.java)
             val buttonPowerOffIntent =
-                PendingIntent.getBroadcast(context, 0, buttonPowerHandler, PendingIntent.FLAG_UPDATE_CURRENT)
+                PendingIntent.getBroadcast(
+                    context,
+                    0,
+                    buttonPowerHandler,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
             notificationView!!.setOnClickPendingIntent(
                 com.app.messagealarm.R.id.btn_power,
                 buttonPowerOffIntent
@@ -476,7 +560,6 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
             context.startForeground(NOTIFICATION_ID, notification)
         }
 
-
         fun notifyMute(isMuted: Boolean) {
             if (notificationView == null || notificationBuilder == null) return
             try{
@@ -490,7 +573,10 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
                         com.app.messagealarm.R.id.btn_mute_status,
                         iconID
                     )
-                    notificationView!!.setTextViewText(com.app.messagealarm.R.id.txt_desc, textString)
+                    notificationView!!.setTextViewText(
+                        com.app.messagealarm.R.id.txt_desc,
+                        textString
+                    )
                     notificationBuilder!!.setContent(notificationView)
                     service!!.startForeground(NOTIFICATION_ID, notificationBuilder!!.build())
                 } catch (e: ArrayIndexOutOfBoundsException) {
@@ -531,7 +617,8 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
             val runnable = Runnable() {
                 Toasty.info(
                     context, String.format(
-                        "Application unmuted!")
+                        "Application unmuted!"
+                    )
                 ).show()
             }
             handler.post(runnable)
