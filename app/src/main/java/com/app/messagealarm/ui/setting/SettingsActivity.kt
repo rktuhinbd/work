@@ -15,6 +15,7 @@ import com.app.messagealarm.R
 import com.app.messagealarm.ui.about.AboutActivity
 import com.app.messagealarm.ui.buy_pro.BuyProActivity
 import com.app.messagealarm.utils.Constants
+import com.app.messagealarm.utils.LiveChatUtils
 import com.app.messagealarm.utils.SharedPrefUtils
 import com.app.messagealarm.utils.SupportUtils
 import com.app.messagealarm.work_manager.WorkManagerUtils
@@ -121,23 +122,27 @@ class SettingsActivity : AppCompatActivity() {
             buyProCategory?.isEnabled = !isPurchased()
 
             val proFeature = findPreference("pro") as Preference?
-              proFeature!!.layoutResource = R.layout.layout_preference
+              proFeature!!.layoutResource = R.layout.layout_preference_chat
             //change the title and desc after the purchase is made
             if(isPurchased()){
                 proFeature.title = "Pro User"
                 proFeature.summary = "You are already a pro user!"
             }else{
-                proFeature.title = "Buy Pro"
-                proFeature.summary = "Enable dark mode and many others"
+                proFeature.title = "Live Chat"
+                proFeature.summary = "Possible reply time 2 hours"
             }
 
             proFeature.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 val bundle = Bundle()
                 bundle.putString("buy_pro", "yes")
                 firebaseAnalytics.logEvent("buy_pro_feature", bundle)
-                    val intent = Intent(activity, BuyProActivity::class.java)
+                /**
+                 * change by Mujahid
+                 */
+                LiveChatUtils.openWhatsApp(requireActivity())
+                   /* val intent = Intent(activity, BuyProActivity::class.java)
                     requireActivity().startActivityForResult(intent,
-                        Constants.ACTION.ACTION_PURCHASE_FROM_SETTING)
+                        Constants.ACTION.ACTION_PURCHASE_FROM_SETTING)*/
                 true
             }
 

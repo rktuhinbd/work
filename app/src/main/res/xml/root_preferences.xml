@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        app:title="Buy Pro"
+        app:title="Live Chat"
         android:key="buy_category"
         app:allowDividerBelow="false" app:allowDividerAbove="false" app:layout="@layout/preference_category">
 
         <Preference
-            app:icon="@drawable/ic_premium"
+            app:icon="@drawable/ic_baseline_chat_24"
             app:key="pro"
-            app:summary="Enable dark mode and many others"
-            app:title="Buy Pro" />
+            app:summary="We are online"
+            app:title="Chat With Us" />
 
     </PreferenceCategory>
 
