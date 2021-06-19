@@ -232,7 +232,7 @@
                 android:id="@+id/txt_value_point_four"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ignored Names Feature"
+                android:text="Ignored Sender Names"
                 android:textColor="@color/color_white"
                 android:fontFamily="@font/open_sans_bold"
                 android:textSize="16sp"
