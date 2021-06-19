@@ -104,12 +104,12 @@ class NotificationListener : NotificationListenerService(),
             Thread.sleep(1000)
             if (count == 5) {
                 //closed by Mujahid 32 Dec 2020
-               /* for (y in listItems) {
-                    Log.e(
-                        "HAVE_LIST",
-                        y.packageName + " = AND = " + y.notification.extras["android.title"]
-                    )
-                }*/
+                /* for (y in listItems) {
+                     Log.e(
+                         "HAVE_LIST",
+                         y.packageName + " = AND = " + y.notification.extras["android.title"]
+                     )
+                 }*/
                 Handler(mainLooper).post(Runnable {
                     //got an message stop all getting message process
                     if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)) {
@@ -174,24 +174,9 @@ class NotificationListener : NotificationListenerService(),
     }
 
 
-    private fun startMagicService(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val intent = Intent(context, NotificationListener::class.java)
-            context.startForegroundService(intent)
-        } else {
-            val intent = Intent(context, NotificationListener::class.java)
-            context.startService(intent)
-        }
-    }
-
-
-
     override fun onNotificationRemoved(sbn: StatusBarNotification?) {
         //NOTE: Music not getting off on notification removed
-        Log.e("LISTENER_RE", "PACKAGE = " + sbn!!.packageName.toString())
-        Log.e("LISTENER_RE", "TITLE = " + sbn.notification.extras["android.title"].toString())
-        Log.e("LISTENER_RE", "DESC = " + sbn.notification.extras["android.text"].toString())
-        if (sbn.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
+        if (sbn!!.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
             if (sbn.notification.extras["android.text"].toString() == "Swipe to dismiss the alarm!") {
                 try {
                     SharedPrefUtils.write(Constants.PreferenceKeys.IS_NOTIFICATION_SWIPED, true)
@@ -199,6 +184,7 @@ class NotificationListener : NotificationListenerService(),
                     SharedPrefUtils.write(Constants.PreferenceKeys.IS_NOTIFICATION_SWIPED, true)
                 }
             }
+            MediaUtils.stopAlarm()
         } else if (sbn.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
             Toasty.info(this, "Alarm Service Stopped!").show()
         }
@@ -238,7 +224,7 @@ class NotificationListener : NotificationListenerService(),
         val isServiceStopped =
             SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)
         if (!isServiceStopped) {
-           scheduleService()
+            scheduleService()
         }
     }
 
