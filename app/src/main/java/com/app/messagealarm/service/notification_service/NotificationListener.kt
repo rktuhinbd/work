@@ -191,20 +191,13 @@ class NotificationListener : NotificationListenerService(),
         Log.e("LISTENER_RE", "PACKAGE = " + sbn!!.packageName.toString())
         Log.e("LISTENER_RE", "TITLE = " + sbn.notification.extras["android.title"].toString())
         Log.e("LISTENER_RE", "DESC = " + sbn.notification.extras["android.text"].toString())
-        if (sbn!!.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
+        if (sbn.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
             if (sbn.notification.extras["android.text"].toString() == "Swipe to dismiss the alarm!") {
                 try {
                     SharedPrefUtils.write(Constants.PreferenceKeys.IS_NOTIFICATION_SWIPED, true)
                 }catch (e:NullPointerException){
                     SharedPrefUtils.write(Constants.PreferenceKeys.IS_NOTIFICATION_SWIPED, true)
                 }
-            }
-            if(sbn.notification.extras["android.text"].toString() == "null" &&
-                sbn.notification.extras["android.title"].toString() == "null"){
-                    Log.e("BNM++", "true")
-                FloatingNotification.startForegroundService(this, false)
-            }else{
-                MediaUtils.stopAlarm()
             }
         } else if (sbn.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
             Toasty.info(this, "Alarm Service Stopped!").show()
