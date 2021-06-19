@@ -73,7 +73,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
 
-
     private fun darkMode(){
         if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
             btn_close?.setImageResource(R.drawable.ic_close_white)

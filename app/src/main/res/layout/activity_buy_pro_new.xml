@@ -110,7 +110,7 @@
                 android:fontFamily="@font/open_sans_semi_bold"
                 app:layout_constraintHorizontal_bias="0"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="20dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -188,7 +188,6 @@
                 app:layout_constraintTop_toBottomOf="@id/txt_point_two"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-
                 android:textColor="@color/color_white"
                 android:background="@drawable/number_bg_in_purchase"
                 />
@@ -210,6 +209,41 @@
                 />
 
 
+            <!--Fourth part-->
+            <TextView
+                android:id="@+id/txt_point_four"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:text="4"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:fontFamily="@font/open_sans_semi_bold"
+                app:layout_constraintHorizontal_bias="0"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/txt_point_three"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textColor="@color/color_white"
+                android:background="@drawable/number_bg_in_purchase"
+                />
+
+            <TextView
+                android:id="@+id/txt_value_point_four"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ignored Names Feature"
+                android:textColor="@color/color_white"
+                android:fontFamily="@font/open_sans_bold"
+                android:textSize="16sp"
+                app:layout_constraintTop_toTopOf="@id/txt_point_four"
+                app:layout_constraintBottom_toBottomOf="@id/txt_point_four"
+                app:layout_constraintStart_toEndOf="@id/txt_point_four"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                android:layout_marginStart="16dp"
+                />
+
             <TextView
                 android:id="@+id/txt_one_time_payment"
                 android:layout_width="wrap_content"
@@ -217,8 +251,8 @@
                 android:text="One time payment, Lifetime access"
                 android:fontFamily="@font/open_sans_light"
                 android:textColor="@color/color_white"
-                android:layout_marginTop="22dp"
-                app:layout_constraintTop_toBottomOf="@id/txt_point_three"
+                android:layout_marginTop="26dp"
+                app:layout_constraintTop_toBottomOf="@id/txt_point_four"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:textSize="16sp"
@@ -250,10 +284,10 @@
 
             <TextView
                 android:id="@+id/txt_sell_notice"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/sell_notice"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textColor="@color/color_white"
                 android:fontFamily="@font/open_sans_light"
                 app:layout_constraintTop_toBottomOf="@id/image_poor_children"
@@ -271,7 +305,7 @@
                 android:layout_height="wrap_content"
                 android:text="Learn More"
                 android:textSize="14sp"
-                android:textColor="#E0A74C"
+                android:textColor="#F1DE88"
                 android:fontFamily="@font/open_sans_light"
                 app:layout_constraintTop_toBottomOf="@id/txt_sell_notice"
                 app:layout_constraintStart_toStartOf="parent"
@@ -303,11 +337,12 @@
                 />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/better_exprience"
-                android:textColor="#E0A74C"
+                android:textColor="#F1DE88"
                 android:layout_marginStart="32dp"
+                android:textSize="16sp"
                 android:layout_marginEnd="32dp"
                 android:fontFamily="@font/open_sans_light"
                 android:textAlignment="center"
@@ -350,6 +385,7 @@
             android:background="@drawable/button_gradient"
             tools:text="BUY FOR $4.99"
             android:maxLines="1"
+            android:textAllCaps="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

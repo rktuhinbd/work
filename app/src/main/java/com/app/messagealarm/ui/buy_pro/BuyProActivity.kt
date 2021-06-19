@@ -2,6 +2,7 @@ package com.app.messagealarm.ui.buy_pro
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -114,7 +115,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                         .build()
                     //set price
                     btn_buy_pro_user?.text =
-                        "Buy For ${skuDetailsList[0].price}"
+                        "Buy for ${skuDetailsList[0].price}"
                     progress_purchase?.visibility = View.GONE
                 } else {
                     //try to add item/product id "purchase" inside managed product in google play console

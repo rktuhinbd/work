@@ -23,5 +23,4 @@ public class UnMuteReceiver extends BroadcastReceiver {
             FloatingNotification.Companion.notifyMute(false);
         }
     }
-
 }
