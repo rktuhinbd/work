@@ -14,7 +14,7 @@ class SupportUtils {
             email.putExtra(Intent.EXTRA_EMAIL, arrayOf<String>("info@messagealarm.app"))
             email.putExtra(Intent.EXTRA_SUBJECT, "Hey, I need help!")
             email.putExtra(Intent.EXTRA_TEXT, message)
-//need this to prompts email client only
+            //need this to prompts email client only
             //need this to prompts email client only
             email.type = "message/rfc822"
             activity.startActivity(Intent.createChooser(email, "Choose an Email client :"))

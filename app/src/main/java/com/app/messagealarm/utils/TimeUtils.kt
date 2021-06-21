@@ -29,8 +29,6 @@ class TimeUtils private constructor() {
          * */
         fun currentTime(): Long {
             return System.currentTimeMillis()
-
-
         }
 
         fun getCurrentDayName() : String{
@@ -148,15 +146,12 @@ class TimeUtils private constructor() {
         fun getFirstDayOfTheYear(): Long {
             val calendar = Calendar.getInstance()
             val year = calendar.get(Calendar.YEAR)
-
             calendar.clear()
             calendar.set(Calendar.YEAR, year)
-
             // 1st day of the year
             calendar.set(Calendar.MONTH, Calendar.JANUARY)
             calendar.set(Calendar.DAY_OF_MONTH, 1)
             calendar.set(Calendar.HOUR_OF_DAY, 0)
-
             return calendar.timeInMillis
         }
 
@@ -168,17 +163,14 @@ class TimeUtils private constructor() {
         fun getLastDayOfTheYear(): Long {
             val calendar = Calendar.getInstance()
             val year = calendar.get(Calendar.YEAR)
-
             calendar.clear()
             calendar.set(Calendar.YEAR, year)
-
             // Last day of the year
             calendar.set(Calendar.MONTH, Calendar.DECEMBER)
             calendar.set(Calendar.DAY_OF_MONTH, 31)
             calendar.set(Calendar.HOUR_OF_DAY, 23)
             calendar.set(Calendar.MINUTE, 59)
             calendar.set(Calendar.SECOND, 59)
-
             return calendar.timeInMillis
         }
 
