@@ -1,5 +1,6 @@
 package com.app.messagealarm.ui.about
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -20,6 +21,7 @@ class AboutActivity : BaseActivity() {
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         changeTheme()
         super.onCreate(savedInstanceState)

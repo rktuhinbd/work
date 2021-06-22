@@ -44,12 +44,12 @@
     <!--Live chat-->
     <PreferenceCategory
         app:title="Live Chat"
-        android:key="buy_category"
+        android:key="live_chat"
         app:allowDividerBelow="false" app:allowDividerAbove="false" app:layout="@layout/preference_category">
 
         <Preference
             app:icon="@drawable/ic_baseline_chat_24"
-            app:key="pro"
+            app:key="chat"
             app:summary="We are online"
             app:title="Chat With Us" />
 

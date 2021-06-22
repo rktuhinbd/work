@@ -515,7 +515,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             val timePickerDialog =
                 TimePickerDialog(
                     context,
-                    OnTimeSetListener { view, hourOfDay, min ->
+                    { view, hourOfDay, min ->
                         txt_start_time_value?.text = TimeUtils.getTimeWithAMOrPM(hourOfDay, min)
                         /**
                          * set start time to data model
@@ -536,7 +536,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             val timePickerDialog =
                 TimePickerDialog(
                     context,
-                    OnTimeSetListener { view, hourOfDay, _min ->
+                    { view, hourOfDay, _min ->
                         txt_end_time_value?.text = TimeUtils.getTimeWithAMOrPM(hourOfDay, _min)
                         /**
                          * set end time to data model
@@ -671,7 +671,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                                                         selectedDays.length - 2
                                                     )
                                             }
-
                                         }
                                     },
                                     object : DialogUtils.Callback {

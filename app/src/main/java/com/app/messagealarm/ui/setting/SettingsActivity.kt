@@ -3,17 +3,12 @@ package com.app.messagealarm.ui.setting
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.fragment.app.Fragment
 import androidx.preference.*
 import androidx.work.WorkManager
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.about.AboutActivity
-import com.app.messagealarm.ui.buy_pro.BuyProActivity
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -115,24 +110,16 @@ class SettingsActivity : AppCompatActivity() {
             val themeCategory = findPreference("theme_cat") as PreferenceCategory?
             themeCategory?.isEnabled = isPurchased()
 
-            val buyProCategory = findPreference("buy_category") as PreferenceCategory?
-            buyProCategory?.isEnabled = !isPurchased()
-
-            val proFeature = findPreference("pro") as Preference?
-              proFeature!!.layoutResource = R.layout.layout_preference_chat
+            val chatFeature = findPreference("chat") as Preference?
+              chatFeature!!.layoutResource = R.layout.layout_preference_chat
             //change the title and desc after the purchase is made
-            if(isPurchased()){
-                proFeature.title = "Pro User"
-                proFeature.summary = "You are already a pro user!"
-            }else{
-                proFeature.title = "Live Chat (Support & Sales)"
-                proFeature.summary = "Possible reply time ${TimeUtils.getPossibleReplyTime()}"
-            }
+                chatFeature.title = "Live Chat (Support & Sales)"
+                chatFeature.summary = "Possible reply time ${TimeUtils.getPossibleReplyTime()}"
 
-            proFeature.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+            chatFeature.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 val bundle = Bundle()
-                bundle.putString("buy_pro", "yes")
-                firebaseAnalytics.logEvent("buy_pro_feature", bundle)
+                bundle.putString("live_chat", "yes")
+                firebaseAnalytics.logEvent("live_chat", bundle)
                 /**
                  * change by Mujahid
                  */
@@ -187,7 +174,6 @@ class SettingsActivity : AppCompatActivity() {
                 firebaseAnalytics.logEvent("share_app_to_friends", bundle)
                 true
             }
-
             val themePre = findPreference("theme") as ListPreference?
             try {
                 if(!isPurchased()){

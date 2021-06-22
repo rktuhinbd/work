@@ -25,7 +25,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
             <ImageButton
                 android:id="@+id/btn_close"
                 android:layout_width="35dp"
@@ -40,7 +39,6 @@
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
 
             <TextView
                 android:layout_width="wrap_content"
@@ -316,8 +314,8 @@
                     app:layout_constraintStart_toEndOf="@id/txt_vibrate"
                     app:layout_constraintEnd_toStartOf="@id/switch_vibrate"
                     android:layout_marginStart="8dp"
-                    android:src="@drawable/img_pro"
-                    android:padding="2dp"
+                    android:src="@drawable/ic_premium_gold"
+                    android:padding="5dp"
                     app:layout_constraintHorizontal_bias="0"
                     />
 
@@ -405,8 +403,8 @@
                     app:layout_constraintStart_toEndOf="@id/txt_just_vibrate"
                     app:layout_constraintEnd_toStartOf="@id/switch_just_vibrate"
                     android:layout_marginStart="8dp"
-                    android:src="@drawable/img_pro"
-                    android:padding="2dp"
+                    android:src="@drawable/ic_premium_gold"
+                    android:padding="5dp"
                     app:layout_constraintHorizontal_bias="0"
                     />
 
@@ -901,8 +899,8 @@
                     app:layout_constraintStart_toEndOf="@id/txt_exclude_sender_name"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginStart="8dp"
-                    android:src="@drawable/img_pro"
-                    android:padding="2dp"
+                    android:src="@drawable/ic_premium_gold"
+                    android:padding="5dp"
                     app:layout_constraintHorizontal_bias="0"
                     />
 
@@ -1035,15 +1033,12 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="50dp" />
 
         </LinearLayout>
 
-
     </ScrollView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

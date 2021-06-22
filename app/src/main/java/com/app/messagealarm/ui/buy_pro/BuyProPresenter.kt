@@ -22,10 +22,10 @@ class BuyProPresenter(private val buyProView: BuyProView, private val firebaseAn
     * */
     private fun turnOfVibrateAndJustVibrateFromAllAddedApp(){
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
-        Thread(Runnable {
+        Thread {
             appDatabase.applicationDao().disableJustVibrateToAllApp(false)
             appDatabase.applicationDao().disableVibrateToAllApp(false)
-        }).start()
+        }.start()
     }
 
     fun cancelPurchase(){
@@ -44,8 +44,6 @@ class BuyProPresenter(private val buyProView: BuyProView, private val firebaseAn
         signature: String,
         purchase: Purchase
     ){
-         Log.e("RECEIPT",receipt)
-        Log.e("SIGNATURE", signature)
         /*RetrofitClient.getApiService().verifyPurchase(receipt, signature).enqueue(
             object : Callback<VerifyPurchaseResponse>{
                 override fun onFailure(call: Call<VerifyPurchaseResponse>, t: Throwable) {

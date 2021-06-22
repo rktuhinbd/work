@@ -44,13 +44,8 @@ class FloatingNotification {
         /**
          * end of remote notification
          */
-
-
         private const val CHANNEL_ID = "alarm channel"
         private const val CHANNEL_NAME = "alarm app channel"
-
-
-
 
         private fun startPlaying(
             isJustVibrate: Boolean,
@@ -470,41 +465,30 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
             context: Service,
             isMuted: Boolean
         ) {
-
             //init service
             service = context
-
             val resultIntent = Intent(context, AlarmApplicationActivity::class.java)
             // Create the TaskStackBuilder and add the intent, which inflates the back stack
             val stackBuilder: TaskStackBuilder = TaskStackBuilder.create(context)
-
             stackBuilder.addNextIntentWithParentStack(resultIntent)
-
             val resultPendingIntent: PendingIntent =
                 stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
-
-
             val chan =
                 NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
             chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
-
-
             val manager =
                 (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
             manager.createNotificationChannel(chan)
             // Get the layouts to use in the custom notification
-
             notificationView = RemoteViews(
                 context.packageName,
                 com.app.messagealarm.R.layout.layout_foreground_notification
             )
-
             if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_MUTED)) {
                 notificationView!!.setImageViewResource(
                     com.app.messagealarm.R.id.btn_mute_status,
                     com.app.messagealarm.R.drawable.ic_silence
                 )
-
                 notificationView!!.setTextViewText(
                     com.app.messagealarm.R.id.txt_desc,
                     DataUtils.getString(com.app.messagealarm.R.string.txt_application_muted)
@@ -514,13 +498,11 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
                     com.app.messagealarm.R.id.btn_mute_status,
                     com.app.messagealarm.R.drawable.ic_snooze
                 )
-
                 notificationView!!.setTextViewText(
                     com.app.messagealarm.R.id.txt_desc,
                     DataUtils.getString(com.app.messagealarm.R.string.waiting_for_messages)
                 )
             }
-
             val buttonMuteHandler = Intent(context, UnMuteReceiver::class.java)
             val buttonSkipPendingIntent =
                 PendingIntent.getBroadcast(

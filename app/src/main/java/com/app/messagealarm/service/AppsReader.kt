@@ -16,7 +16,8 @@ class AppsReader {
                 context.packageManager.getInstalledPackages(0)
             for (i in packs.indices) {
                 val p = packs[i]
-                if (!getSysPackages && p.versionName == null) {
+                if (!getSysPackages && p.versionName == null ||
+                    context.packageManager.getLaunchIntentForPackage(p.packageName) == null) {
                     continue
                 }
                 if(p.packageName == "com.app.messagealarm"){
