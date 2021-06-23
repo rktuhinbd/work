@@ -30,7 +30,7 @@
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraint_user_privacy_policy"
+                android:id="@+id/constraint_buy_pro_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#0188FE"
@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraint_user_privacy_policy">
+                app:layout_constraintTop_toBottomOf="@+id/constraint_buy_pro_layout">
 
                 <TextView
                     android:id="@+id/text_dialog_title"
