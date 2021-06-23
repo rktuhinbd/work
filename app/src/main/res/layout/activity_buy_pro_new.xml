@@ -96,6 +96,7 @@
           >
 
             <!--Main part-->
+
             <TextView
                 android:id="@+id/txt_point_one"
                 android:layout_width="25dp"
