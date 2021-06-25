@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.app.messagealarm.ui.widget.CustomStatusBarView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_16">
+
+
+
+
+              <androidx.constraintlayout.widget.ConstraintLayout
+                  android:id="@+id/constraint_buy_pro_layout"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  app:layout_constraintBottom_toBottomOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  app:layout_constraintStart_toStartOf="parent"
+                  app:layout_constraintTop_toTopOf="parent">
+
+
+                  <androidx.appcompat.widget.AppCompatImageView
+                      android:id="@+id/image_ic"
+                      android:layout_width="100dp"
+                      android:layout_height="100dp"
+                      android:layout_marginTop="16dp"
+                      android:layout_marginBottom="24dp"
+                      android:padding="4dp"
+                      android:src="@drawable/icon_fiver"
+                      app:layout_constraintEnd_toStartOf="@+id/text_title"
+                      app:layout_constraintStart_toStartOf="parent"
+                      app:layout_constraintTop_toTopOf="parent" />
+
+                  <TextView
+                      android:id="@+id/text_title"
+                      android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_marginStart="24dp"
+                      android:layout_marginTop="16dp"
+                      android:layout_marginEnd="24dp"
+                      android:fontFamily="@font/roboto_regular"
+                      android:padding="8dp"
+                      android:text="hei This is Message alarm app. It is very important to work, when you go the notify. You must understand cause that will be time Your mobile was ringing. You will know the rapidly who are sent the message. Then, You must answer him.  "
+                      android:textColor="@color/md_black_1000"
+                      android:textSize="@dimen/font_14"
+                      app:layout_constraintBottom_toBottomOf="parent"
+                      app:layout_constraintEnd_toEndOf="parent"
+                      app:layout_constraintStart_toEndOf="@+id/image_ic"
+
+                      app:layout_constraintTop_toTopOf="parent" />
+
+              </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!--  <androidx.constraintlayout.widget.ConstraintLayout
+                  android:id="@+id/constraint_title"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  app:layout_constraintBottom_toBottomOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  app:layout_constraintStart_toStartOf="parent"
+                  app:layout_constraintTop_toBottomOf="@+id/constraint_buy_pro_layout">
+
+                  <TextView
+                      android:id="@+id/text_dialog_title"
+                      android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_marginStart="24dp"
+                      android:layout_marginTop="24dp"
+                      android:layout_marginEnd="24dp"
+                      android:fontFamily="@font/roboto_regular"
+                      android:padding="8dp"
+                      android:text="hei This is Message alarm app. It is very important to work, when you go the notify. You must understand cause that will be time Your mobile was ringing. You will know the rapidly who are sent the message. Then, You must answer him.  "
+                      android:textColor="@color/md_black_1000"
+                      android:textSize="@dimen/font_14"
+                      app:layout_constraintBottom_toTopOf="@+id/text_continue"
+                      app:layout_constraintEnd_toEndOf="parent"
+                      app:layout_constraintStart_toStartOf="parent"
+                      app:layout_constraintTop_toTopOf="parent" />
+
+                  <TextView
+                      android:id="@+id/text_continue"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="24dp"
+                      android:layout_marginBottom="@dimen/margin_16"
+                      android:fontFamily="@font/roboto_bold"
+                      android:text="Continue"
+                      android:textAllCaps="true"
+                      android:textColor="#0798E4"
+                      android:textSize="@dimen/font_18"
+                      app:layout_constraintBottom_toBottomOf="parent"
+                      app:layout_constraintEnd_toEndOf="@+id/text_dialog_title"
+                      app:layout_constraintHorizontal_bias="1"
+                      app:layout_constraintStart_toStartOf="parent"
+                      app:layout_constraintTop_toBottomOf="@+id/text_dialog_title" />
+
+
+              </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

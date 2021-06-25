@@ -30,22 +30,22 @@
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraint_user_privacy_policy"
+                android:id="@+id/constraint_buy_pro_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#0188FE"
+                android:background="@drawable/splash_background_gradient"
                 app:layout_constraintBottom_toTopOf="@+id/constraint_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="0dp"
-                    android:layout_height="80dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="24dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="@dimen/margin_16"
+                    android:layout_marginBottom="@dimen/margin_16"
                     android:padding="8dp"
-                    android:src="@drawable/ic_user_privacy_policy"
+                    android:src="@drawable/ic_privacy"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -59,15 +59,14 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraint_user_privacy_policy">
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraint_buy_pro_layout">
 
                 <TextView
                     android:id="@+id/text_dialog_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginEnd="24dp"
+                    android:layout_marginTop="8dp"
                     android:fontFamily="@font/roboto_regular"
                     android:padding="8dp"
                     android:text="hei This is Message alarm app. It is very important to work, when you go the notify. You must understand cause that will be time Your mobile was ringing. You will know the rapidly who are sent the message. Then, You must answer him.  "
@@ -82,12 +81,12 @@
                     android:id="@+id/text_continue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="@dimen/margin_16"
                     android:layout_marginBottom="@dimen/margin_16"
                     android:fontFamily="@font/roboto_bold"
                     android:text="Continue"
                     android:textAllCaps="true"
-                    android:textColor="#0798E4"
+                    android:textColor="@color/colorAccent"
                     android:textSize="@dimen/font_18"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/text_dialog_title"
@@ -95,13 +94,10 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_dialog_title" />
 
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
     </com.google.android.material.card.MaterialCardView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

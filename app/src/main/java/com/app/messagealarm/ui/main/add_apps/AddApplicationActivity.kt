@@ -346,8 +346,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                     (rv_apps_list?.adapter as AllAppsListAdapter).filter(newText!!)
                     if((rv_apps_list?.adapter as AllAppsListAdapter).adapterSize() == 0 &&
                         !gif_no_internet?.isVisibile()!! &&
-                            !progress_bar_add_app?.isVisibile()!!
-                            ){
+                            !progress_bar_add_app?.isVisibile()!!){
                         showSearchNotFound()
                     }else{
                         hideSearchNotFound()
