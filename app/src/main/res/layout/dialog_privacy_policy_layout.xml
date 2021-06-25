@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.app.messagealarm.ui.widget.CustomStatusBarView
         android:layout_width="0dp"
@@ -15,8 +15,12 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="2dp"
-        app:cardElevation="6dp"
+        app:cardCornerRadius="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        app:cardUseCompatPadding="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,22 +30,22 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_16">
+       >
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint_buy_pro_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/splash_background_gradient"
+                android:background="@color/colorAccent"
                 app:layout_constraintBottom_toTopOf="@+id/constraint_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:layout_marginTop="@dimen/margin_16"
                     android:layout_marginBottom="@dimen/margin_16"
                     android:padding="8dp"
@@ -67,32 +71,70 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:fontFamily="@font/roboto_regular"
-                    android:padding="8dp"
-                    android:text="hei This is Message alarm app. It is very important to work, when you go the notify. You must understand cause that will be time Your mobile was ringing. You will know the rapidly who are sent the message. Then, You must answer him.  "
+                    android:text="@string/txt_notification_permission_message"
+                     android:textAlignment="center"
                     android:textColor="@color/md_black_1000"
                     android:textSize="@dimen/font_14"
                     app:layout_constraintBottom_toTopOf="@+id/text_continue"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/text_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Cancel"
+                    android:textAllCaps="true"
+                    android:paddingBottom="5dp"
+                    android:foreground="?selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingTop="5dp"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/font_14"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/text_continue"
+                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_dialog_title"
+                    tools:targetApi="m" />
 
                 <TextView
                     android:id="@+id/text_continue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_16"
-                    android:layout_marginBottom="@dimen/margin_16"
-                    android:fontFamily="@font/roboto_bold"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/roboto_regular"
                     android:text="Continue"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:layout_marginEnd="8dp"
+                    android:foreground="?selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:textAllCaps="true"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
                     android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/font_18"
+                    android:textSize="@dimen/font_14"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/text_dialog_title"
                     app:layout_constraintHorizontal_bias="1"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_dialog_title" />
+                    app:layout_constraintTop_toBottomOf="@+id/text_dialog_title"
+                    tools:targetApi="m" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

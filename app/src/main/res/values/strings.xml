@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Message Alarm</string>
     <string name="txt_notification_permission">Notification Permission</string>
-    <string name="txt_notification_permission_message">This application need notification permission to handle works! please allow it to enjoy!</string>
+    <string name="txt_notification_permission_message"><b>Message Alarm</b> need notification access permission, so it can parse the message and play the alarm when needed! Please check our privacy &amp; policy section for your data protection! </string>
     <string name="waiting_for_messages">Waiting for messages…</string>
     <string name="no_application_found">No Application Found!</string>
     <string name="add_application">Add Application</string>
@@ -103,7 +103,7 @@
     <string name="better_exprience">We know you hate ads, that\'s why \n we said goodbye to it!</string>
     <string name="txt_idea_desc">We can help you develop your dream project into real, with our dedicated team we are always focused on quality</string>
     <string name="missing_file">File is missing!</string>
-    <string name="text_terms_policy">By clicking \'Get Started\' if you reside in the EU, EEA or Switzerland you accept the Terms of Services and if you reside in any other country you accept the Terms of <u>Service</u> and <u>Privacy Policy</u></string>
+    <string name="text_terms_policy">When you click \'Get Started\' if you are from EU, EEA or CH you accept the Terms of Services and if you live in other country you accept the <a href="https://www.messagealarm.app/privecy_policy"> <u>Terms of Service</u> </a> and <a href="https://www.messagealarm.app/privecy_policy"><u>Privacy Policy</u></a></string>
     <string name="text_sub_title_privacy">Please take time to review below the key points of our <a href="Privacy Policy">Privacy Policy</a> and <a href="Terms of Service">Terms of Service</a></string>
     <string name="text_demo_providing">• Providing, improving, analyzing and personalizing our services.</string>
     <string name="made_in_bangladesh">made by</string>
