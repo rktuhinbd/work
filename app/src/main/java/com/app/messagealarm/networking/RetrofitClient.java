@@ -24,7 +24,6 @@ public class RetrofitClient {
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
-
         /**
          * if debug mode then use logging interceptor or if release mode don't use it
          */
@@ -48,7 +47,6 @@ public class RetrofitClient {
                 .client(client)
                 .build();
     }
-
     /**
      * Get API Service
      *

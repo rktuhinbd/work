@@ -34,7 +34,6 @@ public abstract class AppDatabase extends RoomDatabase {
                 database.execSQL("ALTER TABLE applications ADD COLUMN ignored_names TEXT");
             }
         };
-
         if (appDatabase == null) {
             appDatabase = Room.databaseBuilder(context,
                     AppDatabase.class,
