@@ -27,41 +27,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_16">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/image_ic"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="24dp"
-                    android:padding="4dp"
-                    android:src="@drawable/icon_fiver" />
-
-                <TextView
-                    android:id="@+id/text_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_regular"
-                    android:padding="8dp"
-                    android:text="hei This is Message alarm app. It is very important to work, when you go the notify. You must understand cause that will be time Your mobile was ringing. You will know the rapidly who are sent the message. Then, You must answer him.  "
-                    android:textColor="@color/md_black_1000"
-                    android:textSize="@dimen/font_14" />
 
 
 
-
-            </LinearLayout>
-
-
-            <!--  <androidx.constraintlayout.widget.ConstraintLayout
+              <androidx.constraintlayout.widget.ConstraintLayout
                   android:id="@+id/constraint_buy_pro_layout"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
@@ -101,7 +70,7 @@
 
                       app:layout_constraintTop_toTopOf="parent" />
 
-              </androidx.constraintlayout.widget.ConstraintLayout>-->
+              </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!--  <androidx.constraintlayout.widget.ConstraintLayout
                   android:id="@+id/constraint_title"
