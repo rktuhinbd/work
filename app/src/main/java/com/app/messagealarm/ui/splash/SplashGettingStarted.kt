@@ -13,8 +13,10 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.terms_privacy.TermsAndConditionActivity
+import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.DialogUtils
 import com.app.messagealarm.utils.PermissionUtils
+import com.app.messagealarm.utils.SharedPrefUtils
 import com.google.android.material.button.MaterialButton
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_splash_getting_started.*
@@ -30,7 +32,9 @@ class SplashGettingStarted : AppCompatActivity() {
         button?.setOnClickListener()
         {
           openGiveNotificationDialogNew()
-    }}
+    }
+        SharedPrefUtils.write(Constants.PreferenceKeys.IS_GETTING_STARTED_PAGE_VISITED, true)
+    }
 
 
     override fun onResume() {
@@ -46,31 +50,6 @@ class SplashGettingStarted : AppCompatActivity() {
     private fun takeTheUserToTermsAndPrivacy(){
         startActivity(Intent(this, TermsAndConditionActivity::class.java))
         finish()
-    }
-
-    private fun openGiveNotificationDialog(){
-        if (!isFinishing) {
-            DialogUtils.showDialog(
-                this,
-                getString(R.string.txt_notification_permission),
-                getString(R.string.txt_notification_permission_message),
-                object : DialogUtils.Callback {
-                    override fun onPositive() {
-                        try {
-                            val intent =
-                                Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
-                            startActivity(intent)
-                        } catch (e: NoClassDefFoundError) {
-                            Toasty.error(this@SplashGettingStarted, getString(R.string.not_supperted))
-                                .show()
-                        }
-                    }
-                    override fun onNegative() {
-                        finish()
-                    }
-                }
-            )
-        }
     }
 
 

@@ -150,6 +150,7 @@ class Constants {
 
     class PreferenceKeys {
         companion object {
+            const val IS_GETTING_STARTED_PAGE_VISITED = "visited_getting_started"
             const val IS_FIRST_TIME_ALARM_PLAYED = "alarm_played"
             const val IS_REVIEW_SCREEN_SHOWN = "review_asked"
             const val IS_PURCHASED = "is_purchased"
@@ -163,6 +164,7 @@ class Constants {
             const val IS_MUTED = "is_muted"
             const val MUTE_TIME = "mute"
             const val THEME = "theme"
+            const val IS_TERMS_ACCEPTED = "terms_accepted"
             const val GOT_ONE_MESSAGE = "got_one_message"
 
         }
