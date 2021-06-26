@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Message Alarm</string>
     <string name="txt_notification_permission">Notification Permission</string>
-    <string name="txt_notification_permission_message">This application need notification permission to handle works! please allow it to enjoy!</string>
+    <string name="txt_notification_permission_message"><b>Message Alarm</b> need notification access permission, so it can parse the message and play the alarm when needed! Please check our privacy &amp; policy section for your data protection! </string>
     <string name="waiting_for_messages">Waiting for messages…</string>
     <string name="no_application_found">No Application Found!</string>
     <string name="add_application">Add Application</string>
@@ -65,6 +65,7 @@
 
     <!--base url-->
     <string name="base_url">http://www.messagealarm.app/api/</string>
+    <string name="base_url_heroku">https://messagealarmpushservice.herokuapp.com/</string>
     <string name="txt_selected_music_duration">Selected music can\'t be less than 30 seconds!</string>
     <string name="txt_wrong_duration">Wrong Duration</string>
     <string name="txt_music">Wrong music format</string>
@@ -99,15 +100,13 @@
     <string name="alarm_service">Alarm Service</string>
     <string name="not_supperted">Sorry your device doesn\'t support this app!</string>
     <string name="txt_lang_error">Sorry, Our application right now doesn\'t support your phone language! You may get unexpected alarms if you don\'t take this action, Please contact us by mentioning what language you want. We will start work on it real soon, and you will be notified when it’s ready! For now switch to English or hold on, until we get back to you. Thanks for understanding</string>
-    <string name="sell_notice">5% of every sales goes to poor   \n children of Bangladesh!</string>
+    <string name="sell_notice">5% of every sales goes to poor children\'s education and food!</string>
     <string name="better_exprience">We know you hate ads, that\'s why \n we said goodbye to it!</string>
     <string name="txt_idea_desc">We can help you develop your dream project into real, with our dedicated team we are always focused on quality</string>
     <string name="missing_file">File is missing!</string>
-    <string name="text_terms_policy">By clicking \'Get Started\' if you reside in the EU, EEA or Switzerland you accept the Terms of Services and if you reside in any other country you accept the Terms of <u>Service</u> and <u>Privacy Policy</u></string>
+    <string name="text_terms_policy">When you click \'Get Started\' if you are from EU, EEA or CH you accept the Terms of Services and if you live in other country you accept the <a href="https://www.messagealarm.app/privecy_policy"> <u>Terms of Service</u> </a> and <a href="https://www.messagealarm.app/privecy_policy"><u>Privacy Policy</u></a></string>
     <string name="text_sub_title_privacy">Please take time to review below the key points of our <a href="Privacy Policy">Privacy Policy</a> and <a href="Terms of Service">Terms of Service</a></string>
     <string name="text_demo_providing">• Providing, improving, analyzing and personalizing our services.</string>
-    <string name="made_in_bangladesh">made in  \n Bangladesh</string>
-    <string name="text_pro"><u>What does the pro version give?</u></string>
-    <string name="text_buy_pro">BUY PRO - BDT 199 <u>BDT 300</u></string>
+    <string name="made_in_bangladesh">made by</string>
 
 </resources>

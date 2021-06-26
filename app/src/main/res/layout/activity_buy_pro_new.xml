@@ -13,7 +13,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="190dp">
+        android:layout_height="210dp">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsingToolbar"
@@ -58,7 +58,7 @@
 
                 <ImageView
                     android:id="@+id/image_king"
-                    android:layout_width="130dp"
+                    android:layout_width="150dp"
                     android:layout_height="130dp"
                     android:src="@drawable/header_top"
                     app:layout_constraintTop_toTopOf="@id/view_top"
@@ -270,8 +270,8 @@
 
             <ImageView
                 android:id="@+id/image_poor_children"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:src="@drawable/poor"
                 android:layout_marginTop="16dp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -292,7 +292,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:textAlignment="center"
                 />
 

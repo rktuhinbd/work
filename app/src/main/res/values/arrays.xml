@@ -15,7 +15,7 @@
         <item>20 min</item>
         <item>30 min</item>
         <item>40 min</item>
-        <item>Manual</item>
+        <item>Until I turn it back on</item>
     </string-array>
 
     <string-array name="mute_entries">
@@ -23,7 +23,7 @@
         <item>20 min</item>
         <item>30 min</item>
         <item>40 min</item>
-        <item>Manual</item>
+        <item>Until I turn it back on</item>
     </string-array>
 
 </resources>
