@@ -12,7 +12,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.app.messagealarm.R
-import com.app.messagealarm.ui.terms_privacy.TermsPrivacyActivity
+import com.app.messagealarm.ui.terms_privacy.TermsAndConditionActivity
 import com.app.messagealarm.utils.DialogUtils
 import com.app.messagealarm.utils.PermissionUtils
 import com.google.android.material.button.MaterialButton
@@ -44,7 +44,7 @@ class SplashGettingStarted : AppCompatActivity() {
     }
 
     private fun takeTheUserToTermsAndPrivacy(){
-        startActivity(Intent(this, TermsPrivacyActivity::class.java))
+        startActivity(Intent(this, TermsAndConditionActivity::class.java))
         finish()
     }
 

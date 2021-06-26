@@ -62,6 +62,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     var mMessageReceiver:BroadcastReceiver? = null
     val bottomSheetModel = AddApplicationOption()
     val REQUEST_CODE_PICK_AUDIO = 1
+    var menu:Menu? = null
+
     private val alarmAppPresenter = AlarmApplicationPresenter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,6 +110,13 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIRST_TIME_ALARM_PLAYED)){
             askForReview()
         }
+
+        /**
+         * if user is paid user remove the buy bro menu item
+         */
+        if(isPurchased()){
+            menu?.getItem(0)?.isVisible = false
+        }
     }
 
 
@@ -121,11 +130,21 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         setSupportActionBar(findViewById(R.id.toolbar))
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        return super.onPrepareOptionsMenu(menu)
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_item_home, menu)
         if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)) {
             MenuTintUtils.tintAllIcons(menu, Color.WHITE)
+        }
+        this.menu = menu
+        /**
+         * if user is paid user remove the buy bro menu item
+         */
+        if(isPurchased()){
+            menu?.getItem(0)?.isVisible = false
         }
         return super.onCreateOptionsMenu(menu)
     }
@@ -135,7 +154,11 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             R.id.mnu_setting -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
             }
-            else -> {
+            R.id.mnu_buy_pro ->{
+                //one app added now take user to buy
+                val intent = Intent(this, BuyProActivity::class.java)
+                startActivityForResult(intent,
+                    Constants.ACTION.ACTION_PURCHASE_FROM_MAIN)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -175,6 +198,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             //purchased
             if(isPurchased()){
                 Toasty.success(this, "Thanks for purchase! You are now pro user!").show()
+                /**
+                 * if user is paid user remove the buy bro menu item
+                 */
+                if(isPurchased()){
+                    menu?.getItem(0)?.isVisible = false
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
