@@ -1,18 +1,17 @@
 package com.app.messagealarm.ui.onboarding
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
 import com.app.messagealarm.R
-import com.app.messagealarm.ui.onboarding.adapter.QuickStartAdapter
 import com.app.messagealarm.ui.onboarding.fragments.*
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.SharedPrefUtils
 import kotlinx.android.synthetic.main.layout_dialog_onboarding.*
+
 
 class OnboardingDialog : DialogFragment(){
 
@@ -28,7 +27,8 @@ class OnboardingDialog : DialogFragment(){
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        initViewPager()
+       //initViewPager()
+        showVideoTutorial()
         setListener()
     }
 
@@ -38,10 +38,10 @@ class OnboardingDialog : DialogFragment(){
             dismiss()
         }
         btn_next?.setOnClickListener {
-            quick_start_pager?.currentItem?.plus(1)?.let { it1 ->
+         /*   quick_start_pager?.currentItem?.plus(1)?.let { it1 ->
                 quick_start_pager?.setCurrentItem(
                     it1, true)
-            }
+            }*/
         }
         btn_finish?.setOnClickListener {
             SharedPrefUtils.write(Constants.PreferenceKeys.IS_TUTORIAL_SHOW, true)
@@ -49,7 +49,13 @@ class OnboardingDialog : DialogFragment(){
         }
     }
 
-    private fun initViewPager(){
+    private fun showVideoTutorial(){
+        val path = "android.resource://" + requireActivity().packageName.toString() + "/" + R.raw.video_tutorial
+        quick_start_video?.setVideoURI(Uri.parse(path))
+        quick_start_video?.start()
+    }
+
+/*    private fun initViewPager(){
         val fragmentList = ArrayList<Fragment>()
         fragmentList.add(QuickStartFirstFragment())
         fragmentList.add(QuickStartSecondFragment())
@@ -81,12 +87,15 @@ class OnboardingDialog : DialogFragment(){
 
             }
         })
-    }
+    }*/
 
 
 
     override fun onStart() {
         super.onStart()
-        dialog?.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        dialog?.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
     }
 }
