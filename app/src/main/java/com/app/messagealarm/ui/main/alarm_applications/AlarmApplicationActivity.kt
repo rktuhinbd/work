@@ -59,10 +59,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     AddedAppsListAdapter.ItemClickListener {
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
-    var mMessageReceiver:BroadcastReceiver? = null
+    var mMessageReceiver: BroadcastReceiver? = null
     val bottomSheetModel = AddApplicationOption()
     val REQUEST_CODE_PICK_AUDIO = 1
-    var menu:Menu? = null
+    var menu: Menu? = null
 
     private val alarmAppPresenter = AlarmApplicationPresenter(this)
 
@@ -78,14 +78,14 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         showLanguageDoesNotSupported()
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
-         mMessageReceiver =  object : BroadcastReceiver() {
+        mMessageReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 switch_alarm_status?.isChecked = false
             }
         }
     }
 
-    private fun lookForTablesSize(){
+    private fun lookForTablesSize() {
         alarmAppPresenter.getRequiredTableSize()
     }
 
@@ -95,7 +95,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     override fun onResume() {
         super.onResume()
-        if(BaseApplication.installedApps.isEmpty()){
+        if (BaseApplication.installedApps.isEmpty()) {
             val mIntent = Intent(this, AppsReaderIntentService::class.java)
             AppsReaderIntentService.enqueueWork(this, mIntent)
         }
@@ -103,18 +103,19 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         val isServiceStopped =
             SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)
         switch_alarm_status?.isChecked = !isServiceStopped
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver!!, IntentFilter("turn_off_switch"))
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(mMessageReceiver!!, IntentFilter("turn_off_switch"))
         /**
          * check for review
          */
-        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIRST_TIME_ALARM_PLAYED)){
+        if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIRST_TIME_ALARM_PLAYED)) {
             askForReview()
         }
 
         /**
          * if user is paid user remove the buy bro menu item
          */
-        if(isPurchased()){
+        if (isPurchased()) {
             menu?.getItem(0)?.isVisible = false
         }
     }
@@ -143,7 +144,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         /**
          * if user is paid user remove the buy bro menu item
          */
-        if(isPurchased()){
+        if (isPurchased()) {
             menu?.getItem(0)?.isVisible = false
         }
         return super.onCreateOptionsMenu(menu)
@@ -154,11 +155,13 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             R.id.mnu_setting -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
             }
-            R.id.mnu_buy_pro ->{
+            R.id.mnu_buy_pro -> {
                 //one app added now take user to buy
                 val intent = Intent(this, BuyProActivity::class.java)
-                startActivityForResult(intent,
-                    Constants.ACTION.ACTION_PURCHASE_FROM_MAIN)
+                startActivityForResult(
+                    intent,
+                    Constants.ACTION.ACTION_PURCHASE_FROM_MAIN
+                )
             }
         }
         return super.onOptionsItemSelected(item)
@@ -170,38 +173,48 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 try {
                     val alarmTone = RingtonePickerActivity.getPickerResult(data!!)
                     val fileName = File(PathUtils.getPath(this, alarmTone[0].uri)!!).name
-                    if(MediaUtils.getDurationOfMediaFle(PathUtils.getPath(this, alarmTone[0].uri)!!) >= 30){
+                    if (MediaUtils.getDurationOfMediaFle(
+                            PathUtils.getPath(
+                                this,
+                                alarmTone[0].uri
+                            )!!
+                        ) >= 30
+                    ) {
                         bottomSheetModel.txt_ringtone_value?.text = fileName
                         bottomSheetModel.setToneName(fileName)
                         bottomSheetModel.alarmTonePath = PathUtils.getPath(this, alarmTone[0].uri)!!
-                    }else{
+                    } else {
                         bottomSheetModel.txt_ringtone_value?.text = "Default"
                         bottomSheetModel.setToneName("Default")
                         bottomSheetModel.alarmTonePath = null
-                        DialogUtils.showSimpleDialog(this, getString(R.string.txt_wrong_duration),
-                            getString(R.string.txt_selected_music_duration))
+                        DialogUtils.showSimpleDialog(
+                            this, getString(R.string.txt_wrong_duration),
+                            getString(R.string.txt_selected_music_duration)
+                        )
                     }
-                }catch (e: IllegalArgumentException){
+                } catch (e: IllegalArgumentException) {
                     bottomSheetModel.txt_ringtone_value?.text = "Default"
                     bottomSheetModel.setToneName("Default")
                     bottomSheetModel.alarmTonePath = null
-                    DialogUtils.showSimpleDialog(this, getString(R.string.txt_music),
-                        getString(R.string.txt_try_again))
-                }catch (e: IndexOutOfBoundsException){
+                    DialogUtils.showSimpleDialog(
+                        this, getString(R.string.txt_music),
+                        getString(R.string.txt_try_again)
+                    )
+                } catch (e: IndexOutOfBoundsException) {
                     bottomSheetModel.txt_ringtone_value?.text = "Default"
                     bottomSheetModel.setToneName("Default")
                     bottomSheetModel.alarmTonePath = null
                     bottomSheetModel.askForPermission()
                 }
             }
-        }else if(requestCode == Constants.ACTION.ACTION_PURCHASE_FROM_MAIN){
+        } else if (requestCode == Constants.ACTION.ACTION_PURCHASE_FROM_MAIN) {
             //purchased
-            if(isPurchased()){
+            if (isPurchased()) {
                 Toasty.success(this, "Thanks for purchase! You are now pro user!").show()
                 /**
                  * if user is paid user remove the buy bro menu item
                  */
-                if(isPurchased()){
+                if (isPurchased()) {
                     menu?.getItem(0)?.isVisible = false
                 }
             }
@@ -209,7 +222,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun isPurchased(): Boolean{
+    private fun isPurchased(): Boolean {
         return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
     }
 
@@ -259,6 +272,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             ): Boolean {
                 return false
             }
+
             override fun onChildDraw(
                 c: Canvas,
                 recyclerView: RecyclerView,
@@ -295,6 +309,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     isCurrentlyActive
                 )
             }
+
             override fun onSwiped(
                 viewHolder: RecyclerView.ViewHolder,
                 direction: Int
@@ -311,6 +326,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                                 viewHolder.adapterPosition
                             )
                         }
+
                         override fun onNegative() {
                             rv_application_list?.adapter?.notifyDataSetChanged()
                         }
@@ -343,20 +359,21 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     private fun setListener() {
         fab_button_add_application?.setOnClickListener {
-            if(!isPurchased()){
-                if(rv_application_list?.adapter?.itemCount!! < 3){
+            if (!isPurchased()) {
+                if (rv_application_list?.adapter?.itemCount!! < 3) {
                     startActivity(Intent(this, AddApplicationActivity::class.java))
-                }else{
+                } else {
                     Toasty.info(this, "Please buy pro version to add more apps!").show()
                     //one app added now take user to buy
                     val intent = Intent(this, BuyProActivity::class.java)
-                        startActivityForResult(intent,
-                        Constants.ACTION.ACTION_PURCHASE_FROM_MAIN)
+                    startActivityForResult(
+                        intent,
+                        Constants.ACTION.ACTION_PURCHASE_FROM_MAIN
+                    )
                 }
-            }else{
+            } else {
                 startActivity(Intent(this, AddApplicationActivity::class.java))
             }
-            startActivity(Intent(this, AddApplicationActivity::class.java))
         }
 
         switch_alarm_status?.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -371,8 +388,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     }
 
 
-
-
     private fun setupAppsRecyclerView() {
         rv_application_list?.layoutManager = LinearLayoutManager(this)
         rv_application_list?.isVerticalScrollBarEnabled = true
@@ -383,7 +398,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     override fun onGetAlarmApplicationSuccess(appsList: ArrayList<ApplicationEntity>) {
         runOnUiThread {
-            try{
+            try {
                 if (appsList.isNotEmpty()) {
                     (rv_application_list?.adapter as AddedAppsListAdapter).addItems(appsList)
                     recyclerViewSwipeHandler()
@@ -391,7 +406,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 } else {
                     emptyState()
                 }
-            }catch (e:NullPointerException){
+            } catch (e: NullPointerException) {
 
             }
         }
@@ -400,8 +415,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     /**
      * Ask for review to user after first time alarm played
      */
-    private fun askForReview(){
-        if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_REVIEW_SCREEN_SHOWN)){
+    private fun askForReview() {
+        if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_REVIEW_SCREEN_SHOWN)) {
             val manager = ReviewManagerFactory.create(this)
             val request = manager.requestReviewFlow()
             request.addOnCompleteListener { request ->
@@ -413,7 +428,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                         // The flow has finished. The API does not indicate whether the user
                         // reviewed or not, or even whether the review dialog was shown. Thus, no
                         // matter the result, we continue our app flow.
-                    SharedPrefUtils.write(Constants.PreferenceKeys.IS_REVIEW_SCREEN_SHOWN, true)
+                        SharedPrefUtils.write(Constants.PreferenceKeys.IS_REVIEW_SCREEN_SHOWN, true)
                     }
                 }
             }
@@ -441,11 +456,11 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     }
 
-    private fun showQuickStartDialog(){
+    private fun showQuickStartDialog() {
         try {
             val quickStartDialog = OnboardingDialog()
             quickStartDialog.show(supportFragmentManager, "quick_start")
-        }catch (e: IllegalStateException){
+        } catch (e: IllegalStateException) {
 
         }
     }
@@ -467,7 +482,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         }
     }
 
-    fun notifyCurrentAdapter(){
+    fun notifyCurrentAdapter() {
         //at this point getting the concurrent modification exception
         Handler(Looper.getMainLooper()).postDelayed({
             lookForAlarmApplication()
@@ -487,16 +502,16 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     }
 
     override fun onRemovedFromSnoozeSuccess() {
-     alarmAppPresenter.getApplicationList()
+        alarmAppPresenter.getApplicationList()
     }
 
     override fun onTablesSizeRequestSuccess(appSize: Int, langSize: Int, appConstrainSize: Int) {
         WorkManagerUtils.scheduleSyncWork(this, appSize, langSize, appConstrainSize)
     }
 
-    private fun showEditDialog(app:ApplicationEntity){
+    private fun showEditDialog(app: ApplicationEntity) {
         //refresh adapter first
-        if(!isFinishing){
+        if (!isFinishing) {
             try {
                 if (!bottomSheetModel.isAdded) {
                     val bundle = Bundle()
@@ -505,7 +520,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     bottomSheetModel.arguments = bundle
                     bottomSheetModel.show(supportFragmentManager, "OPTIONS")
                 }
-            }catch (e:java.lang.IllegalStateException){
+            } catch (e: java.lang.IllegalStateException) {
                 //skip the crash
             }
         }
@@ -514,7 +529,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     override fun onItemClick(app: ApplicationEntity) {
         //refresh adapter first
-       showEditDialog(app)
+        showEditDialog(app)
     }
 
     override fun onLongClick(app: ApplicationEntity) {
@@ -525,21 +540,20 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         alarmAppPresenter.updateAppStatus(boolean, id)
     }
 
-    private fun showLanguageDoesNotSupported(){
-        if(AndroidUtils.getCurrentLangCode(this) != "en"){
+    private fun showLanguageDoesNotSupported() {
+        if (AndroidUtils.getCurrentLangCode(this) != "en") {
             val bottomSheet = BottomSheetFragmentLang()
             bottomSheet.show(supportFragmentManager, bottomSheet.tag)
-        }else{
+        } else {
             //schedule quickstart
             if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_TUTORIAL_SHOW)) {
                 Handler(Looper.getMainLooper()).postDelayed(Runnable {
                     showQuickStartDialog()
                 }, 1000)
             }
-           // askForPermission()
+            // askForPermission()
         }
     }
-
 
 
     override fun onRequestPermissionsResult(
@@ -548,17 +562,17 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-            var isGranted = true
-            if (requestCode == PermissionUtils.REQUEST_CODE_PERMISSION_DEFAULT) {
-                for (element in grantResults) {
-                    if (element != PackageManager.PERMISSION_GRANTED) {
-                        isGranted = false
-                    }
-                }
-                if (isGranted) {
-                    bottomSheetModel.pickAudioFromStorage()
+        var isGranted = true
+        if (requestCode == PermissionUtils.REQUEST_CODE_PERMISSION_DEFAULT) {
+            for (element in grantResults) {
+                if (element != PackageManager.PERMISSION_GRANTED) {
+                    isGranted = false
                 }
             }
+            if (isGranted) {
+                bottomSheetModel.pickAudioFromStorage()
+            }
+        }
     }
 
     override fun onPurchasesUpdated(p0: BillingResult, p1: MutableList<Purchase>?) {
