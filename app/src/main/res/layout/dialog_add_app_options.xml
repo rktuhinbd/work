@@ -3,9 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/background_screen"
-    android:layout_height="match_parent">
-
+    android:layout_height="match_parent"
+    android:background="@color/background_screen">
 
 
     <com.google.android.material.card.MaterialCardView
@@ -13,8 +12,8 @@
         android:layout_width="0dp"
         android:layout_height="55dp"
         android:layout_marginBottom="8dp"
-        app:cardBackgroundColor="@color/card_view_color"
         android:elevation="8dp"
+        app:cardBackgroundColor="@color/card_view_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -30,9 +29,9 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginStart="16dp"
+                android:background="@android:color/transparent"
                 android:padding="5dp"
                 android:scaleType="fitCenter"
-                android:background="@android:color/transparent"
                 android:src="@drawable/ic_close"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -45,8 +44,8 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/open_sans_semi_bold"
                 android:text="Alarm Options"
-                android:textSize="16sp"
                 android:textColor="@color/default_text"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/btn_save"
                 app:layout_constraintStart_toEndOf="@id/btn_close"
@@ -57,9 +56,9 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginEnd="16dp"
+                android:background="@android:color/transparent"
                 android:padding="5dp"
                 android:scaleType="fitCenter"
-                android:background="@android:color/transparent"
                 android:src="@drawable/ic_tick"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -88,13 +87,12 @@
 
             <ProgressBar
                 android:id="@+id/progress_bar_option"
+                style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="invisible"
                 android:indeterminate="true"
                 android:max="100"
-                style="?android:attr/progressBarStyleHorizontal"
-                />
+                android:visibility="invisible" />
 
             <!--Option area-->
 
@@ -161,8 +159,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Always"
-                    android:textSize="12sp"
                     android:textColor="@color/default_text"
+                    android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="@id/view_repeat_bg"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
@@ -236,8 +234,8 @@
                     android:maxLength="30"
                     android:maxLines="1"
                     android:text="Default"
-                    android:textSize="12sp"
                     android:textColor="@color/default_text"
+                    android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="@id/view_ringtone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
@@ -309,15 +307,14 @@
                     android:id="@+id/txt_pro_vibrate"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    app:layout_constraintTop_toTopOf="@id/view_vibrate"
-                    app:layout_constraintBottom_toBottomOf="@id/view_vibrate"
-                    app:layout_constraintStart_toEndOf="@id/txt_vibrate"
-                    app:layout_constraintEnd_toStartOf="@id/switch_vibrate"
                     android:layout_marginStart="8dp"
-                    android:src="@drawable/ic_premium_gold"
                     android:padding="5dp"
+                    android:src="@drawable/ic_premium_gold"
+                    app:layout_constraintBottom_toBottomOf="@id/view_vibrate"
+                    app:layout_constraintEnd_toStartOf="@id/switch_vibrate"
                     app:layout_constraintHorizontal_bias="0"
-                    />
+                    app:layout_constraintStart_toEndOf="@id/txt_vibrate"
+                    app:layout_constraintTop_toTopOf="@id/view_vibrate" />
 
                 <Switch
                     android:id="@+id/switch_vibrate"
@@ -330,8 +327,8 @@
                     app:layout_constraintHorizontal_bias="1"
                     app:layout_constraintStart_toEndOf="@id/txt_vibrate"
                     app:layout_constraintTop_toTopOf="@id/view_vibrate"
-                    tools:targetApi="m"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
+                    tools:ignore="UseSwitchCompatOrMaterialXml"
+                    tools:targetApi="m" />
 
                 <View
                     android:layout_width="0dp"
@@ -398,25 +395,24 @@
                     android:id="@+id/txt_pro_just_vibrate"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    app:layout_constraintTop_toTopOf="@id/view_just_vibrate"
-                    app:layout_constraintBottom_toBottomOf="@id/view_just_vibrate"
-                    app:layout_constraintStart_toEndOf="@id/txt_just_vibrate"
-                    app:layout_constraintEnd_toStartOf="@id/switch_just_vibrate"
                     android:layout_marginStart="8dp"
-                    android:src="@drawable/ic_premium_gold"
                     android:padding="5dp"
+                    android:src="@drawable/ic_premium_gold"
+                    app:layout_constraintBottom_toBottomOf="@id/view_just_vibrate"
+                    app:layout_constraintEnd_toStartOf="@id/switch_just_vibrate"
                     app:layout_constraintHorizontal_bias="0"
-                    />
+                    app:layout_constraintStart_toEndOf="@id/txt_just_vibrate"
+                    app:layout_constraintTop_toTopOf="@id/view_just_vibrate" />
 
                 <Switch
                     android:id="@+id/switch_just_vibrate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
+                    android:trackTint="@color/track_color"
                     app:layout_constraintBottom_toBottomOf="@id/view_just_vibrate"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1"
-                    android:trackTint="@color/track_color"
                     app:layout_constraintStart_toEndOf="@id/txt_just_vibrate"
                     app:layout_constraintTop_toTopOf="@id/view_just_vibrate"
                     tools:targetApi="m" />
@@ -429,6 +425,113 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/view_just_vibrate" />
 
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <!--sound level-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:id="@+id/view_sound_level"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?selectableItemBackground"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:targetApi="m" />
+
+                <ImageView
+                    android:id="@+id/img_sound_level"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:padding="5dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_clock"
+                    app:layout_constraintBottom_toBottomOf="@id/view_sound_level"
+                    app:layout_constraintEnd_toEndOf="@id/view_sound_level"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="@id/view_sound_level"
+                    app:layout_constraintTop_toTopOf="@id/view_sound_level" />
+
+                <TextView
+                    android:id="@+id/txt_sound_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="6dp"
+                    android:fontFamily="@font/open_sans_regular"
+                    android:text="Sound Level"
+                    android:textColor="@color/colorTextRegular"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toTopOf="@id/txt_sound_level"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@id/img_sound_level"
+                    app:layout_constraintTop_toTopOf="@id/view_sound_level"
+                    app:layout_constraintVertical_bias="0.0"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+
+                <pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/txt_pro_sound_level"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="8dp"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_premium_gold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toEndOf="@+id/txt_sound_level"
+                    app:layout_constraintTop_toTopOf="@+id/txt_sound_level"
+                    app:layout_constraintBottom_toBottomOf="@+id/txt_sound_level"
+                     />
+
+                <SeekBar
+                    android:id="@+id/progress_sound_level"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:layout_width="0dp"
+                    android:progress="100"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/txt_percent_sound_level"
+                    app:layout_constraintStart_toEndOf="@+id/img_sound_level"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_sound_level" />
+
+
+                <TextView
+                    android:id="@+id/txt_percent_sound_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="@font/open_sans_regular"
+                    android:gravity="end"
+                    android:text="100%"
+                    android:textColor="@color/colorTextRegular"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="@id/progress_sound_level"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintStart_toEndOf="@id/progress_sound_level"
+                    app:layout_constraintTop_toTopOf="@+id/progress_sound_level"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/view_sound_level" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -487,14 +590,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Within a single day"
-                    android:textSize="12sp"
                     android:textColor="@color/default_text"
+                    android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="@id/view_custom_time"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toStartOf="@id/txt_custom_time"
                     app:layout_constraintTop_toBottomOf="@id/txt_custom_time" />
-
 
 
                 <Switch
@@ -650,8 +752,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="12:00 PM"
-                    android:textSize="12sp"
                     android:textColor="@color/default_text"
+                    android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="@id/view_end_time"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
@@ -724,8 +826,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2 times"
-                    android:textSize="12sp"
                     android:textColor="@color/default_text"
+                    android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="@id/view_number_of_play"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
@@ -802,11 +904,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
+                    android:ellipsize="end"
                     android:maxLines="2"
                     android:text="None"
-                    android:ellipsize="end"
-                    android:textSize="12sp"
                     android:textColor="@color/default_text"
+                    android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="@id/view_sender_name"
                     app:layout_constraintEnd_toStartOf="@id/btn_sender_name_clear"
                     app:layout_constraintHorizontal_bias="0"
@@ -894,15 +996,14 @@
                     android:id="@+id/txt_pro_ignored_name"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    app:layout_constraintTop_toTopOf="@id/txt_exclude_sender_name"
-                    app:layout_constraintBottom_toBottomOf="@id/txt_exclude_sender_name"
-                    app:layout_constraintStart_toEndOf="@id/txt_exclude_sender_name"
-                    app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginStart="8dp"
-                    android:src="@drawable/ic_premium_gold"
                     android:padding="5dp"
+                    android:src="@drawable/ic_premium_gold"
+                    app:layout_constraintBottom_toBottomOf="@id/txt_exclude_sender_name"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
-                    />
+                    app:layout_constraintStart_toEndOf="@id/txt_exclude_sender_name"
+                    app:layout_constraintTop_toTopOf="@id/txt_exclude_sender_name" />
 
 
                 <TextView
@@ -910,11 +1011,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
+                    android:ellipsize="end"
                     android:maxLines="2"
                     android:text="None"
-                    android:ellipsize="end"
-                    android:textSize="12sp"
                     android:textColor="@color/default_text"
+                    android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="@id/view_exclude_sender_name"
                     app:layout_constraintEnd_toStartOf="@id/btn_exclude_sender_name_clear"
                     app:layout_constraintHorizontal_bias="0"
@@ -946,7 +1047,6 @@
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
             <!--Message body-->
@@ -1005,11 +1105,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
+                    android:ellipsize="end"
                     android:maxLines="2"
                     android:text="None"
-                    android:textSize="12sp"
-                    android:ellipsize="end"
                     android:textColor="@color/default_text"
+                    android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="@id/view_message_body"
                     app:layout_constraintEnd_toStartOf="@id/btn_message_body_clear"
                     app:layout_constraintHorizontal_bias="0"
