@@ -40,7 +40,7 @@ public class ApplicationEntity implements Serializable {
     private String endTime;
     @ColumnInfo(name = "number_of_play")
     private int numberOfPlay;
-    @ColumnInfo(name = "sender_names", defaultValue = "None")
+    @ColumnInfo(name = "sender_names")
     private String senderNames;
     @ColumnInfo(name = "message_body")
     private String messageBody;
