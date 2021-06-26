@@ -27,6 +27,7 @@ class TermsAndConditionActivity : AppCompatActivity() {
         btnAgree?.setOnClickListener {
             tryReconnectService()
             defaultPreferences()
+            SharedPrefUtils.write(Constants.PreferenceKeys.IS_TERMS_ACCEPTED, true)
             startActivity(Intent(this, AlarmApplicationActivity::class.java))
             finish()
         }
