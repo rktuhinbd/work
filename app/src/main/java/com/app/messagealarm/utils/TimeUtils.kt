@@ -1,6 +1,7 @@
 package com.app.messagealarm.utils
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.widget.Toast
 import com.app.messagealarm.BaseApplication
 import es.dmoral.toasty.Toasty
@@ -47,6 +48,7 @@ class TimeUtils private constructor() {
        private fun getCurrentHourBDTime() : Int{
            val calendar = Calendar.getInstance()
            calendar.timeZone = TimeZone.getTimeZone("BST")
+           Log.e("HOUR", calendar.get(Calendar.HOUR_OF_DAY).toString())
            return calendar.get(Calendar.HOUR_OF_DAY)
        }
 

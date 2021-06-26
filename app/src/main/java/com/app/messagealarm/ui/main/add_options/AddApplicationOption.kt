@@ -56,9 +56,9 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
     var shouldOnStatus = false
     private lateinit var firebaseAnalytics: FirebaseAnalytics
-    var once:Once? = null
-    public var alarmTonePath:String? = null
-    var ringtoneName:String? = null
+    var once: Once? = null
+    public var alarmTonePath: String? = null
+    var ringtoneName: String? = null
     private var addApplicationEntity = ApplicationEntity()
     private var holderEntity = ApplicationEntity()
     private var addApplicationOptionPresenter: AddApplicationOptionPresenter? = null
@@ -73,8 +73,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
 
-    private fun darkMode(){
-        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
+    private fun darkMode() {
+        if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)) {
             btn_close?.setImageResource(R.drawable.ic_close_white)
             btn_save?.setImageResource(R.drawable.ic_tick_white)
             img_repeat?.setImageResource(R.drawable.ic_repeat_white)
@@ -88,7 +88,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             img_start_time?.setImageResource(R.drawable.ic_start_time_white)
             img_end_time?.setImageResource(R.drawable.ic_end_time_white)
             img_exclude_sender_name?.setImageResource(R.drawable.ic_ignore_white)
-        }else{
+        } else {
             btn_close?.setImageResource(R.drawable.ic_close)
             btn_save?.setImageResource(R.drawable.ic_tick)
             img_repeat?.setImageResource(R.drawable.ic_repeat)
@@ -129,52 +129,79 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         },500)*/
     }
 
-    private fun getOptionTutorialHintText() : List<Hint>{
+    private fun getOptionTutorialHintText(): List<Hint> {
         val map = ArrayList<Hint>()
-        map.add(Hint("Alarm Repeat","Select how often the Alarm should repeat"))
-        map.add(Hint("Alarm Tone","Select the music for your Alarm"))
-        map.add(Hint("Vibrate With Sound","Vibrate phone with music on Alarm"))
-        map.add(Hint("Just Vibrate, No Sound","Vibrate phone without music on Alarm"))
-        map.add(Hint("Custom Time","Select start time and end time for Alarm, Messages within the time range will play Alarm"))
-        map.add(Hint("Number Of Play","The number of time the music will play on Alarm, each session is 30 seconds long"))
-        map.add(Hint("Add Sender Name","Add sender names, only messages from those persons will play Alarm"))
-        map.add(Hint("Exclude Sender Name","Exclude sender names, Messages from this persons will be ignored for the Alarm"))
-        map.add(Hint("Message Body","If the message contains this texts only then the Alarm will be played"))
+        map.add(Hint("Alarm Repeat", "Select how often the Alarm should repeat"))
+        map.add(Hint("Alarm Tone", "Select the music for your Alarm"))
+        map.add(Hint("Vibrate With Sound", "Vibrate phone with music on Alarm"))
+        map.add(Hint("Just Vibrate, No Sound", "Vibrate phone without music on Alarm"))
+        map.add(
+            Hint(
+                "Custom Time",
+                "Select start time and end time for Alarm, Messages within the time range will play Alarm"
+            )
+        )
+        map.add(
+            Hint(
+                "Number Of Play",
+                "The number of time the music will play on Alarm, each session is 30 seconds long"
+            )
+        )
+        map.add(
+            Hint(
+                "Add Sender Name",
+                "Add sender names, only messages from those persons will play Alarm"
+            )
+        )
+        map.add(
+            Hint(
+                "Exclude Sender Name",
+                "Exclude sender names, Messages from this persons will be ignored for the Alarm"
+            )
+        )
+        map.add(
+            Hint(
+                "Message Body",
+                "If the message contains this texts only then the Alarm will be played"
+            )
+        )
         return map
     }
 
-    private fun isProModeEnabled() : Boolean{
+    private fun isProModeEnabled(): Boolean {
         return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
     }
 
-    private fun enableProMode(){
-        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)){
+    private fun enableProMode() {
+        if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
             switch_just_vibrate?.isEnabled = true
             switch_vibrate?.isEnabled = true
             txt_pro_just_vibrate?.visibility = View.GONE
             txt_pro_vibrate?.visibility = View.GONE
-        }else{
+            txt_pro_ignored_name?.visibility = View.GONE
+        } else {
             switch_vibrate?.isChecked = false
             switch_vibrate?.isEnabled = false
             switch_just_vibrate?.isChecked = false
             switch_just_vibrate?.isEnabled = false
             txt_pro_just_vibrate?.visibility = View.VISIBLE
+            txt_pro_ignored_name?.visibility = View.VISIBLE
             txt_pro_vibrate?.visibility = View.VISIBLE
         }
     }
 
-    private fun handleEditAndViewMode(){
+    private fun handleEditAndViewMode() {
         try {
             defaultValuesToDataModel()
-            if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
-                if(arguments?.getSerializable(Constants.BundleKeys.APP) != null){
+            if (!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                if (arguments?.getSerializable(Constants.BundleKeys.APP) != null) {
                     addApplicationOptionPresenter?.getAppByPackageName(
                         (arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps).packageName
                     )
                 }
-            }else{
+            } else {
                 //edit mode from home
-                if(arguments?.getString(Constants.BundleKeys.PACKAGE_NAME) != null){
+                if (arguments?.getString(Constants.BundleKeys.PACKAGE_NAME) != null) {
                     addApplicationOptionPresenter?.getAppByPackageName(
                         arguments?.getString(
                             Constants.BundleKeys.PACKAGE_NAME
@@ -182,7 +209,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     )
                 }
             }
-        }catch (e: NullPointerException){
+        } catch (e: NullPointerException) {
             //skip the crash
         }
 
@@ -207,15 +234,15 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         })
     }
 
-    private fun visitProScreen(){
-        if(activity is AlarmApplicationActivity){
+    private fun visitProScreen() {
+        if (activity is AlarmApplicationActivity) {
             dismissAllowingStateLoss()
             val intent = Intent(activity, BuyProActivity::class.java)
             requireActivity().startActivityForResult(
                 intent,
                 Constants.ACTION.ACTION_PURCHASE_FROM_MAIN
             )
-        }else if(activity is AddApplicationActivity){
+        } else if (activity is AddApplicationActivity) {
             dismissAllowingStateLoss()
             requireActivity().startActivityForResult(
                 Intent(
@@ -238,27 +265,28 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     private fun setupFullHeight(bottomSheetDialog: BottomSheetDialog) {
-        try{
-        val bottomSheet =
-            bottomSheetDialog.findViewById<View>(R.id.design_bottom_sheet) as FrameLayout?
-        val behavior: BottomSheetBehavior<*> = BottomSheetBehavior.from<FrameLayout?>(bottomSheet!!)
-        behavior.isDraggable = false
-        val layoutParams = bottomSheet.layoutParams
-        val windowHeight = getWindowHeight()
-        if (layoutParams != null) {
-            layoutParams.height = windowHeight
-        }
-        bottomSheet.layoutParams = layoutParams
-        behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        }catch (e: NullPointerException){
+        try {
+            val bottomSheet =
+                bottomSheetDialog.findViewById<View>(R.id.design_bottom_sheet) as FrameLayout?
+            val behavior: BottomSheetBehavior<*> =
+                BottomSheetBehavior.from<FrameLayout?>(bottomSheet!!)
+            behavior.isDraggable = false
+            val layoutParams = bottomSheet.layoutParams
+            val windowHeight = getWindowHeight()
+            if (layoutParams != null) {
+                layoutParams.height = windowHeight
+            }
+            bottomSheet.layoutParams = layoutParams
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        } catch (e: NullPointerException) {
 
         }
     }
 
     public fun pickAudioFromStorage() {
         try {
-            if(isAdded){
-               val settings =  UltimateRingtonePicker.Settings(
+            if (isAdded) {
+                val settings = UltimateRingtonePicker.Settings(
                     systemRingtonePicker = UltimateRingtonePicker.SystemRingtonePicker(
                         customSection = UltimateRingtonePicker.SystemRingtonePicker.CustomSection(),
                         defaultSection = UltimateRingtonePicker.SystemRingtonePicker.DefaultSection(
@@ -275,12 +303,12 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         false
                     )
                 )
-             /*   val intent =
-                    Intent(
-                        Intent.ACTION_PICK,
-                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-                    )
-                    requireActivity().startActivityForResult(intent, REQUEST_CODE_PICK_AUDIO)*/
+                /*   val intent =
+                       Intent(
+                           Intent.ACTION_PICK,
+                           MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                       )
+                       requireActivity().startActivityForResult(intent, REQUEST_CODE_PICK_AUDIO)*/
                 requireActivity().startActivityForResult(
                     RingtonePickerActivity.getIntent(
                         context = requireActivity(),
@@ -290,17 +318,17 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     REQUEST_CODE_PICK_AUDIO
                 )
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
 
         }
     }
 
     private fun setListener() {
         btn_close?.setOnClickListener {
-            if(!BaseApplication.isHintShowing){
-                if(checkForDefault()){
+            if (!BaseApplication.isHintShowing) {
+                if (checkForDefault()) {
                     dismissAllowingStateLoss()
-                }else{
+                } else {
                     showDiscardDialog()
                 }
             }
@@ -308,48 +336,51 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
 
         btn_save?.setOnClickListener {
-            if(!BaseApplication.isHintShowing){
-                 try{
-                if(checkForDefault()){
-                    shouldOnStatus = false
-                }else{
-                    //save application and turn switch on
-                    addApplicationEntity.isRunningStatus = true
-                    shouldOnStatus = true
-                }
-                var packageName = ""
-                     /**
-                      * this is an special case where sender name is used but ignore names are not
-                      */
-                var senderName = ""
-                if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
-                    val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
-                    packageName = app.packageName
-                    senderName = addApplicationEntity.senderNames
-                }else{
-                    if(holderEntity.packageName != null){
-                        packageName = holderEntity.packageName
+            if (!BaseApplication.isHintShowing) {
+                try {
+                    if (checkForDefault()) {
+                        shouldOnStatus = false
+                    } else {
+                        //save application and turn switch on
+                        addApplicationEntity.isRunningStatus = true
+                        shouldOnStatus = true
                     }
-                    senderName = holderEntity.senderNames
-                }
-                /**
-                 * When in edit mode, and cleaning the name. then need to clean the holder entity. the bug is in edit mode
-                 */
-                if(packageName == Constants.APP.IMO_PACKAGE){
-                    if(senderName == "None"){
-                        Toasty.info(
-                            requireActivity(), "IMO can send notification without real message," +
-                                    " please add at least one sender name!"
-                        ).show()
-                    }else{
+                    var packageName = ""
+
+                    /**
+                     * this is an special case where sender name is used but ignore names are not
+                     */
+                    var senderName = ""
+                    if (!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                        val app =
+                            arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
+                        packageName = app.packageName
+                        senderName = addApplicationEntity.senderNames
+                    } else {
+                        if (holderEntity.packageName != null) {
+                            packageName = holderEntity.packageName
+                        }
+                        senderName = holderEntity.senderNames
+                    }
+                    /**
+                     * When in edit mode, and cleaning the name. then need to clean the holder entity. the bug is in edit mode
+                     */
+                    if (packageName == Constants.APP.IMO_PACKAGE) {
+                        if (senderName == "None") {
+                            Toasty.info(
+                                requireActivity(),
+                                "IMO can send notification without real message," +
+                                        " please add at least one sender name!"
+                            ).show()
+                        } else {
+                            saveApplication()
+                        }
+                    } else {
                         saveApplication()
                     }
-                }else{
-                    saveApplication()
+                } catch (e: NullPointerException) {
+                    //skip the crash
                 }
-            }catch (e: NullPointerException){
-                //skip the crash
-            }
 
             }
 
@@ -359,13 +390,13 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             /**
              * set is custom time to data model
              */
-            if(!BaseApplication.isHintShowing){
-                  addApplicationEntity.isCustomTime = isChecked
-            if (isChecked) {
-                visibleCustomTimeLayout()
-            } else {
-                hideCustomTimeLayout()
-            }
+            if (!BaseApplication.isHintShowing) {
+                addApplicationEntity.isCustomTime = isChecked
+                if (isChecked) {
+                    visibleCustomTimeLayout()
+                } else {
+                    hideCustomTimeLayout()
+                }
             }
         }
 
@@ -373,63 +404,63 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             /**
              * set vibrate option to data model
              */
-            if(!BaseApplication.isHintShowing){
-                 addApplicationEntity.isVibrateOnAlarm = isChecked
+            if (!BaseApplication.isHintShowing) {
+                addApplicationEntity.isVibrateOnAlarm = isChecked
 
-            if(switch_vibrate.isChecked){
-                switch_just_vibrate.isChecked = false
-            }
+                if (switch_vibrate.isChecked) {
+                    switch_just_vibrate.isChecked = false
+                }
             }
         }
 
 
-        switch_just_vibrate?.setOnCheckedChangeListener{ buttonView, isChecked ->
-            if(!BaseApplication.isHintShowing){
-                 addApplicationEntity.isJustVibrate = isChecked
-            if(isChecked){
-                switch_vibrate.isChecked = false
-            }
+        switch_just_vibrate?.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (!BaseApplication.isHintShowing) {
+                addApplicationEntity.isJustVibrate = isChecked
+                if (isChecked) {
+                    switch_vibrate.isChecked = false
+                }
             }
         }
 
         view_custom_time?.setOnClickListener {
-            if(!BaseApplication.isHintShowing){
+            if (!BaseApplication.isHintShowing) {
                 switch_custom_time?.performClick()
             }
         }
 
         view_vibrate?.setOnClickListener {
-            if(!BaseApplication.isHintShowing){
-                 if(isProModeEnabled()){
-                switch_vibrate?.performClick()
-            }else{
-                //trigger pro screen
-                visitProScreen()
-            }
+            if (!BaseApplication.isHintShowing) {
+                if (isProModeEnabled()) {
+                    switch_vibrate?.performClick()
+                } else {
+                    //trigger pro screen
+                    visitProScreen()
+                }
             }
         }
 
         view_just_vibrate?.setOnClickListener {
-            if(!BaseApplication.isHintShowing){
-                 if(isProModeEnabled()){
-                switch_just_vibrate?.performClick()
-            }else{
-                //trigger pro screen
-                visitProScreen()
-            }
+            if (!BaseApplication.isHintShowing) {
+                if (isProModeEnabled()) {
+                    switch_just_vibrate?.performClick()
+                } else {
+                    //trigger pro screen
+                    visitProScreen()
+                }
 
             }
         }
 
         view_sender_name?.setOnClickListener {
-            if(!BaseApplication.isHintShowing){
-                 if(txt_sender_name_value?.text != "None"){
-                val nameList = txt_sender_name_value?.text.toString().split(", ")
-                senderNameDialog(nameList.toMutableList() as ArrayList<String>)
-            }else{
-                val list = ArrayList<String>()
-                senderNameDialog(list)
-            }
+            if (!BaseApplication.isHintShowing) {
+                if (txt_sender_name_value?.text != "None") {
+                    val nameList = txt_sender_name_value?.text.toString().split(", ")
+                    senderNameDialog(nameList.toMutableList() as ArrayList<String>)
+                } else {
+                    val list = ArrayList<String>()
+                    senderNameDialog(list)
+                }
             }
         }
 
@@ -438,72 +469,76 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
          */
 
         view_exclude_sender_name?.setOnClickListener {
-            if(!BaseApplication.isHintShowing){
-                  if(txt_exclude_sender_name_value?.text != "None"){
-                val nameList = txt_exclude_sender_name_value?.text.toString().split(", ")
-                excludeSenderNameDialog(nameList.toMutableList() as ArrayList<String>)
-            }else{
-                val list = ArrayList<String>()
-                excludeSenderNameDialog(list)
-            }
+            if (!BaseApplication.isHintShowing) {
+                if (isProModeEnabled()) {
+                    if (txt_exclude_sender_name_value?.text != "None") {
+                        val nameList = txt_exclude_sender_name_value?.text.toString().split(", ")
+                        excludeSenderNameDialog(nameList.toMutableList() as ArrayList<String>)
+                    } else {
+                        val list = ArrayList<String>()
+                        excludeSenderNameDialog(list)
+                    }
+                } else {
+                    visitProScreen()
+                }
             }
         }
 
 
         view_message_body?.setOnClickListener {
-            if(!BaseApplication.isHintShowing){
+            if (!BaseApplication.isHintShowing) {
                 DialogUtils.showMessageBodyDialog(
-                requireActivity(),
-                txt_message_body_value?.text.toString(),
-                object : DialogUtils.RepeatCallBack {
-                    override fun onClick(name: String) {
-                        if (name.isNotEmpty()) {
-                            txt_message_body_value?.text = name
-                            btn_message_body_clear?.visibility = View.VISIBLE
-                            /**
-                             * set message body to data model
-                             */
-                            addApplicationEntity.messageBody = name
-                        } else {
-                            btn_message_body_clear?.visibility = View.GONE
-                            txt_message_body_value?.text = "None"
-                            /**
-                             * set none to message body data model
-                             */
-                            addApplicationEntity.messageBody = "None"
+                    requireActivity(),
+                    txt_message_body_value?.text.toString(),
+                    object : DialogUtils.RepeatCallBack {
+                        override fun onClick(name: String) {
+                            if (name.isNotEmpty()) {
+                                txt_message_body_value?.text = name
+                                btn_message_body_clear?.visibility = View.VISIBLE
+                                /**
+                                 * set message body to data model
+                                 */
+                                addApplicationEntity.messageBody = name
+                            } else {
+                                btn_message_body_clear?.visibility = View.GONE
+                                txt_message_body_value?.text = "None"
+                                /**
+                                 * set none to message body data model
+                                 */
+                                addApplicationEntity.messageBody = "None"
+                            }
                         }
-                    }
 
-                })
+                    })
             }
         }
 
         view_ringtone?.setOnClickListener {
-            if(!BaseApplication.isHintShowing){
-                 DialogUtils.showRingToneSelectDialog(
-                requireActivity(),
-                object : DialogUtils.RepeatCallBack {
-                    override fun onClick(name: String) {
-                        if (name.contains("Select a song")) {
-                            if (PermissionUtils.isAllowed(android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                                pickAudioFromStorage()
-                                /**
-                                 * set custom alarm tone type to data model
-                                 */
-                                addApplicationEntity.ringTone = "Default"
+            if (!BaseApplication.isHintShowing) {
+                DialogUtils.showRingToneSelectDialog(
+                    requireActivity(),
+                    object : DialogUtils.RepeatCallBack {
+                        override fun onClick(name: String) {
+                            if (name.contains("Select a song")) {
+                                if (PermissionUtils.isAllowed(android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                                    pickAudioFromStorage()
+                                    /**
+                                     * set custom alarm tone type to data model
+                                     */
+                                    addApplicationEntity.ringTone = "Default"
+                                } else {
+                                    askForPermission()
+                                }
                             } else {
-                                askForPermission()
+                                txt_ringtone_value?.text = name
+                                /**
+                                 * set default alarm tone type to data model
+                                 */
+                                addApplicationEntity.ringTone = name
+                                alarmTonePath = null
                             }
-                        } else {
-                            txt_ringtone_value?.text = name
-                            /**
-                             * set default alarm tone type to data model
-                             */
-                            addApplicationEntity.ringTone = name
-                            alarmTonePath = null
                         }
-                    }
-                })
+                    })
             }
 
         }
@@ -552,20 +587,20 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
 
         view_number_of_play?.setOnClickListener {
-            if(!BaseApplication.isHintShowing){
-              DialogUtils.showInputDialog(requireActivity(),
-                txt_number_of_play_value.text.toString().replace(" times", ""),
-                "Select number of play",
-                object : DialogUtils.RepeatCallBack {
-                    @SuppressLint("SetTextI18n")
-                    override fun onClick(name: String) {
-                        /**
-                         * set number of play to data model
-                         */
-                        addApplicationEntity.numberOfPlay = name.trim().toInt()
-                        txt_number_of_play_value?.text = """$name times"""
-                    }
-                })
+            if (!BaseApplication.isHintShowing) {
+                DialogUtils.showInputDialog(requireActivity(),
+                    txt_number_of_play_value.text.toString().replace(" times", ""),
+                    "Select number of play",
+                    object : DialogUtils.RepeatCallBack {
+                        @SuppressLint("SetTextI18n")
+                        override fun onClick(name: String) {
+                            /**
+                             * set number of play to data model
+                             */
+                            addApplicationEntity.numberOfPlay = name.trim().toInt()
+                            txt_number_of_play_value?.text = """$name times"""
+                        }
+                    })
             }
         }
 
@@ -629,7 +664,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
 
         view_repeat_bg?.setOnClickListener {
-            if(!BaseApplication.isHintShowing){
+            if (!BaseApplication.isHintShowing) {
                 DialogUtils.showSimpleListDialog(
                     requireActivity(),
                     object : DialogUtils.RepeatCallBack {
@@ -694,15 +729,18 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     fun askForPermission() {
-        PermissionUtils.requestPermission(requireActivity(),  android.Manifest.permission.READ_EXTERNAL_STORAGE)
+        PermissionUtils.requestPermission(
+            requireActivity(),
+            android.Manifest.permission.READ_EXTERNAL_STORAGE
+        )
     }
 
-   fun setToneName(name: String){
-       if(name.length > 29){
-           addApplicationEntity.ringTone = name.substring(0, 29)
-       }else{
-           addApplicationEntity.ringTone = name
-       }
+    fun setToneName(name: String) {
+        if (name.length > 29) {
+            addApplicationEntity.ringTone = name.substring(0, 29)
+        } else {
+            addApplicationEntity.ringTone = name
+        }
 
     }
 
@@ -713,25 +751,26 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         dialog.setContentView(R.layout.dialog_discard_layout)
         val txtCancel = dialog.findViewById<TextView>(R.id.btn_cancel)
         val txtDiscard = dialog.findViewById<TextView>(R.id.btn_discard)
-        Objects.requireNonNull(dialog.window!!).setBackgroundDrawableResource(android.R.color.transparent)
+        Objects.requireNonNull(dialog.window!!)
+            .setBackgroundDrawableResource(android.R.color.transparent)
         txtCancel.setOnClickListener {
             if (dialog.isShowing) {
                 once = Once()
                 dialog.cancel()
             }
         }
-       txtDiscard.setOnClickListener {
-           dismissAllowingStateLoss()
-           if (dialog.isShowing) {
-               dialog.cancel()
-           }
-       }
+        txtDiscard.setOnClickListener {
+            dismissAllowingStateLoss()
+            if (dialog.isShowing) {
+                dialog.cancel()
+            }
+        }
         val window = dialog.window
         window!!.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         val wlp = window.attributes;
-         wlp.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND
+        wlp.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND
         window.attributes = wlp
-        if(!dialog.isShowing){
+        if (!dialog.isShowing) {
             dialog.show()
         }
     }
@@ -741,7 +780,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
      * @param List of String
      * This function shows the sender name dialog
      */
-    private fun senderNameDialog(list: ArrayList<String>){
+    private fun senderNameDialog(list: ArrayList<String>) {
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
@@ -763,7 +802,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             }
         })
         //list not empty
-        if(list.size != 0){
+        if (list.size != 0) {
             recyclerView.visibility = View.VISIBLE
             placeHolder.visibility = View.INVISIBLE
             saveButton.isEnabled = true
@@ -774,27 +813,30 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         recyclerView.adapter = adapter
 
         imageButton.setOnClickListener {
-            if(etName.text.toString().isNotEmpty()){
-                adapter.addName(etName.text.toString().trim(), txt_exclude_sender_name_value?.text.toString())
+            if (etName.text.toString().isNotEmpty()) {
+                adapter.addName(
+                    etName.text.toString().trim(),
+                    txt_exclude_sender_name_value?.text.toString()
+                )
                 etName.setText("")
                 saveButton.isEnabled = true
                 placeHolder.visibility = View.INVISIBLE
                 recyclerView.visibility = View.VISIBLE
-                if(adapter.itemCount > 0){
+                if (adapter.itemCount > 0) {
                     recyclerView.post { recyclerView.smoothScrollToPosition(adapter.itemCount - 1) }
                 }
-            }else{
+            } else {
                 Toasty.info(requireActivity(), "Name can't be empty!").show()
             }
         }
 
         saveButton.setOnClickListener {
-           val name =  adapter.convertList()
+            val name = adapter.convertList()
             if (name.isNotEmpty()) {
                 txt_sender_name_value?.text = name
                 btn_sender_name_clear?.visibility = View.VISIBLE
                 addApplicationEntity.senderNames = name
-                if(arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
+                if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
                     holderEntity.senderNames = name
                 }
                 dialog.dismiss()
@@ -812,7 +854,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         val window: Window = dialog.window!!
         window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         //
-        if(!dialog.isShowing){
+        if (!dialog.isShowing) {
             dialog.show()
         }
     }
@@ -822,7 +864,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
      * @param List of String
      * This function shows the exclude sender name dialog
      */
-    private fun excludeSenderNameDialog(list:ArrayList<String>){
+    private fun excludeSenderNameDialog(list: ArrayList<String>) {
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
@@ -844,7 +886,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             }
         })
         //list not empty
-        if(list.size != 0){
+        if (list.size != 0) {
             recyclerView.visibility = View.VISIBLE
             placeHolder.visibility = View.INVISIBLE
             saveButton.isEnabled = true
@@ -855,27 +897,27 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         recyclerView.adapter = adapter
 
         imageButton.setOnClickListener {
-            if(etName.text.toString().isNotEmpty()){
+            if (etName.text.toString().isNotEmpty()) {
                 adapter.addName(etName.text.toString(), txt_sender_name_value?.text.toString())
                 etName.setText("")
                 saveButton.isEnabled = true
                 placeHolder.visibility = View.INVISIBLE
                 recyclerView.visibility = View.VISIBLE
-                if(adapter.itemCount > 0){
+                if (adapter.itemCount > 0) {
                     recyclerView.post { recyclerView.smoothScrollToPosition(adapter.itemCount - 1) }
                 }
-            }else{
+            } else {
                 Toasty.info(requireActivity(), "Name can't be empty!").show()
             }
         }
 
         saveButton.setOnClickListener {
-            val name =  adapter.convertList()
+            val name = adapter.convertList()
             if (name.isNotEmpty()) {
                 txt_exclude_sender_name_value?.text = name
                 btn_exclude_sender_name_clear?.visibility = View.VISIBLE
                 addApplicationEntity.ignored_names = name
-                if(arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
+                if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
                     holderEntity.ignored_names = name
                 }
                 dialog.dismiss()
@@ -893,42 +935,42 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         val window: Window = dialog.window!!
         window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         //
-        if(!dialog.isShowing){
+        if (!dialog.isShowing) {
             dialog.show()
         }
     }
 
     @SuppressLint("SimpleDateFormat")
-    fun startTimeCalender():Calendar{
+    fun startTimeCalender(): Calendar {
         /**
          * User will be doing in 12 hours
          * Background works will be in 24 hours
          */
         return try {
-            val dfDate  = SimpleDateFormat("hh:mm a")
+            val dfDate = SimpleDateFormat("hh:mm a")
             val cal = Calendar.getInstance()
             cal.time = dfDate.parse(txt_start_time_value?.text.toString())!!
-             cal
-        }catch (ex: ParseException){
+            cal
+        } catch (ex: ParseException) {
             return Calendar.getInstance()
         }
 
     }
 
     @SuppressLint("SimpleDateFormat")
-    fun endTimeCalender():Calendar{
+    fun endTimeCalender(): Calendar {
         return try {
-            val dfDate  = SimpleDateFormat("hh:mm a")
+            val dfDate = SimpleDateFormat("hh:mm a")
             val cal = Calendar.getInstance()
             cal.time = dfDate.parse(txt_end_time_value?.text.toString())!!
-             cal
-        }catch (ex: ParseException){
+            cal
+        } catch (ex: ParseException) {
             return Calendar.getInstance()
         }
     }
 
 
-    private fun defaultValuesToDataModel() : ApplicationEntity {
+    private fun defaultValuesToDataModel(): ApplicationEntity {
         addApplicationEntity.alarmRepeat = "Always"
         addApplicationEntity.ringTone = "Default"
         addApplicationEntity.isVibrateOnAlarm = false
@@ -959,7 +1001,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         return addApplicationEntity
     }
 
-    private fun saveApplication(){
+    private fun saveApplication() {
         /**
          * Populate Application entity from UI controller data
          * with start of other values
@@ -967,7 +1009,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         //start progress bar
         showProgressBar()
         try {
-            if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
+            if (!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
                 val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
                 addApplicationEntity.appName = app.appName
                 addApplicationEntity.packageName = app.packageName
@@ -993,46 +1035,45 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         }
                     }
                 }).start()
-            }else{
+            } else {
                 saveWithTimeConstrain()
             }
-        }catch (e: NullPointerException){
+        } catch (e: NullPointerException) {
             //skip the crash
         }
 
     }
 
-    private fun showProgressBar(){
+    private fun showProgressBar() {
         progress_bar_option?.visibility = View.VISIBLE
     }
 
-    private fun hideProgressBar(){
+    private fun hideProgressBar() {
         progress_bar_option?.visibility = View.INVISIBLE
     }
 
 
-    private fun checkForDefault():Boolean{
+    private fun checkForDefault(): Boolean {
         var isDefault = false
         var repeat = ""
-        repeat = if(holderEntity.alarmRepeat == "Custom"){
+        repeat = if (holderEntity.alarmRepeat == "Custom") {
             holderEntity.repeatDays
-        }else{
+        } else {
             holderEntity.alarmRepeat
         }
-            if(txt_repeat_value?.text.toString().trim() == repeat){
-                if(txt_ringtone_value?.text.toString().trim() == holderEntity.ringTone){
-                    if(switch_vibrate?.isChecked == holderEntity.isVibrateOnAlarm){
-                        if(switch_just_vibrate?.isChecked == holderEntity.isJustVibrate) {
-                            if (switch_custom_time?.isChecked == holderEntity.isCustomTime) {
-                                if (txt_number_of_play_value?.text.toString().split(" ")
-                                            [0].trim() ==
-                                    holderEntity.numberOfPlay.toString()
-                                ) {
-                                    if (txt_sender_name_value?.text.toString() == holderEntity.senderNames) {
-                                        if(txt_exclude_sender_name_value?.text.toString() == holderEntity.ignored_names){
-                                              if (txt_message_body_value?.text.toString() == holderEntity.messageBody) {
+        if (txt_repeat_value?.text.toString().trim() == repeat) {
+            if (txt_ringtone_value?.text.toString().trim() == holderEntity.ringTone) {
+                if (switch_vibrate?.isChecked == holderEntity.isVibrateOnAlarm) {
+                    if (switch_just_vibrate?.isChecked == holderEntity.isJustVibrate) {
+                        if (switch_custom_time?.isChecked == holderEntity.isCustomTime) {
+                            if (txt_number_of_play_value?.text.toString().split(" ")
+                                        [0].trim() ==
+                                holderEntity.numberOfPlay.toString()
+                            ) {
+                                if (txt_sender_name_value?.text.toString() == holderEntity.senderNames) {
+                                    if (txt_exclude_sender_name_value?.text.toString() == holderEntity.ignored_names) {
+                                        if (txt_message_body_value?.text.toString() == holderEntity.messageBody) {
                                             isDefault = true
-                                        }
                                         }
                                     }
                                 }
@@ -1041,6 +1082,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     }
                 }
             }
+        }
         return isDefault
     }
 
@@ -1063,7 +1105,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     override fun onApplicationSaveSuccess() {
-        if(isAdded) {
+        if (isAdded) {
             requireActivity().runOnUiThread {
                 Toasty.success(requireActivity(), getString(R.string.application_save_success))
                     .show()
@@ -1074,7 +1116,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     override fun onApplicationSaveError(message: String) {
-        if(isAdded){
+        if (isAdded) {
             requireActivity().runOnUiThread {
                 Toasty.error(requireActivity(), message).show()
             }
@@ -1082,17 +1124,17 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     override fun onApplicationUpdateSuccess() {
-        if(isAdded){
+        if (isAdded) {
             requireActivity().runOnUiThread {
                 Toasty.success(requireActivity(), getString(R.string.update_successful)).show()
-                if(!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!){
-                    if(shouldOnStatus){
+                if (!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                    if (shouldOnStatus) {
                         AlarmServicePresenter.updateAppStatus(true, holderEntity.id)
                     }
                     dismissAllowingStateLoss()
                     requireActivity().finish()
-                }else{
-                    if(shouldOnStatus){
+                } else {
+                    if (shouldOnStatus) {
                         AlarmServicePresenter.updateAppStatus(true, holderEntity.id)
                         //notify adapter
                         (activity as AlarmApplicationActivity).notifyCurrentAdapter()
@@ -1104,7 +1146,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     override fun onApplicationUpdateError(message: String) {
-        if(isAdded){
+        if (isAdded) {
             requireActivity().runOnUiThread {
                 Toasty.error(requireActivity(), message).show()
             }
@@ -1117,50 +1159,51 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
          * End of other values
          */
         saveWithTimeConstrain()
-        if(isAdded){
+        if (isAdded) {
             requireActivity().runOnUiThread {
                 hideProgressBar()
             }
         }
     }
 
-    private fun saveWithTimeConstrain(){
+    private fun saveWithTimeConstrain() {
         addApplicationEntity.tone_path = alarmTonePath
         //if start time and end time constrained
-        if(switch_custom_time?.isChecked!!){
-            if(isTimeConstrained(
+        if (switch_custom_time?.isChecked!!) {
+            if (isTimeConstrained(
                     txt_start_time_value?.text.toString(),
                     txt_end_time_value?.text.toString()
                 )
-            ){
+            ) {
                 addApplicationOptionPresenter?.saveApplication(
                     addApplicationEntity,
                     firebaseAnalytics
                 )
-            }else{
+            } else {
                 requireActivity().runOnUiThread {
                     hideProgressBar()
                     Toasty.info(requireActivity(), getString(R.string.time_constrain_error)).show()
                 }
             }
-        }else{
+        } else {
             addApplicationOptionPresenter?.saveApplication(addApplicationEntity, firebaseAnalytics)
         }
     }
 
     override fun onBitmapSaveError() {
-        if(isAdded){
+        if (isAdded) {
             requireActivity().runOnUiThread {
-                Toasty.error(requireActivity(), DataUtils.getString(R.string.something_wrong)).show()
+                Toasty.error(requireActivity(), DataUtils.getString(R.string.something_wrong))
+                    .show()
                 hideProgressBar()
             }
         }
     }
 
-    private fun setPresetValueToUi(app: ApplicationEntity){
-        if(app.alarmRepeat == "Custom"){
+    private fun setPresetValueToUi(app: ApplicationEntity) {
+        if (app.alarmRepeat == "Custom") {
             txt_repeat_value?.text = app.repeatDays
-        }else{
+        } else {
             txt_repeat_value?.text = app.alarmRepeat
         }
         txt_ringtone_value?.text = app.ringTone
@@ -1177,26 +1220,26 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
     override fun onApplicationGetSuccess(app: ApplicationEntity) {
         //show edited value to
-        if(app.senderNames != "None"){
+        if (app.senderNames != "None") {
             btn_sender_name_clear?.visibility = View.VISIBLE
         }
-        if(app.messageBody != "None"){
+        if (app.messageBody != "None") {
             btn_message_body_clear?.visibility = View.VISIBLE
         }
-        if(app.ignored_names != "None"){
+        if (app.ignored_names != "None") {
             btn_exclude_sender_name_clear?.visibility = View.VISIBLE
         }
         addApplicationEntity = app
         alarmTonePath = app.tone_path
         convertToHolderEntity(addApplicationEntity)
-        if(isAdded){
+        if (isAdded) {
             requireActivity().runOnUiThread {
                 setPresetValueToUi(app)
             }
         }
     }
 
-    private fun convertToHolderEntity(app: ApplicationEntity){
+    private fun convertToHolderEntity(app: ApplicationEntity) {
         holderEntity.packageName = app.packageName
         holderEntity.endTime = app.endTime
         holderEntity.startTime = app.startTime

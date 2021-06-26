@@ -39,11 +39,16 @@ class SenderNameAdapter(list:ArrayList<String>,
 
 
     fun convertList() : String{
-        val builder = StringBuilder()
-        nameList.forEach {
-            builder.append("$it, ")
+        var result = ""
+        try{
+            val builder = StringBuilder()
+            nameList.forEach {
+                builder.append("$it, ")
+            }
+            result =  builder.toString().substring(0, builder.toString().length - 2)
+        }catch (e:StringIndexOutOfBoundsException){
         }
-        return builder.toString().substring(0, builder.toString().length - 2)
+       return result
     }
 
     /**

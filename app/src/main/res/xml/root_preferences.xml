@@ -28,10 +28,15 @@
         android:key="theme_cat"
         app:layout="@layout/preference_category">
 
+        <Preference
+            app:icon="@drawable/ic_color_lens_black_24dp"
+            app:key="theme_pro"
+            android:enabled="true"
+            app:summary="Buy PRO to enable"
+            app:title="Theme" />
 
         <ListPreference
             app:defaultValue="reply"
-            app:enabled="true"
             app:entries="@array/theme_entries"
             app:entryValues="@array/reply_values"
             app:icon="@drawable/ic_color_lens_black_24dp"

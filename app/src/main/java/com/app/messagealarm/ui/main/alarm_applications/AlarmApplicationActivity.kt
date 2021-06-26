@@ -315,7 +315,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     private fun setListener() {
         fab_button_add_application?.setOnClickListener {
             if(!isPurchased()){
-                if(rv_application_list?.adapter?.itemCount == 0){
+                if(rv_application_list?.adapter?.itemCount!! < 3){
                     startActivity(Intent(this, AddApplicationActivity::class.java))
                 }else{
                     Toasty.info(this, "Please buy pro version to add more apps!").show()
