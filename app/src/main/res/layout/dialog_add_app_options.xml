@@ -486,21 +486,20 @@
                     android:layout_marginStart="8dp"
                     android:padding="5dp"
                     android:src="@drawable/ic_premium_gold"
+                    app:layout_constraintBottom_toBottomOf="@+id/txt_sound_level"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toEndOf="@+id/txt_sound_level"
-                    app:layout_constraintTop_toTopOf="@+id/txt_sound_level"
-                    app:layout_constraintBottom_toBottomOf="@+id/txt_sound_level"
-                     />
+                    app:layout_constraintTop_toTopOf="@+id/txt_sound_level" />
 
                 <SeekBar
                     android:id="@+id/progress_sound_level"
                     style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                     android:layout_width="0dp"
-                    android:progress="100"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:layout_marginBottom="8dp"
+                    android:progress="100"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/txt_percent_sound_level"
                     app:layout_constraintStart_toEndOf="@+id/img_sound_level"
