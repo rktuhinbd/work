@@ -14,7 +14,9 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="2dp"
+        android:layout_margin="4dp"
+        android:backgroundTint="#363A3D"
+        app:cardCornerRadius="8dp"
         app:cardElevation="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,98 +27,153 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_16">
+            android:layout_margin="@dimen/margin_8">
 
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraint_buy_pro_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/text_header_individual_offer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_8"
+                    android:fontFamily="@font/roboto_bold"
+                    android:gravity="start"
+                    android:text="Individual\nOffer"
+                    android:textAllCaps="true"
+                    android:textColor="@color/color_white"
+                    app:layout_constraintBottom_toTopOf="@+id/image_app_logo"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/image_app_logo"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/ic_upwork"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_header_individual_offer"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/text_sub_title_cool"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:gravity="start"
+                    android:text="Cool!! You have been with us for sd long  🤲 "
+                    android:textAllCaps="false"
+                    android:textColor="@color/color_white"
+                    android:textSize="@dimen/font_12"
+                    app:layout_constraintBottom_toTopOf="@+id/text_decide"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_header_individual_offer"
+
+                    />
+
+                <TextView
+                    android:id="@+id/text_decide"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_8"
+                    android:text="We decided to give "
+                    android:textColor="@color/color_white"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toTopOf="@+id/text_user"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_sub_title_cool" />
+
+                <TextView
+                    android:id="@+id/text_sale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:layout_marginStart="@dimen/margin_8"
+                    android:layout_marginTop="@dimen/margin_8"
+                    android:background="@drawable/text_gradient"
+                    android:fontFamily="@font/roboto_bold"
+                    android:padding="4dp"
+                    android:text="72% sale"
+                    android:textAllCaps="false"
+                    android:textColor="@color/color_white"
+                    android:textSize="@dimen/font_16"
+                    app:cornerRadius="@dimen/elevation_4"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_decide"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toEndOf="@+id/text_decide"
+                    app:layout_constraintTop_toBottomOf="@+id/text_sub_title_cool"
+                    app:layout_constraintTop_toTopOf="@+id/text_decide" />
 
 
-              <androidx.constraintlayout.widget.ConstraintLayout
-                  android:id="@+id/constraint_buy_pro_layout"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  app:layout_constraintBottom_toBottomOf="parent"
-                  app:layout_constraintEnd_toEndOf="parent"
-                  app:layout_constraintStart_toStartOf="parent"
-                  app:layout_constraintTop_toTopOf="parent">
+                <TextView
+                    android:id="@+id/text_user"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_8"
+                    android:layout_marginTop="@dimen/margin_8"
+                    android:text="to our most loyal users! "
+                    android:textColor="@color/color_white"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toTopOf="@+id/text_pro_version"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_sale" />
 
 
-                  <androidx.appcompat.widget.AppCompatImageView
-                      android:id="@+id/image_ic"
-                      android:layout_width="100dp"
-                      android:layout_height="100dp"
-                      android:layout_marginTop="16dp"
-                      android:layout_marginBottom="24dp"
-                      android:padding="4dp"
-                      android:src="@drawable/icon_fiver"
-                      app:layout_constraintEnd_toStartOf="@+id/text_title"
-                      app:layout_constraintStart_toStartOf="parent"
-                      app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/text_pro_version"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginStart="@dimen/margin_8"
 
-                  <TextView
-                      android:id="@+id/text_title"
-                      android:layout_width="0dp"
-                      android:layout_height="wrap_content"
-                      android:layout_marginStart="24dp"
-                      android:layout_marginTop="16dp"
-                      android:layout_marginEnd="24dp"
-                      android:fontFamily="@font/roboto_regular"
-                      android:padding="8dp"
-                      android:text="hei This is Message alarm app. It is very important to work, when you go the notify. You must understand cause that will be time Your mobile was ringing. You will know the rapidly who are sent the message. Then, You must answer him.  "
-                      android:textColor="@color/md_black_1000"
-                      android:textSize="@dimen/font_14"
-                      app:layout_constraintBottom_toBottomOf="parent"
-                      app:layout_constraintEnd_toEndOf="parent"
-                      app:layout_constraintStart_toEndOf="@+id/image_ic"
-
-                      app:layout_constraintTop_toTopOf="parent" />
-
-              </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!--  <androidx.constraintlayout.widget.ConstraintLayout
-                  android:id="@+id/constraint_title"
-                  android:layout_width="0dp"
-                  android:layout_height="wrap_content"
-                  app:layout_constraintBottom_toBottomOf="parent"
-                  app:layout_constraintEnd_toEndOf="parent"
-                  app:layout_constraintStart_toStartOf="parent"
-                  app:layout_constraintTop_toBottomOf="@+id/constraint_buy_pro_layout">
-
-                  <TextView
-                      android:id="@+id/text_dialog_title"
-                      android:layout_width="0dp"
-                      android:layout_height="wrap_content"
-                      android:layout_marginStart="24dp"
-                      android:layout_marginTop="24dp"
-                      android:layout_marginEnd="24dp"
-                      android:fontFamily="@font/roboto_regular"
-                      android:padding="8dp"
-                      android:text="hei This is Message alarm app. It is very important to work, when you go the notify. You must understand cause that will be time Your mobile was ringing. You will know the rapidly who are sent the message. Then, You must answer him.  "
-                      android:textColor="@color/md_black_1000"
-                      android:textSize="@dimen/font_14"
-                      app:layout_constraintBottom_toTopOf="@+id/text_continue"
-                      app:layout_constraintEnd_toEndOf="parent"
-                      app:layout_constraintStart_toStartOf="parent"
-                      app:layout_constraintTop_toTopOf="parent" />
-
-                  <TextView
-                      android:id="@+id/text_continue"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:layout_marginTop="24dp"
-                      android:layout_marginBottom="@dimen/margin_16"
-                      android:fontFamily="@font/roboto_bold"
-                      android:text="Continue"
-                      android:textAllCaps="true"
-                      android:textColor="#0798E4"
-                      android:textSize="@dimen/font_18"
-                      app:layout_constraintBottom_toBottomOf="parent"
-                      app:layout_constraintEnd_toEndOf="@+id/text_dialog_title"
-                      app:layout_constraintHorizontal_bias="1"
-                      app:layout_constraintStart_toStartOf="parent"
-                      app:layout_constraintTop_toBottomOf="@+id/text_dialog_title" />
+                    android:text="@string/text_pro"
+                    android:textColor="#7F868C"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/button_pro"
+                    app:layout_constraintTop_toBottomOf="@+id/text_user" />
 
 
-              </androidx.constraintlayout.widget.ConstraintLayout>-->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_pro"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_8"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="@dimen/margin_8"
+                    android:layout_marginBottom="@dimen/margin_8"
+                    android:insetLeft="0dp"
+                    android:insetTop="4dp"
+                    android:insetRight="0dp"
+                    android:insetBottom="4dp"
+                    android:elevation="12dp"
+                    app:cornerRadius="8dp"
+                    android:text="@string/text_buy_pro"
+                    android:background="@drawable/button_gradient"
+                    app:backgroundTint="@null"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_pro_version" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
