@@ -327,6 +327,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             }else{
                 startActivity(Intent(this, AddApplicationActivity::class.java))
             }
+            startActivity(Intent(this, AddApplicationActivity::class.java))
         }
 
         switch_alarm_status?.setOnCheckedChangeListener { buttonView, isChecked ->
