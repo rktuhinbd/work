@@ -40,7 +40,7 @@ public class ApplicationEntity implements Serializable {
     private String endTime;
     @ColumnInfo(name = "number_of_play")
     private int numberOfPlay;
-    @ColumnInfo(name = "sender_names")
+    @ColumnInfo(name = "sender_names", defaultValue = "None")
     private String senderNames;
     @ColumnInfo(name = "message_body")
     private String messageBody;
@@ -50,7 +50,7 @@ public class ApplicationEntity implements Serializable {
     private String tone_path;
     @ColumnInfo(name = "bitmap_path")
     private String bitmapPath;
-    @ColumnInfo(name = "ignored_names")
+    @ColumnInfo(name = "ignored_names", defaultValue = "None")
     private String ignored_names;
 
 
