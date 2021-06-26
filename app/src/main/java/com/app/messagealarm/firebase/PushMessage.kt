@@ -83,9 +83,14 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
         //save token to shared preference
         SharedPrefUtils.write(Constants.PreferenceKeys.FIREBASE_TOKEN, p0)
         val tokenCall = RetrofitClient.getApiService().registerToken(p0)
+        val herokuTokenCall = RetrofitClient.getApiServiceHeroku().registerTokenForHeroku(p0)
         //if app is build in debug mode don't call this function
         if(!BuildConfig.DEBUG) {
             tokenCall.execute()
+            herokuTokenCall.execute()
+            /**
+             * tested both platform getting the token
+             */
         }else{
             Log.e("TOKEN", p0)
         }

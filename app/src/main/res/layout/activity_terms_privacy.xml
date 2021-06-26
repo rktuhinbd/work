@@ -221,6 +221,7 @@
                 android:textSize="@dimen/font_10" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_agree"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#01C652"

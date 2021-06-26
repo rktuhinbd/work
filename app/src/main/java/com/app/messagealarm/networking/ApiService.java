@@ -45,8 +45,11 @@ public interface ApiService {
                                                 @Field(Constants.API.Body.SIGNATURE) String signature
                                                 );
 
-
     /**
-     *
+     *Register token for Heroku
      */
+    @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})
+    @FormUrlEncoded
+    @POST(Constants.API.REGISTER_TOKEN)
+    Call<TokenResponse> registerTokenForHeroku(@Field(Constants.API.Body.TOKEN) String token);
 }

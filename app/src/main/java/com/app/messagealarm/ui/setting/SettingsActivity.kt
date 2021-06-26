@@ -9,6 +9,7 @@ import androidx.preference.*
 import androidx.work.WorkManager
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.about.AboutActivity
+import com.app.messagealarm.ui.buy_pro.BuyProActivity
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -107,8 +108,8 @@ class SettingsActivity : AppCompatActivity() {
 
         private fun setListener(){
             //hide top line of preference category
-            val themeCategory = findPreference("theme_cat") as PreferenceCategory?
-            themeCategory?.isEnabled = isPurchased()
+          /*  val themeCategory = findPreference("theme_cat") as PreferenceCategory?
+            themeCategory?.isEnabled = isPurchased()*/
 
             val chatFeature = findPreference("chat") as Preference?
               chatFeature!!.layoutResource = R.layout.layout_preference_chat
@@ -124,9 +125,6 @@ class SettingsActivity : AppCompatActivity() {
                  * change by Mujahid
                  */
                 LiveChatUtils.openWhatsApp(requireActivity())
-                   /* val intent = Intent(activity, BuyProActivity::class.java)
-                    requireActivity().startActivityForResult(intent,
-                        Constants.ACTION.ACTION_PURCHASE_FROM_SETTING)*/
                 true
             }
 
@@ -174,7 +172,26 @@ class SettingsActivity : AppCompatActivity() {
                 firebaseAnalytics.logEvent("share_app_to_friends", bundle)
                 true
             }
+
+
+            /**
+             * theme section
+             */
+
+            val themeSectionPro = findPreference("theme_pro") as Preference?
+            themeSectionPro?.isVisible  = !isPurchased()
+            themeSectionPro!!.layoutResource = R.layout.layout_preference_theme
+
+            themeSectionPro.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                 val intent = Intent(activity, BuyProActivity::class.java)
+                 requireActivity().startActivityForResult(intent,
+                     Constants.ACTION.ACTION_PURCHASE_FROM_SETTING)
+                true
+            }
+
+
             val themePre = findPreference("theme") as ListPreference?
+            themePre?.isVisible = isPurchased()
             try {
                 if(!isPurchased()){
                     themePre?.setValueIndex(0)
