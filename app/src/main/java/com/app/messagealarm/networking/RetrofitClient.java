@@ -47,6 +47,39 @@ public class RetrofitClient {
                 .client(client)
                 .build();
     }
+
+    /**
+     * Get Retrofit In
+     */
+
+    private static Retrofit getRetrofitInstanceHeroku() {
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+        /**
+         * if debug mode then use logging interceptor or if release mode don't use it
+         */
+        OkHttpClient client;
+        if(BuildConfig.DEBUG){
+            client = new OkHttpClient.Builder()
+                    .connectTimeout(1, TimeUnit.MINUTES)
+                    .readTimeout(1, TimeUnit.MINUTES)
+                    .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                    .build();
+        }else{
+            client = new OkHttpClient.Builder()
+                    .connectTimeout(1, TimeUnit.MINUTES)
+                    .readTimeout(1, TimeUnit.MINUTES)
+                    .build();
+        }
+        return new Retrofit.Builder()
+                .baseUrl(DataUtils.Companion.getString(com.app.messagealarm.R.string.base_url_heroku))
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .client(client)
+                .build();
+    }
+
     /**
      * Get API Service
      *
@@ -55,4 +88,13 @@ public class RetrofitClient {
     public static ApiService getApiService() {
         return getRetrofitInstance().create(ApiService.class);
     }
+
+    /**
+     * Get API Service Heroku
+     * @return API Service Heroku
+     */
+    public static ApiService getApiServiceHeroku() {
+        return getRetrofitInstanceHeroku().create(ApiService.class);
+    }
+
 }

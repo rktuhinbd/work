@@ -42,7 +42,7 @@ class Constants {
             const val TYPE_ALARM = 2
             const val MUTE_TIMER = "mute_timer"
             const val SYNC = "sync"
-            const val MANUAL = "Manual"
+            const val MANUAL = "Until I turn it back on"
         }
     }
     class ACTION{
