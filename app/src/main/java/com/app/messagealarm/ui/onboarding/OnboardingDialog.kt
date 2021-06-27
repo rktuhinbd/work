@@ -61,8 +61,15 @@ class OnboardingDialog : DialogFragment(){
         quick_start_video?.setVideoURI(Uri.parse(path))
         quick_start_video?.setOnPreparedListener {
             it.setScreenOnWhilePlaying(true)
+            if(it.isPlaying){
+                requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            }
         }
-        requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        quick_start_video?.setOnCompletionListener {
+            if(!it.isPlaying){
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            }
+        }
         quick_start_video?.start()
     }
 
