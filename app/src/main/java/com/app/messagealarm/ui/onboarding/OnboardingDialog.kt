@@ -1,5 +1,6 @@
 package com.app.messagealarm.ui.onboarding
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.media.AudioManager
 import android.media.MediaPlayer
@@ -14,6 +15,7 @@ import com.app.messagealarm.R
 import com.app.messagealarm.ui.onboarding.fragments.*
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.SharedPrefUtils
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.layout_dialog_onboarding.*
 
 
@@ -33,22 +35,31 @@ class OnboardingDialog : DialogFragment(){
         super.onActivityCreated(savedInstanceState)
        //initViewPager()
         showVideoTutorial()
-        setListener()
     }
 
-    private fun setListener(){
-        btn_skip?.setOnClickListener {
-            SharedPrefUtils.write(Constants.PreferenceKeys.IS_TUTORIAL_SHOW, true)
-            dismiss()
-        }
-
-        btn_finish?.setOnClickListener {
-            SharedPrefUtils.write(Constants.PreferenceKeys.IS_TUTORIAL_SHOW, true)
-            dismiss()
-        }
-    }
-
+    @SuppressLint("SetTextI18n")
     private fun showVideoTutorial(){
+         startVideo()
+        /**
+         * btn skip listener
+         */
+        btn_skip?.setOnClickListener {
+            if(btn_skip?.text?.toString().equals("SKIP")){
+                //user skipped the video, say you can always see it from setting
+                Toasty.info(requireActivity(), "You can always see the video from Setting!").show()
+                dismiss()
+            }else if(btn_skip?.text?.toString().equals("CLOSE")){
+                //close the video
+                dismiss()
+            }
+        }
+
+        btn_reload?.setOnClickListener {
+            startVideo()
+        }
+    }
+
+    private fun startVideo(){
         //start full sound
         val mobilemode =
             context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
@@ -60,17 +71,16 @@ class OnboardingDialog : DialogFragment(){
         val path = "android.resource://" + requireActivity().packageName.toString() + "/" + R.raw.video_tutorial
         quick_start_video?.setVideoURI(Uri.parse(path))
         quick_start_video?.setOnPreparedListener {
+            requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             it.setScreenOnWhilePlaying(true)
-            if(it.isPlaying){
-                requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
         }
         quick_start_video?.setOnCompletionListener {
-            if(!it.isPlaying){
-                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
+            btn_skip?.text = "CLOSE"
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
         quick_start_video?.start()
+
+
     }
 
 

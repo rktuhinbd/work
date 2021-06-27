@@ -77,7 +77,7 @@
     <string name="notify_channel_name">AlarmDismissName</string>
 
     <string name="notify_channel_description">AlarmDismissDescription</string>
-    <string name="txt_skip">Skip</string>
+    <string name="txt_skip">SKIP</string>
     <string name="txt_desc_first">Click on the rounded + button, for adding application. Message from this applications, will play alarm!</string>
     <string name="desc_quick_start_two">Filter by messaging, and choose application from the list. Choose preferences from the next screen and save application!</string>
     <string name="desc_quick_start_third">Set custom time, set custom sender names, Only messages from this names will play alarm. Also you can filter alarm by message body!</string>

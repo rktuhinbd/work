@@ -4,8 +4,6 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
-
     <VideoView
         android:id="@+id/quick_start_video"
         android:layout_width="0dp"
@@ -45,23 +43,6 @@
         />
 
 
-    <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
-        android:id="@+id/dots_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:dotsColor="@color/colorPrimary"
-        app:dotsCornerRadius="8dp"
-        app:dotsSize="8dp"
-        app:dotsSpacing="4dp"
-        app:dotsWidthFactor="2.5"
-        app:selectedDotColor="@color/colorAccent"
-        app:progressMode="true"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/btn_skip"
-        app:layout_constraintBottom_toBottomOf="@id/btn_skip"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
-
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_finish"
@@ -79,24 +60,19 @@
         android:layout_marginBottom="16dp"
         />
 
-
-
     <ImageButton
-        android:id="@+id/btn_next"
+        android:id="@+id/btn_reload"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:src="@drawable/ic_navigate_next_black_24dp"
+        android:src="@drawable/ic_reload"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
+        android:padding="7dp"
         app:layout_constraintBottom_toBottomOf="@id/btn_skip"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/btn_skip"
         android:layout_marginEnd="16dp"
         android:foreground="?selectableItemBackground"
         />
-
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
