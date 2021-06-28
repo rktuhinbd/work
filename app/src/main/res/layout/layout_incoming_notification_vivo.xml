@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="64dp"
+    android:layout_height="74dp"
     xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center_vertical"
     android:background="@drawable/background_incoming_notification"
@@ -34,23 +34,43 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginStart="12dp"
-                    android:src="@drawable/ic_keyboard_arrow_down_white_24dp" />
-
                 <TextView
-                    android:id="@+id/txt_notification_desc"
+                    android:id="@+id/btn_notification_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/txt_swipe_bottom_to_expand"
+                    android:text="Dismiss"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:gravity="center"
+                    android:background="@color/delete_item"
                     android:textColor="@color/color_white"
-                    android:textStyle="bold"
-                    android:textSize="14sp"
+                    android:layout_marginTop="8dp"
+                    android:textSize="12sp"
                     android:maxLines="1" />
+
+
+                <TextView
+                    android:id="@+id/btn_notification_action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Open Messenger"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="5dp"
+                    android:layout_marginStart="8dp"
+                    android:paddingBottom="5dp"
+                    android:gravity="center"
+                    android:background="@color/success_color"
+                    android:textColor="@color/color_white"
+                    android:layout_marginTop="8dp"
+                    android:textSize="12sp"
+                    android:maxLines="1" />
+
 
             </LinearLayout>
 
@@ -67,27 +87,6 @@
     </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:visibility="gone"
-        android:gravity="start">
-
-        <TextView
-            android:id="@+id/btn_notification_action"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:background="@color/colorPrimary"
-            android:gravity="center"
-            android:padding="12dp"
-            android:layout_marginStart="16dp"
-            android:textColor="@color/color_white"
-            android:textSize="16sp"
-            tools:text="Open Messenger" />
-
-
-    </LinearLayout>
 
 
 </LinearLayout>
