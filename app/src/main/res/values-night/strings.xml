@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Message Alarm</string>
     <string name="txt_notification_permission">Notification Permission</string>
-    <string name="txt_notification_permission_message">This application need notification permission to handle works! please allow it to enjoy!</string>
+    <string name="txt_notification_permission_message"><b>Message Alarm</b> need notification access permission, so it can parse the message and play the alarm when needed! Please check our privacy &amp; policy section for your data protection! </string>
     <string name="waiting_for_messages">Waiting for messages…</string>
     <string name="no_application_found">No Application Found!</string>
     <string name="add_application">Add Application</string>
@@ -18,7 +18,7 @@
     <string name="delete_app_title">Delete Application</string>
     <string name="update_successful">Application updated successfully!</string>
     <string name="update_error">Can\'t update Application!</string>
-    <string name="time_constrain_error">Start time needs to be less than end time!</string>
+    <string name="time_constrain_error">Start time needs to be less than end time, and between one day!</string>
     <string name="txt_discard">Discard</string>
     <string name="txt_discard_changes">Discard Changes?</string>
     <string name="txt_cancel">Cancel</string>
@@ -28,6 +28,7 @@
     <string name="txt_app_info">App Info</string>
     <string name="txt_location_developer">9250 DM, Khulna, Bangladesh</string>
     <string name="txt_version">Version: 1.0.1</string>
+
     <string name="title_activity_settings">SettingsActivity</string>
 
     <!-- Preference Titles -->
@@ -45,12 +46,69 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="txt_themes">Themes</string>
-    <string name="txt_not_background">Not working when app closed?</string>
+    <string name="txt_not_background">Not Working When App In Background?</string>
     <string name="notification_channel">sells_post</string>
     <string name="notification_channel_name">posts</string>
+    <string name="txt_search_app">Search Apps</string>
+    <string name="txt_mute">Mute App</string>
+    <string name="txt_alarm_mute">Mute Time</string>
+    <string name="txt_remove_from_snooze">Remove from Snooze</string>
+    <string name="txt_remove">Remove</string>
+    <string name="txt_invalid_request">Invalid request!</string>
+    <string name="txt_application_muted">Application muted</string>
 
     <string-array name="spinner_item">
         <item>All Apps</item>
         <item>Messaging</item>
     </string-array>
+
+
+    <!--base url-->
+    <string name="base_url">http://www.messagealarm.app/api/</string>
+    <string name="base_url_heroku">https://messagealarmpushservice.herokuapp.com/api/</string>
+    <string name="txt_selected_music_duration">Selected music can\'t be less than 30 seconds!</string>
+    <string name="txt_wrong_duration">Wrong Duration</string>
+    <string name="txt_music">Wrong music format</string>
+    <string name="txt_try_again">Please try again!</string>
+
+
+    <string name="notify_channel_id">AlarmDismissID</string>
+
+    <string name="notify_channel_name">AlarmDismissName</string>
+
+    <string name="notify_channel_description">AlarmDismissDescription</string>
+    <string name="txt_skip">SKIP</string>
+    <string name="txt_desc_first">Click on the rounded + button, for adding application. Message from this applications, will play alarm!</string>
+    <string name="desc_quick_start_two">Filter by messaging, and choose application from the list. Choose preferences from the next screen and save application!</string>
+    <string name="desc_quick_start_third">Set custom time, set custom sender names, Only messages from this names will play alarm. Also you can filter alarm by message body!</string>
+    <string name="desc_quick_start_four">This sticky notification indicates that the application is alive and waiting for message, Click on the notification button to mute and un-mute application, The power button turn off the sticky notification and kills the service</string>
+    <string name="desc_quick_start_five">This is at setting page, set automatic mute time, application will be un-mute after that time. If your phone killing this application when app is in background. Click on that bottom button and follow the instruction</string>
+    <string name="txt_finish">Finish</string>
+    <string name="txt_add_sender_name">Add Sender Name</string>
+    <string name="txt_sender_name">Sender Name</string>
+    <string name="txt_save">Save</string>
+    <string name="txt_clear_message_body">Clear Message Body</string>
+    <string name="txt_desc_clear_message">Do you wants to clear message body?</string>
+    <string name="txt_clear_sender_name">Clear Sender Names</string>
+    <string name="txt_clear_ignore_name">Clear Ignored names</string>
+    <string name="txt_desc_clear_sender_namne">Do you wants to clear sender names?</string>
+    <string name="txt_desc_clear_ignored_namne">Do you wants to clear ignored names?</string>
+    <string name="txt_alarm_repeat">Alarm Repeat</string>
+    <string name="txt_hint_sender_name">Hint: Please add complete name with space!</string>
+    <string name="txt_dismiss">Dismiss</string>
+    <string name="txt_swipe_bottom_to_expand">Swipe bottom to expand</string>
+    <string name="alarm_service">Alarm Service</string>
+    <string name="not_supperted">Sorry your device doesn\'t support this app!</string>
+    <string name="txt_lang_error">Sorry, Our application right now doesn\'t support your phone language! You may get unexpected alarms if you don\'t take this action, Please contact us by mentioning what language you want. We will start work on it real soon, and you will be notified when it’s ready! For now switch to English or hold on, until we get back to you. Thanks for understanding</string>
+    <string name="sell_notice">5% of every sales goes to poor children\'s for education and food!</string>
+    <string name="better_exprience">We know you hate ads, that\'s why \n we said goodbye to it!</string>
+    <string name="txt_idea_desc">We can help you develop your dream project into real, with our dedicated team we are always focused on quality</string>
+    <string name="missing_file">File is missing!</string>
+    <string name="text_terms_policy">When you click \'Get Started\' if you are from EU, EEA or CH you accept the Terms of Services and if you live in other country you accept the <a href="https://www.messagealarm.app/privecy_policy"> <u>Terms of Service</u> </a> and <a href="https://www.messagealarm.app/privecy_policy"><u>Privacy Policy</u></a></string>
+    <string name="text_sub_title_privacy">Please take time to review below the key points of our <a href="Privacy Policy">Privacy Policy</a> and <a href="Terms of Service">Terms of Service</a></string>
+    <string name="text_demo_providing">• Providing, improving, analyzing and personalizing our services.</string>
+    <string name="made_in_bangladesh">made by</string>
+    <string name="text_pro"><u>Check What PRO Version give?</u></string>
+    <string name="text_pro_amount">BUY PRO - BDT 199 <u>BDT 300</u></string>
+
 </resources>
