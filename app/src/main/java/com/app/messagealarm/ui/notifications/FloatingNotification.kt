@@ -286,7 +286,8 @@ class FloatingNotification {
                 com.app.messagealarm.R.layout.layout_incoming_notification_collapsed
             )
 
-            val vivoNotificationView = RemoteViews(context.packageName, com.app.messagealarm.R.layout.layout_incoming_notification_vivo)
+            val vivoNotificationView = RemoteViews(context.packageName,
+                com.app.messagealarm.R.layout.layout_incoming_notification_vivo)
 
             val notificationViewFloatingNotification = RemoteViews(
                 context.packageName,
