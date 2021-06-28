@@ -101,7 +101,6 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
                             SharedPrefUtils.write(Constants.PreferenceKeys.IS_HEROKU_TOKEN_SYNCED, true)
                         }
                     }
-
                     override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
 
                     }

@@ -1,6 +1,7 @@
 package com.app.messagealarm.ui.main.alarm_applications
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -13,9 +14,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -39,6 +38,7 @@ import com.app.messagealarm.ui.setting.SettingsActivity
 import com.app.messagealarm.ui.widget.BottomSheetFragmentLang
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
+import com.google.android.material.button.MaterialButton
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
@@ -76,6 +76,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         setupAppsRecyclerView()
         lookForTablesSize()
         showLanguageDoesNotSupported()
+        Handler(Looper.myLooper()!!).postDelayed(Runnable {
+            showDialogTutorialDecision()
+        },2000)
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
         mMessageReceiver = object : BroadcastReceiver() {
@@ -545,17 +548,38 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         if (AndroidUtils.getCurrentLangCode(this) != "en") {
             val bottomSheet = BottomSheetFragmentLang()
             bottomSheet.show(supportFragmentManager, bottomSheet.tag)
-        } else {
-            //schedule quickstart
-            if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_TUTORIAL_SHOW)) {
-                Handler(Looper.getMainLooper()).postDelayed(Runnable {
-                    showQuickStartDialog()
-                }, 1000)
-            }
-            // askForPermission()
         }
     }
 
+
+    private fun showDialogTutorialDecision(){
+        if(!isFinishing) {
+            val dialog = Dialog(this)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+            dialog.setCancelable(false)
+            dialog.setContentView(R.layout.dialog_watch_tutorial)
+            val btnLater = dialog.findViewById<MaterialButton>(R.id.button_later)
+            val btnWatchVideo = dialog.findViewById<MaterialButton>(R.id.button_watch_video)
+            btnLater.setOnClickListener {
+                Toasty.info(this, "You can always see the video from setting!").show()
+                if(dialog.isShowing){
+                    dialog.dismiss()
+                }
+            }
+            btnWatchVideo.setOnClickListener {
+                if(dialog.isShowing){
+                    dialog.dismiss()
+                }
+                showQuickStartDialog()
+            }
+            val window: Window = dialog.window!!
+            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            if(!dialog.isShowing){
+                dialog.show()
+            }
+        }
+    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

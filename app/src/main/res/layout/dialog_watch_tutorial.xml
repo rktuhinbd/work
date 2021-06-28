@@ -14,7 +14,7 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_8"
+        android:layout_margin="@dimen/margin_16"
         app:cardCornerRadius="12dp"
         app:cardElevation="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -25,9 +25,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_16"
-            android:layout_marginTop="@dimen/margin_8"
-            android:layout_marginEnd="@dimen/margin_16"
             android:background="@drawable/background_card_watch_tutorial">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -40,11 +37,10 @@
 
                 <ImageView
                     android:id="@+id/img_dialog_logo"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_marginTop="8dp"
-
-                    android:src="@mipmap/ic_launcher_new"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="32dp"
+                    android:src="@drawable/ic_tutorial"
                     app:layout_constraintBottom_toTopOf="@+id/text_header_tutorial"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -55,9 +51,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_16"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="@dimen/margin_16"
-                    android:fontFamily="@font/roboto_regular"
+                    android:fontFamily="@font/roboto_bold"
                     android:text="Watch Tutorial video?"
                     android:textAlignment="center"
                     android:textAllCaps="false"
@@ -68,27 +64,15 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/img_dialog_logo" />
 
-                <View
-                    android:id="@+id/view_line"
-                    android:layout_width="0dp"
-                    android:layout_height="0.5dp"
-                    android:layout_marginStart="@dimen/margin_16"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginEnd="@dimen/margin_16"
-                    android:background="#4A4A4A"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_header_tutorial" />
-
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_later"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="45dp"
                     android:layout_marginTop="40dp"
                     android:background="@drawable/background_left_button"
                     android:elevation="4dp"
-                    android:fontFamily="@font/open_sans_regular"
+                    android:fontFamily="@font/open_sans_semi_bold"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
                     android:text="Later"
@@ -104,11 +88,11 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_watch_video"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="45dp"
                     android:layout_marginTop="40dp"
                     android:background="@drawable/background_right_button"
                     android:elevation="4dp"
-                    android:fontFamily="@font/open_sans_regular"
+                    android:fontFamily="@font/open_sans_semi_bold"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
                     android:text="Watch Video"
