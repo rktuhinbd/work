@@ -159,6 +159,7 @@ class Constants {
             const val IS_NOTIFICATION_SWIPED = "is_swiped"
             const val IS_ACTIVITY_STARTED = "is_activity_started"
             const val IS_STOPPED = "is_stopped"
+            const val IS_HEROKU_TOKEN_SYNCED = "is_heroku_token_synced"
             const val IS_SERVICE_STOPPED = "service_stopped"
             const val IS_DARK_MODE = "is_dark"
             const val IS_MUTED = "is_muted"

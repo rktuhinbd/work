@@ -5,6 +5,13 @@ import android.util.Log
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.entity.ApplicationEntity
+import com.app.messagealarm.model.response.TokenResponse
+import com.app.messagealarm.networking.RetrofitClient
+import com.app.messagealarm.utils.Constants
+import com.app.messagealarm.utils.SharedPrefUtils
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.lang.NullPointerException
 
 class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicationView){
@@ -21,6 +28,31 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
                 alarmApplicationView.onGetAlarmApplicationError()
             }
         }).start()
+    }
+
+    /**
+     * sync heroku token when not done by callback from push class
+     */
+    fun syncFirebaseTokenToHeroku(){
+        if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_HEROKU_TOKEN_SYNCED)){
+           RetrofitClient.getApiServiceHeroku().registerTokenForHeroku(
+               SharedPrefUtils.readString(Constants.PreferenceKeys.FIREBASE_TOKEN)
+           ) .enqueue(object : Callback<TokenResponse> {
+               override fun onResponse(
+                   call: Call<TokenResponse>,
+                   response: Response<TokenResponse>
+               ) {
+                   if(response.isSuccessful){
+                       //done
+                       SharedPrefUtils.write(Constants.PreferenceKeys.IS_HEROKU_TOKEN_SYNCED, true)
+                   }
+               }
+
+               override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
+                 //failed to sync
+               }
+           })
+        }
     }
 
     fun updateAppStatus(boolean: Boolean, id:Int){
