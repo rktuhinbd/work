@@ -452,12 +452,16 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
         view_sender_name?.setOnClickListener {
             if (!BaseApplication.isHintShowing) {
-                if (txt_sender_name_value?.text != "None") {
-                    val nameList = txt_sender_name_value?.text.toString().split(", ")
-                    senderNameDialog(nameList.toMutableList() as ArrayList<String>)
-                } else {
-                    val list = ArrayList<String>()
-                    senderNameDialog(list)
+                if(txt_exclude_sender_name_value?.text == "None"){
+                    if (txt_sender_name_value?.text != "None") {
+                        val nameList = txt_sender_name_value?.text.toString().split(", ")
+                        senderNameDialog(nameList.toMutableList() as ArrayList<String>)
+                    } else {
+                        val list = ArrayList<String>()
+                        senderNameDialog(list)
+                    }
+                }else{
+                    Toasty.info(requireActivity(), "First clear the ignored sender name!, both can't be used!").show()
                 }
             }
         }
@@ -468,6 +472,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
         view_exclude_sender_name?.setOnClickListener {
             if (!BaseApplication.isHintShowing) {
+                if(txt_sender_name_value?.text == "None"){
                     if (txt_exclude_sender_name_value?.text != "None") {
                         val nameList = txt_exclude_sender_name_value?.text.toString().split(", ")
                         excludeSenderNameDialog(nameList.toMutableList() as ArrayList<String>)
@@ -475,6 +480,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         val list = ArrayList<String>()
                         excludeSenderNameDialog(list)
                     }
+                }else{
+                    Toasty.info(requireActivity(), "First clear the sender name!, both can't be used!").show()
+                }
+
             }
         }
 
