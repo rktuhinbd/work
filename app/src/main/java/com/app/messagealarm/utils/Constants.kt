@@ -161,6 +161,7 @@ class Constants {
             const val IS_STOPPED = "is_stopped"
             const val IS_HEROKU_TOKEN_SYNCED = "is_heroku_token_synced"
             const val IS_SERVICE_STOPPED = "service_stopped"
+            const val IS_VIDEO_SHOWED = "is_video_showed"
             const val IS_DARK_MODE = "is_dark"
             const val IS_MUTED = "is_muted"
             const val MUTE_TIME = "mute"
