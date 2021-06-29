@@ -50,13 +50,12 @@ public class ApplicationEntity implements Serializable {
     private String tone_path;
     @ColumnInfo(name = "bitmap_path")
     private String bitmapPath;
-    @ColumnInfo(name = "ignored_names")
+    @ColumnInfo(name = "ignored_names", defaultValue = "None")
     private String ignored_names;
 
 
     /**
      * Getter methods
-     *
      * @return
      */
 

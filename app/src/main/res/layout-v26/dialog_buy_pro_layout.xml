@@ -40,7 +40,7 @@
 
                 <TextView
                     android:id="@+id/text_header_individual_offer"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_16"
                     android:layout_marginTop="@dimen/margin_16"
@@ -55,7 +55,7 @@
                     android:textColor="@color/color_white"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toTopOf="@+id/text_sub_title_cool"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/image_app_logo"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintStart_toStartOf="parent"

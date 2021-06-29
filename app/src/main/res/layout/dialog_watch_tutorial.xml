@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.app.messagealarm.ui.widget.CustomStatusBarView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_16"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_card_watch_tutorial">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/img_dialog_logo"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="32dp"
+                    android:src="@drawable/ic_tutorial"
+                    app:layout_constraintBottom_toTopOf="@+id/text_header_tutorial"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_header_tutorial"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_16"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="@dimen/margin_16"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="Watch Tutorial video?"
+                    android:textAlignment="center"
+                    android:textAllCaps="false"
+                    android:textColor="#000000"
+                    android:textSize="@dimen/font_18"
+                    app:layout_constraintBottom_toTopOf="@+id/button_later"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/img_dialog_logo" />
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/text_desc_tutorial"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_24"
+                    android:layout_marginEnd="@dimen/margin_24"
+                    android:fontFamily="@font/roboto_light"
+                    android:text="Offline video inside app, 99% users loves our video "
+                    android:textAlignment="center"
+                    android:textAllCaps="false"
+                    android:textColor="#000000"
+                    android:layout_marginTop="8dp"
+                    android:textSize="@dimen/font_18"
+                    app:layout_constraintBottom_toTopOf="@+id/button_later"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintVertical_bias="0"
+                    app:layout_constraintTop_toBottomOf="@+id/text_header_tutorial" />
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_later"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/background_left_button"
+                    android:elevation="4dp"
+                    android:fontFamily="@font/open_sans_semi_bold"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="Later"
+                    android:textAllCaps="false"
+                    android:textColor="#ffffff"
+                    app:backgroundTint="@null"
+                    app:cornerRadius="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/button_watch_video"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_header_tutorial" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_watch_video"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/background_right_button"
+                    android:elevation="4dp"
+                    android:fontFamily="@font/open_sans_semi_bold"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="Watch Video"
+                    android:textAllCaps="false"
+                    android:textColor="#ffffff"
+                    app:backgroundTint="@null"
+                    app:layout_constraintBottom_toBottomOf="@+id/button_later"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/button_later"
+                    app:layout_constraintTop_toBottomOf="@+id/text_desc_tutorial" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

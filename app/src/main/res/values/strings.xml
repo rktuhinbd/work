@@ -77,7 +77,7 @@
     <string name="notify_channel_name">AlarmDismissName</string>
 
     <string name="notify_channel_description">AlarmDismissDescription</string>
-    <string name="txt_skip">Skip</string>
+    <string name="txt_skip">SKIP</string>
     <string name="txt_desc_first">Click on the rounded + button, for adding application. Message from this applications, will play alarm!</string>
     <string name="desc_quick_start_two">Filter by messaging, and choose application from the list. Choose preferences from the next screen and save application!</string>
     <string name="desc_quick_start_third">Set custom time, set custom sender names, Only messages from this names will play alarm. Also you can filter alarm by message body!</string>
@@ -100,7 +100,7 @@
     <string name="alarm_service">Alarm Service</string>
     <string name="not_supperted">Sorry your device doesn\'t support this app!</string>
     <string name="txt_lang_error">Sorry, Our application right now doesn\'t support your phone language! You may get unexpected alarms if you don\'t take this action, Please contact us by mentioning what language you want. We will start work on it real soon, and you will be notified when it’s ready! For now switch to English or hold on, until we get back to you. Thanks for understanding</string>
-    <string name="sell_notice">5% of every sales goes to poor children\'s education and food!</string>
+    <string name="sell_notice">5% of every sales goes to poor children\'s for education and food!</string>
     <string name="better_exprience">We know you hate ads, that\'s why \n we said goodbye to it!</string>
     <string name="txt_idea_desc">We can help you develop your dream project into real, with our dedicated team we are always focused on quality</string>
     <string name="missing_file">File is missing!</string>
@@ -108,7 +108,7 @@
     <string name="text_sub_title_privacy">Please take time to review below the key points of our <a href="Privacy Policy">Privacy Policy</a> and <a href="Terms of Service">Terms of Service</a></string>
     <string name="text_demo_providing">• Providing, improving, analyzing and personalizing our services.</string>
     <string name="made_in_bangladesh">made by</string>
-    <string name="text_pro"><u>What does the PRO version give?</u></string>
+    <string name="text_pro"><u>Check What PRO Version give?</u></string>
     <string name="text_pro_amount">BUY PRO - BDT 199 <u>BDT 300</u></string>
 
 </resources>

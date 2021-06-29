@@ -246,7 +246,9 @@ class FloatingNotification {
         ) {
             val bundle = Bundle()
             bundle.putString("alarm_by_notification", "true")
+
             firebaseAnalytics.logEvent("alarm_type", bundle)
+
             // sending data to new activity
             val buttonOpenAppBroadcast = Intent(
                 context,
@@ -268,6 +270,7 @@ class FloatingNotification {
                 context,
                 OpenAppReceiver::class.java
             ).setAction("CANCEL")
+
             val btnCancelIntent =
                 PendingIntent.getBroadcast(
                     context,
@@ -282,6 +285,9 @@ class FloatingNotification {
                 context.packageName,
                 com.app.messagealarm.R.layout.layout_incoming_notification_collapsed
             )
+
+            val vivoNotificationView = RemoteViews(context.packageName,
+                com.app.messagealarm.R.layout.layout_incoming_notification_vivo)
 
             val notificationViewFloatingNotification = RemoteViews(
                 context.packageName,
@@ -308,27 +314,67 @@ class FloatingNotification {
                 "Open $appName"
             )
 
+            /**
+             * vivo section
+             */
+            vivoNotificationView.setTextViewText(
+                com.app.messagealarm.R.id.txt_notification_title,
+                "Message from $appName"
+            )
+
+            vivoNotificationView.setTextViewText(
+                com.app.messagealarm.R.id.btn_notification_action,
+                "Open $appName"
+            )
+
             notificationViewFloatingNotification.setOnClickPendingIntent(
                 com.app.messagealarm.R.id.btn_notification_action,
                 buttonOpenApp
             )
+
             notificationViewFloatingNotification.setOnClickPendingIntent(
+                com.app.messagealarm.R.id.btn_notification_cancel,
+                btnCancelIntent
+            )
+
+            /**
+             * view listener section
+             */
+            vivoNotificationView.setOnClickPendingIntent(
+                com.app.messagealarm.R.id.btn_notification_action,
+                buttonOpenApp
+            )
+
+            vivoNotificationView.setOnClickPendingIntent(
                 com.app.messagealarm.R.id.btn_notification_cancel,
                 btnCancelIntent
             )
 
             var notificationBuilder: NotificationCompat.Builder? = null
 
-            notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setCustomBigContentView(notificationViewFloatingNotification)
-                .setCustomHeadsUpContentView(notificationViewFloatingNotification)
-                .setCustomContentView(notificationView)
-                .setSmallIcon(
-                    com.app.messagealarm.R.drawable.ic_notifications_active_black_24dp
-                )
-                .setPriority(Notification.PRIORITY_MAX)
-                .setCategory(NotificationCompat.CATEGORY_ALARM)
-                .setOngoing(true)
+            if(!Build.MANUFACTURER.toLowerCase(Locale.getDefault()).contains("vivo")){
+                notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
+                    .setCustomBigContentView(notificationViewFloatingNotification)
+                    .setCustomHeadsUpContentView(notificationViewFloatingNotification)
+                    .setCustomContentView(notificationView)
+                    .setSmallIcon(
+                        com.app.messagealarm.R.drawable.ic_notifications_active_black_24dp
+                    )
+                    .setPriority(Notification.PRIORITY_MAX)
+                    .setCategory(NotificationCompat.CATEGORY_ALARM)
+                    .setOngoing(true)
+            }else{
+                notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
+                    .setCustomBigContentView(notificationViewFloatingNotification)
+                    .setCustomHeadsUpContentView(notificationViewFloatingNotification)
+                    .setCustomContentView(vivoNotificationView)
+                    .setSmallIcon(
+                        com.app.messagealarm.R.drawable.ic_notifications_active_black_24dp
+                    )
+                    .setPriority(Notification.PRIORITY_MAX)
+                    .setCategory(NotificationCompat.CATEGORY_ALARM)
+                    .setOngoing(true)
+            }
 
             notificationManager = NotificationManagerCompat.from(context)
             notificationManager!!.notify(225, notificationBuilder.build())

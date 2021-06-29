@@ -6,7 +6,10 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import com.app.messagealarm.R
+import com.app.messagealarm.ui.terms_privacy.TermsAndConditionActivity
+import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.PermissionUtils
+import com.app.messagealarm.utils.SharedPrefUtils
 
 class FirstTimeSplashScreen : AppCompatActivity() {
 
@@ -18,13 +21,23 @@ class FirstTimeSplashScreen : AppCompatActivity() {
 
     private fun startAction(){
         if(PermissionUtils.isNotificationAllowed()){
-            openSplashActivity()
+            if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_TERMS_ACCEPTED)){
+                    takeTheUserToTermsAndPrivacy()
+            }else{
+                openSplashActivity()
+            }
         }else{
             //open getting started page with 3 second delay
             Handler(Looper.myLooper()!!).postDelayed({
              openGettingStartedPage()
             },3000)
         }
+    }
+
+
+    private fun takeTheUserToTermsAndPrivacy(){
+        startActivity(Intent(this, TermsAndConditionActivity::class.java))
+        finish()
     }
 
 

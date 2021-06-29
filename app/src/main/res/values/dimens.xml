@@ -2,5 +2,6 @@
 <resources>
     <dimen name="margin_16">16dp</dimen>
     <dimen name="elevation_4">4dp</dimen>
+    <dimen name="margin_24">24dp</dimen>
     <dimen name="margin_8">8dp</dimen>
 </resources>

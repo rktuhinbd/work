@@ -31,7 +31,7 @@ public abstract class AppDatabase extends RoomDatabase {
         Migration migration = new Migration(1, 2) {
             @Override
             public void migrate(@NonNull SupportSQLiteDatabase database) {
-                database.execSQL("ALTER TABLE applications ADD COLUMN ignored_names TEXT");
+                database.execSQL("ALTER TABLE applications ADD COLUMN ignored_names TEXT DEFAULT 'None'");
             }
         };
         if (appDatabase == null) {
