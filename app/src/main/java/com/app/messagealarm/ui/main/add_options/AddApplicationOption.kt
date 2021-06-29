@@ -461,7 +461,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         senderNameDialog(list)
                     }
                 }else{
-                    Toasty.info(requireActivity(), "First clear the ignored sender name!, both can't be used!").show()
+                    Toasty.info(requireActivity(), "First clear the Ignored Sender Name, both can't be used!").show()
                 }
             }
         }
@@ -481,7 +481,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         excludeSenderNameDialog(list)
                     }
                 }else{
-                    Toasty.info(requireActivity(), "First clear the sender name!, both can't be used!").show()
+                    Toasty.info(requireActivity(), "First clear the Sender Name, both can't be used!").show()
                 }
 
             }
@@ -794,6 +794,9 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         val saveButton = dialog.findViewById<MaterialButton>(R.id.btn_save)
         val placeHolder = dialog.findViewById<ImageView>(R.id.img_placeholder)
         val etName = dialog.findViewById<EditText>(R.id.et_sender_name)
+        val txtHint = dialog.findViewById<TextView>(R.id.txt_hint_sender_name)
+        txtHint.text =
+            String.format("Hint: Please add the complete name from %s!", addApplicationEntity.appName)
         val imageButton = dialog.findViewById<TextView>(R.id.btn_add)
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.recycler_view_sender_name)
         val layoutManager = FlexboxLayoutManager(requireActivity())
