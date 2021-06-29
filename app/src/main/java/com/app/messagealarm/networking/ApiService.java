@@ -21,7 +21,6 @@ public interface ApiService {
     @POST(Constants.API.REGISTER_TOKEN)
     Call<TokenResponse> registerToken(@Field(Constants.API.Body.TOKEN) String token);
 
-
     @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})
     @GET(Constants.API.SYNC)
     Call<SyncResponse> syncData(@Query(Constants.API.Body.APP_SIZE)int appSize,
@@ -44,7 +43,6 @@ public interface ApiService {
     Call<VerifyPurchaseResponse> verifyPurchase(@Field(Constants.API.Body.RECEIPT)String receipt,
                                                 @Field(Constants.API.Body.SIGNATURE) String signature
                                                 );
-
     /**
      *Register token for Heroku
      */

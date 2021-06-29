@@ -178,14 +178,12 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             switch_vibrate?.isEnabled = true
             txt_pro_just_vibrate?.visibility = View.GONE
             txt_pro_vibrate?.visibility = View.GONE
-            txt_pro_ignored_name?.visibility = View.GONE
         } else {
             switch_vibrate?.isChecked = false
             switch_vibrate?.isEnabled = false
             switch_just_vibrate?.isChecked = false
             switch_just_vibrate?.isEnabled = false
             txt_pro_just_vibrate?.visibility = View.VISIBLE
-            txt_pro_ignored_name?.visibility = View.VISIBLE
             txt_pro_vibrate?.visibility = View.VISIBLE
         }
     }
@@ -470,7 +468,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
         view_exclude_sender_name?.setOnClickListener {
             if (!BaseApplication.isHintShowing) {
-                if (isProModeEnabled()) {
                     if (txt_exclude_sender_name_value?.text != "None") {
                         val nameList = txt_exclude_sender_name_value?.text.toString().split(", ")
                         excludeSenderNameDialog(nameList.toMutableList() as ArrayList<String>)
@@ -478,9 +475,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         val list = ArrayList<String>()
                         excludeSenderNameDialog(list)
                     }
-                } else {
-                    visitProScreen()
-                }
             }
         }
 
