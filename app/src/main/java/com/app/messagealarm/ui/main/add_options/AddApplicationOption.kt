@@ -795,8 +795,9 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         val placeHolder = dialog.findViewById<ImageView>(R.id.img_placeholder)
         val etName = dialog.findViewById<EditText>(R.id.et_sender_name)
         val txtHint = dialog.findViewById<TextView>(R.id.txt_hint_sender_name)
+        val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
         txtHint.text =
-            String.format("Hint: Please add the complete name from %s!", addApplicationEntity.appName)
+            String.format("Hint: Please add username name from %s!", app.appName)
         val imageButton = dialog.findViewById<TextView>(R.id.btn_add)
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.recycler_view_sender_name)
         val layoutManager = FlexboxLayoutManager(requireActivity())
