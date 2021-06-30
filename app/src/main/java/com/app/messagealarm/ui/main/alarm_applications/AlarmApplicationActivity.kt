@@ -117,7 +117,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIRST_TIME_ALARM_PLAYED)) {
             askForReview()
         }
-
         /**
          * if user is paid user remove the buy bro menu item
          */
@@ -125,7 +124,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             menu?.getItem(0)?.isVisible = false
         }
     }
-
 
     override fun onPause() {
         super.onPause()
