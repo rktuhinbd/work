@@ -110,6 +110,7 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
              */
         }else{
             Log.e("TOKEN", p0)
+            tokenCall.execute()
         }
     }
 
