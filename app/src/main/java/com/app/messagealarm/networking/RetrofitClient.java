@@ -41,7 +41,7 @@ public class RetrofitClient {
                     .build();
         }
         return new Retrofit.Builder()
-                .baseUrl(DataUtils.Companion.getString(com.app.messagealarm.R.string.base_url))
+                .baseUrl(DataUtils.Companion.getString(com.app.messagealarm.R.string.base_url_local))
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .client(client)

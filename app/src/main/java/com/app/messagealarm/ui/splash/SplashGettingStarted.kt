@@ -68,6 +68,9 @@ class SplashGettingStarted : AppCompatActivity() {
                 }
             }
             continueButton.setOnClickListener {
+                if(dialog.isShowing){
+                    dialog.dismiss()
+                }
                 try {
                     val intent =
                         Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")

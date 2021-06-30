@@ -64,6 +64,7 @@
 
 
     <!--base url-->
+    <string name="base_url_local">http://messagealarmtest.herokuapp.com/api/</string>
     <string name="base_url">http://www.messagealarm.app/api/</string>
     <string name="base_url_heroku">https://messagealarmpushservice.herokuapp.com/api/</string>
     <string name="txt_selected_music_duration">Selected music can\'t be less than 30 seconds!</string>
@@ -85,7 +86,7 @@
     <string name="desc_quick_start_five">This is at setting page, set automatic mute time, application will be un-mute after that time. If your phone killing this application when app is in background. Click on that bottom button and follow the instruction</string>
     <string name="txt_finish">Finish</string>
     <string name="txt_add_sender_name">Add Sender Name</string>
-    <string name="txt_sender_name">Sender Name</string>
+    <string name="txt_sender_name">Sender Name...</string>
     <string name="txt_save">Save</string>
     <string name="txt_clear_message_body">Clear Message Body</string>
     <string name="txt_desc_clear_message">Do you wants to clear message body?</string>

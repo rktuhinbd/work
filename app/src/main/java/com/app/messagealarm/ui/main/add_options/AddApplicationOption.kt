@@ -4,20 +4,17 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.app.TimePickerDialog
-import android.app.TimePickerDialog.OnTimeSetListener
-import android.content.ActivityNotFoundException
 import android.content.DialogInterface
 import android.content.Intent
-import android.media.RingtoneManager
+import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.provider.MediaStore
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.*
 import android.widget.*
-import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.BaseApplication
@@ -49,7 +46,6 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 
 class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionView {
@@ -178,14 +174,12 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             switch_vibrate?.isEnabled = true
             txt_pro_just_vibrate?.visibility = View.GONE
             txt_pro_vibrate?.visibility = View.GONE
-            txt_pro_ignored_name?.visibility = View.GONE
         } else {
             switch_vibrate?.isChecked = false
             switch_vibrate?.isEnabled = false
             switch_just_vibrate?.isChecked = false
             switch_just_vibrate?.isEnabled = false
             txt_pro_just_vibrate?.visibility = View.VISIBLE
-            txt_pro_ignored_name?.visibility = View.VISIBLE
             txt_pro_vibrate?.visibility = View.VISIBLE
         }
     }
@@ -454,12 +448,19 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
         view_sender_name?.setOnClickListener {
             if (!BaseApplication.isHintShowing) {
-                if (txt_sender_name_value?.text != "None") {
-                    val nameList = txt_sender_name_value?.text.toString().split(", ")
-                    senderNameDialog(nameList.toMutableList() as ArrayList<String>)
+                if (txt_exclude_sender_name_value?.text == "None") {
+                    if (txt_sender_name_value?.text != "None") {
+                        val nameList = txt_sender_name_value?.text.toString().split(", ")
+                        senderNameDialog(nameList.toMutableList() as ArrayList<String>)
+                    } else {
+                        val list = ArrayList<String>()
+                        senderNameDialog(list)
+                    }
                 } else {
-                    val list = ArrayList<String>()
-                    senderNameDialog(list)
+                    Toasty.info(
+                        requireActivity(),
+                        "First clear the Ignored Sender Name, both can't be used!"
+                    ).show()
                 }
             }
         }
@@ -470,7 +471,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
         view_exclude_sender_name?.setOnClickListener {
             if (!BaseApplication.isHintShowing) {
-                if (isProModeEnabled()) {
+                if (txt_sender_name_value?.text == "None") {
                     if (txt_exclude_sender_name_value?.text != "None") {
                         val nameList = txt_exclude_sender_name_value?.text.toString().split(", ")
                         excludeSenderNameDialog(nameList.toMutableList() as ArrayList<String>)
@@ -479,8 +480,12 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         excludeSenderNameDialog(list)
                     }
                 } else {
-                    visitProScreen()
+                    Toasty.info(
+                        requireActivity(),
+                        "First clear the Sender Name, both can't be used!"
+                    ).show()
                 }
+
             }
         }
 
@@ -791,6 +796,38 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         val saveButton = dialog.findViewById<MaterialButton>(R.id.btn_save)
         val placeHolder = dialog.findViewById<ImageView>(R.id.img_placeholder)
         val etName = dialog.findViewById<EditText>(R.id.et_sender_name)
+        val txtHint = dialog.findViewById<TextView>(R.id.txt_hint_sender_name)
+        /**
+         * show app name at end of hint and make app name green color
+         */
+        try {
+            if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+               val text =
+                    String.format("Hint: Please add username name from %s", holderEntity.appName)
+                val spannable: Spannable = SpannableString(text)
+                spannable.setSpan(
+                    ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.success_color)),
+                    35,
+                    text.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                txtHint.setText(spannable, TextView.BufferType.SPANNABLE)
+            } else {
+                val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
+                val text =
+                    String.format("Hint: Please add username name from %s", app.appName)
+                val spannable: Spannable = SpannableString(text)
+                spannable.setSpan(
+                    ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.success_color)),
+                    35,
+                    text.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                txtHint.setText(spannable, TextView.BufferType.SPANNABLE)
+            }
+        } catch (e: java.lang.NullPointerException) {
+
+        }
         val imageButton = dialog.findViewById<TextView>(R.id.btn_add)
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.recycler_view_sender_name)
         val layoutManager = FlexboxLayoutManager(requireActivity())
@@ -878,6 +915,38 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         val imageButton = dialog.findViewById<TextView>(R.id.btn_add)
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.recycler_view_sender_name)
         val layoutManager = FlexboxLayoutManager(requireActivity())
+        val txtHint = dialog.findViewById<TextView>(R.id.txt_hint_sender_name)
+        /**
+         * show app name at end of hint and make app name green color
+         */
+        try {
+            if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                val text =
+                    String.format("Hint: Please add username name from %s", holderEntity.appName)
+                val spannable: Spannable = SpannableString(text)
+                spannable.setSpan(
+                    ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.success_color)),
+                    35,
+                    text.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                txtHint.setText(spannable, TextView.BufferType.SPANNABLE)
+            } else {
+                val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
+                val text =
+                    String.format("Hint: Please add username name from %s", app.appName)
+                val spannable: Spannable = SpannableString(text)
+                spannable.setSpan(
+                    ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.success_color)),
+                    35,
+                    text.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                txtHint.setText(spannable, TextView.BufferType.SPANNABLE)
+            }
+        } catch (e: java.lang.NullPointerException) {
+
+        }
         val adapter = SenderNameAdapter(list, object : SenderNameAdapter.ItemClickListener {
             override fun onAllItemRemoved() {
                 saveButton.isEnabled = false
@@ -1240,6 +1309,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     }
 
     private fun convertToHolderEntity(app: ApplicationEntity) {
+        holderEntity.appName = app.appName
         holderEntity.packageName = app.packageName
         holderEntity.endTime = app.endTime
         holderEntity.startTime = app.startTime

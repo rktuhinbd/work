@@ -77,8 +77,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         lookForTablesSize()
         showLanguageDoesNotSupported()
         Handler(Looper.myLooper()!!).postDelayed(Runnable {
-            showDialogTutorialDecision()
-        },2000)
+            if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_VIDEO_SHOWED)){
+                showDialogTutorialDecision()
+            }
+        },1000)
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
         mMessageReceiver = object : BroadcastReceiver() {
@@ -115,7 +117,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIRST_TIME_ALARM_PLAYED)) {
             askForReview()
         }
-
         /**
          * if user is paid user remove the buy bro menu item
          */
@@ -123,7 +124,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             menu?.getItem(0)?.isVisible = false
         }
     }
-
 
     override fun onPause() {
         super.onPause()
@@ -562,6 +562,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             val btnLater = dialog.findViewById<MaterialButton>(R.id.button_later)
             val btnWatchVideo = dialog.findViewById<MaterialButton>(R.id.button_watch_video)
             btnLater.setOnClickListener {
+                SharedPrefUtils.write(Constants.PreferenceKeys.IS_VIDEO_SHOWED, true)
                 Toasty.info(this, "You can always see the video from setting!").show()
                 if(dialog.isShowing){
                     dialog.dismiss()

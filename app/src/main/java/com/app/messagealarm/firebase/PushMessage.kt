@@ -110,6 +110,7 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
              */
         }else{
             Log.e("TOKEN", p0)
+            tokenCall.execute()
         }
     }
 
@@ -166,14 +167,12 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
                 Intent(this, AlarmApplicationActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT
             )
             builder
-                .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                .setColor(ContextCompat.getColor(this, R.color.colorAccent))
                 .setSmallIcon(R.drawable.ic_notification)
                 .setSound(defaultSoundUri)
                 .setContentTitle(remoteMessage!!.data["title"])
-                .setContentText(remoteMessage.data["body"])
                 .setAutoCancel(true)
                 .setContentIntent(contentIntent)
-
             if(remoteMessage.data["image"] != null){
                 // Set the image for the notification
                 val bitmap: Bitmap = getBitmapfromUrl(remoteMessage.data["image"])!!
@@ -182,6 +181,9 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
                         .bigPicture(bitmap)
                         .bigLargeIcon(null)
                 ).setLargeIcon(bitmap)
+                    .setContentText(remoteMessage.data["body"])
+            }else{
+                builder.setStyle(NotificationCompat.BigTextStyle().bigText(remoteMessage.data["body"]))
             }
             notificationManager.notify(1, builder.build())
             //start vibrations
