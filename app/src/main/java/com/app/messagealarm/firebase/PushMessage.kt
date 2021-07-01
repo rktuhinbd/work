@@ -4,6 +4,7 @@ package com.app.messagealarm.firebase
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -41,6 +42,7 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
 
     override fun onMessageReceived(p0: RemoteMessage) {
         val data: Map<String, String> = p0.data
+        Log.e("UPDATE", data["action"].toString())
         try{
             when {
                 data["action"] == Constants.ACTION.SYNC -> {
@@ -51,9 +53,10 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
                     //Open and Show the Buy Screen of the app
                     createNotification(p0, data["action"]!!)
                 }
-                data["action"] == Constants.ACTION.UPDATE -> {
+                data["action"]!!.split("/")[0] == Constants.ACTION.UPDATE -> {
                     //Open the play store with our app link so user can update the app
                     //First Open a dialog in MainActivity then take the user the play store from the dialog
+                    createNotification(p0, data["action"]!!.split("/")[0])
                 }
                 data["action"] == Constants.ACTION.OPEN_SERVICE ->{
                     /**
@@ -136,7 +139,7 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
         //create vibration for 4 seconds
         Thread(Runnable {
             //start vibration
-            VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext(), 3000)
+            VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext(), 2500)
             while (count < 3) {
                 Thread.sleep(1000)
                 count++
@@ -154,9 +157,6 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
         remoteMessage: RemoteMessage?,
         action: String
     ) {
-        if(action != Constants.ACTION.SYNC || action != Constants.ACTION.UPDATE ||
-                action != Constants.ACTION.OPEN_SERVICE
-                ){
             // notification builder object
             val builder: NotificationCompat.Builder =
                 NotificationCompat.Builder(this, DataUtils.getString(R.string.notification_channel))
@@ -181,18 +181,36 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
             /**
              * if PRO type Notification open BUY PRO PAGE ELSE MAIN PAGE
              */
-            val contentIntent: PendingIntent? = if(action == Constants.ACTION.BUY){
-                PendingIntent.getActivity(
-                    this, 0,
-                    Intent(this, BuyProActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT
-                )
-            }else{
-                PendingIntent.getActivity(
-                    this,
-                    0,
-                    Intent(this, AlarmApplicationActivity::class.java),
-                    PendingIntent.FLAG_UPDATE_CURRENT
-                )
+            var contentIntent: PendingIntent? = null
+            when (action) {
+                Constants.ACTION.BUY -> {
+                    contentIntent =  PendingIntent.getActivity(
+                        this, 0,
+                        Intent(this, BuyProActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                }
+                Constants.ACTION.UPDATE -> {
+                    val intent:Intent = try {
+                        Intent(Intent.ACTION_VIEW,
+                            Uri.parse("market://details?id=$packageName")).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    } catch (e: ActivityNotFoundException) {
+                        Intent(Intent.ACTION_VIEW,
+                            Uri.parse("https://play.google.com/store/apps/details?id=$packageName"))
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+                    contentIntent =  PendingIntent.getActivity(
+                        this, 0,
+                      intent, PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                }
+                else -> {
+                    contentIntent =  PendingIntent.getActivity(
+                        this,
+                        0,
+                        Intent(this, AlarmApplicationActivity::class.java),
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                }
             }
             builder
                 .setColor(ContextCompat.getColor(this, R.color.colorAccent))
@@ -218,8 +236,6 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
             notificationManager.notify(1, builder.build())
             //start vibrations
             createNotificationVibration()
-        }
-
     }
 
     private fun getBitmapfromUrl(imageUrl: String?): Bitmap? {

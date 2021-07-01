@@ -77,7 +77,10 @@ class DialogUtils {
                     callback.onNegative()
                 }
                 .setCancelable(false)
-            dialog?.show()
+                .create()
+            if(!dialog.isShowing){
+                dialog?.show()
+            }
         }
 
 

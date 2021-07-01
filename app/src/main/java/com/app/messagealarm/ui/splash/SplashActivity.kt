@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.service.notification.NotificationListenerService.requestRebind
+import android.util.Log
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatDelegate
 import com.app.messagealarm.BaseActivity
@@ -29,6 +30,7 @@ class SplashActivity : BaseActivity() {
         changeTheme()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+        handleUpdate()
         val mIntent = Intent(this, AppsReaderIntentService::class.java)
         AppsReaderIntentService.enqueueWork(this, mIntent)
     }
@@ -37,7 +39,7 @@ class SplashActivity : BaseActivity() {
     private fun isUpdateAvailable(): Boolean {
         var isUpdateAvailable = false
         if(SharedPrefUtils.contains(Constants.PreferenceKeys.UPDATED_VERSION)){
-            if(BuildConfig.VERSION_NAME != Constants.PreferenceKeys.UPDATED_VERSION){
+            if(BuildConfig.VERSION_NAME.trim() != SharedPrefUtils.readString(Constants.PreferenceKeys.UPDATED_VERSION.trim())){
                 isUpdateAvailable = true
             }
         }
@@ -110,29 +112,29 @@ class SplashActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+    }
+
+    private fun handleUpdate(){
         if(!isUpdateAvailable()){
             startWorks()
         }else{
-           DialogUtils.showUpdateDialog(this, "New Update", "Get excited new features in ${
-               SharedPrefUtils.readString(
-                   Constants.PreferenceKeys.UPDATED_VERSION, "new"
-               )
-           } version", object : DialogUtils.Callback {
-               override fun onPositive() {
-                   try {
-                       startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")))
-                   } catch (e: ActivityNotFoundException) {
-                       startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
-                   }
-               }
-
-               override fun onNegative() {
-                   startWorks()
-               }
-
-           })
+            DialogUtils.showUpdateDialog(this, "New Update", "Get excited new features in ${
+                SharedPrefUtils.readString(
+                    Constants.PreferenceKeys.UPDATED_VERSION, "new"
+                )
+            } version", object : DialogUtils.Callback {
+                override fun onPositive() {
+                    try {
+                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")))
+                    } catch (e: ActivityNotFoundException) {
+                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
+                    }
+                }
+                override fun onNegative() {
+                    startWorks()
+                }
+            })
         }
-
     }
 
     private fun takeUserToHome() {
