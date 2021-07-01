@@ -159,6 +159,7 @@ class Constants {
             const val FIREBASE_TOKEN = "firebase_token"
             const val IS_TUTORIAL_SHOW = "is_tutorial"
             const val CONSTRAIN_COUNT = "constrain_count"
+            const val FIRST_APP_SYNC_FINISHED = "first_app_sync_finished"
             const val UPDATED_VERSION = "updated_version"
             const val IS_NOTIFICATION_SWIPED = "is_swiped"
             const val IS_ACTIVITY_STARTED = "is_activity_started"

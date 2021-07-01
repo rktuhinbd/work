@@ -45,7 +45,6 @@ public interface ApiService {
                                               @Field(Constants.API.Body.TOKEN) String token
                                               );
 
-
     /**
      * For version 2.0.2 we are adding firebase token in the api
      * @param receipt
@@ -72,7 +71,6 @@ public interface ApiService {
      * Get latest version info
      */
     @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})
-    @FormUrlEncoded
     @GET(Constants.API.LATEST_VERSION)
     Call<LatestInfo> getLatestVersion();
 }

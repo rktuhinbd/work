@@ -80,24 +80,28 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
      */
     fun getSyncedLowerLoaded(context: Context){
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
-        Thread(Runnable {
+        Thread {
             try {
                 val appSize = appDatabase.appDao().totalCountOfApp
                 val langSize = appDatabase.languageDao().totalCountOfLanguage
                 val appConstrainSize = appDatabase.appConstrainDao().totalCountOfAppConstrain
-                if(!WorkManagerUtils.isWorkScheduled(context, Constants.Default.WORK_SYNC)){
-                    if(SharedPrefUtils.contains(Constants.PreferenceKeys.CONSTRAIN_COUNT)){
-                        if(appConstrainSize < SharedPrefUtils.readInt(Constants.PreferenceKeys.CONSTRAIN_COUNT)){
-                            alarmApplicationView.onTablesSizeRequestSuccess(appSize, langSize, appConstrainSize)
+                if (!WorkManagerUtils.isWorkScheduled(context, Constants.Default.WORK_SYNC)) {
+                    if (SharedPrefUtils.contains(Constants.PreferenceKeys.CONSTRAIN_COUNT)) {
+                        if (appConstrainSize < SharedPrefUtils.readInt(Constants.PreferenceKeys.CONSTRAIN_COUNT)) {
+                            alarmApplicationView.onTablesSizeRequestSuccess(
+                                appSize,
+                                langSize,
+                                appConstrainSize
+                            )
                         }
                     }
                 }
-            }catch (e:SQLiteException){
+            } catch (e: SQLiteException) {
 
-            }catch (e:NullPointerException){
+            } catch (e: NullPointerException) {
 
             }
-        }).start()
+        }.start()
     }
 
     fun getRequiredTableSize(){

@@ -1100,16 +1100,12 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                          * Check for unknown app
                          */
                         addApplicationOptionPresenter?.checkForUnknownApp(
+                            requireContext(),
                             addApplicationEntity.appName,
                             addApplicationEntity.packageName
                         )
                     } catch (e: Exception) {
-                        if (isAdded) {
-                            requireActivity().runOnUiThread {
-                                hideProgressBar()
-                                Toasty.error(requireActivity(), e.message!!).show()
-                            }
-                        }
+                       e.printStackTrace()
                     }
                 }).start()
             } else {
