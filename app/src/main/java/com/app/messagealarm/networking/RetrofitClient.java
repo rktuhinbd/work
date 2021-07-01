@@ -6,6 +6,14 @@ import com.app.messagealarm.utils.DataUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -41,12 +49,33 @@ public class RetrofitClient {
                     .build();
         }
         return new Retrofit.Builder()
-                .baseUrl(DataUtils.Companion.getString(com.app.messagealarm.R.string.base_url))
+                .baseUrl(DataUtils.Companion.getString(com.app.messagealarm.R.string.base_url_local))
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .client(client)
                 .build();
     }
+
+   // Use this method in order to get your IpAddress
+   public static String getExternalIpAddress() throws Exception {
+       URL whatismyip = new URL("http://checkip.amazonaws.com");
+       BufferedReader in = null;
+       try {
+           in = new BufferedReader(new InputStreamReader(
+                   whatismyip.openStream()));
+           return in.readLine();
+       }catch (Exception e){
+           return "Unknown";
+       }finally {
+           if (in != null) {
+               try {
+                   in.close();
+               } catch (IOException e) {
+                   e.printStackTrace();
+               }
+           }
+       }
+   }
 
     /**
      * Get Retrofit In

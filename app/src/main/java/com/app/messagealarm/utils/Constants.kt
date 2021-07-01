@@ -42,6 +42,7 @@ class Constants {
             const val TYPE_ALARM = 2
             const val MUTE_TIMER = "mute_timer"
             const val SYNC = "sync"
+            const val WORK_SYNC = "work_sync"
             const val MANUAL = "Until I turn it back on"
         }
     }
@@ -150,12 +151,16 @@ class Constants {
 
     class PreferenceKeys {
         companion object {
+            const val COUNTRY_NAME = "country_name"
             const val IS_GETTING_STARTED_PAGE_VISITED = "visited_getting_started"
             const val IS_FIRST_TIME_ALARM_PLAYED = "alarm_played"
             const val IS_REVIEW_SCREEN_SHOWN = "review_asked"
             const val IS_PURCHASED = "is_purchased"
             const val FIREBASE_TOKEN = "firebase_token"
             const val IS_TUTORIAL_SHOW = "is_tutorial"
+            const val CONSTRAIN_COUNT = "constrain_count"
+            const val FIRST_APP_SYNC_FINISHED = "first_app_sync_finished"
+            const val UPDATED_VERSION = "updated_version"
             const val IS_NOTIFICATION_SWIPED = "is_swiped"
             const val IS_ACTIVITY_STARTED = "is_activity_started"
             const val IS_STOPPED = "is_stopped"
@@ -208,6 +213,7 @@ class Constants {
             const val REGISTER_TOKEN = "token/"
             const val UNKNOWN_APP = "unknownapp/"
             const val VERIFY_PURCHASE = "verify_purchase/"
+            const val LATEST_VERSION = "latest_version/"
         }
         class Body{
             companion object{
@@ -219,7 +225,9 @@ class Constants {
                 const val APP_NAME = "app_name"
                 const val PACKAGE_NAME = "app_package_name"
                 const val RECEIPT = "receipt"
+                const val USER_TOKEN = "user_token"
                 const val SIGNATURE = "signature"
+                const val COUNTRY = "country"
             }
         }
         class ResponseFormat{

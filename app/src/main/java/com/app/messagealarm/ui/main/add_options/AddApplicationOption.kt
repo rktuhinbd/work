@@ -4,20 +4,17 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.app.TimePickerDialog
-import android.app.TimePickerDialog.OnTimeSetListener
-import android.content.ActivityNotFoundException
 import android.content.DialogInterface
 import android.content.Intent
-import android.media.RingtoneManager
+import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.provider.MediaStore
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.*
 import android.widget.*
-import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.BaseApplication
@@ -49,7 +46,6 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 
 class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionView {
@@ -801,14 +797,33 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         val placeHolder = dialog.findViewById<ImageView>(R.id.img_placeholder)
         val etName = dialog.findViewById<EditText>(R.id.et_sender_name)
         val txtHint = dialog.findViewById<TextView>(R.id.txt_hint_sender_name)
+        /**
+         * show app name at end of hint and make app name green color
+         */
         try {
             if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
-                txtHint.text =
+               val text =
                     String.format("Hint: Please add username name from %s", holderEntity.appName)
+                val spannable: Spannable = SpannableString(text)
+                spannable.setSpan(
+                    ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.success_color)),
+                    35,
+                    text.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                txtHint.setText(spannable, TextView.BufferType.SPANNABLE)
             } else {
                 val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
-                txtHint.text =
+                val text =
                     String.format("Hint: Please add username name from %s", app.appName)
+                val spannable: Spannable = SpannableString(text)
+                spannable.setSpan(
+                    ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.success_color)),
+                    35,
+                    text.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                txtHint.setText(spannable, TextView.BufferType.SPANNABLE)
             }
         } catch (e: java.lang.NullPointerException) {
 
@@ -900,6 +915,38 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         val imageButton = dialog.findViewById<TextView>(R.id.btn_add)
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.recycler_view_sender_name)
         val layoutManager = FlexboxLayoutManager(requireActivity())
+        val txtHint = dialog.findViewById<TextView>(R.id.txt_hint_sender_name)
+        /**
+         * show app name at end of hint and make app name green color
+         */
+        try {
+            if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                val text =
+                    String.format("Hint: Please add username name from %s", holderEntity.appName)
+                val spannable: Spannable = SpannableString(text)
+                spannable.setSpan(
+                    ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.success_color)),
+                    35,
+                    text.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                txtHint.setText(spannable, TextView.BufferType.SPANNABLE)
+            } else {
+                val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
+                val text =
+                    String.format("Hint: Please add username name from %s", app.appName)
+                val spannable: Spannable = SpannableString(text)
+                spannable.setSpan(
+                    ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.success_color)),
+                    35,
+                    text.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                txtHint.setText(spannable, TextView.BufferType.SPANNABLE)
+            }
+        } catch (e: java.lang.NullPointerException) {
+
+        }
         val adapter = SenderNameAdapter(list, object : SenderNameAdapter.ItemClickListener {
             override fun onAllItemRemoved() {
                 saveButton.isEnabled = false
@@ -1044,17 +1091,21 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                             app.packageName,
                             bitmap.toBitmap()
                         )
+                        /**
+                         * Check for latest version
+                         */
+                        addApplicationOptionPresenter?.checkForLatestUpdate()
+
+                        /**
+                         * Check for unknown app
+                         */
                         addApplicationOptionPresenter?.checkForUnknownApp(
+                            requireContext(),
                             addApplicationEntity.appName,
                             addApplicationEntity.packageName
                         )
                     } catch (e: Exception) {
-                        if (isAdded) {
-                            requireActivity().runOnUiThread {
-                                hideProgressBar()
-                                Toasty.error(requireActivity(), e.message!!).show()
-                            }
-                        }
+                       e.printStackTrace()
                     }
                 }).start()
             } else {

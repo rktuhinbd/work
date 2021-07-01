@@ -48,7 +48,6 @@ class TimeUtils private constructor() {
        private fun getCurrentHourBDTime() : Int{
            val calendar = Calendar.getInstance()
            calendar.timeZone = TimeZone.getTimeZone("BST")
-           Log.e("HOUR", calendar.get(Calendar.HOUR_OF_DAY).toString())
            return calendar.get(Calendar.HOUR_OF_DAY)
        }
 
@@ -61,13 +60,13 @@ class TimeUtils private constructor() {
          */
         fun getPossibleReplyTime() : String{
             var possibleTime: String
-            when(getCurrentDayNameBDTime()){
+            when(getCurrentDayNameBDTime().toUpperCase(Locale.getDefault())) {
                 /**
                  * Weekends
                  */
                 "FRI", "SAT" -> {
                     when {
-                        getCurrentHourBDTime() in 10..19 -> {
+                        getCurrentHourBDTime() in 4..13 -> {
                             /**
                              * office hours
                              */
@@ -76,7 +75,7 @@ class TimeUtils private constructor() {
                              */
                             possibleTime = "1.5 hours"
                         }
-                        getCurrentHourBDTime() in 20..23 -> {
+                        getCurrentHourBDTime() in 14..17 -> {
                             /**
                              * office off hours
                              */
@@ -85,7 +84,7 @@ class TimeUtils private constructor() {
                              */
                             possibleTime = "2 hours"
                         }
-                        getCurrentHourBDTime() in 6..9 -> {
+                        getCurrentHourBDTime() in 1..3 -> {
                             /**
                              * office off hours
                              */
@@ -104,7 +103,7 @@ class TimeUtils private constructor() {
                      * Office day
                      */
                     when {
-                        getCurrentHourBDTime() in 10..19 -> {
+                        getCurrentHourBDTime() in 4..13 -> {
                             /**
                              * office hours
                              */
@@ -113,7 +112,7 @@ class TimeUtils private constructor() {
                              */
                             possibleTime = "30 minutes"
                         }
-                        getCurrentHourBDTime() in 20..23 -> {
+                        getCurrentHourBDTime() in 14..17 -> {
                             /**
                              * office off hours
                              */
@@ -122,7 +121,7 @@ class TimeUtils private constructor() {
                              */
                             possibleTime = "1 hour"
                         }
-                        getCurrentHourBDTime() in 6..9 -> {
+                        getCurrentHourBDTime() in 1..3 -> {
                             /**
                              * office off hours
                              */

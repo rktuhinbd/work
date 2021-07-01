@@ -1,5 +1,6 @@
 package com.app.messagealarm.networking;
 
+import com.app.messagealarm.model.response.LatestInfo;
 import com.app.messagealarm.model.response.TokenResponse;
 import com.app.messagealarm.model.response.UnknownAppResponse;
 import com.app.messagealarm.model.response.VerifyPurchaseResponse;
@@ -16,10 +17,17 @@ import retrofit2.http.Query;
 
 public interface ApiService {
 
+    /**
+     * @param country
+     * @param token
+     * @return
+     */
     @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})
     @FormUrlEncoded
     @POST(Constants.API.REGISTER_TOKEN)
-    Call<TokenResponse> registerToken(@Field(Constants.API.Body.TOKEN) String token);
+    Call<TokenResponse> registerToken(@Field(Constants.API.Body.TOKEN) String token,
+                                      @Field(Constants.API.Body.COUNTRY) String country
+                                      );
 
     @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})
     @GET(Constants.API.SYNC)
@@ -37,17 +45,32 @@ public interface ApiService {
                                               @Field(Constants.API.Body.TOKEN) String token
                                               );
 
+    /**
+     * For version 2.0.2 we are adding firebase token in the api
+     * @param receipt
+     * @param signature
+     * @return
+     */
     @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})
     @FormUrlEncoded
     @POST(Constants.API.VERIFY_PURCHASE)
     Call<VerifyPurchaseResponse> verifyPurchase(@Field(Constants.API.Body.RECEIPT)String receipt,
-                                                @Field(Constants.API.Body.SIGNATURE) String signature
+                                                @Field(Constants.API.Body.SIGNATURE) String signature,
+                                                @Field(Constants.API.Body.USER_TOKEN) String token
                                                 );
     /**
      *Register token for Heroku
+     *
      */
     @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})
     @FormUrlEncoded
     @POST(Constants.API.REGISTER_TOKEN)
     Call<TokenResponse> registerTokenForHeroku(@Field(Constants.API.Body.TOKEN) String token);
+
+    /**
+     * Get latest version info
+     */
+    @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})
+    @GET(Constants.API.LATEST_VERSION)
+    Call<LatestInfo> getLatestVersion();
 }
