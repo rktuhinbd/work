@@ -150,6 +150,7 @@ class Constants {
 
     class PreferenceKeys {
         companion object {
+            const val COUNTRY_NAME = "country_name"
             const val IS_GETTING_STARTED_PAGE_VISITED = "visited_getting_started"
             const val IS_FIRST_TIME_ALARM_PLAYED = "alarm_played"
             const val IS_REVIEW_SCREEN_SHOWN = "review_asked"
@@ -219,7 +220,9 @@ class Constants {
                 const val APP_NAME = "app_name"
                 const val PACKAGE_NAME = "app_package_name"
                 const val RECEIPT = "receipt"
+                const val USER_TOKEN = "user_token"
                 const val SIGNATURE = "signature"
+                const val COUNTRY = "country"
             }
         }
         class ResponseFormat{

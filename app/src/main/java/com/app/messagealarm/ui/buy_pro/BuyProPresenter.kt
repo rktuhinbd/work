@@ -44,7 +44,9 @@ class BuyProPresenter(private val buyProView: BuyProView, private val firebaseAn
         signature: String,
         purchase: Purchase
     ){
-        RetrofitClient.getApiService().verifyPurchase(receipt, signature).enqueue(
+        RetrofitClient.getApiService().verifyPurchase(receipt, signature, SharedPrefUtils.readString(
+            Constants.PreferenceKeys.FIREBASE_TOKEN, ""
+        )).enqueue(
             object : Callback<VerifyPurchaseResponse>{
                 override fun onFailure(call: Call<VerifyPurchaseResponse>, t: Throwable) {
                     val bundle = Bundle()

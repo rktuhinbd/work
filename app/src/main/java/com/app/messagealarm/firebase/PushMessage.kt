@@ -12,6 +12,7 @@ import android.graphics.Color
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
+import android.text.format.Formatter
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -21,6 +22,7 @@ import com.app.messagealarm.R
 import com.app.messagealarm.model.response.TokenResponse
 import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.service.notification_service.NotificationListener
+import com.app.messagealarm.ui.buy_pro.BuyProActivity
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
@@ -32,6 +34,7 @@ import retrofit2.Response
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.*
 
 
 class PushMessage : FirebaseMessagingService(), PushMessageView {
@@ -86,21 +89,24 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
         super.onNewToken(p0)
         //save token to shared preference
         SharedPrefUtils.write(Constants.PreferenceKeys.FIREBASE_TOKEN, p0)
-        val tokenCall = RetrofitClient.getApiService().registerToken(p0)
         //if app is build in debug mode don't call this function
         if(!BuildConfig.DEBUG) {
-            tokenCall.execute()
+            //send push token for non debug mode
             RetrofitClient.getApiServiceHeroku().registerTokenForHeroku(p0).enqueue(
                 object : Callback<TokenResponse> {
                     override fun onResponse(
                         call: Call<TokenResponse>,
                         response: Response<TokenResponse>
                     ) {
-                        if(response.isSuccessful){
+                        if (response.isSuccessful) {
                             //heroku token sync success
-                            SharedPrefUtils.write(Constants.PreferenceKeys.IS_HEROKU_TOKEN_SYNCED, true)
+                            SharedPrefUtils.write(
+                                Constants.PreferenceKeys.IS_HEROKU_TOKEN_SYNCED,
+                                true
+                            )
                         }
                     }
+
                     override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
 
                     }
@@ -110,8 +116,18 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
              */
         }else{
             Log.e("TOKEN", p0)
-            tokenCall.execute()
+          sendPushToken(p0)
         }
+    }
+
+    private fun sendPushToken(p0: String){
+        Thread {
+            val tokenCall = RetrofitClient.getApiService().registerToken(
+                p0,
+                RetrofitClient.getExternalIpAddress()
+            )
+            tokenCall.execute()
+        }.start()
     }
 
 
@@ -136,7 +152,7 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
 
     private fun createNotification(
         remoteMessage: RemoteMessage?,
-        action:String
+        action: String
     ) {
         if(action != Constants.ACTION.SYNC || action != Constants.ACTION.UPDATE ||
                 action != Constants.ACTION.OPEN_SERVICE
@@ -162,10 +178,22 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
             }
             val defaultSoundUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             // Set the notification parameters to the notification builder object
-            val contentIntent = PendingIntent.getActivity(
-                this, 0,
-                Intent(this, AlarmApplicationActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT
-            )
+            /**
+             * if PRO type Notification open BUY PRO PAGE ELSE MAIN PAGE
+             */
+            val contentIntent: PendingIntent? = if(action == Constants.ACTION.BUY){
+                PendingIntent.getActivity(
+                    this, 0,
+                    Intent(this, BuyProActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            }else{
+                PendingIntent.getActivity(
+                    this,
+                    0,
+                    Intent(this, AlarmApplicationActivity::class.java),
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            }
             builder
                 .setColor(ContextCompat.getColor(this, R.color.colorAccent))
                 .setSmallIcon(R.drawable.ic_notification)
@@ -183,7 +211,9 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
                 ).setLargeIcon(bitmap)
                     .setContentText(remoteMessage.data["body"])
             }else{
-                builder.setStyle(NotificationCompat.BigTextStyle().bigText(remoteMessage.data["body"]))
+                builder.setStyle(
+                    NotificationCompat.BigTextStyle().bigText(remoteMessage.data["body"])
+                )
             }
             notificationManager.notify(1, builder.build())
             //start vibrations

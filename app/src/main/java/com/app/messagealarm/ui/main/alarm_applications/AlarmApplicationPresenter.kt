@@ -30,6 +30,7 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
         }).start()
     }
 
+
     /**
      * sync heroku token when not done by callback from push class
      */
