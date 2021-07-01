@@ -84,7 +84,9 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             img_start_time?.setImageResource(R.drawable.ic_start_time_white)
             img_end_time?.setImageResource(R.drawable.ic_end_time_white)
             img_exclude_sender_name?.setImageResource(R.drawable.ic_ignore_white)
+            img_sound_level?.setImageResource(R.drawable.volume_white)
         } else {
+            img_sound_level?.setImageResource(R.drawable.volume)
             btn_close?.setImageResource(R.drawable.ic_close)
             btn_save?.setImageResource(R.drawable.ic_tick)
             img_repeat?.setImageResource(R.drawable.ic_repeat)
@@ -109,12 +111,14 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         return inflater.inflate(R.layout.dialog_add_app_options, container, false)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setListener()
         handleEditAndViewMode()
         darkMode()
         enableProMode()
+        txt_percent_sound_level?.text = "${progress_sound_level?.progress}%"
         //should show after at least 2 seconds and need to fix the not attached to activity crash
         /*Handler(Looper.getMainLooper()).postDelayed(Runnable {
             if(isAdded){
@@ -172,13 +176,17 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
             switch_just_vibrate?.isEnabled = true
             switch_vibrate?.isEnabled = true
+            progress_sound_level?.isEnabled = true
             txt_pro_just_vibrate?.visibility = View.GONE
             txt_pro_vibrate?.visibility = View.GONE
+            txt_pro_sound_level?.visibility = View.GONE
         } else {
             switch_vibrate?.isChecked = false
             switch_vibrate?.isEnabled = false
+            progress_sound_level?.isEnabled = false
             switch_just_vibrate?.isChecked = false
             switch_just_vibrate?.isEnabled = false
+            txt_pro_sound_level?.visibility = View.VISIBLE
             txt_pro_just_vibrate?.visibility = View.VISIBLE
             txt_pro_vibrate?.visibility = View.VISIBLE
         }
@@ -408,6 +416,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
 
 
+
         switch_just_vibrate?.setOnCheckedChangeListener { buttonView, isChecked ->
             if (!BaseApplication.isHintShowing) {
                 addApplicationEntity.isJustVibrate = isChecked
@@ -428,6 +437,33 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 if (isProModeEnabled()) {
                     switch_vibrate?.performClick()
                 } else {
+                    //trigger pro screen
+                    visitProScreen()
+                }
+            }
+        }
+
+        /**
+         * Sound level seekbar
+         */
+        progress_sound_level?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                txt_percent_sound_level?.text = "${progress}%"
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+
+            }
+
+        })
+
+        view_sound_level?.setOnClickListener {
+            if (!BaseApplication.isHintShowing) {
+                if (!isProModeEnabled()) {
                     //trigger pro screen
                     visitProScreen()
                 }
