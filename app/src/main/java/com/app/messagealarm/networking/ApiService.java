@@ -1,5 +1,6 @@
 package com.app.messagealarm.networking;
 
+import com.app.messagealarm.model.response.LatestInfo;
 import com.app.messagealarm.model.response.TokenResponse;
 import com.app.messagealarm.model.response.UnknownAppResponse;
 import com.app.messagealarm.model.response.VerifyPurchaseResponse;
@@ -66,4 +67,12 @@ public interface ApiService {
     @FormUrlEncoded
     @POST(Constants.API.REGISTER_TOKEN)
     Call<TokenResponse> registerTokenForHeroku(@Field(Constants.API.Body.TOKEN) String token);
+
+    /**
+     * Get latest version info
+     */
+    @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})
+    @FormUrlEncoded
+    @GET(Constants.API.LATEST_VERSION)
+    Call<LatestInfo> getLatestVersion();
 }

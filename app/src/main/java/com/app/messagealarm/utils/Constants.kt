@@ -42,6 +42,7 @@ class Constants {
             const val TYPE_ALARM = 2
             const val MUTE_TIMER = "mute_timer"
             const val SYNC = "sync"
+            const val WORK_SYNC = "work_sync"
             const val MANUAL = "Until I turn it back on"
         }
     }
@@ -157,6 +158,8 @@ class Constants {
             const val IS_PURCHASED = "is_purchased"
             const val FIREBASE_TOKEN = "firebase_token"
             const val IS_TUTORIAL_SHOW = "is_tutorial"
+            const val CONSTRAIN_COUNT = "constrain_count"
+            const val UPDATED_VERSION = "updated_version"
             const val IS_NOTIFICATION_SWIPED = "is_swiped"
             const val IS_ACTIVITY_STARTED = "is_activity_started"
             const val IS_STOPPED = "is_stopped"
@@ -209,6 +212,7 @@ class Constants {
             const val REGISTER_TOKEN = "token/"
             const val UNKNOWN_APP = "unknownapp/"
             const val VERIFY_PURCHASE = "verify_purchase/"
+            const val LATEST_VERSION = "latest_version/"
         }
         class Body{
             companion object{

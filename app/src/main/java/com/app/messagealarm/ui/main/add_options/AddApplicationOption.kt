@@ -1091,6 +1091,14 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                             app.packageName,
                             bitmap.toBitmap()
                         )
+                        /**
+                         * Check for latest version
+                         */
+                        addApplicationOptionPresenter?.checkForLatestUpdate()
+
+                        /**
+                         * Check for unknown app
+                         */
                         addApplicationOptionPresenter?.checkForUnknownApp(
                             addApplicationEntity.appName,
                             addApplicationEntity.packageName
