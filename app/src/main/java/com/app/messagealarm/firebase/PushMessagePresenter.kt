@@ -5,6 +5,7 @@ import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.local_database.AppDatabase
 
 class PushMessagePresenter(private val pushMessageView: PushMessageView)  {
+
     fun cleanDb(){
         val appdatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread(Runnable {
@@ -18,4 +19,5 @@ class PushMessagePresenter(private val pushMessageView: PushMessageView)  {
             }
         }).start()
     }
+
 }
