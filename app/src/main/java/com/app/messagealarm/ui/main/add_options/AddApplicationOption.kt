@@ -408,20 +408,25 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
              */
             if (!BaseApplication.isHintShowing) {
                 addApplicationEntity.isVibrateOnAlarm = isChecked
-
                 if (switch_vibrate.isChecked) {
                     switch_just_vibrate.isChecked = false
+                    progress_sound_level.isEnabled = true
+                    progress_sound_level.progress = 100
                 }
             }
         }
-
 
 
         switch_just_vibrate?.setOnCheckedChangeListener { buttonView, isChecked ->
             if (!BaseApplication.isHintShowing) {
                 addApplicationEntity.isJustVibrate = isChecked
                 if (isChecked) {
+                    progress_sound_level.isEnabled = false
+                    progress_sound_level.progress = 0
                     switch_vibrate.isChecked = false
+                }else{
+                    progress_sound_level.isEnabled = true
+                    progress_sound_level.progress = 100
                 }
             }
         }
@@ -447,7 +452,9 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
          * Sound level seekbar
          */
         progress_sound_level?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            @SuppressLint("SetTextI18n")
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                addApplicationEntity.soundLevel = progress
                 txt_percent_sound_level?.text = "${progress}%"
             }
 
@@ -1088,7 +1095,23 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         addApplicationEntity.ignored_names = "None"
         addApplicationEntity.messageBody = "None"
         addApplicationEntity.isRunningStatus = true
+        /**
+         * if user from BD then sound level 100 for free
+         * else 70 for free
+         */
+        if(SharedPrefUtils.contains(Constants.PreferenceKeys.COUNTRY_CODE)){
+            if(SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY_CODE) == "BD"){
+                addApplicationEntity.soundLevel = 100
+                holderEntity.soundLevel = 100
 
+            }else{
+                holderEntity.soundLevel = 70
+                addApplicationEntity.soundLevel = 70
+            }
+        }else{
+            holderEntity.soundLevel = 70
+            addApplicationEntity.soundLevel = 70
+        }
         //set this to holder object for checking default
         holderEntity.alarmRepeat = "Always"
         holderEntity.ringTone = "Default"
@@ -1170,6 +1193,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         } else {
             holderEntity.alarmRepeat
         }
+
         if (txt_repeat_value?.text.toString().trim() == repeat) {
             if (txt_ringtone_value?.text.toString().trim() == holderEntity.ringTone) {
                 if (switch_vibrate?.isChecked == holderEntity.isVibrateOnAlarm) {
@@ -1182,7 +1206,9 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                                 if (txt_sender_name_value?.text.toString() == holderEntity.senderNames) {
                                     if (txt_exclude_sender_name_value?.text.toString() == holderEntity.ignored_names) {
                                         if (txt_message_body_value?.text.toString() == holderEntity.messageBody) {
-                                            isDefault = true
+                                            if(progress_sound_level?.progress == holderEntity.soundLevel){
+                                                isDefault = true
+                                            }
                                         }
                                     }
                                 }
@@ -1309,6 +1335,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setPresetValueToUi(app: ApplicationEntity) {
         if (app.alarmRepeat == "Custom") {
             txt_repeat_value?.text = app.repeatDays
@@ -1325,6 +1352,9 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         txt_sender_name_value?.text = app.senderNames
         txt_exclude_sender_name_value?.text = app.ignored_names
         txt_message_body_value?.text = app.messageBody
+        //new added
+        progress_sound_level?.progress = app.soundLevel
+        txt_percent_sound_level?.text = "${app.soundLevel}%"
     }
 
     override fun onApplicationGetSuccess(app: ApplicationEntity) {
@@ -1365,6 +1395,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         holderEntity.tone_path = app.tone_path
         holderEntity.alarmRepeat = app.alarmRepeat
         holderEntity.repeatDays = app.repeatDays
+        holderEntity.soundLevel = app.soundLevel
     }
 
     override fun onApplicationGetError(message: String) {

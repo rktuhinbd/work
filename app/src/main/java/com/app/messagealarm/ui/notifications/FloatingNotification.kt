@@ -48,6 +48,7 @@ class FloatingNotification {
         private const val CHANNEL_NAME = "alarm app channel"
 
         private fun startPlaying(
+            soundLevel:Int,
             isJustVibrate: Boolean,
             appName: String,
             packageName: String,
@@ -70,29 +71,28 @@ class FloatingNotification {
                      break
                  }
                  val once = Once()
-                 once.run(
-                     Runnable {
-                         MediaUtils.playAlarm(
-                             thread!!,
-                             isJustVibrate,
-                             isVibrate,
-                             context, tone, (x == (numberOfPlay - 1)),
-                             packageName,
-                             appName
-                         )
-                         if (x == numberOfPlay - 1) {
-                             //done playing dismiss the activity now
-                             //send a notification that you missed the alarm
-                             notificationManager.cancel(225)
-                             /**
-                              * The bottom two lines were making the app mute when the alarm was finished without touch
-                              * Now it's ignored by Mujahid By 1 June 2021
-                              */
-                             //SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
-                             //notifyMute(true)
-                         }
+                 once.run {
+                     MediaUtils.playAlarm(
+                         thread!!,
+                         soundLevel,
+                         isJustVibrate,
+                         isVibrate,
+                         context, tone, (x == (numberOfPlay - 1)),
+                         packageName,
+                         appName
+                     )
+                     if (x == numberOfPlay - 1) {
+                         //done playing dismiss the activity now
+                         //send a notification that you missed the alarm
+                         notificationManager.cancel(225)
+                         /**
+                          * The bottom two lines were making the app mute when the alarm was finished without touch
+                          * Now it's ignored by Mujahid By 1 June 2021
+                          */
+                         //SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
+                         //notifyMute(true)
                      }
-                 )
+                 }
              }
          })
             thread.start()
@@ -239,6 +239,7 @@ class FloatingNotification {
         }
 
         fun showFloatingNotification(
+            soundLevel: Int,
             title: String,
             isJustVibrate: Boolean,
             appName: String, packageName: String, numberOfPlay: Int,
@@ -380,6 +381,7 @@ class FloatingNotification {
             notificationManager!!.notify(225, notificationBuilder.build())
             //start playing
             startPlaying(
+                soundLevel,
                 isJustVibrate,
                 appName,
                 packageName,

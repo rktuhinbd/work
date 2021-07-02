@@ -87,6 +87,7 @@ class AlarmService {
                 } else {
                     //check if activity is not open
                     FloatingNotification.showFloatingNotification(
+                        app.soundLevel,
                         title.toString(),
                         app.isJustVibrate,
                         app.appName,
@@ -103,6 +104,7 @@ class AlarmService {
                 } else {
                     //check activity is not open
                     FloatingNotification.showFloatingNotification(
+                        app.soundLevel,
                         title.toString(),
                         app.isJustVibrate,
                         app.appName,
@@ -282,6 +284,7 @@ class AlarmService {
                         bundle.putString("alarm_by_thread", "true")
                         firebaseAnalytics.logEvent("alarm_type", bundle)
                         FloatingNotification.showFloatingNotification(
+                            app.soundLevel,
                             titleName.toString(),
                             app.isJustVibrate,
                             app.appName,
@@ -309,13 +312,12 @@ class AlarmService {
                 intent.putExtra(Constants.IntentKeys.IMAGE_PATH, app.bitmapPath)
                 intent.putExtra(Constants.IntentKeys.TITLE, title)
                 intent.putExtra(Constants.IntentKeys.DESC, desc)
+                intent.putExtra(Constants.IntentKeys.SOUND_LEVEL, app.soundLevel)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
                 service.startActivity(intent)
             }
-
-
         }
     }
 }

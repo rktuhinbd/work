@@ -123,6 +123,7 @@ class AlarmActivity : BaseActivity() {
                 once.run(Runnable {
                     MediaUtils.playAlarm(
                         thread!!,
+                        intent?.extras!!.getInt(Constants.IntentKeys.SOUND_LEVEL),
                         intent?.extras!!.getBoolean(Constants.IntentKeys.IS_JUST_VIBRATE),
                         intent?.extras!!.getBoolean(Constants.IntentKeys.IS_VIBRATE),
                         this, tone,

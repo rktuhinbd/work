@@ -52,12 +52,15 @@ public class ApplicationEntity implements Serializable {
     private String bitmapPath;
     @ColumnInfo(name = "ignored_names", defaultValue = "None")
     private String ignored_names;
+    @ColumnInfo(name = "sound_level")
+    private int soundLevel;
 
 
     /**
      * Getter methods
      * @return
      */
+    public int getSoundLevel() {return soundLevel;}
 
     public String getIgnored_names(){
         return ignored_names;
@@ -127,7 +130,6 @@ public class ApplicationEntity implements Serializable {
         return tone_path;
     }
 
-
     public boolean isJustVibrate() {
         return justVibrate;
     }
@@ -137,6 +139,8 @@ public class ApplicationEntity implements Serializable {
     /**
      * Setter methods
      */
+
+    public void setSoundLevel(int soundLevel) {this.soundLevel = soundLevel;}
 
     public void setIgnored_names(String ignored_names){
         this.ignored_names = ignored_names;

@@ -4,6 +4,7 @@ import android.content.Context
 import android.media.AudioManager
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
+import android.media.ToneGenerator.MAX_VOLUME
 import android.net.Uri
 import android.util.Log
 import com.app.messagealarm.BaseApplication
@@ -11,6 +12,7 @@ import com.app.messagealarm.ui.notifications.FloatingNotification
 import com.app.messagealarm.ui.notifications.FloatingNotification.Companion.notifyMute
 import com.app.messagealarm.utils.SharedPrefUtils.write
 import java.io.IOException
+import kotlin.math.ln
 
 
 class MediaUtils {
@@ -25,6 +27,7 @@ class MediaUtils {
 
         fun playAlarm(
             thread: Thread,
+            soundLevel: Int,
             isJustVibrate: Boolean,
             isVibrate: Boolean,
             context: Context,
@@ -36,6 +39,7 @@ class MediaUtils {
             this.thread = thread
             count = 0
             try {
+
                 //start full sound
                 val mobilemode =
                     context.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
@@ -56,9 +60,10 @@ class MediaUtils {
                         mediaPlayer!!.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
                         afd.close()
                     }
-
                     if (!isJustVibrate || (!isJustVibrate && !isVibrate)) {
-                        mediaPlayer!!.setVolume(1.0f, 1.0f)
+                        val volume =
+                            (1 - Math.log((MAX_VOLUME - soundLevel).toDouble()) / Math.log(MAX_VOLUME.toDouble())).toFloat()
+                        mediaPlayer!!.setVolume(volume, volume)
                     } else {
                         mediaPlayer!!.setVolume(0f, 0f)
                     }
@@ -94,17 +99,25 @@ class MediaUtils {
                 if (isVibrate || isJustVibrate) {
                     val once = Once()
                     once.run(Runnable {
-                        VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext(),2000)
+                        VibratorUtils.startVibrate(
+                            BaseApplication.getBaseApplicationContext(),
+                            2000
+                        )
                     })
                 }
             }).start()
 
             val onceAgain = Once()
             onceAgain.run(Runnable {
-                    //stop playBack
-                    stopPlayBackAfterDone(isLastIndex, context, packageName, appName)
-                })
+                //stop playBack
+                stopPlayBackAfterDone(isLastIndex, context, packageName, appName)
+            })
 
+        }
+
+
+        private fun convertToOnePrecisionFloat(number: Float) : Float{
+           return String.format("%.1f", number).toFloat()
         }
 
         private fun stopVibration() {
@@ -181,11 +194,11 @@ class MediaUtils {
                     write(Constants.PreferenceKeys.IS_MUTED, true)
                     notifyMute(true)
                 }
-            }catch (e:java.lang.NullPointerException){
+            }catch (e: java.lang.NullPointerException){
                 //skipped the crash of 2.0.1
                 //TOOD(Have to look at if any problem creates to any devices, during alarm dismiss)
                 //wants to try with recursive call of stop alarm
-            }catch (e:java.lang.IllegalStateException){
+            }catch (e: java.lang.IllegalStateException){
                 //skipped with stopping media player
                 //wants to try with recursive call of stop alarm
             }
@@ -199,7 +212,7 @@ class MediaUtils {
                 } else {
                     false
                 }
-            }catch (e:java.lang.IllegalStateException){
+            }catch (e: java.lang.IllegalStateException){
                 e.printStackTrace()
                 false
                 //wants to try with a recursive call of isPlaying

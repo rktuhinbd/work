@@ -192,6 +192,7 @@ class Constants {
             const val JUST_CANCEL = "just_cancel"
             const val APP_NAME = "app_name"
             const val TONE = "tone"
+            const val SOUND_LEVEL = "sound_level"
             const val TOTAL_APP = "total_app"
             const val NUMBER_OF_PLAY = "number_of_play"
             const val IS_VIBRATE = "is_vibrate"
