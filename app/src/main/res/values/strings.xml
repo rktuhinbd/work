@@ -100,5 +100,6 @@
     <string name="made_in_bangladesh">made by</string>
     <string name="text_pro"><u>Check What PRO Version give?</u></string>
     <string name="text_pro_amount">BUY PRO - BDT 199 <u>BDT 300</u></string>
+    <string name="txt_checkout_pro"><u>Checkout What We are Offering In PRO!</u></string>
 
 </resources>

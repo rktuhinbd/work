@@ -20,6 +20,8 @@ import androidx.core.content.ContextCompat
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.BuildConfig
 import com.app.messagealarm.R
+import com.app.messagealarm.common.CommonPresenter
+import com.app.messagealarm.common.CommonView
 import com.app.messagealarm.model.response.TokenResponse
 import com.app.messagealarm.model.response.UserInfoGlobal
 import com.app.messagealarm.networking.RetrofitClient
@@ -39,7 +41,7 @@ import java.net.URL
 import java.util.*
 
 
-class PushMessage : FirebaseMessagingService(), PushMessageView {
+class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
 
     override fun onMessageReceived(p0: RemoteMessage) {
         val data: Map<String, String> = p0.data
@@ -95,47 +97,21 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
 
     override fun onNewToken(p0: String) {
         super.onNewToken(p0)
+        Log.e("TOKEN", p0)
         //save token to shared preference
         SharedPrefUtils.write(Constants.PreferenceKeys.FIREBASE_TOKEN, p0)
         /**
          * Know user from which country for new user
          */
-         BaseApplication.knowUserFromWhichCountry()
-        //if app is build in debug mode don't call this function
-        if (!BuildConfig.DEBUG) {
-            //send push token for non debug mode
-            RetrofitClient.getApiServiceHeroku().registerTokenForHeroku(p0).enqueue(
-                object : Callback<TokenResponse> {
-                    override fun onResponse(
-                        call: Call<TokenResponse>,
-                        response: Response<TokenResponse>
-                    ) {
-                        if (response.isSuccessful) {
-                            //heroku token sync success
-                            SharedPrefUtils.write(
-                                Constants.PreferenceKeys.IS_HEROKU_TOKEN_SYNCED,
-                                true
-                            )
-                        }
-                    }
-                    override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
-
-                    }
-                })
-            /**
-             * tested both platform getting the token
-             */
-        } else {
-            Log.e("TOKEN", p0)
-            sendPushToken(p0)
-        }
+         val commonPresenter = CommonPresenter(this)
+        commonPresenter.knowUserFromWhichCountry(p0)
     }
 
     private fun sendPushToken(p0: String) {
         Thread {
             val tokenCall = RetrofitClient.getApiService().registerToken(
                 p0,
-                RetrofitClient.getExternalIpAddress()
+                SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY)
             )
             tokenCall.enqueue(object : Callback<TokenResponse> {
                 override fun onResponse(
@@ -284,6 +260,44 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
 
     override fun onDbCleanSuccess() {
         WorkManagerUtils.scheduleSyncWork(this, 0, 0, 0)
+    }
+
+    override fun onSuccess() {
+
+    }
+
+    override fun onSuccess(token:String) {
+        //if app is build in debug mode don't call this function
+        if (!BuildConfig.DEBUG) {
+            //send push token for non debug mode
+            RetrofitClient.getApiServiceHeroku().registerTokenForHeroku(token).enqueue(
+                object : Callback<TokenResponse> {
+                    override fun onResponse(
+                        call: Call<TokenResponse>,
+                        response: Response<TokenResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            //heroku token sync success
+                            SharedPrefUtils.write(
+                                Constants.PreferenceKeys.IS_HEROKU_TOKEN_SYNCED,
+                                true
+                            )
+                        }
+                    }
+                    override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
+
+                    }
+                })
+            /**
+             * tested both platform getting the token
+             */
+        } else {
+            sendPushToken(token)
+        }
+    }
+
+    override fun onError() {
+
     }
 
 }

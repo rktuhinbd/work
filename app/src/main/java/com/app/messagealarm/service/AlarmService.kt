@@ -74,13 +74,40 @@ class AlarmService {
         }
 
         /**
+         *
+         */
+        private fun alarmRecord(lastAppName:String,
+                                lastSenderName:String,
+                                lastAppIconPath:String){
+            //Alarm Count
+            SharedPrefUtils.write(Constants.PreferenceKeys.ALARM_COUNT,
+                    SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT) + 1)
+            //save last app name
+            SharedPrefUtils.write(Constants.PreferenceKeys.LAST_APP_NAME, lastAppName)
+            //save last sender_name
+            SharedPrefUtils.write(Constants.PreferenceKeys.LAST_SENDER_NAME, lastSenderName)
+            //save last app icon path
+            SharedPrefUtils.write(Constants.PreferenceKeys.LAST_APP_ICON_NAME, lastAppIconPath)
+        }
+
+        /**
          * take decision on the notification or activity alarm for playing
          */
         private fun magicPlay(
             ringtone: String, service: Service, sbn: StatusBarNotification?,
             app: ApplicationEntity
         ) {
-            val title = sbn?.notification?.extras!!["android.title"]
+            //get sender name
+            val title = sbn?.notification?.extras!!["android.title"].toString()
+            /**
+             * set alarm record
+             */
+            Thread{
+                alarmRecord(app.appName, title, app.bitmapPath)
+            }.start()
+            /**
+             * play alarm
+             */
             if (!ringtone.contains("Default")) {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     startAlarmActivity(service, app.tone_path, sbn, app)
@@ -88,7 +115,7 @@ class AlarmService {
                     //check if activity is not open
                     FloatingNotification.showFloatingNotification(
                         app.soundLevel,
-                        title.toString(),
+                        title,
                         app.isJustVibrate,
                         app.appName,
                         app.packageName,
@@ -105,7 +132,7 @@ class AlarmService {
                     //check activity is not open
                     FloatingNotification.showFloatingNotification(
                         app.soundLevel,
-                        title.toString(),
+                        title,
                         app.isJustVibrate,
                         app.appName,
                         app.packageName,

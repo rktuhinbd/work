@@ -1105,12 +1105,12 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 holderEntity.soundLevel = 100
 
             }else{
-                holderEntity.soundLevel = 60
-                addApplicationEntity.soundLevel = 60
+                holderEntity.soundLevel = 70
+                addApplicationEntity.soundLevel = 70
             }
         }else{
-            holderEntity.soundLevel = 60
-            addApplicationEntity.soundLevel = 60
+            holderEntity.soundLevel = 70
+            addApplicationEntity.soundLevel = 70
         }
         //set this to holder object for checking default
         holderEntity.alarmRepeat = "Always"

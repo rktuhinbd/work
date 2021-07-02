@@ -43,7 +43,7 @@ class Constants {
             const val MUTE_TIMER = "mute_timer"
             const val SYNC = "sync"
             const val WORK_SYNC = "work_sync"
-            const val MANUAL = "Until I turn it back on"
+            const val MANUAL = "Until I unmute it"
         }
     }
     class ACTION{
@@ -153,6 +153,11 @@ class Constants {
         companion object {
             const val IS_GETTING_STARTED_PAGE_VISITED = "visited_getting_started"
             const val IS_FIRST_TIME_ALARM_PLAYED = "alarm_played"
+            const val ALARM_COUNT = "alarm_count"
+            const val MAIN_SCREEN_OPENED = "main_screen_opened"
+            const val LAST_APP_NAME = "last_app_name"
+            const val LAST_SENDER_NAME = "last_sender_name"
+            const val LAST_APP_ICON_NAME = "last_app_icon_name"
             const val IS_REVIEW_SCREEN_SHOWN = "review_asked"
             const val IS_PURCHASED = "is_purchased"
             const val FIREBASE_TOKEN = "firebase_token"
@@ -174,6 +179,7 @@ class Constants {
             const val IS_TERMS_ACCEPTED = "terms_accepted"
             const val GOT_ONE_MESSAGE = "got_one_message"
             const val COUNTRY_CODE = "country_code"
+            const val COUNTRY = "country"
             const val CURRENCY_CODE = "currency_code"
             const val CURRENCY_SYMBOL = "currency_symbol"
             const val IS_USER_INFO_SAVED = "is_user_info_saved"

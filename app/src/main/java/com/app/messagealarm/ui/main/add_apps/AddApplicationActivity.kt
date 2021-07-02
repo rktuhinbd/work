@@ -68,6 +68,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         //setup toolbar
         toolBarSetup()
         //hide spinner
+        card_view_filter?.visibility = View.INVISIBLE
         txt_filter_by?.visibility = View.INVISIBLE
         spinner_filter?.visibility = View.INVISIBLE
         spinner_drop_down?.visibility = View.INVISIBLE
@@ -141,14 +142,14 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
     override fun onAllApplicationGetSuccess(list: ArrayList<InstalledApps>) {
         try{
-            Collections.sort(list,
-                Comparator<InstalledApps> { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
+            list.sortWith { lhs, rhs -> lhs.appName.compareTo(rhs.appName) }
             runOnUiThread {
                 progress_bar_add_app?.visibility = View.GONE
                 rv_apps_list?.visibility = View.VISIBLE
                 initAllAppsRecyclerView(list)
                 spinner_filter?.visibility = View.VISIBLE
                 txt_filter_by?.visibility = View.VISIBLE
+                card_view_filter?.visibility = View.VISIBLE
                 spinner_drop_down?.visibility = View.VISIBLE
             }
 

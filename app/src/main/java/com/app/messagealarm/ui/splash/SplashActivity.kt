@@ -16,6 +16,8 @@ import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.BuildConfig
 import com.app.messagealarm.R
+import com.app.messagealarm.common.CommonPresenter
+import com.app.messagealarm.common.CommonView
 import com.app.messagealarm.model.response.UserInfoGlobal
 import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.service.app_reader_intent_service.AppsReaderIntentService
@@ -30,13 +32,14 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class SplashActivity : BaseActivity() {
+class SplashActivity : BaseActivity(), CommonView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         changeTheme()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-        BaseApplication.knowUserFromWhichCountry()
+        val commonPresenter = CommonPresenter(this)
+        commonPresenter.knowUserFromWhichCountry()
         handleUpdate()
         val mIntent = Intent(this, AppsReaderIntentService::class.java)
         AppsReaderIntentService.enqueueWork(this, mIntent)
@@ -164,5 +167,17 @@ class SplashActivity : BaseActivity() {
                 progress_bar_splash?.progress = progress
             }
         }.start()
+    }
+
+    override fun onSuccess() {
+
+    }
+
+    override fun onSuccess(token: String) {
+
+    }
+
+    override fun onError() {
+
     }
 }

@@ -82,7 +82,7 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
             if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2)){
                 RetrofitClient.getApiService().updateCurrentToken(
                     SharedPrefUtils.readString(Constants.PreferenceKeys.FIREBASE_TOKEN),
-                    RetrofitClient.getExternalIpAddress(),
+                    SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY),
                     isPaid
                     ).execute()
             }

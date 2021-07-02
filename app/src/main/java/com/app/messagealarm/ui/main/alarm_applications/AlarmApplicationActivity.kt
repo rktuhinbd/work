@@ -1,5 +1,6 @@
 package com.app.messagealarm.ui.main.alarm_applications
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.BroadcastReceiver
@@ -7,14 +8,20 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.*
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -47,6 +54,7 @@ import es.dmoral.toasty.Toasty
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
+import kotlinx.android.synthetic.main.item_added_applications.view.*
 import xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity
 import java.io.File
 import java.io.IOException
@@ -81,6 +89,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 showDialogTutorialDecision()
             }
         },1000)
+        triggerBuyProDialog()
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
         mMessageReceiver = object : BroadcastReceiver() {
@@ -389,6 +398,70 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             } else {
                 ic_alarm_status?.setImageResource(R.drawable.ic_off_button)
                 stopService()
+            }
+        }
+    }
+
+
+    @SuppressLint("SetTextI18n")
+    private fun triggerBuyProDialog(){
+        /**
+         * Every 10 times show buy pro dialog with
+         */
+        if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED) &&
+            (SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT) -
+            SharedPrefUtils.readInt(Constants.PreferenceKeys.MAIN_SCREEN_OPENED)) >= 2){
+                SharedPrefUtils.write(Constants.PreferenceKeys.MAIN_SCREEN_OPENED,
+                SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT)
+                    )
+            if(!isFinishing) {
+                val dialog = Dialog(this)
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+                dialog.setCancelable(false)
+                dialog.setContentView(R.layout.dialog_buy_pro_layout)
+                //init
+                val txtMainTitle = dialog.findViewById<TextView>(R.id.text_header_individual_offer)
+                val imgAppLogo = dialog.findViewById<ImageView>(R.id.image_app_logo)
+                val txtAlarmCount = dialog.findViewById<TextView>(R.id.text_sale)
+                val btnBuyPro = dialog.findViewById<MaterialButton>(R.id.button_pro)
+                btnBuyPro.setOnClickListener {
+                    if(dialog.isShowing){
+                        dialog.dismiss()
+                    }
+                    //one app added now take user to buy
+                    val intent = Intent(this, BuyProActivity::class.java)
+                    startActivityForResult(
+                        intent,
+                        Constants.ACTION.ACTION_PURCHASE_FROM_MAIN
+                    )
+                }
+                //bind view
+                val text = "" +
+                        "You were alarmed, when ${SharedPrefUtils.readString(Constants.PreferenceKeys.LAST_SENDER_NAME)} " +
+                        "sent you message via ${SharedPrefUtils.readString(
+                            Constants.PreferenceKeys.LAST_APP_NAME
+                        )}"
+                val spannable: Spannable = SpannableString(text)
+                spannable.setSpan(
+                    ForegroundColorSpan(ContextCompat.getColor(this, R.color.colorGolden)),
+                    22,
+                    22 + SharedPrefUtils.readString(Constants.PreferenceKeys.LAST_SENDER_NAME).length + 1,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                txtMainTitle.setText(spannable, TextView.BufferType.SPANNABLE)
+                txtAlarmCount.text = "${SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT)} times"
+                imgAppLogo.setImageBitmap(
+                    BitmapFactory.decodeFile(
+                        File(SharedPrefUtils.readString(Constants.PreferenceKeys.LAST_APP_ICON_NAME))
+                            .absolutePath
+                    )
+                )
+                val window: Window = dialog.window!!
+                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                if(!dialog.isShowing){
+                    dialog.show()
+                }
             }
         }
     }
