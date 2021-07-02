@@ -118,7 +118,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         handleEditAndViewMode()
         darkMode()
         enableProMode()
-        txt_percent_sound_level?.text = "${progress_sound_level?.progress}%"
+        setPresetValueToUi(defaultValuesToDataModel())
         //should show after at least 2 seconds and need to fix the not attached to activity crash
         /*Handler(Looper.getMainLooper()).postDelayed(Runnable {
             if(isAdded){
@@ -1105,12 +1105,12 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 holderEntity.soundLevel = 100
 
             }else{
-                holderEntity.soundLevel = 70
-                addApplicationEntity.soundLevel = 70
+                holderEntity.soundLevel = 60
+                addApplicationEntity.soundLevel = 60
             }
         }else{
-            holderEntity.soundLevel = 70
-            addApplicationEntity.soundLevel = 70
+            holderEntity.soundLevel = 60
+            addApplicationEntity.soundLevel = 60
         }
         //set this to holder object for checking default
         holderEntity.alarmRepeat = "Always"
