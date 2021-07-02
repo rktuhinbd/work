@@ -165,6 +165,7 @@ class Constants {
             const val IS_ACTIVITY_STARTED = "is_activity_started"
             const val IS_STOPPED = "is_stopped"
             const val IS_HEROKU_TOKEN_SYNCED = "is_heroku_token_synced"
+            const val IS_FIREBASE_TOKEN_SYNCED_2_0_2 = "is_firebase_token_synced"
             const val IS_SERVICE_STOPPED = "service_stopped"
             const val IS_VIDEO_SHOWED = "is_video_showed"
             const val IS_DARK_MODE = "is_dark"
@@ -214,7 +215,9 @@ class Constants {
             const val UNKNOWN_APP = "unknownapp/"
             const val VERIFY_PURCHASE = "verify_purchase/"
             const val LATEST_VERSION = "latest_version/"
+            const val UPDATE_TOKEN = "update_token/"
         }
+
         class Body{
             companion object{
                 const val APP_SIZE = "app_size"
@@ -228,6 +231,7 @@ class Constants {
                 const val USER_TOKEN = "user_token"
                 const val SIGNATURE = "signature"
                 const val COUNTRY = "country"
+                const val IS_PAID = "is_paid"
             }
         }
         class ResponseFormat{

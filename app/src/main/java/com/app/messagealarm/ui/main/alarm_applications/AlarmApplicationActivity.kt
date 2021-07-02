@@ -98,6 +98,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     private fun lookForAlarmApplication() {
         alarmAppPresenter.getApplicationList()
         alarmAppPresenter.syncFirebaseTokenToHeroku()
+        alarmAppPresenter.updateUserToken(isPurchased())
     }
 
     override fun onResume() {

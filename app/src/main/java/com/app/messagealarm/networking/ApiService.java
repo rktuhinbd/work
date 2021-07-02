@@ -73,4 +73,17 @@ public interface ApiService {
     @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})
     @GET(Constants.API.LATEST_VERSION)
     Call<LatestInfo> getLatestVersion();
+
+    /**
+     * Update existing users token
+     */
+    @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})
+    @FormUrlEncoded
+    @POST(Constants.API.UPDATE_TOKEN)
+    Call<TokenResponse> updateCurrentToken(
+            @Field(Constants.API.Body.USER_TOKEN) String userToken,
+            @Field(Constants.API.Body.COUNTRY) String country,
+            @Field(Constants.API.Body.IS_PAID) Boolean isPaid
+    );
+
 }

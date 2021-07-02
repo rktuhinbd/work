@@ -75,6 +75,22 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
     }
 
     /**
+     * 2.0.1 user to 2.0.2 sending token and status to server so we can know user status
+     */
+    fun updateUserToken(isPaid:Boolean){
+        Thread{
+            if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2)){
+                RetrofitClient.getApiService().updateCurrentToken(
+                    SharedPrefUtils.readString(Constants.PreferenceKeys.FIREBASE_TOKEN),
+                    RetrofitClient.getExternalIpAddress(),
+                    isPaid
+                    ).execute()
+            }
+        }.start()
+
+    }
+
+    /**
      * I know the constrain count is less than the server, sync from server
      * Need to test
      */
