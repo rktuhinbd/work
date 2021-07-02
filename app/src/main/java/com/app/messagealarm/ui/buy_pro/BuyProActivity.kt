@@ -19,6 +19,7 @@ import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_buy_pro_new.*
 import java.io.IOException
+import java.lang.Exception
 import java.util.*
 import kotlin.math.abs
 
@@ -114,8 +115,27 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                         .setSkuDetails(skuDetailsList[0])
                         .build()
                     //set price
-                    btn_buy_pro_user?.text =
-                        "Buy for ${skuDetailsList[0].price}"
+                    if(SharedPrefUtils.contains(Constants.PreferenceKeys.CURRENCY_CODE) &&
+                        SharedPrefUtils.contains(Constants.PreferenceKeys.CURRENCY_SYMBOL)
+                        && skuDetailsList[0].priceCurrencyCode ==
+                            SharedPrefUtils.readString(Constants.PreferenceKeys.CURRENCY_CODE)
+                            ){
+                                try {
+                                    //unused code, will remove if mind doesn't change, MK: 2 JUl 2k21
+                                    /*btn_buy_pro_user?.text =
+                                        "Buy for ${skuDetailsList[0].price} ${SharedPrefUtils.readString(Constants.PreferenceKeys.CURRENCY_SYMBOL)} " +
+                                                skuDetailsList[0].originalPrice.split(skuDetailsList[0].priceCurrencyCode)[1].trim() +
+                                                " " + skuDetailsList[0].priceCurrencyCode*/
+                                    btn_buy_pro_user?.text =
+                                        "Buy for ${skuDetailsList[0].price} " + SharedPrefUtils.readString(Constants.PreferenceKeys.CURRENCY_SYMBOL)
+                                }catch (e:Exception){
+                                    btn_buy_pro_user?.text =
+                                        "Buy for ${skuDetailsList[0].price}"
+                                }
+                    }else{
+                        btn_buy_pro_user?.text =
+                            "Buy for ${skuDetailsList[0].price}"
+                    }
                     progress_purchase?.visibility = View.GONE
                 } else {
                     //try to add item/product id "purchase" inside managed product in google play console
@@ -138,7 +158,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         for (purchase in purchases) {
             //if item is purchased
             if (Constants.Purchase.PRODUCT_ID == purchase.sku && purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-               buyProPresenter?.verifyPurchase(purchase.originalJson, purchase.signature, purchase)
+               //buyProPresenter?.verifyPurchase(purchase.originalJson, purchase.signature, purchase)
             } else if (Constants.Purchase.PRODUCT_ID == purchase.sku && purchase.purchaseState == Purchase.PurchaseState.PENDING) {
                 Toast.makeText(
                     applicationContext,

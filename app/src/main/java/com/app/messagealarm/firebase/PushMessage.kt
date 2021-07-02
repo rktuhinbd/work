@@ -21,6 +21,7 @@ import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.BuildConfig
 import com.app.messagealarm.R
 import com.app.messagealarm.model.response.TokenResponse
+import com.app.messagealarm.model.response.UserInfoGlobal
 import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.ui.buy_pro.BuyProActivity
@@ -113,7 +114,6 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
                             )
                         }
                     }
-
                     override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
 
                     }

@@ -99,6 +99,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         alarmAppPresenter.getApplicationList()
         alarmAppPresenter.syncFirebaseTokenToHeroku()
         alarmAppPresenter.updateUserToken(isPurchased())
+        alarmAppPresenter.knowUserFromWhichCountry()
     }
 
     override fun onResume() {

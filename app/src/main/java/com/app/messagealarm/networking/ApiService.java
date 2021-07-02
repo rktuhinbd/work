@@ -3,6 +3,7 @@ package com.app.messagealarm.networking;
 import com.app.messagealarm.model.response.LatestInfo;
 import com.app.messagealarm.model.response.TokenResponse;
 import com.app.messagealarm.model.response.UnknownAppResponse;
+import com.app.messagealarm.model.response.UserInfoGlobal;
 import com.app.messagealarm.model.response.VerifyPurchaseResponse;
 import com.app.messagealarm.model.response.sync.SyncResponse;
 import com.app.messagealarm.utils.Constants;
@@ -14,6 +15,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 
 public interface ApiService {
 
@@ -86,4 +88,10 @@ public interface ApiService {
             @Field(Constants.API.Body.IS_PAID) Boolean isPaid
     );
 
+    /**
+     * get user country
+     */
+    @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})
+    @GET
+    Call<UserInfoGlobal> getCurrentUserInfo(@Url String url);
 }

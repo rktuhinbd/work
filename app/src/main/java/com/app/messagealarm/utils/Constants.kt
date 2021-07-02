@@ -151,7 +151,6 @@ class Constants {
 
     class PreferenceKeys {
         companion object {
-            const val COUNTRY_NAME = "country_name"
             const val IS_GETTING_STARTED_PAGE_VISITED = "visited_getting_started"
             const val IS_FIRST_TIME_ALARM_PLAYED = "alarm_played"
             const val IS_REVIEW_SCREEN_SHOWN = "review_asked"
@@ -174,6 +173,10 @@ class Constants {
             const val THEME = "theme"
             const val IS_TERMS_ACCEPTED = "terms_accepted"
             const val GOT_ONE_MESSAGE = "got_one_message"
+            const val COUNTRY_CODE = "country_code"
+            const val CURRENCY_CODE = "currency_code"
+            const val CURRENCY_SYMBOL = "currency_symbol"
+            const val IS_USER_INFO_SAVED = "is_user_info_saved"
 
         }
     }
