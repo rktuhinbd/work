@@ -34,52 +34,6 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
     }
 
     /**
-     * Save to shared preference user from which country
-     */
-     fun knowUserFromWhichCountry(){
-        if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_USER_INFO_SAVED)){
-            Thread{
-                val ipAddress = RetrofitClient.getExternalIpAddress()
-                val url = String.format("https://api.ipstack.com/%s?access_key=7abb122c84ee6a620119f0566fa0b620", ipAddress)
-                RetrofitClient.getApiService().getCurrentUserInfo(url).enqueue(object : Callback<UserInfoGlobal>{
-                    override fun onResponse(
-                        call: Call<UserInfoGlobal>,
-                        response: Response<UserInfoGlobal>
-                    ) {
-                        if(response.isSuccessful){
-                            /**
-                             * got the response
-                             */
-                            //save the country code
-                            //save the currency code
-                            //save the currency symbol
-                            val userInfo = response.body()
-                            SharedPrefUtils.write(Constants.PreferenceKeys.COUNTRY_CODE,
-                                userInfo?.countryCode!!
-                            )
-                            SharedPrefUtils.write(Constants.PreferenceKeys.CURRENCY_CODE,
-                                userInfo.currency.code
-                            )
-                            SharedPrefUtils.write(Constants.PreferenceKeys.CURRENCY_SYMBOL,
-                                userInfo.currency.symbolNative
-                            )
-                            //save user info saved
-                            SharedPrefUtils.write(Constants.PreferenceKeys.IS_USER_INFO_SAVED, true)
-                        }
-                    }
-
-                    override fun onFailure(call: Call<UserInfoGlobal>, t: Throwable) {
-
-                    }
-
-                })
-            }.start()
-        }
-    }
-
-
-
-    /**
      * sync heroku token when not done by callback from push class
      */
     fun syncFirebaseTokenToHeroku(){

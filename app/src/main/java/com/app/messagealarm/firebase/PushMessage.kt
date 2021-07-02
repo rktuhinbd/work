@@ -97,6 +97,10 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
         super.onNewToken(p0)
         //save token to shared preference
         SharedPrefUtils.write(Constants.PreferenceKeys.FIREBASE_TOKEN, p0)
+        /**
+         * Know user from which country for new user
+         */
+         BaseApplication.knowUserFromWhichCountry()
         //if app is build in debug mode don't call this function
         if (!BuildConfig.DEBUG) {
             //send push token for non debug mode

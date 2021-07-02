@@ -13,8 +13,11 @@ import android.util.Log
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatDelegate
 import com.app.messagealarm.BaseActivity
+import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.BuildConfig
 import com.app.messagealarm.R
+import com.app.messagealarm.model.response.UserInfoGlobal
+import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.service.app_reader_intent_service.AppsReaderIntentService
 import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
@@ -22,6 +25,9 @@ import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.DialogUtils
 import com.app.messagealarm.utils.SharedPrefUtils
 import kotlinx.android.synthetic.main.activity_splash.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class SplashActivity : BaseActivity() {
@@ -30,6 +36,7 @@ class SplashActivity : BaseActivity() {
         changeTheme()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+        BaseApplication.knowUserFromWhichCountry()
         handleUpdate()
         val mIntent = Intent(this, AppsReaderIntentService::class.java)
         AppsReaderIntentService.enqueueWork(this, mIntent)

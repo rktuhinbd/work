@@ -5,9 +5,14 @@ import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.app.messagealarm.BaseApplication.Companion.sInstance
 import com.app.messagealarm.model.InstalledApps
+import com.app.messagealarm.model.response.UserInfoGlobal
+import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.LanguageUtils
 import com.app.messagealarm.utils.SharedPrefUtils
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import timber.log.Timber
 import java.util.*
 
@@ -24,6 +29,50 @@ class BaseApplication : MultiDexApplication(){
     }
 
     companion object {
+
+        /**
+         * Save to shared preference user from which country
+         */
+        fun knowUserFromWhichCountry(){
+            if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_USER_INFO_SAVED)){
+                Thread{
+                    val ipAddress = RetrofitClient.getExternalIpAddress()
+                    val url = String.format("https://api.ipstack.com/%s?access_key=7abb122c84ee6a620119f0566fa0b620", ipAddress)
+                    RetrofitClient.getApiService().getCurrentUserInfo(url).enqueue(object :
+                        Callback<UserInfoGlobal> {
+                        override fun onResponse(
+                            call: Call<UserInfoGlobal>,
+                            response: Response<UserInfoGlobal>
+                        ) {
+                            if(response.isSuccessful){
+                                /**
+                                 * got the response
+                                 */
+                                //save the country code
+                                //save the currency code
+                                //save the currency symbol
+                                val userInfo = response.body()
+                                SharedPrefUtils.write(Constants.PreferenceKeys.COUNTRY_CODE,
+                                    userInfo?.countryCode!!
+                                )
+                                SharedPrefUtils.write(Constants.PreferenceKeys.CURRENCY_CODE,
+                                    userInfo.currency.code
+                                )
+                                SharedPrefUtils.write(Constants.PreferenceKeys.CURRENCY_SYMBOL,
+                                    userInfo.currency.symbolNative
+                                )
+                                //save user info saved
+                                SharedPrefUtils.write(Constants.PreferenceKeys.IS_USER_INFO_SAVED, true)
+                            }
+                        }
+
+                        override fun onFailure(call: Call<UserInfoGlobal>, t: Throwable) {
+
+                        }
+                    })
+                }.start()
+            }
+        }
 
         var isHintShowing: Boolean = false
         var installedApps: List<InstalledApps> = ArrayList()
