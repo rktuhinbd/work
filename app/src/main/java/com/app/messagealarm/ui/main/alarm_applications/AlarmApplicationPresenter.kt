@@ -1,5 +1,6 @@
 package com.app.messagealarm.ui.main.alarm_applications
 
+import android.content.Context
 import android.database.sqlite.SQLiteException
 import android.util.Log
 import com.app.messagealarm.BaseApplication
@@ -9,6 +10,7 @@ import com.app.messagealarm.model.response.TokenResponse
 import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.SharedPrefUtils
+import com.app.messagealarm.work_manager.WorkManagerUtils
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,6 +31,7 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
             }
         }).start()
     }
+
 
     /**
      * sync heroku token when not done by callback from push class
@@ -69,6 +72,52 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
                 e.printStackTrace()
             }
         }).start()
+    }
+
+    /**
+     * 2.0.1 user to 2.0.2 sending token and status to server so we can know user status
+     */
+    fun updateUserToken(isPaid:Boolean){
+        Thread{
+            if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2)){
+                RetrofitClient.getApiService().updateCurrentToken(
+                    SharedPrefUtils.readString(Constants.PreferenceKeys.FIREBASE_TOKEN),
+                    RetrofitClient.getExternalIpAddress(),
+                    isPaid
+                    ).execute()
+            }
+        }.start()
+
+    }
+
+    /**
+     * I know the constrain count is less than the server, sync from server
+     * Need to test
+     */
+    fun getSyncedLowerLoaded(context: Context){
+        val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
+        Thread {
+            try {
+                val appSize = appDatabase.appDao().totalCountOfApp
+                val langSize = appDatabase.languageDao().totalCountOfLanguage
+                val appConstrainSize = appDatabase.appConstrainDao().totalCountOfAppConstrain
+                if (!WorkManagerUtils.isWorkScheduled(context, Constants.Default.WORK_SYNC)) {
+                    if (SharedPrefUtils.contains(Constants.PreferenceKeys.CONSTRAIN_COUNT)) {
+                        if (appConstrainSize < SharedPrefUtils.readInt(Constants.PreferenceKeys.CONSTRAIN_COUNT)) {
+                            alarmApplicationView.onTablesSizeRequestSuccess(
+                                appSize,
+                                langSize,
+                                appConstrainSize
+                            )
+                        }
+                    }
+                }
+            } catch (e: SQLiteException) {
+
+            } catch (e: NullPointerException) {
+
+            }
+        }.start()
     }
 
     fun getRequiredTableSize(){

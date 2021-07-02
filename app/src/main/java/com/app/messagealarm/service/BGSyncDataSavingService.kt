@@ -7,6 +7,8 @@ import com.app.messagealarm.model.entity.AppConstrainEntity
 import com.app.messagealarm.model.entity.AppEntity
 import com.app.messagealarm.model.entity.LanguageEntity
 import com.app.messagealarm.model.response.sync.SyncResponse
+import com.app.messagealarm.utils.Constants
+import com.app.messagealarm.utils.SharedPrefUtils
 
 class BGSyncDataSavingService {
 
@@ -53,6 +55,8 @@ class BGSyncDataSavingService {
                             )
                         )
                     }
+                    //first app sync finished
+                    SharedPrefUtils.write(Constants.PreferenceKeys.FIRST_APP_SYNC_FINISHED, true)
                 } catch (e: SQLiteException) {
 
                 } catch (e: NullPointerException) {

@@ -4,6 +4,7 @@ package com.app.messagealarm.firebase
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -12,6 +13,7 @@ import android.graphics.Color
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
+import android.text.format.Formatter
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -21,6 +23,7 @@ import com.app.messagealarm.R
 import com.app.messagealarm.model.response.TokenResponse
 import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.service.notification_service.NotificationListener
+import com.app.messagealarm.ui.buy_pro.BuyProActivity
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
@@ -32,13 +35,15 @@ import retrofit2.Response
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.*
 
 
 class PushMessage : FirebaseMessagingService(), PushMessageView {
 
     override fun onMessageReceived(p0: RemoteMessage) {
         val data: Map<String, String> = p0.data
-        try{
+        Log.e("UPDATE", data["action"].toString())
+        try {
             when {
                 data["action"] == Constants.ACTION.SYNC -> {
                     val pushMessagePresenter = PushMessagePresenter(this)
@@ -48,25 +53,30 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
                     //Open and Show the Buy Screen of the app
                     createNotification(p0, data["action"]!!)
                 }
-                data["action"] == Constants.ACTION.UPDATE -> {
+                data["action"]!!.split("/")[0] == Constants.ACTION.UPDATE -> {
                     //Open the play store with our app link so user can update the app
                     //First Open a dialog in MainActivity then take the user the play store from the dialog
+                    createNotification(p0, data["action"]!!.split("/")[0])
                 }
-                data["action"] == Constants.ACTION.OPEN_SERVICE ->{
+                data["action"] == Constants.ACTION.OPEN_SERVICE -> {
                     /**
                      * If service is killed and user didn't turned of the service, open the service
                      */
-                 if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED))   {
-                     if(!AndroidUtils.isServiceRunning(this, NotificationListener::class.java)){
-                         startMagicService(this)
-                     }
-                 }
+                    if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)) {
+                        if (!AndroidUtils.isServiceRunning(
+                                this,
+                                NotificationListener::class.java
+                            )
+                        ) {
+                            startMagicService(this)
+                        }
+                    }
                 }
-                else ->{
+                else -> {
                     createNotification(p0, data["action"]!!)
                 }
             }
-        }catch (e: NullPointerException){
+        } catch (e: NullPointerException) {
             //skipping the crash
         }
     }
@@ -86,21 +96,24 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
         super.onNewToken(p0)
         //save token to shared preference
         SharedPrefUtils.write(Constants.PreferenceKeys.FIREBASE_TOKEN, p0)
-        val tokenCall = RetrofitClient.getApiService().registerToken(p0)
         //if app is build in debug mode don't call this function
-        if(!BuildConfig.DEBUG) {
-            tokenCall.execute()
+        if (!BuildConfig.DEBUG) {
+            //send push token for non debug mode
             RetrofitClient.getApiServiceHeroku().registerTokenForHeroku(p0).enqueue(
                 object : Callback<TokenResponse> {
                     override fun onResponse(
                         call: Call<TokenResponse>,
                         response: Response<TokenResponse>
                     ) {
-                        if(response.isSuccessful){
+                        if (response.isSuccessful) {
                             //heroku token sync success
-                            SharedPrefUtils.write(Constants.PreferenceKeys.IS_HEROKU_TOKEN_SYNCED, true)
+                            SharedPrefUtils.write(
+                                Constants.PreferenceKeys.IS_HEROKU_TOKEN_SYNCED,
+                                true
+                            )
                         }
                     }
+
                     override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
 
                     }
@@ -108,19 +121,42 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
             /**
              * tested both platform getting the token
              */
-        }else{
+        } else {
             Log.e("TOKEN", p0)
-            tokenCall.execute()
+            sendPushToken(p0)
         }
     }
 
+    private fun sendPushToken(p0: String) {
+        Thread {
+            val tokenCall = RetrofitClient.getApiService().registerToken(
+                p0,
+                RetrofitClient.getExternalIpAddress()
+            )
+            tokenCall.enqueue(object : Callback<TokenResponse> {
+                override fun onResponse(
+                    call: Call<TokenResponse>,
+                    response: Response<TokenResponse>
+                ) {
+                   if(response.isSuccessful){
+                       SharedPrefUtils.write(Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2, true)
+                   }
+                }
 
-    private fun createNotificationVibration(){
+                override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
+
+                }
+            })
+        }.start()
+    }
+
+
+    private fun createNotificationVibration() {
         var count = 0
         //create vibration for 4 seconds
         Thread(Runnable {
             //start vibration
-            VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext(), 3000)
+            VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext(), 2500)
             while (count < 3) {
                 Thread.sleep(1000)
                 count++
@@ -136,60 +172,97 @@ class PushMessage : FirebaseMessagingService(), PushMessageView {
 
     private fun createNotification(
         remoteMessage: RemoteMessage?,
-        action:String
+        action: String
     ) {
-        if(action != Constants.ACTION.SYNC || action != Constants.ACTION.UPDATE ||
-                action != Constants.ACTION.OPEN_SERVICE
-                ){
-            // notification builder object
-            val builder: NotificationCompat.Builder =
-                NotificationCompat.Builder(this, DataUtils.getString(R.string.notification_channel))
-            // Create a notificationManager object
-            val notificationManager =
-                this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            // If android version is greater than 8.0 then create notification channel
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { // Create a notification channel
-                val notificationChannel = NotificationChannel(
-                    DataUtils.getString(R.string.notification_channel),
-                    DataUtils.getString(R.string.notification_channel_name),
-                    NotificationManager.IMPORTANCE_DEFAULT
-                )
-                // Set properties to notification channel
-                notificationChannel.enableLights(true)
-                notificationChannel.lightColor = Color.RED
-                // Pass the notificationChannel object to notificationManager
-                notificationManager.createNotificationChannel(notificationChannel)
-            }
-            val defaultSoundUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-            // Set the notification parameters to the notification builder object
-            val contentIntent = PendingIntent.getActivity(
-                this, 0,
-                Intent(this, AlarmApplicationActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT
+        // notification builder object
+        val builder: NotificationCompat.Builder =
+            NotificationCompat.Builder(this, DataUtils.getString(R.string.notification_channel))
+        // Create a notificationManager object
+        val notificationManager =
+            this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        // If android version is greater than 8.0 then create notification channel
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { // Create a notification channel
+            val notificationChannel = NotificationChannel(
+                DataUtils.getString(R.string.notification_channel),
+                DataUtils.getString(R.string.notification_channel_name),
+                NotificationManager.IMPORTANCE_DEFAULT
             )
-            builder
-                .setColor(ContextCompat.getColor(this, R.color.colorAccent))
-                .setSmallIcon(R.drawable.ic_notification)
-                .setSound(defaultSoundUri)
-                .setContentTitle(remoteMessage!!.data["title"])
-                .setAutoCancel(true)
-                .setContentIntent(contentIntent)
-            if(remoteMessage.data["image"] != null){
-                // Set the image for the notification
-                val bitmap: Bitmap = getBitmapfromUrl(remoteMessage.data["image"])!!
-                builder.setStyle(
-                    NotificationCompat.BigPictureStyle()
-                        .bigPicture(bitmap)
-                        .bigLargeIcon(null)
-                ).setLargeIcon(bitmap)
-                    .setContentText(remoteMessage.data["body"])
-            }else{
-                builder.setStyle(NotificationCompat.BigTextStyle().bigText(remoteMessage.data["body"]))
-            }
-            notificationManager.notify(1, builder.build())
-            //start vibrations
-            createNotificationVibration()
+            // Set properties to notification channel
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = Color.RED
+            // Pass the notificationChannel object to notificationManager
+            notificationManager.createNotificationChannel(notificationChannel)
         }
-
+        val defaultSoundUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        // Set the notification parameters to the notification builder object
+        /**
+         * if PRO type Notification open BUY PRO PAGE ELSE MAIN PAGE
+         */
+        var contentIntent: PendingIntent? = null
+        when (action) {
+            Constants.ACTION.BUY -> {
+                contentIntent = PendingIntent.getActivity(
+                    this, 0,
+                    Intent(this, BuyProActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            }
+            Constants.ACTION.UPDATE -> {
+                val intent: Intent = try {
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("market://details?id=$packageName")
+                    ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                } catch (e: ActivityNotFoundException) {
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://play.google.com/store/apps/details?id=$packageName")
+                    )
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                contentIntent = PendingIntent.getActivity(
+                    this, 0,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            }
+            else -> {
+                contentIntent = PendingIntent.getActivity(
+                    this,
+                    0,
+                    Intent(this, AlarmApplicationActivity::class.java),
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            }
+        }
+        builder
+            .setColor(ContextCompat.getColor(this, R.color.colorAccent))
+            .setSmallIcon(R.drawable.ic_notification)
+            .setSound(defaultSoundUri)
+            .setAutoCancel(true)
+            .setContentIntent(contentIntent)
+        if (remoteMessage!!.data["title"] != null && remoteMessage.data["title"]!!.isNotEmpty()) {
+            builder.setContentTitle(remoteMessage.data["title"])
+        }
+        if (remoteMessage.data["image"] != null) {
+            // Set the image for the notification
+            val bitmap: Bitmap = getBitmapfromUrl(remoteMessage.data["image"])!!
+            builder.setStyle(
+                NotificationCompat.BigPictureStyle()
+                    .bigPicture(bitmap)
+                    .bigLargeIcon(null)
+            ).setLargeIcon(bitmap)
+            if (remoteMessage.data["body"] != null && remoteMessage.data["body"]!!.isNotEmpty()) {
+                builder.setContentText(remoteMessage.data["body"])
+            }
+        } else {
+            if (remoteMessage.data["body"] != null && remoteMessage.data["body"]!!.isNotEmpty()) {
+                builder.setStyle(
+                    NotificationCompat.BigTextStyle().bigText(remoteMessage.data["body"])
+                )
+            }
+        }
+        notificationManager.notify(1, builder.build())
+        //start vibrations
+        createNotificationVibration()
     }
 
     private fun getBitmapfromUrl(imageUrl: String?): Bitmap? {

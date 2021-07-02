@@ -12,13 +12,18 @@ import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.entity.ApplicationEntity
+import com.app.messagealarm.model.response.LatestInfo
 import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.DataUtils
 import com.app.messagealarm.utils.SharedPrefUtils
+import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.JsonParseException
 import org.json.JSONException
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
@@ -102,7 +107,7 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
         }).start()
     }
 
-    fun checkForUnknownApp(appName:String, packageName:String){
+    fun checkForUnknownApp(context: Context, appName:String, packageName:String){
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         var count = 0
         Thread(Runnable {
@@ -113,8 +118,11 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
                 }
             }
             if(count == 0){
+                //check if first time app was synced
                 //it's an unknown app
-                sendUnknownAppNameToServer(appName, packageName)
+                if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.FIRST_APP_SYNC_FINISHED)){
+                    sendUnknownAppNameToServer(appName, packageName)
+                }
             }
         }).start()
     }
@@ -132,7 +140,30 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
         }catch (e:JSONException){
 
         }
+    }
 
+    /**
+     * Check for updated version
+     */
+     fun checkForLatestUpdate(){
+        RetrofitClient.getApiService().latestVersion.enqueue(object : Callback<LatestInfo> {
+            override fun onResponse(call: Call<LatestInfo>, response: Response<LatestInfo>) {
+               if(response.isSuccessful){
+                   //successful call
+                   val latestInfo = response.body()
+                   if(latestInfo!!.isSuccess){
+                       SharedPrefUtils.write(Constants.PreferenceKeys.CONSTRAIN_COUNT,
+                           latestInfo.totalConstraints
+                       )
+                       SharedPrefUtils.write(Constants.PreferenceKeys.UPDATED_VERSION,
+                           latestInfo.currentVersion)
+                   }
+               }
+            }
+            override fun onFailure(call: Call<LatestInfo>, t: Throwable) {
+
+            }
+        })
     }
 
     /*

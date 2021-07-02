@@ -92,11 +92,13 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     private fun lookForTablesSize() {
         alarmAppPresenter.getRequiredTableSize()
+        alarmAppPresenter.getSyncedLowerLoaded(this)
     }
 
     private fun lookForAlarmApplication() {
         alarmAppPresenter.getApplicationList()
         alarmAppPresenter.syncFirebaseTokenToHeroku()
+        alarmAppPresenter.updateUserToken(isPurchased())
     }
 
     override fun onResume() {

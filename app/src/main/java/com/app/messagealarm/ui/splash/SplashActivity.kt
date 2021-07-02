@@ -1,25 +1,26 @@
 package com.app.messagealarm.ui.splash
 
+import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.service.notification.NotificationListenerService.requestRebind
+import android.util.Log
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.app.JobIntentService.enqueueWork
 import com.app.messagealarm.BaseActivity
+import com.app.messagealarm.BuildConfig
 import com.app.messagealarm.R
 import com.app.messagealarm.service.app_reader_intent_service.AppsReaderIntentService
 import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.DialogUtils
-import com.app.messagealarm.utils.PermissionUtils
 import com.app.messagealarm.utils.SharedPrefUtils
-import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_splash.*
 
 
@@ -29,46 +30,30 @@ class SplashActivity : BaseActivity() {
         changeTheme()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+        handleUpdate()
         val mIntent = Intent(this, AppsReaderIntentService::class.java)
         AppsReaderIntentService.enqueueWork(this, mIntent)
     }
 
-    private fun handlePermission() {
-        if (PermissionUtils.isNotificationAllowed()) {
+
+    private fun isUpdateAvailable(): Boolean {
+        var isUpdateAvailable = false
+        if(SharedPrefUtils.contains(Constants.PreferenceKeys.UPDATED_VERSION)){
+            if(BuildConfig.VERSION_NAME.trim() != SharedPrefUtils.readString(Constants.PreferenceKeys.UPDATED_VERSION.trim())){
+                isUpdateAvailable = true
+            }
+        }
+       return isUpdateAvailable
+    }
+
+
+    private fun startWorks() {
             val animation = AnimationUtils.loadAnimation(this, R.anim.bottom_to_top)
             txt_title?.startAnimation(animation)
             progress_bar_splash?.startAnimation(animation)
             defaultPreferences()
             runProgressWithSteps()
             tryReconnectService()
-        } else {
-            /**
-             * take user to getting started page
-             */
-            if (!isFinishing) {
-                DialogUtils.showDialog(
-                    this,
-                    getString(R.string.txt_notification_permission),
-                    getString(R.string.txt_notification_permission_message),
-                    object : DialogUtils.Callback {
-                        override fun onPositive() {
-                            try {
-                                val intent =
-                                    Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
-                                startActivity(intent)
-                            } catch (e: NoClassDefFoundError) {
-                                Toasty.error(this@SplashActivity, getString(R.string.not_supperted))
-                                    .show()
-                            }
-                        }
-                        override fun onNegative() {
-                            finish()
-                        }
-                    }
-                )
-            }
-
-        }
     }
 
     private fun changeTheme() {
@@ -127,7 +112,29 @@ class SplashActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        handlePermission()
+    }
+
+    private fun handleUpdate(){
+        if(!isUpdateAvailable()){
+            startWorks()
+        }else{
+            DialogUtils.showUpdateDialog(this, "New Update", "Get excited new features in ${
+                SharedPrefUtils.readString(
+                    Constants.PreferenceKeys.UPDATED_VERSION, "new"
+                )
+            } version", object : DialogUtils.Callback {
+                override fun onPositive() {
+                    try {
+                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")))
+                    } catch (e: ActivityNotFoundException) {
+                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
+                    }
+                }
+                override fun onNegative() {
+                    startWorks()
+                }
+            })
+        }
     }
 
     private fun takeUserToHome() {
