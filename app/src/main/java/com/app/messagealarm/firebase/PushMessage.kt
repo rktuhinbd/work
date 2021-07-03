@@ -62,6 +62,7 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
                     createNotification(p0, data["action"]!!.split("/")[0])
                 }
                 data["action"] == Constants.ACTION.OPEN_SERVICE -> {
+                    Log.e("PUSH_SERVICE", "TRIGGERED")
                     /**
                      * If service is killed and user didn't turned of the service, open the service
                      */
@@ -71,7 +72,9 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
                                 NotificationListener::class.java
                             )
                         ) {
-                            startMagicService(this)
+                            if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_TERMS_ACCEPTED)){
+                                startMagicService(this)
+                            }
                         }
                     }
                 }
@@ -269,6 +272,11 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
     override fun onSuccess(token:String) {
         //if app is build in debug mode don't call this function
         if (!BuildConfig.DEBUG) {
+            /**
+             * tested both platform getting the token
+             */
+        } else {
+            sendPushToken(token)
             //send push token for non debug mode
             RetrofitClient.getApiServiceHeroku().registerTokenForHeroku(token).enqueue(
                 object : Callback<TokenResponse> {
@@ -288,11 +296,6 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
 
                     }
                 })
-            /**
-             * tested both platform getting the token
-             */
-        } else {
-            sendPushToken(token)
         }
     }
 
