@@ -94,12 +94,14 @@
     <string name="better_exprience">We know you hate ads, that\'s why \n we said goodbye to it!</string>
     <string name="txt_idea_desc">We can help you develop your dream project into real, with our dedicated team we are always focused on quality</string>
     <string name="missing_file">File is missing!</string>
-    <string name="text_terms_policy">When you click \'Get Started\' if you are from EU, EEA or CH you accept the Terms of Services and if you live in other country you accept the <a href="https://www.messagealarm.app/privecy_policy"> <u>Terms of Service</u> </a> and <a href="https://www.messagealarm.app/privecy_policy"><u>Privacy Policy</u></a></string>
-    <string name="text_sub_title_privacy">Please take time to review below the key points of our <a href="Privacy Policy">Privacy Policy</a> and <a href="Terms of Service">Terms of Service</a></string>
+    <string name="text_terms_policy">When you click \'Get Started\' you accept our <a href="https://www.messagealarm.app/privecy_policy"><u>Privacy Policy</u></a>. We recommend you review our policies so you can understand what we are doing with the permission and data we are taking from our users</string>
+    <string name="text_sub_title_privacy">Please take your time to review the key points of our <a href="https://www.messagealarm.app/privecy_policy">Privacy Policy</a> and how we process your data.</string>
     <string name="text_demo_providing">• Providing, improving, analyzing and personalizing our services.</string>
     <string name="made_in_bangladesh">made by</string>
     <string name="text_pro"><u>Check What PRO Version give?</u></string>
     <string name="text_pro_amount">BUY PRO - BDT 199 <u>BDT 300</u></string>
     <string name="txt_checkout_pro"><u>Checkout What We are Offering In PRO!</u></string>
+    <string name="how_we_use_notification_permission">We take this permission so we can read and parse the notification title and body, based on this we generate an alarm when matched with your preset constraints and filters</string>
+    <string name="how_we_use_your_notification_permission">How we use your notification permission</string>
 
 </resources>

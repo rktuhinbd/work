@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.service.notification.NotificationListenerService.requestRebind
+import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.app.messagealarm.R
@@ -14,6 +15,8 @@ import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.SharedPrefUtils
 import com.google.android.material.button.MaterialButton
+import kotlinx.android.synthetic.main.activity_splash_getting_started.*
+import kotlinx.android.synthetic.main.activity_terms_privacy.*
 
 class TermsAndConditionActivity : AppCompatActivity() {
 
@@ -24,6 +27,7 @@ class TermsAndConditionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_terms_privacy)
         btnAgree = findViewById(R.id.btn_agree)
+        text_sub_title_privacy?.movementMethod = LinkMovementMethod.getInstance()
         btnAgree?.setOnClickListener {
             tryReconnectService()
             defaultPreferences()
