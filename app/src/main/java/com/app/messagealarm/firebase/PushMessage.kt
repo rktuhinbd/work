@@ -62,7 +62,6 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
                     createNotification(p0, data["action"]!!.split("/")[0])
                 }
                 data["action"] == Constants.ACTION.OPEN_SERVICE -> {
-                    Log.e("PUSH_SERVICE", "TRIGGERED")
                     /**
                      * If service is killed and user didn't turned of the service, open the service
                      */
