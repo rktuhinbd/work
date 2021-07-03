@@ -35,7 +35,7 @@ import retrofit2.Response
 class SplashActivity : BaseActivity(), CommonView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        changeTheme()
+       // changeTheme()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
         val commonPresenter = CommonPresenter(this)

@@ -1,5 +1,6 @@
 package com.app.messagealarm.ui.buy_pro
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
@@ -9,6 +10,7 @@ import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.response.VerifyPurchaseResponse
 import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.utils.Constants
+import com.app.messagealarm.utils.ProgressDialogUtils
 import com.app.messagealarm.utils.SharedPrefUtils
 import com.google.firebase.analytics.FirebaseAnalytics
 import retrofit2.Call
@@ -40,10 +42,12 @@ class BuyProPresenter(private val buyProView: BuyProView, private val firebaseAn
      * verify purchase
      */
      fun verifyPurchase(
+        context: Context,
         receipt: String,
         signature: String,
         purchase: Purchase
     ){
+        ProgressDialogUtils.on().showProgressDialog(context)
         RetrofitClient.getApiService().verifyPurchase(receipt, signature, SharedPrefUtils.readString(
             Constants.PreferenceKeys.FIREBASE_TOKEN, ""
         )).enqueue(

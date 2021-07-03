@@ -10,6 +10,7 @@ import androidx.work.WorkManager
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.about.AboutActivity
 import com.app.messagealarm.ui.buy_pro.BuyProActivity
+import com.app.messagealarm.ui.onboarding.OnboardingDialog
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -102,6 +103,15 @@ class SettingsActivity : AppCompatActivity() {
             firebaseAnalytics = Firebase.analytics
         }
 
+        private fun showQuickStartDialog() {
+            try {
+                val quickStartDialog = OnboardingDialog()
+                quickStartDialog.show(requireActivity().supportFragmentManager, "quick_start")
+            } catch (e: IllegalStateException) {
+
+            }
+        }
+
         private fun isPurchased() : Boolean{
             return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
         }
@@ -110,7 +120,6 @@ class SettingsActivity : AppCompatActivity() {
             //hide top line of preference category
           /*  val themeCategory = findPreference("theme_cat") as PreferenceCategory?
             themeCategory?.isEnabled = isPurchased()*/
-
             val chatFeature = findPreference("chat") as Preference?
               chatFeature!!.layoutResource = R.layout.layout_preference_chat
             //change the title and desc after the purchase is made
@@ -125,6 +134,18 @@ class SettingsActivity : AppCompatActivity() {
                  * change by Mujahid
                  */
                 LiveChatUtils.openWhatsApp(requireActivity())
+                true
+            }
+
+            val tutorial =
+                findPreference("tutorial") as Preference?
+            tutorial!!.layoutResource = R.layout.layout_preference
+            tutorial.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                val bundle = Bundle()
+                bundle.putString("tutorial", "yes")
+                firebaseAnalytics.logEvent("tutorial", bundle)
+                //open browser or intent here
+                showQuickStartDialog()
                 true
             }
 

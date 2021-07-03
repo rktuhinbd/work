@@ -3,9 +3,11 @@ package com.app.messagealarm.ui.onboarding
 import android.annotation.SuppressLint
 import android.content.Context
 import android.media.AudioManager
-import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,6 +39,8 @@ class OnboardingDialog : DialogFragment(){
         showVideoTutorial()
     }
 
+
+
     @SuppressLint("SetTextI18n")
     private fun showVideoTutorial(){
          startVideo()
@@ -44,6 +48,7 @@ class OnboardingDialog : DialogFragment(){
          * btn skip listener
          */
         btn_skip?.setOnClickListener {
+            SharedPrefUtils.write(Constants.PreferenceKeys.IS_VIDEO_SHOWED, true)
             if(btn_skip?.text?.toString().equals("SKIP")){
                 //user skipped the video, say you can always see it from setting
                 Toasty.info(requireActivity(), "You can always see the video from Setting!").show()
@@ -76,6 +81,7 @@ class OnboardingDialog : DialogFragment(){
         }
         quick_start_video?.setOnCompletionListener {
             btn_skip?.text = "CLOSE"
+            quick_start_video.stopPlayback()
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
         quick_start_video?.start()
@@ -86,9 +92,28 @@ class OnboardingDialog : DialogFragment(){
 
     override fun onStart() {
         super.onStart()
-        dialog?.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            dialog?.window?.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+        }else{
+            val displayMetrics = DisplayMetrics()
+            requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
+            val height = displayMetrics.heightPixels
+            val width = displayMetrics.widthPixels
+            if(height > 2000){
+                dialog?.window?.setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+            }else{
+                dialog?.window?.setLayout(
+                    width - 100,
+                    height - 120
+                )
+            }
+        }
+
     }
 }

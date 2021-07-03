@@ -18,7 +18,6 @@ import android.os.Looper
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
@@ -57,10 +56,6 @@ import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import kotlinx.android.synthetic.main.item_added_applications.view.*
 import xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity
 import java.io.File
-import java.io.IOException
-import java.lang.IllegalArgumentException
-import java.lang.IndexOutOfBoundsException
-import java.lang.NullPointerException
 
 
 class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, PurchasesUpdatedListener,
@@ -85,10 +80,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         lookForTablesSize()
         showLanguageDoesNotSupported()
         Handler(Looper.myLooper()!!).postDelayed(Runnable {
-            if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_VIDEO_SHOWED)){
+            if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_VIDEO_SHOWED)) {
                 showDialogTutorialDecision()
             }
-        },1000)
+        }, 1000)
         triggerBuyProDialog()
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
@@ -125,7 +120,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         /**
          * check for review
          */
-        if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIRST_TIME_ALARM_PLAYED)) {
+        if (SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT) >= 5) {
             askForReview()
         }
         /**
@@ -410,12 +405,13 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
          */
         if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED) &&
             (SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT) -
-            SharedPrefUtils.readInt(Constants.PreferenceKeys.MAIN_SCREEN_OPENED)) >= 2){
-                SharedPrefUtils.write(Constants.PreferenceKeys.MAIN_SCREEN_OPENED,
-                SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT)
-                    )
+            SharedPrefUtils.readInt(Constants.PreferenceKeys.MAIN_SCREEN_OPENED)) >= 3){
+                SharedPrefUtils.write(
+                    Constants.PreferenceKeys.MAIN_SCREEN_OPENED,
+                    SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT)
+                )
             if(!isFinishing) {
-                val dialog = Dialog(this)
+               val dialog = Dialog(this)
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
                 dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
                 dialog.setCancelable(false)
@@ -425,7 +421,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 val imgAppLogo = dialog.findViewById<ImageView>(R.id.image_app_logo)
                 val txtAlarmCount = dialog.findViewById<TextView>(R.id.text_sale)
                 val btnBuyPro = dialog.findViewById<MaterialButton>(R.id.button_pro)
-                btnBuyPro.setOnClickListener {
+                btnBuyPro?.setOnClickListener {
                     if(dialog.isShowing){
                         dialog.dismiss()
                     }
@@ -449,16 +445,25 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     22 + SharedPrefUtils.readString(Constants.PreferenceKeys.LAST_SENDER_NAME).length + 1,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                txtMainTitle.setText(spannable, TextView.BufferType.SPANNABLE)
-                txtAlarmCount.text = "${SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT)} times"
-                imgAppLogo.setImageBitmap(
+                txtMainTitle?.setText(spannable, TextView.BufferType.SPANNABLE)
+                txtAlarmCount?.text = "${SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT)} times"
+                imgAppLogo?.setImageBitmap(
                     BitmapFactory.decodeFile(
                         File(SharedPrefUtils.readString(Constants.PreferenceKeys.LAST_APP_ICON_NAME))
                             .absolutePath
                     )
                 )
                 val window: Window = dialog.window!!
-                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                window.setLayout(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+                dialog.setOnKeyListener { arg0, keyCode, event -> // TODO Auto-generated method stub
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        dialog.dismiss()
+                    }
+                    true
+                }
                 if(!dialog.isShowing){
                     dialog.show()
                 }
@@ -508,6 +513,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                         // reviewed or not, or even whether the review dialog was shown. Thus, no
                         // matter the result, we continue our app flow.
                         SharedPrefUtils.write(Constants.PreferenceKeys.IS_REVIEW_SCREEN_SHOWN, true)
+                    }
+                    flow.addOnSuccessListener {
+                        SharedPrefUtils.write(Constants.PreferenceKeys.IS_REVIEW_SCREEN_SHOWN, true)
+                    }
+                    flow.addOnFailureListener {
+                        SharedPrefUtils.write(Constants.PreferenceKeys.IS_REVIEW_SCREEN_SHOWN, false)
                     }
                 }
             }
@@ -637,7 +648,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             val btnLater = dialog.findViewById<MaterialButton>(R.id.button_later)
             val btnWatchVideo = dialog.findViewById<MaterialButton>(R.id.button_watch_video)
             btnLater.setOnClickListener {
-                SharedPrefUtils.write(Constants.PreferenceKeys.IS_VIDEO_SHOWED, true)
                 Toasty.info(this, "You can always see the video from setting!").show()
                 if(dialog.isShowing){
                     dialog.dismiss()
@@ -650,7 +660,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 showQuickStartDialog()
             }
             val window: Window = dialog.window!!
-            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            window.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
             if(!dialog.isShowing){
                 dialog.show()
             }
@@ -679,5 +692,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     override fun onPurchasesUpdated(p0: BillingResult, p1: MutableList<Purchase>?) {
 
     }
+
 
 }

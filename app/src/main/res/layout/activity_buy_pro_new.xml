@@ -86,7 +86,7 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@drawable/purchase_background"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
@@ -333,6 +333,7 @@
                 />
 
             <TextView
+                android:id="@+id/txt_no_ads"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/better_exprience"
@@ -347,7 +348,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="80dp"
                 />
             <!--End of main part-->
 
@@ -373,7 +374,6 @@
             app:layout_constraintBottom_toBottomOf="@id/btn_buy_pro_user"
             app:layout_constraintEnd_toEndOf="@id/btn_buy_pro_user"/>
 
-
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_buy_pro_user"
             android:layout_width="match_parent"
@@ -391,8 +391,6 @@
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

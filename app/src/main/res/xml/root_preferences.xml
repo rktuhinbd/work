@@ -60,6 +60,21 @@
 
     </PreferenceCategory>
 
+    <!--tutorial-->
+    <PreferenceCategory
+        app:title="Tutorial"
+        android:key="tutorial_category"
+        app:allowDividerBelow="false" app:allowDividerAbove="false" app:layout="@layout/preference_category">
+
+        <Preference
+            app:icon="@drawable/ic_baseline_ondemand_video_24"
+            app:key="tutorial"
+            app:summary="Watch how our app works"
+            app:title="Tutorial" />
+
+    </PreferenceCategory>
+
+    <!--support-->
     <PreferenceCategory
         app:allowDividerBelow="false"
         app:allowDividerAbove="false"

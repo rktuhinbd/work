@@ -116,9 +116,9 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         super.onActivityCreated(savedInstanceState)
         setListener()
         handleEditAndViewMode()
-        darkMode()
         enableProMode()
         setPresetValueToUi(defaultValuesToDataModel())
+        darkMode()
         //should show after at least 2 seconds and need to fix the not attached to activity crash
         /*Handler(Looper.getMainLooper()).postDelayed(Runnable {
             if(isAdded){
