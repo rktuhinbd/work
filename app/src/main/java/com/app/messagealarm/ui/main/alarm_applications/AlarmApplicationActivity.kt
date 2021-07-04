@@ -104,12 +104,14 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         /**
          * rollback db to 70 if user is unpaid and from previous version and from outside bd
          */
-        if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2)){
+        if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)){
+             if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2)){
                 if(SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY_CODE) != "BD"){
                     if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DB_ROLLED_BACK)){
                         alarmAppPresenter.dbRollBackForSoundLevelFromDefault()
                     }
                 }
+        }
         }
     }
 
