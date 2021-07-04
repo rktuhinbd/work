@@ -26,6 +26,9 @@ import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.DialogUtils
 import com.app.messagealarm.utils.SharedPrefUtils
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_splash.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -33,6 +36,8 @@ import retrofit2.Response
 
 
 class SplashActivity : BaseActivity(), CommonView {
+
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
        // changeTheme()
@@ -43,6 +48,7 @@ class SplashActivity : BaseActivity(), CommonView {
         handleUpdate()
         val mIntent = Intent(this, AppsReaderIntentService::class.java)
         AppsReaderIntentService.enqueueWork(this, mIntent)
+        firebaseAnalytics = Firebase.analytics
     }
 
 
@@ -66,17 +72,6 @@ class SplashActivity : BaseActivity(), CommonView {
             tryReconnectService()
     }
 
-    private fun changeTheme() {
-        if (!SharedPrefUtils.contains(Constants.PreferenceKeys.IS_DARK_MODE)) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        } else {
-            if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-        }
-    }
 
 
     private fun tryReconnectService() {
@@ -134,6 +129,9 @@ class SplashActivity : BaseActivity(), CommonView {
                 )
             } version", object : DialogUtils.Callback {
                 override fun onPositive() {
+                    val bundle = Bundle()
+                    bundle.putString("clicked_update", "yes")
+                    firebaseAnalytics.logEvent("update_status", bundle)
                     try {
                         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")))
                     } catch (e: ActivityNotFoundException) {
@@ -141,6 +139,9 @@ class SplashActivity : BaseActivity(), CommonView {
                     }
                 }
                 override fun onNegative() {
+                    val bundle = Bundle()
+                    bundle.putString("clicked_later", "yes")
+                    firebaseAnalytics.logEvent("update_status", bundle)
                     startWorks()
                 }
             })

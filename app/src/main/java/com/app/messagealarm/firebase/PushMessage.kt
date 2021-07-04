@@ -45,7 +45,6 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
 
     override fun onMessageReceived(p0: RemoteMessage) {
         val data: Map<String, String> = p0.data
-        Log.e("UPDATE", data["action"].toString())
         try {
             when {
                 data["action"] == Constants.ACTION.SYNC -> {
@@ -138,9 +137,9 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
         //create vibration for 4 seconds
         Thread(Runnable {
             //start vibration
-            VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext(), 2500)
+            VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext(), 1500)
             while (count < 3) {
-                Thread.sleep(1000)
+                Thread.sleep(500)
                 count++
                 if (count == 2) {
                     //stop vibration

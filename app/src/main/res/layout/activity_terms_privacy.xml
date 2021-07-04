@@ -27,18 +27,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/image_privacy"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginTop="40dp"
-                android:visibility="gone"
-                android:src="@drawable/ic_privacy_policy"
-                app:layout_constraintBottom_toTopOf="@+id/text_title_privacy"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_title_privacy"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/text_title_privacy"
@@ -54,7 +42,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/text_sub_title_privacy"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image_privacy" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/text_sub_title_privacy"

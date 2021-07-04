@@ -73,7 +73,7 @@ class TimeUtils private constructor() {
                             /**
                              * office hours
                              */
-                            possibleTime = "1.5 hours"
+                            possibleTime = "1 hour"
                         }
                         getCurrentHourBDTime() in 14..17 -> {
                             /**
@@ -82,7 +82,7 @@ class TimeUtils private constructor() {
                             /**
                              * office off hours
                              */
-                            possibleTime = "2 hours"
+                            possibleTime = "1.5 hours"
                         }
                         getCurrentHourBDTime() in 1..3 -> {
                             /**
@@ -91,7 +91,7 @@ class TimeUtils private constructor() {
                             /**
                              * office off hours
                              */
-                            possibleTime = "2.5 hours"
+                            possibleTime = "2 hours"
                         }
                         else -> {
                             possibleTime = "4 hours"
@@ -110,7 +110,7 @@ class TimeUtils private constructor() {
                             /**
                              * office hours
                              */
-                            possibleTime = "30 minutes"
+                            possibleTime = "20 minutes"
                         }
                         getCurrentHourBDTime() in 14..17 -> {
                             /**
@@ -128,7 +128,7 @@ class TimeUtils private constructor() {
                             /**
                              * office off hours
                              */
-                            possibleTime = "2 hours"
+                            possibleTime = "1.5 hours"
                         }
                         else -> {
                             possibleTime = "3 hours"

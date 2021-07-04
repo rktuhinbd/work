@@ -18,10 +18,12 @@ import com.app.messagealarm.utils.DialogUtils
 import com.app.messagealarm.utils.PermissionUtils
 import com.app.messagealarm.utils.SharedPrefUtils
 import com.google.android.material.button.MaterialButton
+import com.google.firebase.analytics.FirebaseAnalytics
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_splash_getting_started.*
 
 class SplashGettingStarted : AppCompatActivity() {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

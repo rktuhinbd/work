@@ -8,6 +8,8 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -120,18 +122,20 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         setPresetValueToUi(defaultValuesToDataModel())
         darkMode()
         //should show after at least 2 seconds and need to fix the not attached to activity crash
-        /*Handler(Looper.getMainLooper()).postDelayed(Runnable {
+      /*  Handler(Looper.getMainLooper()).postDelayed(Runnable {
             if(isAdded){
                 HintUtils.showHintsToUser(requireActivity(), getOptionTutorialHintText(), R.layout.layout_target,"OPTIONS",
-                    img_repeat, img_ringtone, img_vibrate, img_just_vibrate, img_custom_time,
-                    img_number_of_play, img_sender_name, img_exclude_sender_name, img_message_body)
+                     img_sender_name, img_exclude_sender_name, img_message_body)
             }
         },500)*/
     }
 
+    /**
+     * probably in next update insa-Allah
+     */
     private fun getOptionTutorialHintText(): List<Hint> {
         val map = ArrayList<Hint>()
-        map.add(Hint("Alarm Repeat", "Select how often the Alarm should repeat"))
+        /*map.add(Hint("Alarm Repeat", "Select how often the Alarm should repeat"))
         map.add(Hint("Alarm Tone", "Select the music for your Alarm"))
         map.add(Hint("Vibrate With Sound", "Vibrate phone with music on Alarm"))
         map.add(Hint("Just Vibrate, No Sound", "Vibrate phone without music on Alarm"))
@@ -146,7 +150,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 "Number Of Play",
                 "The number of time the music will play on Alarm, each session is 30 seconds long"
             )
-        )
+        )*/
         map.add(
             Hint(
                 "Add Sender Name",
@@ -502,7 +506,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 } else {
                     Toasty.info(
                         requireActivity(),
-                        "First clear the Ignored Sender Name, both can't be used!"
+                        "Please clear the Ignored sender name first!"
                     ).show()
                 }
             }
@@ -525,7 +529,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 } else {
                     Toasty.info(
                         requireActivity(),
-                        "First clear the Sender Name, both can't be used!"
+                        "Please clear the Sender name first!"
                     ).show()
                 }
 

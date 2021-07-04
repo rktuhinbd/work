@@ -14,15 +14,19 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import com.app.messagealarm.R
-import com.app.messagealarm.ui.onboarding.fragments.*
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.SharedPrefUtils
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.layout_dialog_onboarding.*
 
 
 class OnboardingDialog : DialogFragment(){
 
+
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,6 +41,8 @@ class OnboardingDialog : DialogFragment(){
         super.onActivityCreated(savedInstanceState)
        //initViewPager()
         showVideoTutorial()
+        // Obtain the FirebaseAnalytics instance.
+        firebaseAnalytics = Firebase.analytics
     }
 
 
@@ -50,10 +56,17 @@ class OnboardingDialog : DialogFragment(){
         btn_skip?.setOnClickListener {
             SharedPrefUtils.write(Constants.PreferenceKeys.IS_VIDEO_SHOWED, true)
             if(btn_skip?.text?.toString().equals("SKIP")){
+                val bundle = Bundle()
+                bundle.putString("skipped_video", "yes")
+                firebaseAnalytics.logEvent("video_view_status", bundle)
                 //user skipped the video, say you can always see it from setting
                 Toasty.info(requireActivity(), "You can always see the video from Setting!").show()
                 dismiss()
             }else if(btn_skip?.text?.toString().equals("CLOSE")){
+                Toasty.success(requireActivity(), "Thanks for watching!").show()
+                val bundle = Bundle()
+                bundle.putString("closed_video", "yes")
+                firebaseAnalytics.logEvent("video_view_status", bundle)
                 //close the video
                 dismiss()
             }
@@ -80,13 +93,14 @@ class OnboardingDialog : DialogFragment(){
             it.setScreenOnWhilePlaying(true)
         }
         quick_start_video?.setOnCompletionListener {
+            val bundle = Bundle()
+            bundle.putString("video_finished", "yes")
+            firebaseAnalytics.logEvent("video_view_status", bundle)
             btn_skip?.text = "CLOSE"
             quick_start_video.stopPlayback()
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
         quick_start_video?.start()
-
-
     }
 
 
@@ -108,12 +122,18 @@ class OnboardingDialog : DialogFragment(){
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
             }else{
-                dialog?.window?.setLayout(
-                    width - 100,
-                    height - 120
-                )
+                if(width < 1000){
+                    dialog?.window?.setLayout(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                }else{
+                    dialog?.window?.setLayout(
+                        width - 100,
+                        height - 115
+                    )
+                }
             }
         }
-
     }
 }

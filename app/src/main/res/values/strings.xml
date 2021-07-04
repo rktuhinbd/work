@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Message Alarm</string>
     <string name="txt_notification_permission">Notification Permission</string>
-    <string name="txt_notification_permission_message"><b>Message Alarm</b> need notification permission, so it can parse the message and play alarm when needed! \n\n <u>Note:</u> Please check our privacy &amp; policy section for your data protection! </string>
+    <string name="txt_notification_permission_message"><b>Message Alarm</b> need notification permission, to parse the messages and play alarm when needed! \n\n <u>Security Note:</u> Please check our privacy &amp; policy section for your data protection! </string>
     <string name="waiting_for_messages">Waiting for messages…</string>
     <string name="no_application_found">No Application Found!</string>
     <string name="add_application">Add Application</string>
@@ -94,8 +94,8 @@
     <string name="better_exprience">We know you hate ads, that\'s why \n we said goodbye to it!</string>
     <string name="txt_idea_desc">We can help you develop your dream project into real, with our dedicated team we are always focused on quality</string>
     <string name="missing_file">File is missing!</string>
-    <string name="text_terms_policy">When you click \'Get Started\' you accept our <a href="https://www.messagealarm.app/privecy_policy"><u>Privacy Policy</u></a>. We recommend you review our policies so you can understand what we are doing with the permission and data we are taking from our users</string>
-    <string name="text_sub_title_privacy">Please take your time to review the key points of our <a href="https://www.messagealarm.app/privecy_policy">Privacy Policy</a> and how we process your data.</string>
+    <string name="text_terms_policy">When you click \'Get Started\' you accept our <a href="https://www.messagealarm.app/privacy_policy"><u>Privacy Policy</u></a>. We recommend you review our policies so you can understand what we are doing with the permission and data we are taking from our users</string>
+    <string name="text_sub_title_privacy">Please take your time to review the key points of our <a href="https://www.messagealarm.app/privacy_policy">Privacy Policy</a> and how we process your data.</string>
     <string name="text_demo_providing">• Providing, improving, analyzing and personalizing our services.</string>
     <string name="made_in_bangladesh">made by</string>
     <string name="text_pro"><u>Check What PRO Version give?</u></string>
