@@ -85,7 +85,7 @@ public interface ApiService {
     Call<TokenResponse> updateCurrentToken(
             @Field(Constants.API.Body.USER_TOKEN) String userToken,
             @Field(Constants.API.Body.COUNTRY) String country,
-            @Field(Constants.API.Body.IS_PAID) boolean isPaid
+            @Field(Constants.API.Body.IS_PAID) String isPaid
     );
 
     /**

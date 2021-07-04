@@ -180,7 +180,7 @@ class SplashActivity : BaseActivity(), CommonView {
                 RetrofitClient.getApiService().updateCurrentToken(
                     SharedPrefUtils.readString(Constants.PreferenceKeys.FIREBASE_TOKEN),
                     SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY),
-                    isPaid
+                    if (isPaid) "1" else "0"
                 ).execute()
             }
         }.start()
