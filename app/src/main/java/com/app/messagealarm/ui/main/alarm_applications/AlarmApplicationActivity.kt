@@ -61,7 +61,6 @@ import java.io.File
 class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, PurchasesUpdatedListener,
     AddedAppsListAdapter.ItemClickListener {
 
-    private lateinit var firebaseAnalytics: FirebaseAnalytics
     var mMessageReceiver: BroadcastReceiver? = null
     val bottomSheetModel = AddApplicationOption()
     val REQUEST_CODE_PICK_AUDIO = 1
@@ -79,11 +78,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         setupAppsRecyclerView()
         lookForTablesSize()
         showLanguageDoesNotSupported()
-        Handler(Looper.myLooper()!!).postDelayed(Runnable {
-            if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_VIDEO_SHOWED)) {
-                showDialogTutorialDecision()
-            }
-        }, 1000)
         triggerBuyProDialog()
         /**
          * check for review
@@ -91,13 +85,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         if (SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT) >= 5) {
             askForReview()
         }
-        // Obtain the FirebaseAnalytics instance.
-        firebaseAnalytics = Firebase.analytics
         mMessageReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 switch_alarm_status?.isChecked = false
             }
         }
+
     }
 
     private fun lookForTablesSize() {
@@ -260,16 +253,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         }
     }
 
-    private fun askForPermission() {
-        ActivityCompat.requestPermissions(
-            this, arrayOf(
-                android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                android.Manifest.permission.SYSTEM_ALERT_WINDOW,
-                android.Manifest.permission.RECEIVE_BOOT_COMPLETED
-            ), 1
-        )
-    }
 
     private fun recyclerViewSwipeHandler() {
         val callback: ItemTouchHelper.SimpleCallback = object :
@@ -404,7 +387,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
          */
         if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED) &&
             (SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT) -
-            SharedPrefUtils.readInt(Constants.PreferenceKeys.MAIN_SCREEN_OPENED)) >= 10){
+            SharedPrefUtils.readInt(Constants.PreferenceKeys.MAIN_SCREEN_OPENED)) >= 2){
                 SharedPrefUtils.write(
                     Constants.PreferenceKeys.MAIN_SCREEN_OPENED,
                     SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT)
@@ -426,7 +409,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     }
                     val bundle = Bundle()
                     bundle.putString("clicked_go_to_pro", "yes")
-                    firebaseAnalytics.logEvent("pro_dialog_status", bundle)
+                    Firebase.analytics.logEvent("pro_dialog_status", bundle)
                     //one app added now take user to buy
                     val intent = Intent(this, BuyProActivity::class.java)
                     startActivityForResult(
@@ -440,9 +423,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                         "sent you message via ${SharedPrefUtils.readString(
                             Constants.PreferenceKeys.LAST_APP_NAME
                         )}"
+
+
                 val bundle = Bundle()
                 bundle.putString("message_popped_up", text)
-                firebaseAnalytics.logEvent("pro_dialog_status", bundle)
+                Firebase.analytics.logEvent("pro_dialog_status", bundle)
+
                 val spannable: Spannable = SpannableString(text)
                 spannable.setSpan(
                     ForegroundColorSpan(ContextCompat.getColor(this, R.color.colorGolden)),
@@ -467,7 +453,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     if (keyCode == KeyEvent.KEYCODE_BACK) {
                         val bundle = Bundle()
                         bundle.putString("clicked_back_button", "yes")
-                        firebaseAnalytics.logEvent("pro_dialog_status", bundle)
+                        Firebase.analytics.logEvent("pro_dialog_status", bundle)
                         dialog.dismiss()
                     }
                     true
@@ -476,6 +462,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     dialog.show()
                 }
             }
+        }else{
+            Handler(Looper.myLooper()!!).postDelayed({
+                if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_VIDEO_SHOWED)) {
+                    showDialogTutorialDecision()
+                }
+            }, 1000)
         }
     }
 
@@ -518,7 +510,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     val flow = manager.launchReviewFlow(this, reviewInfo)
                     val bundle = Bundle()
                     bundle.putString("showed_review_pop_up", "yes")
-                    firebaseAnalytics.logEvent("review_popup", bundle)
+                    Firebase.analytics.logEvent("review_popup", bundle)
                     Toasty.info(this, "You can always see the video from setting!").show()
                     flow.addOnCompleteListener { _ ->
                         // The flow has finished. The API does not indicate whether the user
@@ -662,7 +654,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             btnLater.setOnClickListener {
                 val bundle = Bundle()
                 bundle.putString("clicked_later_button", "yes")
-                firebaseAnalytics.logEvent("video_from_popup_dialog", bundle)
+                Firebase.analytics.logEvent("video_from_popup_dialog", bundle)
                 Toasty.info(this, "You can always see the video from setting!").show()
                 if(dialog.isShowing){
                     dialog.dismiss()
@@ -674,7 +666,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 }
                 val bundle = Bundle()
                 bundle.putString("clicked_watch_button", "yes")
-                firebaseAnalytics.logEvent("video_from_popup_dialog", bundle)
+                Firebase.analytics.logEvent("video_from_popup_dialog", bundle)
                 showQuickStartDialog()
             }
             val window: Window = dialog.window!!

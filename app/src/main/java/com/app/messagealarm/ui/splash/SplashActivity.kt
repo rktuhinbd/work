@@ -133,9 +133,14 @@ class SplashActivity : BaseActivity(), CommonView {
                     bundle.putString("clicked_update", "yes")
                     firebaseAnalytics.logEvent("update_status", bundle)
                     try {
-                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")))
+                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName"))
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                        finish()
                     } catch (e: ActivityNotFoundException) {
-                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
+                        startActivity(Intent(Intent.ACTION_VIEW,
+                            Uri.parse("https://play.google.com/store/apps/details?id=$packageName"))
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                        finish()
                     }
                 }
                 override fun onNegative() {
