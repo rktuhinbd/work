@@ -53,35 +53,31 @@ public class ApplicationEntity implements Serializable {
     @ColumnInfo(name = "ignored_names", defaultValue = "None")
     private String ignored_names;
     @ColumnInfo(name = "sound_level")
-    private int soundLevel;
-
+    private int sound_level;
 
     /**
      * Getter methods
      * @return
      */
-    public int getSoundLevel() {return soundLevel;}
+    public int getSound_level() {
+        return sound_level;
+    }
 
     public String getIgnored_names(){
         return ignored_names;
     }
-
     public String getBitmapPath() {
         return bitmapPath;
     }
-
     public int getId() {
         return id;
     }
-
     public boolean isRunningStatus() {
         return runningStatus;
     }
-
     public String getAppName() {
         return appName;
     }
-
     public String getPackageName() {
         return packageName;
     }
@@ -135,12 +131,14 @@ public class ApplicationEntity implements Serializable {
     }
 
 
-
     /**
      * Setter methods
      */
 
-    public void setSoundLevel(int soundLevel) {this.soundLevel = soundLevel;}
+    public void setSound_level(int sound_level) {
+        this.sound_level = sound_level;
+    }
+
 
     public void setIgnored_names(String ignored_names){
         this.ignored_names = ignored_names;

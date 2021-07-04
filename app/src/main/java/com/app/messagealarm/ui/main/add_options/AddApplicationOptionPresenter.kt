@@ -50,7 +50,7 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
         bundle.putString("start_time", addApplicationEntity.startTime.toString())
         bundle.putString("end_time", addApplicationEntity.endTime.toString())
         bundle.putString("number_of_play", addApplicationEntity.numberOfPlay.toString())
-        bundle.putString("sound_level", addApplicationEntity.soundLevel.toString())
+        bundle.putString("sound_level", addApplicationEntity.sound_level.toString())
         firebaseAnalytics.logEvent("save_application", bundle)
         //save application
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())

@@ -28,7 +28,7 @@ class AlarmService {
             service: Service
         ) {
             //filter for apps
-            //  filterApps(sbn)
+            //filterApps(sbn)
             //find app and play
             findOutAppToPlay(sbn, appsList, service)
         }
@@ -114,7 +114,7 @@ class AlarmService {
                 } else {
                     //check if activity is not open
                     FloatingNotification.showFloatingNotification(
-                        app.soundLevel,
+                        app.sound_level,
                         title,
                         app.isJustVibrate,
                         app.appName,
@@ -131,7 +131,7 @@ class AlarmService {
                 } else {
                     //check activity is not open
                     FloatingNotification.showFloatingNotification(
-                        app.soundLevel,
+                        app.sound_level,
                         title,
                         app.isJustVibrate,
                         app.appName,
@@ -311,7 +311,7 @@ class AlarmService {
                         bundle.putString("alarm_by_thread", "true")
                         firebaseAnalytics.logEvent("alarm_type", bundle)
                         FloatingNotification.showFloatingNotification(
-                            app.soundLevel,
+                            app.sound_level,
                             titleName.toString(),
                             app.isJustVibrate,
                             app.appName,
@@ -339,7 +339,7 @@ class AlarmService {
                 intent.putExtra(Constants.IntentKeys.IMAGE_PATH, app.bitmapPath)
                 intent.putExtra(Constants.IntentKeys.TITLE, title)
                 intent.putExtra(Constants.IntentKeys.DESC, desc)
-                intent.putExtra(Constants.IntentKeys.SOUND_LEVEL, app.soundLevel)
+                intent.putExtra(Constants.IntentKeys.SOUND_LEVEL, app.sound_level)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)

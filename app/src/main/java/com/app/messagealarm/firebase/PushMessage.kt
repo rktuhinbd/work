@@ -13,6 +13,7 @@ import android.graphics.Color
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.text.format.Formatter
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -30,6 +31,9 @@ import com.app.messagealarm.ui.buy_pro.BuyProActivity
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import retrofit2.Call
@@ -43,7 +47,12 @@ import java.util.*
 
 class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
 
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
+
     override fun onMessageReceived(p0: RemoteMessage) {
+        // Obtain the FirebaseAnalytics instance.
+        firebaseAnalytics = Firebase.analytics
+
         val data: Map<String, String> = p0.data
         try {
             when {
@@ -61,6 +70,11 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
                     createNotification(p0, data["action"]!!.split("/")[0])
                 }
                 data["action"] == Constants.ACTION.OPEN_SERVICE -> {
+                    // Obtain the FirebaseAnalytics instance.
+                    //log about screen open log
+                    val bundle = Bundle()
+                    bundle.putString("push_service_triggered", "yes")
+                    firebaseAnalytics.logEvent("push_service", bundle)
                     /**
                      * If service is killed and user didn't turned of the service, open the service
                      */
@@ -86,6 +100,9 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
     }
 
     private fun startMagicService(context: Context) {
+        val bundle = Bundle()
+        bundle.putString("push_service_triggered_and_opened", "yes")
+        firebaseAnalytics.logEvent("push_service", bundle)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val intent = Intent(context, NotificationListener::class.java)
             context.startForegroundService(intent)

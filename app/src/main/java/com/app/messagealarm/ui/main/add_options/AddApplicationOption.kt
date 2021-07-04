@@ -458,7 +458,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         progress_sound_level?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             @SuppressLint("SetTextI18n")
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                addApplicationEntity.soundLevel = progress
+                addApplicationEntity.sound_level = progress
                 txt_percent_sound_level?.text = "${progress}%"
             }
 
@@ -1105,16 +1105,15 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
          */
         if(SharedPrefUtils.contains(Constants.PreferenceKeys.COUNTRY_CODE)){
             if(SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY_CODE) == "BD"){
-                addApplicationEntity.soundLevel = 100
-                holderEntity.soundLevel = 100
-
+                addApplicationEntity.sound_level = 100
+                holderEntity.sound_level = 100
             }else{
-                holderEntity.soundLevel = 70
-                addApplicationEntity.soundLevel = 70
+                holderEntity.sound_level = 70
+                addApplicationEntity.sound_level = 70
             }
         }else{
-            holderEntity.soundLevel = 70
-            addApplicationEntity.soundLevel = 70
+            holderEntity.sound_level = 70
+            addApplicationEntity.sound_level = 70
         }
         //set this to holder object for checking default
         holderEntity.alarmRepeat = "Always"
@@ -1210,7 +1209,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                                 if (txt_sender_name_value?.text.toString() == holderEntity.senderNames) {
                                     if (txt_exclude_sender_name_value?.text.toString() == holderEntity.ignored_names) {
                                         if (txt_message_body_value?.text.toString() == holderEntity.messageBody) {
-                                            if(progress_sound_level?.progress == holderEntity.soundLevel){
+                                            if(progress_sound_level?.progress == holderEntity.sound_level){
                                                 isDefault = true
                                             }
                                         }
@@ -1357,8 +1356,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         txt_exclude_sender_name_value?.text = app.ignored_names
         txt_message_body_value?.text = app.messageBody
         //new added
-        progress_sound_level?.progress = app.soundLevel
-        txt_percent_sound_level?.text = "${app.soundLevel}%"
+        progress_sound_level?.progress = app.sound_level
+        txt_percent_sound_level?.text = "${app.sound_level}%"
     }
 
     override fun onApplicationGetSuccess(app: ApplicationEntity) {
@@ -1399,7 +1398,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         holderEntity.tone_path = app.tone_path
         holderEntity.alarmRepeat = app.alarmRepeat
         holderEntity.repeatDays = app.repeatDays
-        holderEntity.soundLevel = app.soundLevel
+        holderEntity.sound_level = app.sound_level
     }
 
     override fun onApplicationGetError(message: String) {

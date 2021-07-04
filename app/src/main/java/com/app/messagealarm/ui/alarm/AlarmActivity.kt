@@ -100,8 +100,8 @@ class AlarmActivity : BaseActivity() {
     }
 
     private fun playMedia() {
-        SharedPrefUtils.write(Constants.PreferenceKeys.IS_NOTIFICATION_SWIPED, false)
-        SharedPrefUtils.write(Constants.PreferenceKeys.IS_ACTIVITY_STARTED, true)
+        write(Constants.PreferenceKeys.IS_NOTIFICATION_SWIPED, false)
+        write(Constants.PreferenceKeys.IS_ACTIVITY_STARTED, true)
         if (intent?.extras!!.getString(Constants.IntentKeys.TONE) != null) {
             startPlaying(intent?.extras!!.getString(Constants.IntentKeys.TONE))
         } else {
