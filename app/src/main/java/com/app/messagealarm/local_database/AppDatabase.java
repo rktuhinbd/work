@@ -17,6 +17,8 @@ import com.app.messagealarm.model.entity.AppConstrainEntity;
 import com.app.messagealarm.model.entity.AppEntity;
 import com.app.messagealarm.model.entity.ApplicationEntity;
 import com.app.messagealarm.model.entity.LanguageEntity;
+import com.app.messagealarm.utils.Constants;
+import com.app.messagealarm.utils.SharedPrefUtils;
 
 @Database(entities = {ApplicationEntity.class, AppConstrainEntity.class,
         AppEntity.class, LanguageEntity.class
@@ -32,7 +34,12 @@ public abstract class AppDatabase extends RoomDatabase {
             @Override
             public void migrate(@NonNull SupportSQLiteDatabase database) {
                 database.execSQL("ALTER TABLE applications ADD COLUMN ignored_names TEXT DEFAULT 'None'");
-                database.execSQL("ALTER TABLE applications ADD COLUMN sound_level INTEGER NOT NULL DEFAULT 0");
+                if(SharedPrefUtils.INSTANCE.readString(Constants.PreferenceKeys.COUNTRY_CODE, "").equals("BD")){
+                    database.execSQL("ALTER TABLE applications ADD COLUMN sound_level INTEGER NOT NULL DEFAULT 100");
+                }else{
+                    database.execSQL("ALTER TABLE applications ADD COLUMN sound_level INTEGER NOT NULL DEFAULT 70");
+                }
+
             }
         };
         if (appDatabase == null) {

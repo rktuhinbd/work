@@ -170,8 +170,26 @@ class SplashActivity : BaseActivity(), CommonView {
         }.start()
     }
 
-    override fun onSuccess() {
 
+    /**
+     * 2.0.1 user to 2.0.2 sending token and status to server so we can know user status
+     */
+    private fun updateUserToken(isPaid:Boolean){
+        Thread{
+            if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2)){
+                RetrofitClient.getApiService().updateCurrentToken(
+                    SharedPrefUtils.readString(Constants.PreferenceKeys.FIREBASE_TOKEN),
+                    SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY),
+                    isPaid
+                ).execute()
+            }
+        }.start()
+
+    }
+
+    override fun onSuccess() {
+        //call update token api here
+        updateUserToken(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED))
     }
 
     override fun onSuccess(token: String) {

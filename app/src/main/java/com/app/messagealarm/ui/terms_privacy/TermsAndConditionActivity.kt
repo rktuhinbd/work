@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.app.messagealarm.R
 import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
+import com.app.messagealarm.ui.splash.SplashActivity
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.SharedPrefUtils
 import com.google.android.material.button.MaterialButton
@@ -32,7 +33,7 @@ class TermsAndConditionActivity : AppCompatActivity() {
             tryReconnectService()
             defaultPreferences()
             SharedPrefUtils.write(Constants.PreferenceKeys.IS_TERMS_ACCEPTED, true)
-            startActivity(Intent(this, AlarmApplicationActivity::class.java))
+            startActivity(Intent(this, SplashActivity::class.java))
             finish()
         }
     }
