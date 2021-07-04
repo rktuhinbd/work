@@ -34,12 +34,7 @@ public abstract class AppDatabase extends RoomDatabase {
             @Override
             public void migrate(@NonNull SupportSQLiteDatabase database) {
                 database.execSQL("ALTER TABLE applications ADD COLUMN ignored_names TEXT DEFAULT 'None'");
-                if(SharedPrefUtils.INSTANCE.readString(Constants.PreferenceKeys.COUNTRY_CODE, "").equals("BD")){
-                    database.execSQL("ALTER TABLE applications ADD COLUMN sound_level INTEGER NOT NULL DEFAULT 100");
-                }else{
-                    database.execSQL("ALTER TABLE applications ADD COLUMN sound_level INTEGER NOT NULL DEFAULT 70");
-                }
-
+                database.execSQL("ALTER TABLE applications ADD COLUMN sound_level INTEGER NOT NULL DEFAULT 70");
             }
         };
         if (appDatabase == null) {
