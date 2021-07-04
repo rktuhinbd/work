@@ -33,6 +33,21 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
         }).start()
     }
 
+
+    fun dbRollBackForSoundLevelFromDefault(){
+        val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
+        Thread {
+            try {
+                appDatabase.applicationDao().rollBackAppsFromDefaultSoundLevel(70)
+                SharedPrefUtils.write(Constants.PreferenceKeys.IS_DB_ROLLED_BACK, true)
+            } catch (e: NullPointerException) {
+
+            } catch (e: SQLiteException) {
+
+            }
+        }.start()
+    }
+
     /**
      * sync heroku token when not done by callback from push class
      */

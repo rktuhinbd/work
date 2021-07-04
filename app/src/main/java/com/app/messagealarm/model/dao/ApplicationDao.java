@@ -34,6 +34,9 @@ public interface ApplicationDao {
     @Query("DELETE FROM applications")
     void deleteAllAppsWithoutTheFirstOne();
 
+    @Query("UPDATE applications SET sound_level = :sound_level")
+    void rollBackAppsFromDefaultSoundLevel(int sound_level);
+
     @Delete
     void deleteApplication(ApplicationEntity applicationEntity);
 

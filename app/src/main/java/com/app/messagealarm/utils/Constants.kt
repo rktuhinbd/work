@@ -183,6 +183,7 @@ class Constants {
             const val CURRENCY_CODE = "currency_code"
             const val CURRENCY_SYMBOL = "currency_symbol"
             const val IS_USER_INFO_SAVED = "is_user_info_saved"
+            const val IS_DB_ROLLED_BACK = "is_db_rollback"
 
         }
     }
