@@ -55,15 +55,18 @@ class BGSyncDataSavingService {
                             )
                         )
                     }
-                    //first app sync finished
-                    SharedPrefUtils.write(Constants.PreferenceKeys.FIRST_APP_SYNC_FINISHED, true)
+
                 } catch (e: SQLiteException) {
 
                 } catch (e: NullPointerException) {
 
                 } catch (e: InterruptedException){
 
+                }finally {
+                    //first app sync finished
+                    SharedPrefUtils.write(Constants.PreferenceKeys.FIRST_APP_SYNC_FINISHED, true)
                 }
+
             }).start()
 
             //save app constrain
