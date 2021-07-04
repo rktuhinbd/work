@@ -52,7 +52,7 @@ public class ApplicationEntity implements Serializable {
     private String bitmapPath;
     @ColumnInfo(name = "ignored_names", defaultValue = "None")
     private String ignored_names;
-    @ColumnInfo(name = "sound_level", defaultValue = "70")
+    @ColumnInfo(name = "sound_level", defaultValue = "100")
     private int sound_level;
 
     /**
