@@ -1398,7 +1398,16 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         holderEntity.tone_path = app.tone_path
         holderEntity.alarmRepeat = app.alarmRepeat
         holderEntity.repeatDays = app.repeatDays
-        holderEntity.sound_level = app.sound_level
+        if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
+            holderEntity.sound_level = app.sound_level
+        } else {
+            if(SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY_CODE) != "BD"){
+                holderEntity.sound_level = 70
+            }else{
+                holderEntity.sound_level = app.sound_level
+            }
+        }
+
     }
 
     override fun onApplicationGetError(message: String) {
