@@ -399,7 +399,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
          */
         if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED) &&
             (SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT) -
-            SharedPrefUtils.readInt(Constants.PreferenceKeys.MAIN_SCREEN_OPENED)) >= 2){
+            SharedPrefUtils.readInt(Constants.PreferenceKeys.MAIN_SCREEN_OPENED)) >= 10){
                 SharedPrefUtils.write(
                     Constants.PreferenceKeys.MAIN_SCREEN_OPENED,
                     SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT)

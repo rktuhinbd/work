@@ -40,14 +40,14 @@ class TimeUtils private constructor() {
 
        private fun getCurrentDayNameBDTime() : String{
             val calendar = Calendar.getInstance()
-            calendar.timeZone = TimeZone.getTimeZone("BST")
+            calendar.timeZone = TimeZone.getTimeZone("Asia/Dhaka")
             val date = calendar.time
             return SimpleDateFormat("EE", Locale.ENGLISH).format(date.time)
         }
 
        private fun getCurrentHourBDTime() : Int{
            val calendar = Calendar.getInstance()
-           calendar.timeZone = TimeZone.getTimeZone("BST")
+           calendar.timeZone = TimeZone.getTimeZone("Asia/Dhaka")
            return calendar.get(Calendar.HOUR_OF_DAY)
        }
 

@@ -22,7 +22,7 @@ class BGSyncDataSavingService {
                     //init language entity
                     val languageList = syncResponse.allLanguage
                     for (x in languageList) {
-                        Thread.sleep(200)
+                        Thread.sleep(50)
                         appDatabase.languageDao().insertLanguage(
                             LanguageEntity(
                                 x.langName,
@@ -46,7 +46,7 @@ class BGSyncDataSavingService {
                     //init language entity
                     val appList = syncResponse.allApp
                     for (x in appList) {
-                        Thread.sleep(200)
+                        Thread.sleep(50)
                         appDatabase.appDao().insertApp(
                             AppEntity(
                                x.appName,
@@ -55,16 +55,14 @@ class BGSyncDataSavingService {
                             )
                         )
                     }
-
+                    //first app sync finished
+                    SharedPrefUtils.write(Constants.PreferenceKeys.FIRST_APP_SYNC_FINISHED, true)
                 } catch (e: SQLiteException) {
 
                 } catch (e: NullPointerException) {
 
                 } catch (e: InterruptedException){
 
-                }finally {
-                    //first app sync finished
-                    SharedPrefUtils.write(Constants.PreferenceKeys.FIRST_APP_SYNC_FINISHED, true)
                 }
 
             }).start()
@@ -75,7 +73,7 @@ class BGSyncDataSavingService {
                     //init language entity
                     val appConstrain = syncResponse.allAppconstrain
                     for (x in appConstrain) {
-                        Thread.sleep(200)
+                        Thread.sleep(50)
                         appDatabase.appConstrainDao().insertAppConstrain(
                             AppConstrainEntity(
                               x.langCode,

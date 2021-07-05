@@ -72,7 +72,7 @@
         app:layout_constraintTop_toTopOf="@id/view_circle"
         app:layout_constraintStart_toStartOf="@id/view_circle"
         app:layout_constraintEnd_toEndOf="@id/view_circle"
-        android:src="@mipmap/ic_launcher"
+        android:src="@mipmap/ic_launcher_round"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@id/view_circle"
         />

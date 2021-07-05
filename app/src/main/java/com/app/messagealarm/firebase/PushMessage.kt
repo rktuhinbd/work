@@ -115,7 +115,6 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
 
     override fun onNewToken(p0: String) {
         super.onNewToken(p0)
-        Log.e("TOKEN", p0)
         //save token to shared preference
         SharedPrefUtils.write(Constants.PreferenceKeys.FIREBASE_TOKEN, p0)
         /**
@@ -286,11 +285,6 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
 
     override fun onSuccess(token:String) {
         //if app is build in debug mode don't call this function
-        if (!BuildConfig.DEBUG) {
-            /**
-             * tested both platform getting the token
-             */
-        } else {
             sendPushToken(token)
             //send push token for non debug mode
             RetrofitClient.getApiServiceHeroku().registerTokenForHeroku(token).enqueue(
@@ -311,7 +305,6 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
 
                     }
                 })
-        }
     }
 
     override fun onError() {

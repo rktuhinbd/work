@@ -120,7 +120,9 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
             if(count == 0){
                 //check if first time app was synced
                 //it's an unknown app
-                if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.FIRST_APP_SYNC_FINISHED)){
+                if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.FIRST_APP_SYNC_FINISHED) ||
+                        appDatabase.appConstrainDao().totalCountOfAppConstrain == SharedPrefUtils.readInt(Constants.PreferenceKeys.CONSTRAIN_COUNT)
+                        ){
                     sendUnknownAppNameToServer(appName, packageName)
                 }
             }

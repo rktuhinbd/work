@@ -1108,12 +1108,22 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 addApplicationEntity.sound_level = 100
                 holderEntity.sound_level = 100
             }else{
+                if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)){
+                    holderEntity.sound_level = 100
+                    addApplicationEntity.sound_level = 100
+                }else{
+                    holderEntity.sound_level = 70
+                    addApplicationEntity.sound_level = 70
+                }
+            }
+        }else{
+            if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)){
+                holderEntity.sound_level = 100
+                addApplicationEntity.sound_level = 100
+            }else{
                 holderEntity.sound_level = 70
                 addApplicationEntity.sound_level = 70
             }
-        }else{
-            holderEntity.sound_level = 70
-            addApplicationEntity.sound_level = 70
         }
         //set this to holder object for checking default
         holderEntity.alarmRepeat = "Always"
