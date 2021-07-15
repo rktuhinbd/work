@@ -128,8 +128,8 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
         Thread {
             val tokenCall = RetrofitClient.getApiService().registerToken(
                 p0,
-                SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY)
-            )
+               if (SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY).isNotEmpty())
+                   SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY) else "Unknown")
             tokenCall.enqueue(object : Callback<TokenResponse> {
                 override fun onResponse(
                     call: Call<TokenResponse>,

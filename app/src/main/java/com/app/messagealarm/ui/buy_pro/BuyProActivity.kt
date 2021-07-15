@@ -51,11 +51,6 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         buyingProcess()
     }
 
-    override fun onStart() {
-        super.onStart()
-
-    }
-
 
     private fun buyingProcess(){
         if(AndroidUtils.isOnline(this)){

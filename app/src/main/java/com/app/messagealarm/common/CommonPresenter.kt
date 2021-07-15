@@ -18,7 +18,7 @@ class CommonPresenter(private var commonView: CommonView) {
             Thread {
                 val ipAddress = RetrofitClient.getExternalIpAddress()
                 val url = String.format(
-                    "https://api.ipstack.com/%s?access_key=7abb122c84ee6a620119f0566fa0b620",
+                    "https://api.ipstack.com/%s?access_key=7abb122c84ee6a620119f0566fa0b620/",
                     ipAddress
                 )
                 RetrofitClient.getApiService().getCurrentUserInfo(url).enqueue(object :
@@ -84,7 +84,7 @@ class CommonPresenter(private var commonView: CommonView) {
             Thread {
                 val ipAddress = RetrofitClient.getExternalIpAddress()
                 val url = String.format(
-                    "https://api.ipstack.com/%s?access_key=7abb122c84ee6a620119f0566fa0b620",
+                    "https://api.ipstack.com/%s?access_key=7abb122c84ee6a620119f0566fa0b620/",
                     ipAddress
                 )
                 RetrofitClient.getApiService().getCurrentUserInfo(url).enqueue(object :
@@ -100,25 +100,34 @@ class CommonPresenter(private var commonView: CommonView) {
                             //save the country code
                             //save the currency code
                             //save the currency symbol
-                            val userInfo = response.body()
-                            SharedPrefUtils.write(
-                                Constants.PreferenceKeys.COUNTRY_CODE,
-                                userInfo?.countryCode!!
-                            )
-                            SharedPrefUtils.write(
-                                Constants.PreferenceKeys.CURRENCY_CODE,
-                                userInfo.currency.code
-                            )
-                            SharedPrefUtils.write(
-                                Constants.PreferenceKeys.CURRENCY_SYMBOL,
-                                userInfo.currency.symbolNative
-                            )
-                            SharedPrefUtils.write(
-                                Constants.PreferenceKeys.COUNTRY,
-                                userInfo.countryName
-                            )
-                            //save user info saved
-                            SharedPrefUtils.write(Constants.PreferenceKeys.IS_USER_INFO_SAVED, true)
+                            try {
+                                val userInfo = response.body()
+                                if (userInfo != null) {
+                                    SharedPrefUtils.write(
+                                        Constants.PreferenceKeys.COUNTRY_CODE,
+                                        userInfo.countryCode
+                                    )
+                                    SharedPrefUtils.write(
+                                        Constants.PreferenceKeys.CURRENCY_CODE,
+                                        userInfo.currency.code
+                                    )
+                                    SharedPrefUtils.write(
+                                        Constants.PreferenceKeys.CURRENCY_SYMBOL,
+                                        userInfo.currency.symbolNative
+                                    )
+                                    SharedPrefUtils.write(
+                                        Constants.PreferenceKeys.COUNTRY,
+                                        userInfo.countryName
+                                    )
+                                    //save user info saved
+                                    SharedPrefUtils.write(
+                                        Constants.PreferenceKeys.IS_USER_INFO_SAVED,
+                                        true
+                                    )
+                                }
+                            }catch (e:NullPointerException){
+
+                            }
                             commonView.onSuccess(token)
                         } else {
                             commonView.onError()
