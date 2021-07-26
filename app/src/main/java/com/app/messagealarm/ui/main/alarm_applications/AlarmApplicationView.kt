@@ -11,4 +11,12 @@ interface AlarmApplicationView {
     fun onAppStatusUpdateError(message:String)
     fun onRemovedFromSnoozeSuccess()
     fun onTablesSizeRequestSuccess(appSize:Int, langSize:Int, appConstrainSize:Int)
+
+    /**
+     * auto start and battery restriction permission view
+     */
+    fun onAutoStartTextShow()
+    fun onAutoStartTextHide()
+    fun onBatteryTextShow()
+    fun onBatteryTextHide()
 }

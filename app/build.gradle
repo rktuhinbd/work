@@ -119,5 +119,7 @@ dependencies {
     // For Kotlin users also import the Kotlin extensions library for Play Core:
     implementation 'com.google.android.play:core-ktx:1.8.1'
     implementation 'com.github.takusemba:spotlight:2.0.2'
+    //auto start library
+    implementation 'com.github.judemanutd:autostarter:1.1.0'
 
 }

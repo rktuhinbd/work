@@ -12,7 +12,7 @@ class NotificationListenerPresenter(private val view: NotificationListenerView) 
 
     fun getApplicationList(sbn: StatusBarNotification?) {
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
-        Thread(Runnable {
+        Thread {
             try {
                 view.onApplicationListGetSuccess(
                     appDatabase.applicationDao().allApplicationList,
@@ -23,7 +23,7 @@ class NotificationListenerPresenter(private val view: NotificationListenerView) 
             } catch (e: SQLiteException) {
                 view.onApplicationListGetError()
             }
-        }).start()
+        }.start()
     }
 
     fun filterByAppConstrains(

@@ -1,5 +1,6 @@
 package com.app.messagealarm.common
 
+import android.app.ActivityManager
 import com.app.messagealarm.model.response.UserInfoGlobal
 import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.utils.Constants
@@ -18,7 +19,7 @@ class CommonPresenter(private var commonView: CommonView) {
             Thread {
                 val ipAddress = RetrofitClient.getExternalIpAddress()
                 val url = String.format(
-                    "https://api.ipstack.com/%s?access_key=7abb122c84ee6a620119f0566fa0b620/",
+                    "https://api.ipstack.com/%s?access_key=7abb122c84ee6a620119f0566fa0b620",
                     ipAddress
                 )
                 RetrofitClient.getApiService().getCurrentUserInfo(url).enqueue(object :
@@ -84,7 +85,7 @@ class CommonPresenter(private var commonView: CommonView) {
             Thread {
                 val ipAddress = RetrofitClient.getExternalIpAddress()
                 val url = String.format(
-                    "https://api.ipstack.com/%s?access_key=7abb122c84ee6a620119f0566fa0b620/",
+                    "https://api.ipstack.com/%s?access_key=7abb122c84ee6a620119f0566fa0b620",
                     ipAddress
                 )
                 RetrofitClient.getApiService().getCurrentUserInfo(url).enqueue(object :
@@ -126,7 +127,7 @@ class CommonPresenter(private var commonView: CommonView) {
                                     )
                                 }
                             }catch (e:NullPointerException){
-
+                                //send the log to email via server
                             }
                             commonView.onSuccess(token)
                         } else {

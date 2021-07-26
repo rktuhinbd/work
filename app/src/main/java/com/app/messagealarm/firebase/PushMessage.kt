@@ -287,24 +287,27 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
         //if app is build in debug mode don't call this function
             sendPushToken(token)
             //send push token for non debug mode
-            RetrofitClient.getApiServiceHeroku().registerTokenForHeroku(token).enqueue(
-                object : Callback<TokenResponse> {
-                    override fun onResponse(
-                        call: Call<TokenResponse>,
-                        response: Response<TokenResponse>
-                    ) {
-                        if (response.isSuccessful) {
-                            //heroku token sync success
-                            SharedPrefUtils.write(
-                                Constants.PreferenceKeys.IS_HEROKU_TOKEN_SYNCED,
-                                true
-                            )
+            if(!BuildConfig.DEBUG){
+                RetrofitClient.getApiServiceHeroku().registerTokenForHeroku(token).enqueue(
+                    object : Callback<TokenResponse> {
+                        override fun onResponse(
+                            call: Call<TokenResponse>,
+                            response: Response<TokenResponse>
+                        ) {
+                            if (response.isSuccessful) {
+                                //heroku token sync success
+                                SharedPrefUtils.write(
+                                    Constants.PreferenceKeys.IS_HEROKU_TOKEN_SYNCED,
+                                    true
+                                )
+                            }
                         }
-                    }
-                    override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
+                        override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
 
-                    }
-                })
+                        }
+                    })
+            }
+
     }
 
     override fun onError() {

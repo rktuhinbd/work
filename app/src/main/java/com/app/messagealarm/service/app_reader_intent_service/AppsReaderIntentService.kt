@@ -24,7 +24,7 @@ class AppsReaderIntentService : JobIntentService() {
          * Unique job ID for this service.
          */
         val JOB_ID = 2
-        public fun enqueueWork(context: Context?, intent: Intent?) {
+        fun enqueueWork(context: Context?, intent: Intent?) {
             enqueueWork(context!!, AppsReaderIntentService::class.java, JOB_ID, intent!!)
         }
     }

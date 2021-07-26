@@ -49,6 +49,7 @@ import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
+import com.judemanutd.autostarter.AutoStartPermissionHelper
 import es.dmoral.toasty.Toasty
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.activity_main.*
@@ -56,6 +57,7 @@ import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import kotlinx.android.synthetic.main.item_added_applications.view.*
 import xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity
 import java.io.File
+import java.lang.Exception
 
 
 class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, PurchasesUpdatedListener,
@@ -101,6 +103,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     private fun lookForAlarmApplication() {
         alarmAppPresenter.getApplicationList()
         alarmAppPresenter.syncFirebaseTokenToHeroku()
+        alarmAppPresenter.isAutoStartPermissionAvailable(this)
         /**
          * rollback db to 70 if user is unpaid and from previous version and from outside bd
          */
@@ -389,6 +392,26 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 stopService()
             }
         }
+
+        txt_auto_start_enable?.setOnClickListener {
+            try {
+                val isOpened =  AutoStartPermissionHelper.getInstance().getAutoStartPermission(this,
+                    open = true,
+                    newTask = true
+                )
+                if(isOpened){
+                    SharedPrefUtils.write(Constants.PreferenceKeys.IS_AUTO_STARTED,
+                        true
+                    )
+                }
+            }catch (e:Exception){
+                //having exception hide it permanently
+                SharedPrefUtils.write(Constants.PreferenceKeys.IS_AUTO_STARTED,
+                    true
+                )
+            }
+
+        }
     }
 
 
@@ -591,7 +614,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     fun notifyCurrentAdapter() {
         //at this point getting the concurrent modification exception
         Handler(Looper.getMainLooper()).postDelayed({
-            lookForAlarmApplication()
+            alarmAppPresenter.getApplicationList()
         }, 1500)
     }
 
@@ -613,6 +636,28 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     override fun onTablesSizeRequestSuccess(appSize: Int, langSize: Int, appConstrainSize: Int) {
         WorkManagerUtils.scheduleSyncWork(this, appSize, langSize, appConstrainSize)
+    }
+
+    override fun onAutoStartTextShow() {
+        runOnUiThread {
+            txt_auto_start_detail?.visibility = View.VISIBLE
+            txt_auto_start_enable?.visibility = View.VISIBLE
+        }
+    }
+
+    override fun onAutoStartTextHide() {
+        runOnUiThread {
+            txt_auto_start_detail?.visibility = View.GONE
+            txt_auto_start_enable?.visibility = View.GONE
+        }
+    }
+
+    override fun onBatteryTextShow() {
+
+    }
+
+    override fun onBatteryTextHide() {
+
     }
 
     private fun showEditDialog(app: ApplicationEntity) {

@@ -70,7 +70,6 @@
                 android:layout_marginTop="3dp"
                 android:src="@drawable/ic_on_button" />
 
-
             <Switch
                 android:id="@+id/switch_alarm_status"
                 android:layout_width="wrap_content"
@@ -85,27 +84,56 @@
                 android:checked="true"
                 tools:targetApi="m" />
 
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
 
+    <!--auto start and battery section start-->
+
+    <TextView
+        android:id="@+id/txt_auto_start_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Autostart is disabled:"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/card_view_alarm_status"
+        app:layout_constraintTop_toBottomOf="@id/card_view_alarm_status"
+        android:textColor="@color/colorTextRegular"
+        />
+
+    <TextView
+        android:id="@+id/txt_auto_start_enable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="enable"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:layout_marginStart="5dp"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintTop_toTopOf="@id/txt_auto_start_detail"
+        app:layout_constraintBottom_toBottomOf="@id/txt_auto_start_detail"
+        app:layout_constraintStart_toEndOf="@id/txt_auto_start_detail"
+        />
+
+    <!--end of auto start and battery section-->
 
     <TextView
         android:id="@+id/txt_applications"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/card_view_alarm_status"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
-        android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/open_sans_semi_bold"
         android:text="Applications"
         android:textColor="@color/default_text"
-        android:fontFamily="@font/open_sans_semi_bold"
         android:textSize="16sp"
-        />
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintBottom_toTopOf="@+id/img_empty_state"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_auto_start_detail" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_application_list"
@@ -184,8 +212,8 @@
         android:textColor="@color/colorTextRegular"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:layout_marginBottom="64dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
