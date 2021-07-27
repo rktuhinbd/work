@@ -2,6 +2,8 @@ package com.app.messagealarm.ui.main.alarm_applications
 
 import android.content.Context
 import android.database.sqlite.SQLiteException
+import android.os.Build
+import android.os.PowerManager
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.BuildConfig
 import com.app.messagealarm.local_database.AppDatabase
@@ -81,6 +83,18 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
         }
     }
 
+    /**
+     * return true if in App's Battery settings "Not optimized" and false if "Optimizing battery use"
+     */
+    private fun isIgnoringBatteryOptimizations(context: Context): Boolean {
+        val pwrm = context.applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
+        val name = context.applicationContext.packageName
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return pwrm.isIgnoringBatteryOptimizations(name)
+        }
+        return true
+    }
+
 
     fun isAutoStartPermissionAvailable(context: Context) {
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
@@ -96,6 +110,8 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
                     ) {
                         if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_AUTO_STARTED)){
                             alarmApplicationView.onAutoStartTextShow()
+                        }else{
+                            alarmApplicationView.onAutoStartTextHide()
                         }
                     }else{
                         alarmApplicationView.onAutoStartTextHide()
@@ -103,7 +119,15 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
                     /**
                      * handle battery restriction
                      */
-
+                    if(!isIgnoringBatteryOptimizations(context)){
+                        if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_BATTERY_RESTRICTED)){
+                            alarmApplicationView.onBatteryTextShow()
+                        }else{
+                            alarmApplicationView.onBatteryTextHide()
+                        }
+                    }else{
+                        alarmApplicationView.onBatteryTextHide()
+                    }
                 }else{
                     //no app added yet
                     alarmApplicationView.onAutoStartTextHide()

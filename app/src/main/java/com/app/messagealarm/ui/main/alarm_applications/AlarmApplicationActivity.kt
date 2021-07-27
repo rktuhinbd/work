@@ -3,18 +3,17 @@ package com.app.messagealarm.ui.main.alarm_applications
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -22,7 +21,7 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.app.ActivityCompat
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -46,7 +45,6 @@ import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.android.material.button.MaterialButton
 import com.google.android.play.core.review.ReviewManagerFactory
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.judemanutd.autostarter.AutoStartPermissionHelper
@@ -57,7 +55,6 @@ import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import kotlinx.android.synthetic.main.item_added_applications.view.*
 import xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity
 import java.io.File
-import java.lang.Exception
 
 
 class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, PurchasesUpdatedListener,
@@ -107,24 +104,24 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         /**
          * rollback db to 70 if user is unpaid and from previous version and from outside bd
          */
-        if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)){
-             if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2)){
-                if(SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY_CODE) != "BD"){
-                    if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DB_ROLLED_BACK)){
+        if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
+            if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2)) {
+                if (SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY_CODE) != "BD") {
+                    if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DB_ROLLED_BACK)) {
                         alarmAppPresenter.dbRollBackForSoundLevelFromDefault()
                     }
                 }
-        }
+            }
         }
     }
 
     override fun onResume() {
         super.onResume()
+        lookForAlarmApplication()
         if (BaseApplication.installedApps.isEmpty()) {
             val mIntent = Intent(this, AppsReaderIntentService::class.java)
             AppsReaderIntentService.enqueueWork(this, mIntent)
         }
-        lookForAlarmApplication()
         val isServiceStopped =
             SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)
         switch_alarm_status?.isChecked = !isServiceStopped
@@ -394,41 +391,97 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         }
 
         txt_auto_start_enable?.setOnClickListener {
-            try {
-                val isOpened =  AutoStartPermissionHelper.getInstance().getAutoStartPermission(this,
-                    open = true,
-                    newTask = true
-                )
-                if(isOpened){
-                    SharedPrefUtils.write(Constants.PreferenceKeys.IS_AUTO_STARTED,
-                        true
-                    )
+            DialogUtils.showOnlyPositiveDialog(this, "AutoStart",
+                "If you enable AutoStart option, it will help Message Alarm to run more " +
+                        "smoothly in your phone. As it's help not to get killed by the OS",
+                object : DialogUtils.Callback {
+                    override fun onPositive() {
+                        try {
+                            val isOpened = AutoStartPermissionHelper.getInstance().getAutoStartPermission(
+                                this@AlarmApplicationActivity,
+                                open = true,
+                                newTask = true
+                            )
+                            if (isOpened) {
+                                SharedPrefUtils.write(
+                                    Constants.PreferenceKeys.IS_AUTO_STARTED,
+                                    true
+                                )
+                            }
+                        } catch (e: Exception) {
+                            //having exception hide it permanently
+                            SharedPrefUtils.write(
+                                Constants.PreferenceKeys.IS_AUTO_STARTED,
+                                true
+                            )
+                        }
+                    }
+
+                    override fun onNegative() {
+
+                    }
+
+                })
+
+        }
+
+        txt_battery_enable?.setOnClickListener {
+            DialogUtils.showOnlyPositiveDialog(this, "Battery Restriction",
+                "We recommend you to disable battery restriction on our app, as it kills" +
+                        " our app sometime from background. For further help, please visit 'Not working sometime' from (Setting) page",
+            object : DialogUtils.Callback{
+                override fun onPositive() {
+                    //open app info screen
+                    try {
+                        //Open the specific App Info page:
+                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                        intent.data = Uri.parse("package:$packageName")
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                        SharedPrefUtils.write(
+                            Constants.PreferenceKeys.IS_BATTERY_RESTRICTED,
+                            true
+                        )
+                    } catch (e: ActivityNotFoundException) {
+                        //e.printStackTrace();
+                        //Open the generic Apps page:
+                        val intent = Intent(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                        SharedPrefUtils.write(
+                            Constants.PreferenceKeys.IS_BATTERY_RESTRICTED,
+                            true
+                        )
+                    }
                 }
-            }catch (e:Exception){
-                //having exception hide it permanently
-                SharedPrefUtils.write(Constants.PreferenceKeys.IS_AUTO_STARTED,
-                    true
-                )
-            }
+
+                override fun onNegative() {
+
+                }
+
+            })
 
         }
     }
 
 
+
+
     @SuppressLint("SetTextI18n")
-    private fun triggerBuyProDialog(){
+    private fun triggerBuyProDialog() {
         /**
          * Every 10 times show buy pro dialog with
          */
-        if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED) &&
+        if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED) &&
             (SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT) -
-            SharedPrefUtils.readInt(Constants.PreferenceKeys.MAIN_SCREEN_OPENED)) >= 10){
-                SharedPrefUtils.write(
-                    Constants.PreferenceKeys.MAIN_SCREEN_OPENED,
-                    SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT)
-                )
-            if(!isFinishing) {
-               val dialog = Dialog(this)
+                    SharedPrefUtils.readInt(Constants.PreferenceKeys.MAIN_SCREEN_OPENED)) >= 10
+        ) {
+            SharedPrefUtils.write(
+                Constants.PreferenceKeys.MAIN_SCREEN_OPENED,
+                SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT)
+            )
+            if (!isFinishing) {
+                val dialog = Dialog(this)
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
                 dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
                 dialog.setCancelable(false)
@@ -439,7 +492,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 val txtAlarmCount = dialog.findViewById<TextView>(R.id.text_sale)
                 val btnBuyPro = dialog.findViewById<MaterialButton>(R.id.button_pro)
                 btnBuyPro?.setOnClickListener {
-                    if(dialog.isShowing){
+                    if (dialog.isShowing) {
                         dialog.dismiss()
                     }
                     val bundle = Bundle()
@@ -455,9 +508,11 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 //bind view
                 val text = "" +
                         "You were alarmed, when ${SharedPrefUtils.readString(Constants.PreferenceKeys.LAST_SENDER_NAME)} " +
-                        "sent you message via ${SharedPrefUtils.readString(
-                            Constants.PreferenceKeys.LAST_APP_NAME
-                        )}"
+                        "sent you message via ${
+                            SharedPrefUtils.readString(
+                                Constants.PreferenceKeys.LAST_APP_NAME
+                            )
+                        }"
 
 
                 val bundle = Bundle()
@@ -472,7 +527,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
                 txtMainTitle?.setText(spannable, TextView.BufferType.SPANNABLE)
-                txtAlarmCount?.text = "${SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT)} times"
+                txtAlarmCount?.text =
+                    "${SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT)} times"
                 imgAppLogo?.setImageBitmap(
                     BitmapFactory.decodeFile(
                         File(SharedPrefUtils.readString(Constants.PreferenceKeys.LAST_APP_ICON_NAME))
@@ -493,11 +549,11 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     }
                     true
                 }
-                if(!dialog.isShowing){
+                if (!dialog.isShowing) {
                     dialog.show()
                 }
             }
-        }else{
+        } else {
             Handler(Looper.myLooper()!!).postDelayed({
                 if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_VIDEO_SHOWED)) {
                     showDialogTutorialDecision()
@@ -557,7 +613,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                         SharedPrefUtils.write(Constants.PreferenceKeys.IS_REVIEW_SCREEN_SHOWN, true)
                     }
                     flow.addOnFailureListener {
-                        SharedPrefUtils.write(Constants.PreferenceKeys.IS_REVIEW_SCREEN_SHOWN, false)
+                        SharedPrefUtils.write(
+                            Constants.PreferenceKeys.IS_REVIEW_SCREEN_SHOWN,
+                            false
+                        )
                     }
                 }
             }
@@ -653,11 +712,32 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     }
 
     override fun onBatteryTextShow() {
-
+        runOnUiThread {
+            try {
+                if (txt_auto_start_detail.isVisibile()) {
+                    //make txt battery detail top margin only 8 dp
+                    (txt_battery_detail.layoutParams as ConstraintLayout.LayoutParams).apply {
+                        topMargin = ViewUtils.dpToPx(6).toInt()
+                    }
+                } else {
+                    //make txt battery detail top margin only 12 dp
+                    (txt_battery_detail.layoutParams as ConstraintLayout.LayoutParams).apply {
+                        topMargin = ViewUtils.dpToPx(12).toInt()
+                    }
+                }
+            }catch (e: Exception){
+                //skip it to default
+            }
+            txt_battery_detail?.visibility = View.VISIBLE
+            txt_battery_enable?.visibility = View.VISIBLE
+        }
     }
 
     override fun onBatteryTextHide() {
-
+        runOnUiThread {
+            txt_battery_detail?.visibility = View.GONE
+            txt_battery_enable?.visibility = View.GONE
+        }
     }
 
     private fun showEditDialog(app: ApplicationEntity) {
@@ -699,8 +779,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     }
 
 
-    private fun showDialogTutorialDecision(){
-        if(!isFinishing) {
+    private fun showDialogTutorialDecision() {
+        if (!isFinishing) {
             val dialog = Dialog(this)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
@@ -713,12 +793,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 bundle.putString("clicked_later_button", "yes")
                 Firebase.analytics.logEvent("video_from_popup_dialog", bundle)
                 Toasty.info(this, "You can always see the video from setting!").show()
-                if(dialog.isShowing){
+                if (dialog.isShowing) {
                     dialog.dismiss()
                 }
             }
             btnWatchVideo.setOnClickListener {
-                if(dialog.isShowing){
+                if (dialog.isShowing) {
                     dialog.dismiss()
                 }
                 val bundle = Bundle()
@@ -731,7 +811,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            if(!dialog.isShowing){
+            if (!dialog.isShowing) {
                 dialog.show()
             }
         }

@@ -19,7 +19,7 @@ import android.widget.FrameLayout
 import java.lang.NumberFormatException
 
 
-class DialogUtils {
+open class DialogUtils {
 
     companion object {
 
@@ -30,6 +30,21 @@ class DialogUtils {
                 .setPositiveButton(
                     R.string.ok
                 ) { dialog, which ->
+                    dialog.dismiss()
+                }
+                .setIcon(com.app.messagealarm.R.drawable.ic_info)
+                .setCancelable(false)
+                .show()
+        }
+
+        fun showOnlyPositiveDialog(context: Context, title: String, message: String, callback: Callback){
+            AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(
+                    R.string.ok
+                ) { dialog, which ->
+                    callback.onPositive()
                     dialog.dismiss()
                 }
                 .setIcon(com.app.messagealarm.R.drawable.ic_info)

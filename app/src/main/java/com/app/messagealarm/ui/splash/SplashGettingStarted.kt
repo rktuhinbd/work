@@ -11,7 +11,9 @@ import android.view.Window
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
+import com.app.messagealarm.service.app_reader_intent_service.AppsReaderIntentService
 import com.app.messagealarm.ui.terms_privacy.TermsAndConditionActivity
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.DialogUtils
@@ -31,6 +33,10 @@ class SplashGettingStarted : AppCompatActivity() {
         val button = findViewById<Button>(R.id.btn_get_started)
         text_terms_policy?.movementMethod = LinkMovementMethod.getInstance()
         text_terms_policy?.setLinkTextColor(ContextCompat.getColor(this, R.color.color_white))
+        if (BaseApplication.installedApps.isEmpty()) {
+            val mIntent = Intent(this, AppsReaderIntentService::class.java)
+            AppsReaderIntentService.enqueueWork(this, mIntent)
+        }
         button?.setOnClickListener()
         {
           openGiveNotificationDialogNew()

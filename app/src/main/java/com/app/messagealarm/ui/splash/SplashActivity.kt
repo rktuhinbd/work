@@ -46,8 +46,10 @@ class SplashActivity : BaseActivity(), CommonView {
         val commonPresenter = CommonPresenter(this)
         commonPresenter.knowUserFromWhichCountry()
         handleUpdate()
-        val mIntent = Intent(this, AppsReaderIntentService::class.java)
-        AppsReaderIntentService.enqueueWork(this, mIntent)
+        if (BaseApplication.installedApps.isEmpty()) {
+            val mIntent = Intent(this, AppsReaderIntentService::class.java)
+            AppsReaderIntentService.enqueueWork(this, mIntent)
+        }
         firebaseAnalytics = Firebase.analytics
     }
 

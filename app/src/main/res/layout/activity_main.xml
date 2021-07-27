@@ -106,14 +106,42 @@
         android:id="@+id/txt_auto_start_enable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="enable"
+        android:text="Enable"
         android:textStyle="bold"
+        android:fontFamily="@font/roboto_bold"
         android:visibility="gone"
         android:layout_marginStart="5dp"
         android:textColor="@color/colorAccent"
         app:layout_constraintTop_toTopOf="@id/txt_auto_start_detail"
         app:layout_constraintBottom_toBottomOf="@id/txt_auto_start_detail"
         app:layout_constraintStart_toEndOf="@id/txt_auto_start_detail"
+        />
+
+    <TextView
+        android:id="@+id/txt_battery_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Battery restricted:"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/txt_auto_start_detail"
+        app:layout_constraintTop_toBottomOf="@id/txt_auto_start_detail"
+        android:textColor="@color/colorTextRegular"
+        />
+
+    <TextView
+        android:id="@+id/txt_battery_enable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Disable"
+        android:textStyle="bold"
+        android:fontFamily="@font/roboto_bold"
+        android:visibility="gone"
+        android:layout_marginStart="5dp"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintTop_toTopOf="@id/txt_battery_detail"
+        app:layout_constraintBottom_toBottomOf="@id/txt_battery_detail"
+        app:layout_constraintStart_toEndOf="@id/txt_battery_detail"
         />
 
     <!--end of auto start and battery section-->
@@ -133,7 +161,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_auto_start_detail" />
+        app:layout_constraintTop_toBottomOf="@id/txt_battery_detail" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_application_list"
