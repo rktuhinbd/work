@@ -46,19 +46,7 @@
 
     </PreferenceCategory>
 
-    <!--Live chat-->
-    <PreferenceCategory
-        app:title="Live Chat"
-        android:key="live_chat"
-        app:allowDividerBelow="false" app:allowDividerAbove="false" app:layout="@layout/preference_category">
 
-        <Preference
-            app:icon="@drawable/ic_baseline_chat_24"
-            app:key="chat"
-            app:summary="We are online"
-            app:title="Chat With Us" />
-
-    </PreferenceCategory>
 
     <!--tutorial-->
     <PreferenceCategory
@@ -72,6 +60,12 @@
             app:summary="Watch how our app works"
             app:title="Tutorial" />
 
+        <Preference
+            app:icon="@drawable/ic_help_black_24dp"
+            app:key="background_not_working"
+            app:summary="Here we have detailed guidelines"
+            app:title="@string/txt_not_background" />
+
     </PreferenceCategory>
 
     <!--support-->
@@ -81,16 +75,17 @@
         app:layout="@layout/preference_category" app:title="Support">
 
         <Preference
+            app:icon="@drawable/ic_baseline_chat_24"
+            app:key="chat"
+            app:summary="We are online"
+            app:title="Chat with us" />
+
+        <Preference
             app:icon="@drawable/ic_email_black_24dp"
             app:key="email"
             app:summary="For any kind of help, send us email"
             app:title="@string/email_us" />
 
-        <Preference
-            app:icon="@drawable/ic_help_black_24dp"
-            app:key="background_not_working"
-            app:summary="Here we have detailed guidelines"
-            app:title="@string/txt_not_background" />
 
 
     </PreferenceCategory>
@@ -104,7 +99,7 @@
             app:icon="@drawable/ic_share_black_24dp"
             app:key="share"
             app:summary="Tell A Friend"
-            app:title="Share This App" />
+            app:title="Share this app" />
 
     </PreferenceCategory>
 

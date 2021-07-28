@@ -36,18 +36,18 @@
     <string name="signature_title">Your signature</string>
     <string name="reply_title">Theme</string>
     <!-- Sync Preferences -->
-    <string name="email_us">Email Us</string>
+    <string name="email_us">Email us</string>
     <string name="attachment_title">Download incoming attachments</string>
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="txt_themes">Themes</string>
-    <string name="txt_not_background">Not Working When App In Background?</string>
+    <string name="txt_not_background">Not working sometime?</string>
     <string name="notification_channel">sells_post</string>
     <string name="notification_channel_name">posts</string>
     <string name="txt_search_app">Search Apps</string>
     <string name="txt_mute">Mute App</string>
-    <string name="txt_alarm_mute">Mute Time</string>
+    <string name="txt_alarm_mute">Mute time</string>
     <string name="txt_remove_from_snooze">Remove from Snooze</string>
     <string name="txt_remove">Remove</string>
     <string name="txt_invalid_request">Invalid request!</string>
