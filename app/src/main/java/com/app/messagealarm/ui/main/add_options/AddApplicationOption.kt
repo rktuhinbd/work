@@ -700,7 +700,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     override fun onPositive() {
                         if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
                             holderEntity.ignored_names = "None"
-
                         }
                         addApplicationEntity.ignored_names = "None"
                         txt_exclude_sender_name_value?.text = "None"
@@ -710,7 +709,6 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     override fun onNegative() {
 
                     }
-
                 })
         }
 

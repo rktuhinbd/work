@@ -460,11 +460,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 }
 
             })
-
         }
     }
-
-
 
 
     @SuppressLint("SetTextI18n")
