@@ -31,7 +31,7 @@
             android:layout_marginTop="12dp"
             android:fontFamily="@font/roboto_regular"
             android:textColor="@color/colorTextRegular"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@android:id/summary"
@@ -39,8 +39,8 @@
             android:layout_height="wrap_content"
             android:text="TextVie"
             android:layout_marginBottom="12dp"
-            android:textSize="12sp"
-            android:fontFamily="@font/roboto_light"
+            android:textSize="14sp"
+            android:fontFamily="@font/roboto_regular"
             android:textColor="@color/default_text" />
 
     </LinearLayout>

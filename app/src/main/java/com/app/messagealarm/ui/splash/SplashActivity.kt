@@ -74,8 +74,6 @@ class SplashActivity : BaseActivity(), CommonView {
             tryReconnectService()
     }
 
-
-
     private fun tryReconnectService() {
         toggleNotificationListenerService()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -115,7 +113,6 @@ class SplashActivity : BaseActivity(), CommonView {
             SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, false)
         }
     }
-
 
     override fun onResume() {
         super.onResume()
@@ -169,14 +166,12 @@ class SplashActivity : BaseActivity(), CommonView {
                 //take user to app
                 takeUserToHome()
             }
-
             override fun onTick(millisUntilFinished: Long) {
                 progress += 1
                 progress_bar_splash?.progress = progress
             }
         }.start()
     }
-
 
     /**
      * 2.0.1 user to 2.0.2 sending token and status to server so we can know user status
@@ -191,7 +186,6 @@ class SplashActivity : BaseActivity(), CommonView {
                 ).execute()
             }
         }.start()
-
     }
 
     override fun onSuccess() {

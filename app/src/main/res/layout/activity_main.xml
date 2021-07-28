@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/alarm_service"
-                android:fontFamily="@font/open_sans_semi_bold"
+                android:fontFamily="@font/roboto_bold"
                 android:textSize="18sp"
                 android:textColor="@color/default_text"
                 app:layout_constraintTop_toTopOf="parent"
@@ -152,7 +152,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
-        android:fontFamily="@font/open_sans_semi_bold"
+        android:fontFamily="@font/roboto_bold"
         android:text="Applications"
         android:textColor="@color/default_text"
         android:textSize="16sp"
@@ -185,7 +185,7 @@
         android:id="@+id/txt_hint_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/open_sans_light"
+        android:fontFamily="@font/roboto_light"
         android:text="Swipe left to delete item!"
         android:visibility="gone"
         android:textColor="@color/colorTextRegular"
@@ -228,7 +228,7 @@
         app:layout_constraintBottom_toTopOf="@id/txt_empty_state_desc"
         android:textAlignment="center"
         android:textSize="20sp"
-        android:fontFamily="@font/open_sans_semi_bold"
+        android:fontFamily="@font/roboto_bold"
         />
 
 
@@ -249,7 +249,7 @@
         android:textAlignment="center"
         android:textSize="16sp"
         android:layout_marginTop="4dp"
-        android:fontFamily="@font/open_sans_regular"
+        android:fontFamily="@font/roboto_light"
         />
 
     <!--end of placeholder layouts-->

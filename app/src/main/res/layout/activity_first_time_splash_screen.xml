@@ -57,7 +57,7 @@
         app:layout_constraintBottom_toTopOf="@id/img_logo"
         app:layout_constraintVertical_bias="1"
         android:textColor="@color/color_white"
-        android:fontFamily="@font/open_sans_semi_bold"
+        android:fontFamily="@font/roboto_bold"
         app:layout_constraintVertical_chainStyle="packed"
         />
 
