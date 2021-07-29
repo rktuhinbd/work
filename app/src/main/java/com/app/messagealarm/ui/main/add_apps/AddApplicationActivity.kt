@@ -41,6 +41,7 @@ import es.dmoral.toasty.Toasty
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_add_application.*
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
+import net.frakbot.jumpingbeans.JumpingBeans
 import xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity
 import java.io.File
 import java.io.Serializable
@@ -55,6 +56,7 @@ import kotlin.collections.ArrayList
 class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     AllAppsListAdapter.ItemClickListener {
 
+    var textSync = "Searching apps"
     var addApplicationPresenter:AddApplicationPresenter? = null
     val bottomSheetModel = AddApplicationOption()
     val REQUEST_CODE_PICK_AUDIO = 1
@@ -72,6 +74,9 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         txt_filter_by?.visibility = View.INVISIBLE
         spinner_filter?.visibility = View.INVISIBLE
         spinner_drop_down?.visibility = View.INVISIBLE
+        JumpingBeans.with(animated_dots)
+            .appendJumpingDots()
+            .build()
         //setup presenter
         addApplicationPresenter = AddApplicationPresenter(this, this)
         filterListener()
@@ -97,12 +102,10 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     private fun darkModePre(){
         if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
             spinner_drop_down?.setImageResource(R.drawable.ic_arrow_drop_down_white)
-            progress_bar_add_app?.setImageResource(R.drawable.loader_dark)
             gif_no_internet?.setImageResource(R.drawable.no_internet_dark)
             search_not_found?.setImageResource(R.drawable.ic_search_no_found_dark)
         }else{
             spinner_drop_down?.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp)
-            progress_bar_add_app?.setImageResource(R.drawable.loader_white)
             gif_no_internet?.setImageResource(R.drawable.no_internet_white)
             search_not_found?.setImageResource(R.drawable.ic_search_no_found_white)
         }
@@ -124,10 +127,16 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     private fun setListener(){
         btn_sync_now?.setOnClickListener {
             if(AndroidUtils.isOnline(this)){
+                textSync = "Syncing data"
+                animated_dots.text = textSync
+                JumpingBeans.with(animated_dots)
+                    .appendJumpingDots()
+                    .build()
                 Toasty.success(this, "Sync started, please hold on!").show()
             }
             hideNotSyncedSuccess()
             progress_bar_add_app?.visibility = View.VISIBLE
+            animated_dots?.visibility = View.VISIBLE
             addApplicationPresenter?.sync()
         }
     }
@@ -145,6 +154,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             list.sortWith { lhs, rhs -> lhs.appName.compareTo(rhs.appName) }
             runOnUiThread {
                 progress_bar_add_app?.visibility = View.GONE
+                animated_dots?.visibility = View.GONE
                 rv_apps_list?.visibility = View.VISIBLE
                 initAllAppsRecyclerView(list)
                 spinner_filter?.visibility = View.VISIBLE
@@ -185,6 +195,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                         searchView?.isIconified = true
                         rv_apps_list?.visibility = View.GONE
                         progress_bar_add_app?.visibility = View.VISIBLE
+                        animated_dots?.visibility = View.VISIBLE
                         addApplicationPresenter!!.getAllApplicationList()
                     }else{
                         //clear search view
@@ -194,6 +205,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                         searchView?.isIconified = true
                         rv_apps_list?.visibility = View.GONE
                         progress_bar_add_app?.visibility = View.VISIBLE
+                        animated_dots?.visibility = View.VISIBLE
                         addApplicationPresenter!!.filterByMessaging()
                     }
                 }catch (e:NullPointerException){
@@ -235,6 +247,11 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         //there should be a logic that if internet is off then show handle sync not success
         //or if loading is happening for more than 6 sec, then show sync not
         runOnUiThread {
+            textSync = "Searching apps"
+            animated_dots.text = textSync
+            JumpingBeans.with(animated_dots)
+                .appendJumpingDots()
+                .build()
             val countDownTimer = object  : CountDownTimer(5000, 1000){
                 override fun onTick(millisUntilFinished: Long) {
                     //skipping the milliseconds as not needed
@@ -257,6 +274,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                             handleSyncedNotSuccess()
                         }else if(holderList.size > 1){
                         progress_bar_add_app?.visibility = View.GONE
+                        animated_dots?.visibility = View.GONE
                         rv_apps_list?.visibility = View.VISIBLE
                     }
                     spinner_filter?.isEnabled = true
@@ -271,7 +289,13 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
     override fun onSyncFailed(message: String) {
         runOnUiThread {
+            textSync = "Searching apps"
+            animated_dots.text = textSync
+            JumpingBeans.with(animated_dots)
+                .appendJumpingDots()
+                .build()
             progress_bar_add_app?.visibility = View.GONE
+            animated_dots?.visibility = View.GONE
             Toasty.error(this, message).show()
         }
         handleSyncedNotSuccess()
@@ -306,6 +330,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         runOnUiThread {
             rv_apps_list?.visibility = View.GONE
             progress_bar_add_app?.visibility = View.GONE
+            animated_dots?.visibility = View.GONE
             gif_no_internet?.visibility = View.VISIBLE
             txt_no_internet?.visibility = View.VISIBLE
             btn_sync_now?.visibility = View.VISIBLE
