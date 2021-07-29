@@ -553,7 +553,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         } else {
             Handler(Looper.myLooper()!!).postDelayed({
                 if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_VIDEO_SHOWED)) {
-                    showDialogTutorialDecision()
+                    showQuickStartDialog()
                 }
             }, 1000)
         }
@@ -776,7 +776,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     }
 
 
-    private fun showDialogTutorialDecision() {
+   /* private fun showDialogTutorialDecision() {
         if (!isFinishing) {
             val dialog = Dialog(this)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -801,7 +801,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 val bundle = Bundle()
                 bundle.putString("clicked_watch_button", "yes")
                 Firebase.analytics.logEvent("video_from_popup_dialog", bundle)
-                showQuickStartDialog()
             }
             val window: Window = dialog.window!!
             window.setLayout(
@@ -812,7 +811,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 dialog.show()
             }
         }
-    }
+    }*/
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
