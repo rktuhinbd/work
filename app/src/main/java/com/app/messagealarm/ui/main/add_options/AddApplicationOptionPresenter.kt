@@ -1,5 +1,6 @@
 package com.app.messagealarm.ui.main.add_options
 
+import android.app.Activity
 import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteException
@@ -7,6 +8,7 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
+import android.provider.Telephony
 import android.util.Log
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
@@ -35,7 +37,10 @@ import java.net.SocketTimeoutException
 
 class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApplicationOptionView) {
 
-    fun saveApplication(addApplicationEntity: ApplicationEntity, firebaseAnalytics: FirebaseAnalytics){
+    fun saveApplication(
+        addApplicationEntity: ApplicationEntity,
+        firebaseAnalytics: FirebaseAnalytics
+    ) {
         //send data to analytics
         val bundle = Bundle()
         bundle.putString("app_name", addApplicationEntity.appName)
@@ -56,90 +61,96 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread(
             Runnable {
-               try{
+                try {
                     appDatabase.applicationDao().insertApplication(addApplicationEntity)
-                   addApplicationOptionView.onApplicationSaveSuccess()
-               }catch (e:NullPointerException){
-                   addApplicationOptionView.onApplicationSaveError(DataUtils.getString(R.string.something_wrong))
-               }catch (e:SQLiteConstraintException){
-                   /**
-                    * If the app is already in database then just update it
-                    */
-                  updateApplication(addApplicationEntity)
-               }catch (e:SQLiteException){
-                   addApplicationOptionView.onApplicationSaveError(DataUtils.getString(R.string.something_wrong))
-               }
+                    addApplicationOptionView.onApplicationSaveSuccess()
+                } catch (e: NullPointerException) {
+                    addApplicationOptionView.onApplicationSaveError(DataUtils.getString(R.string.something_wrong))
+                } catch (e: SQLiteConstraintException) {
+                    /**
+                     * If the app is already in database then just update it
+                     */
+                    updateApplication(addApplicationEntity)
+                } catch (e: SQLiteException) {
+                    addApplicationOptionView.onApplicationSaveError(DataUtils.getString(R.string.something_wrong))
+                }
             }
         ).start()
     }
 
 
-    fun getAppByPackageName(packageName:String?){
+    fun getAppByPackageName(packageName: String?) {
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread(Runnable {
             try {
-                if(packageName != null){
+                if (packageName != null) {
                     addApplicationOptionView.onApplicationGetSuccess(
                         appDatabase.applicationDao().getAppByPackageName(packageName)
                     )
                 }
-            }catch (ex:NullPointerException){
+            } catch (ex: NullPointerException) {
                 addApplicationOptionView.onApplicationGetError(DataUtils.getString(R.string.something_wrong))
-            }catch (ex:SQLiteException){
+            } catch (ex: SQLiteException) {
                 addApplicationOptionView.onApplicationGetError(DataUtils.getString(R.string.something_wrong))
-            }catch (ex:IllegalStateException){
+            } catch (ex: IllegalStateException) {
                 addApplicationOptionView.onIllegalState()
             }
         }).start()
     }
 
-   private fun updateApplication(app:ApplicationEntity){
+    private fun updateApplication(app: ApplicationEntity) {
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread(Runnable {
-            try{
+            try {
                 appDatabase.applicationDao().updateApplication(app)
                 addApplicationOptionView.onApplicationUpdateSuccess()
-            }catch (ex:NullPointerException){
+            } catch (ex: NullPointerException) {
                 addApplicationOptionView.onApplicationUpdateError(DataUtils.getString(R.string.update_error))
-            }catch (ex:SQLiteException){
+            } catch (ex: SQLiteException) {
                 addApplicationOptionView.onApplicationUpdateError(DataUtils.getString(R.string.update_error))
             }
         }).start()
     }
 
-    fun checkForUnknownApp(context: Context, appName:String, packageName:String){
+    fun checkForUnknownApp(context: Activity, appName: String, packageName: String) {
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         var count = 0
         Thread(Runnable {
             val appList = appDatabase.appDao().appsList
             appList.forEach {
-                if(it.appPackageName == packageName){
+                if (it.appPackageName == packageName) {
                     count++
                 }
             }
-            if(count == 0){
+            if (count == 0) {
                 //check if first time app was synced
                 //it's an unknown app
-                if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.FIRST_APP_SYNC_FINISHED) ||
-                        appDatabase.appConstrainDao().totalCountOfAppConstrain == SharedPrefUtils.readInt(Constants.PreferenceKeys.CONSTRAIN_COUNT)
-                        ){
-                    sendUnknownAppNameToServer(appName, packageName)
+                if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.FIRST_APP_SYNC_FINISHED) ||
+                    appDatabase.appConstrainDao().totalCountOfAppConstrain == SharedPrefUtils.readInt(
+                        Constants.PreferenceKeys.CONSTRAIN_COUNT
+                    )
+                ) {
+                    if (packageName != Telephony.Sms.getDefaultSmsPackage(context)) {
+                        sendUnknownAppNameToServer(appName, packageName)
+                    }
                 }
             }
         }).start()
     }
 
-    private fun sendUnknownAppNameToServer(appName: String, packageName: String){
-        try{
-            RetrofitClient.getApiService().notifyUnknownApp(appName, packageName,
-                SharedPrefUtils.readString(Constants.PreferenceKeys.FIREBASE_TOKEN,"not_found")).execute()
-        }catch (e:JsonParseException){
+    private fun sendUnknownAppNameToServer(appName: String, packageName: String) {
+        try {
+            RetrofitClient.getApiService().notifyUnknownApp(
+                appName, packageName,
+                SharedPrefUtils.readString(Constants.PreferenceKeys.FIREBASE_TOKEN, "not_found")
+            ).execute()
+        } catch (e: JsonParseException) {
 
-        }catch (e:SocketTimeoutException){
+        } catch (e: SocketTimeoutException) {
 
-        }catch (e:IOException){
+        } catch (e: IOException) {
 
-        }catch (e:JSONException){
+        } catch (e: JSONException) {
 
         }
     }
@@ -147,21 +158,25 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
     /**
      * Check for updated version
      */
-     fun checkForLatestUpdate(){
+    fun checkForLatestUpdate() {
         RetrofitClient.getApiService().latestVersion.enqueue(object : Callback<LatestInfo> {
             override fun onResponse(call: Call<LatestInfo>, response: Response<LatestInfo>) {
-               if(response.isSuccessful){
-                   //successful call
-                   val latestInfo = response.body()
-                   if(latestInfo!!.isSuccess){
-                       SharedPrefUtils.write(Constants.PreferenceKeys.CONSTRAIN_COUNT,
-                           latestInfo.totalConstraints
-                       )
-                       SharedPrefUtils.write(Constants.PreferenceKeys.UPDATED_VERSION,
-                           latestInfo.currentVersion)
-                   }
-               }
+                if (response.isSuccessful) {
+                    //successful call
+                    val latestInfo = response.body()
+                    if (latestInfo!!.isSuccess) {
+                        SharedPrefUtils.write(
+                            Constants.PreferenceKeys.CONSTRAIN_COUNT,
+                            latestInfo.totalConstraints
+                        )
+                        SharedPrefUtils.write(
+                            Constants.PreferenceKeys.UPDATED_VERSION,
+                            latestInfo.currentVersion
+                        )
+                    }
+                }
             }
+
             override fun onFailure(call: Call<LatestInfo>, t: Throwable) {
 
             }
@@ -171,7 +186,7 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
     /*
       * this method save a bitmap to file
       * */
-    fun saveBitmapToFile(context: Context, packageName:String, bitmap: Bitmap) {
+    fun saveBitmapToFile(context: Context, packageName: String, bitmap: Bitmap) {
         var file_path = ""
         var imageName = ""
         try {
@@ -189,16 +204,16 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
                 bitmap.compress(Bitmap.CompressFormat.PNG, 90, fOut)
                 fOut.flush()
                 fOut.close()
-            }else{
+            } else {
                 addApplicationOptionView.onBitmapSaveSuccess("$file_path/$imageName")
             }
         } catch (e: IOException) {
             Timber.e(e)
             e.printStackTrace()
             addApplicationOptionView.onBitmapSaveError()
-        }catch (ex:NullPointerException){
+        } catch (ex: NullPointerException) {
             addApplicationOptionView.onBitmapSaveError()
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
         addApplicationOptionView.onBitmapSaveSuccess("$file_path/$imageName")

@@ -848,11 +848,11 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         try {
             if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
                val text =
-                    String.format("Hint: Please add username name from %s", holderEntity.appName)
+                    String.format("Hint: Only messages from this users will play alarm, add username from %s", holderEntity.appName)
                 val spannable: Spannable = SpannableString(text)
                 spannable.setSpan(
                     ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.success_color)),
-                    35,
+                    70,
                     text.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
@@ -860,7 +860,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             } else {
                 val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
                 val text =
-                    String.format("Hint: Please add username name from %s", app.appName)
+                    String.format("Hint: Only messages from this users will play alarm, add username from %s", app.appName)
                 val spannable: Spannable = SpannableString(text)
                 spannable.setSpan(
                     ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.success_color)),
@@ -967,11 +967,11 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         try {
             if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
                 val text =
-                    String.format("Hint: Please add username name from %s", holderEntity.appName)
+                    String.format("Hint: Messages from this users will not play alarm, add username from %s", holderEntity.appName)
                 val spannable: Spannable = SpannableString(text)
                 spannable.setSpan(
                     ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.success_color)),
-                    35,
+                    70,
                     text.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
@@ -979,7 +979,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             } else {
                 val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
                 val text =
-                    String.format("Hint: Please add username name from %s", app.appName)
+                    String.format("Hint: Messages from this users will not play alarm, add username from %s", app.appName)
                 val spannable: Spannable = SpannableString(text)
                 spannable.setSpan(
                     ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.success_color)),
@@ -1170,7 +1170,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                          * Check for unknown app
                          */
                         addApplicationOptionPresenter?.checkForUnknownApp(
-                            requireContext(),
+                            requireActivity(),
                             addApplicationEntity.appName,
                             addApplicationEntity.packageName
                         )
