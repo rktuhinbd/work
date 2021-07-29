@@ -1,21 +1,21 @@
 package com.app.messagealarm.ui.about
 
 import android.annotation.SuppressLint
-import android.graphics.Color
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.provider.Telephony
-import android.util.Log
 import android.view.Menu
 import androidx.appcompat.app.AppCompatDelegate
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.BuildConfig
 import com.app.messagealarm.R
 import com.app.messagealarm.utils.*
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_about.*
+
 
 class AboutActivity : BaseActivity() {
 
@@ -82,13 +82,22 @@ class AboutActivity : BaseActivity() {
             VisitUrlUtils.visitWebsite(this, "https://www.instagram.com/message_alarm/")
         }
         btn_linked_in?.setOnClickListener {
-            VisitUrlUtils.visitWebsite(this, "https://www.linkedin.com/company/message-alarm-never-miss-an-important-message")
+            VisitUrlUtils.visitWebsite(
+                this,
+                "https://www.linkedin.com/company/message-alarm-never-miss-an-important-message"
+            )
         }
         btn_website_mk7lab?.setOnClickListener {
             VisitUrlUtils.visitWebsite(this, "https://www.mk7lab.com")
         }
         btn_contact_us?.setOnClickListener {
             SupportUtils.sendEmailSell(this)
+        }
+        btn_library?.setOnClickListener {
+            // When the user selects an option to see the licenses:
+            // When the user selects an option to see the licenses:
+            OssLicensesMenuActivity.setActivityTitle("Used Libraries Licenses")
+            startActivity(Intent(this, OssLicensesMenuActivity::class.java))
         }
     }
 }

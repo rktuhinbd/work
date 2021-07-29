@@ -202,13 +202,48 @@
                         android:fontFamily="@font/roboto_regular"
                         android:text="Contact Us  "
                         android:textSize="12sp"
+                        app:layout_constraintVertical_bias="0"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        android:layout_marginBottom="16dp"
                         android:gravity="center"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/btn_website_mk7lab" />
 
+
+                    <TextView
+                        android:id="@+id/txt_license"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/roboto_bold"
+                        android:text="Licenses"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/btn_contact_us"
+                        app:layout_constraintVertical_bias="0" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_library"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:textColor="@color/color_white"
+                        android:fontFamily="@font/roboto_regular"
+                        android:text="Show Licenses"
+                        android:layout_marginBottom="8dp"
+                        android:textSize="12sp"
+                        app:layout_constraintVertical_bias="0"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:gravity="center"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txt_license" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
