@@ -205,18 +205,17 @@
 
     <com.example.loadinganimation.LoadingAnimation
         android:id="@+id/progress_bar_add_app"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:elevation="10dp"
         app:barType="@drawable/gear_duo"
         app:enlarge="8"
         app:textColor="@color/colorAccent"
         app:textSize="15sp"
-        android:visibility="gone"
         app:boldText="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
         app:layout_constraintBottom_toBottomOf="parent"
       />
 
@@ -227,7 +226,8 @@
         android:text="Searching apps"
         android:fontFamily="@font/roboto_medium_italic"
         android:layout_marginBottom="36dp"
-        android:textSize="20sp"
+        android:textSize="18sp"
+        android:visibility="gone"
         android:textColor="@color/colorTextRegular"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
