@@ -15,6 +15,7 @@ import android.util.Log
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.FrameLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 import java.lang.NumberFormatException
 
@@ -24,7 +25,7 @@ open class DialogUtils {
     companion object {
 
         fun showSimpleDialog(context: Context, title: String, message: String) {
-            AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
+            MaterialAlertDialogBuilder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(
@@ -38,7 +39,7 @@ open class DialogUtils {
         }
 
         fun showOnlyPositiveDialog(context: Context, title: String, message: String, callback: Callback){
-            AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
+            MaterialAlertDialogBuilder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(
@@ -53,7 +54,7 @@ open class DialogUtils {
         }
 
         fun showDialog(context: Context, title: String, message: String, callback: Callback) {
-          val dialog =  AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
+          val dialog =  MaterialAlertDialogBuilder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(
@@ -75,7 +76,7 @@ open class DialogUtils {
 
 
         fun showUpdateDialog(context: Context, title: String, message: String, callback: Callback) {
-            val dialog =  AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
+            val dialog =  MaterialAlertDialogBuilder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(
@@ -103,7 +104,7 @@ open class DialogUtils {
 
         fun showSimpleListDialog(context: Context, callBack: RepeatCallBack) {
             // setup the alert builder
-            val builder = AlertDialog.Builder(context,com.app.messagealarm.R.style.MyAlertDialogTheme)
+            val builder = MaterialAlertDialogBuilder(context,com.app.messagealarm.R.style.MyAlertDialogTheme)
             builder.setTitle("Alarm Repeat Time")
             val animals = arrayOf( "Always", "Once", "Custom")
             builder.setItems(animals) { dialog, which ->
@@ -125,14 +126,14 @@ open class DialogUtils {
             }
             // create and show the alert dialog
             val dialog = builder.create()
-            if (dialog != null && !dialog.isShowing) {
+            if (!dialog.isShowing) {
                 dialog.show()
             }
         }
 
         fun showRingToneSelectDialog(context: Context, callBack: RepeatCallBack) {
             // setup the alert builder
-            val builder = AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
+            val builder = MaterialAlertDialogBuilder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
             builder.setTitle("Select Alarm tone")
             val animals = arrayOf("Default", "Select a song")
             builder.setItems(animals) { dialog, which ->
@@ -149,7 +150,7 @@ open class DialogUtils {
             }
             // create and show the alert dialog
             val dialog = builder.create()
-            if (dialog != null && !dialog.isShowing) {
+            if (!dialog.isShowing) {
                 dialog.show()
             }
         }
@@ -161,7 +162,7 @@ open class DialogUtils {
             callback: Callback
         ) {
             // setup the alert builder
-            val builder = AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
+            val builder = MaterialAlertDialogBuilder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
             builder.setTitle("Choose days")
             // user checked an item
             val list: MutableList<String> = ArrayList()
@@ -207,7 +208,7 @@ open class DialogUtils {
 
             // create and show the alert dialog
             val dialog = builder.create()
-            if (dialog != null && !dialog.isShowing) {
+            if (!dialog.isShowing) {
                 dialog.show()
             }
 
@@ -219,7 +220,7 @@ open class DialogUtils {
             message: String,
             callBack: RepeatCallBack
         ) {
-            val alert = AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
+            val alert = MaterialAlertDialogBuilder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
             alert.setCancelable(false)
             alert.setTitle(message)
             alert.setMessage("This number will indicate how much time the alarm music will play, range 1 to 10")
@@ -319,7 +320,7 @@ open class DialogUtils {
         }
 
         fun showMessageBodyDialog(context: Context, currentName: String, callBack: RepeatCallBack) {
-            val alert = AlertDialog.Builder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
+            val alert = MaterialAlertDialogBuilder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
             alert.setCancelable(false)
             alert.setTitle("Select message body")
             alert.setMessage(

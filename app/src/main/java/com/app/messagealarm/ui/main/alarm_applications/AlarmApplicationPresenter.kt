@@ -205,7 +205,6 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
         }).start()
     }
 
-
     fun deleteApplication(applicationEntity: ApplicationEntity, position: Int) {
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread(Runnable {
