@@ -97,11 +97,9 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
 
 
     fun isAutoStartPermissionAvailable(context: Context) {
-        val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread {
             try {
-                val addedAppCount = appDatabase.applicationDao().addedAppCount
-                if (addedAppCount > 0) {
+                if (SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT) > 0) {
                     /**
                      * handle auto start
                      */
