@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 
 android {
     compileSdkVersion 30
@@ -13,7 +14,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 13
-        versionName "debug"
+        versionName "2.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -121,5 +122,6 @@ dependencies {
     implementation 'com.github.takusemba:spotlight:2.0.2'
     //auto start library
     implementation 'com.github.judemanutd:autostarter:1.1.0'
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
 
 }
