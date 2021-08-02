@@ -127,12 +127,12 @@ class NotificationListenerPresenter(private val view: NotificationListenerView) 
                     break
                 }
 
-                if (title == "null") {
+                if (title.trim() == "null") {
                     isPlayAble = false
                     break
                 }
 
-                if (desc == "null") {
+                if (desc.trim() == "null") {
                     isPlayAble = false
                     break
                 }

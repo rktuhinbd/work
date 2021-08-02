@@ -223,7 +223,9 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                             }
                         }
 
-                        override fun onBillingServiceDisconnected() {}
+                        override fun onBillingServiceDisconnected() {
+
+                        }
                     })
                 }
             }else{

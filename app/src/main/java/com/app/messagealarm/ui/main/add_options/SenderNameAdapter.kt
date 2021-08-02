@@ -16,7 +16,6 @@ import java.lang.StringBuilder
 class SenderNameAdapter(list:ArrayList<String>,
                         val mItemClickListener: ItemClickListener) : RecyclerView.Adapter<SenderNameAdapter.SenderNameHolder>(){
 
-
     val nameList = ArrayList<String>()
 
     init {
