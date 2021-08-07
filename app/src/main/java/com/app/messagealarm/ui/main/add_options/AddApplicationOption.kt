@@ -37,6 +37,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
@@ -864,7 +865,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 val spannable: Spannable = SpannableString(text)
                 spannable.setSpan(
                     ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.success_color)),
-                    35,
+                    70,
                     text.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
@@ -882,6 +883,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 placeHolder.visibility = View.VISIBLE
                 recyclerView.visibility = View.INVISIBLE
             }
+
+            override fun onSingleItemRemove(name: String) {
+
+            }
         })
         //list not empty
         if (list.size != 0) {
@@ -897,8 +902,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         imageButton.setOnClickListener {
             if (etName.text.toString().isNotEmpty()) {
                 adapter.addName(
-                    etName.text.toString().trim(),
-                    txt_exclude_sender_name_value?.text.toString()
+                    etName.text.toString().trim()
                 )
                 etName.setText("")
                 saveButton.isEnabled = true
@@ -953,14 +957,15 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         dialog.setCancelable(false)
         dialog.setContentView(R.layout.dialog_exclude_sender_name)
         //init views
-        val cancelButton = dialog.findViewById<MaterialButton>(R.id.btn_cancel)
-        val saveButton = dialog.findViewById<MaterialButton>(R.id.btn_save)
         val placeHolder = dialog.findViewById<ImageView>(R.id.img_placeholder)
         val etName = dialog.findViewById<EditText>(R.id.et_sender_name)
-        val imageButton = dialog.findViewById<TextView>(R.id.btn_add)
+        val imageButton = dialog.findViewById<ImageView>(R.id.btn_add)
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.recycler_view_sender_name)
         val layoutManager = FlexboxLayoutManager(requireActivity())
-        val txtHint = dialog.findViewById<TextView>(R.id.txt_hint_sender_name)
+        val txtHint = dialog.findViewById<TextView>(R.id.txt_hint_exclude_name)
+        val cancelFloatingButton = dialog.findViewById<FloatingActionButton>(R.id.fabClose)
+        val fabSave = dialog.findViewById<FloatingActionButton>(R.id.fabSave)
+        val btnPro = dialog.findViewById<MaterialButton>(R.id.btn_pro)
         /**
          * show app name at end of hint and make app name green color
          */
@@ -983,7 +988,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 val spannable: Spannable = SpannableString(text)
                 spannable.setSpan(
                     ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.success_color)),
-                    35,
+                    70,
                     text.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
@@ -994,16 +999,21 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
         val adapter = SenderNameAdapter(list, object : SenderNameAdapter.ItemClickListener {
             override fun onAllItemRemoved() {
-                saveButton.isEnabled = false
+                fabSave.visibility = View.GONE
                 placeHolder.visibility = View.VISIBLE
                 recyclerView.visibility = View.INVISIBLE
+            }
+            override fun onSingleItemRemove(name: String) {
+
             }
         })
         //list not empty
         if (list.size != 0) {
             recyclerView.visibility = View.VISIBLE
+            btnPro.visibility = View.VISIBLE
             placeHolder.visibility = View.INVISIBLE
-            saveButton.isEnabled = true
+            fabSave.visibility = View.VISIBLE
+
         }
         layoutManager.flexDirection = FlexDirection.COLUMN
         layoutManager.justifyContent = JustifyContent.FLEX_START
@@ -1012,9 +1022,9 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
         imageButton.setOnClickListener {
             if (etName.text.toString().isNotEmpty()) {
-                adapter.addName(etName.text.toString(), txt_sender_name_value?.text.toString())
+                adapter.addName(etName.text.toString().trim())
                 etName.setText("")
-                saveButton.isEnabled = true
+                    fabSave.visibility = View.VISIBLE
                 placeHolder.visibility = View.INVISIBLE
                 recyclerView.visibility = View.VISIBLE
                 if (adapter.itemCount > 0) {
@@ -1025,7 +1035,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             }
         }
 
-        saveButton.setOnClickListener {
+        fabSave.setOnClickListener {
+            /**
+             * save to list
+             */
             val name = adapter.convertList()
             if (name.isNotEmpty()) {
                 txt_exclude_sender_name_value?.text = name
@@ -1041,11 +1054,17 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 addApplicationEntity.ignored_names = "None"
                 dialog.dismiss()
             }
+            /**
+             * end of save to list
+             */
         }
 
-        cancelButton.setOnClickListener {
-            dialog.dismiss()
+        cancelFloatingButton.setOnClickListener {
+            if(dialog.isShowing){
+                dialog.dismiss()
+            }
         }
+
         val window: Window = dialog.window!!
         window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         //

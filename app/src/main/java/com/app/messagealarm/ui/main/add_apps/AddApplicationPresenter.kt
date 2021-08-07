@@ -63,7 +63,7 @@ class AddApplicationPresenter(
                             BGSyncDataSavingService.saveData(response.body()!!)
                             //wait let's get it saved
                             android.os.Handler(Looper.getMainLooper()).postDelayed(
-                                Runnable {
+                                {
                                     filterByMessaging()
                                 }, 5000
                             )

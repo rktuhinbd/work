@@ -30,6 +30,7 @@ class SenderNameAdapter(list:ArrayList<String>,
 
     interface ItemClickListener{
        fun onAllItemRemoved()
+       fun onSingleItemRemove(name:String)
     }
 
     override fun onBindViewHolder(holder: SenderNameHolder, position: Int) {
@@ -52,17 +53,12 @@ class SenderNameAdapter(list:ArrayList<String>,
 
     /**
      * @param name of the sender
-     * @param constrainOfOpposite if addName is working for sender name then opposite is ignored name and the opposite of ignored name is sender name
      */
-    fun addName(name:String, constrainOfOpposite:String){
-        val constrainArray = constrainOfOpposite.split(", ")
-        for(nameValue in constrainArray){
-            if(nameValue == name){
-                Toasty.info(BaseApplication.getBaseApplicationContext(), "" +
-                        "Sender name and Ignored name can't have smilier names").show()
+    fun addName(name:String){
+            if(nameList.contains(name)){
+                Toasty.error(BaseApplication.getBaseApplicationContext(), "$name already added!").show()
                 return
             }
-        }
         nameList.add(name)
         notifyDataSetChanged()
     }
@@ -82,6 +78,7 @@ class SenderNameAdapter(list:ArrayList<String>,
         }
 
         override fun onClick(v: View?) {
+            mItemClickListener.onSingleItemRemove(nameList[adapterPosition])
             nameList.removeAt(adapterPosition)
             notifyDataSetChanged()
             if(nameList.size == 0){

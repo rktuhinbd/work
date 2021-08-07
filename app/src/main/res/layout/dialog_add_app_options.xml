@@ -892,7 +892,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:fontFamily="@font/roboto_regular"
-                    android:text="Add sender name"
+                    android:text="Sender name"
                     android:textColor="@color/colorTextRegular"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toTopOf="@id/txt_sender_name_value"
