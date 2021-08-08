@@ -11,18 +11,18 @@
     </string-array>
 
     <string-array name="mute_values">
+        <item>5 min</item>
         <item>10 min</item>
         <item>20 min</item>
-        <item>30 min</item>
-        <item>40 min</item>
+        <item>Never</item>
         <item>Until I unmute it</item>
     </string-array>
 
     <string-array name="mute_entries">
+        <item>5 min</item>
         <item>10 min</item>
         <item>20 min</item>
-        <item>30 min</item>
-        <item>40 min</item>
+        <item>Never</item>
         <item>Until I unmute it</item>
     </string-array>
 
