@@ -30,7 +30,7 @@ class SenderNameAdapter(list:ArrayList<String>,
 
     interface ItemClickListener{
        fun onAllItemRemoved()
-       fun onSingleItemRemove(name:String)
+       fun onSingleItemRemove(list: ArrayList<String>)
     }
 
     override fun onBindViewHolder(holder: SenderNameHolder, position: Int) {
@@ -78,7 +78,7 @@ class SenderNameAdapter(list:ArrayList<String>,
         }
 
         override fun onClick(v: View?) {
-            mItemClickListener.onSingleItemRemove(nameList[adapterPosition])
+            mItemClickListener.onSingleItemRemove(nameList)
             nameList.removeAt(adapterPosition)
             notifyDataSetChanged()
             if(nameList.size == 0){

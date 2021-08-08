@@ -884,7 +884,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 recyclerView.visibility = View.INVISIBLE
             }
 
-            override fun onSingleItemRemove(name: String) {
+            override fun onSingleItemRemove(list: ArrayList<String>) {
 
             }
         })
@@ -1002,15 +1002,42 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 fabSave.visibility = View.GONE
                 placeHolder.visibility = View.VISIBLE
                 recyclerView.visibility = View.INVISIBLE
+                btnPro.visibility = View.GONE
+                etName.isEnabled = true
+                imageButton.isEnabled = true
+                imageButton.setBackgroundResource(R.drawable.add_button_background)
             }
-            override fun onSingleItemRemove(name: String) {
+            override fun onSingleItemRemove(list: ArrayList<String>) {
 
             }
         })
+
+        /**
+         * buy pro status
+         */
+        if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)){
+            //free user
+            if(list.size > 0){
+                btnPro.visibility = View.VISIBLE
+                etName.isEnabled = false
+                imageButton.setBackgroundResource(R.drawable.disabled_add_button)
+                imageButton.isEnabled = false
+            }else{
+                btnPro.visibility = View.GONE
+                etName.isEnabled = true
+                imageButton.isEnabled = true
+                imageButton.setBackgroundResource(R.drawable.add_button_background)
+            }
+        }else{
+            btnPro.visibility = View.GONE
+            etName.isEnabled = true
+            imageButton.isEnabled = true
+            imageButton.setBackgroundResource(R.drawable.add_button_background)
+        }
+
         //list not empty
         if (list.size != 0) {
             recyclerView.visibility = View.VISIBLE
-            btnPro.visibility = View.VISIBLE
             placeHolder.visibility = View.INVISIBLE
             fabSave.visibility = View.VISIBLE
 
@@ -1030,6 +1057,29 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 if (adapter.itemCount > 0) {
                     recyclerView.post { recyclerView.smoothScrollToPosition(adapter.itemCount - 1) }
                 }
+                /**
+                 * buy pro status
+                 */
+                if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)){
+                    //free user
+                    if((recyclerView.adapter as SenderNameAdapter).itemCount > 0){
+                        btnPro.visibility = View.VISIBLE
+                        etName.isEnabled = false
+                        imageButton.setBackgroundResource(R.drawable.disabled_add_button)
+                        imageButton.isEnabled = false
+                    }else{
+                        btnPro.visibility = View.GONE
+                        etName.isEnabled = true
+                        imageButton.isEnabled = true
+                        imageButton.setBackgroundResource(R.drawable.add_button_background)
+                    }
+                }else{
+                    btnPro.visibility = View.GONE
+                    etName.isEnabled = true
+                    imageButton.isEnabled = true
+                    imageButton.setBackgroundResource(R.drawable.add_button_background)
+                }
+
             } else {
                 Toasty.info(requireActivity(), "Name can't be empty!").show()
             }
@@ -1057,6 +1107,13 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             /**
              * end of save to list
              */
+        }
+
+        btnPro.setOnClickListener {
+            if(dialog.isShowing){
+                dialog.dismiss()
+            }
+            visitProScreen()
         }
 
         cancelFloatingButton.setOnClickListener {
