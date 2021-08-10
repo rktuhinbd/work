@@ -484,10 +484,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 dialog.setCancelable(false)
                 dialog.setContentView(R.layout.dialog_buy_pro_layout)
                 //init
-                val txtMainTitle = dialog.findViewById<TextView>(R.id.text_header_individual_offer)
-                val imgAppLogo = dialog.findViewById<ImageView>(R.id.image_app_logo)
+                val txtMainTitle = dialog.findViewById<TextView>(R.id.text_vibrate)
+                val imgAppLogo = dialog.findViewById<ImageView>(R.id.image_just_vibrate)
                 val txtAlarmCount = dialog.findViewById<TextView>(R.id.text_sale)
-                val btnBuyPro = dialog.findViewById<MaterialButton>(R.id.button_pro)
+                val btnBuyPro = dialog.findViewById<MaterialButton>(R.id.button_vibrate)
                 btnBuyPro?.setOnClickListener {
                     if (dialog.isShowing) {
                         dialog.dismiss()

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="wrap_content">
 
     <com.app.messagealarm.ui.widget.CustomStatusBarView
         android:layout_width="0dp"
@@ -12,13 +12,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.card.MaterialCardView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardUseCompatPadding="true"
-        app:cardCornerRadius="8dp"
         android:layout_margin="16dp"
         android:background="@android:color/transparent"
+        app:cardCornerRadius="8dp"
+        app:cardUseCompatPadding="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,7 +30,7 @@
             android:background="@drawable/background_buy_pro_dialog">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraint_buy_pro_layout"
+                android:id="@+id/constraint_vibrate"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
@@ -40,36 +40,36 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/text_header_individual_offer"
+                    android:id="@+id/text_vibrate"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_16"
-                    android:fontFamily="@font/roboto_bold"
-                    android:gravity="start"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
-                    tools:text="You were alarmed, when Brain Baur sent you message via Upwork - Freelancer And we are taking care of it, Thanks for your udpate!"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/roboto_bold"
+                    android:gravity="start"
+                    android:maxLines="3"
                     android:textAllCaps="false"
                     android:textColor="@color/color_white"
-                    android:ellipsize="end"
-                    android:maxLines="3"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toTopOf="@+id/text_sub_title_cool"
-                    app:layout_constraintEnd_toStartOf="@id/image_app_logo"
+                    app:layout_constraintEnd_toStartOf="@id/image_just_vibrate"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="You were alarmed, when Brain Baur sent you message via Upwork - Freelancer And we are taking care of it, Thanks for your udpate!" />
 
                 <ImageView
-                    android:id="@+id/image_app_logo"
+                    android:id="@+id/image_just_vibrate"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:padding="5dp"
                     android:layout_marginTop="@dimen/margin_16"
                     android:layout_marginEnd="@dimen/margin_16"
-                    android:src="@drawable/ic_tutorial"
+                    android:padding="5dp"
                     android:scaleType="fitCenter"
+                    android:src="@drawable/ic_tutorial"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1"
@@ -86,17 +86,16 @@
                     android:layout_marginTop="@dimen/margin_8"
                     android:fontFamily="@font/roboto_regular"
                     android:gravity="start"
-                    android:visibility="gone"
                     android:text="We are glad that Message Alarm helped you. "
                     android:textAllCaps="false"
                     android:textColor="@color/color_white"
                     android:textSize="@dimen/font_12"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toTopOf="@+id/text_decide"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_header_individual_offer"
-                    />
+                    app:layout_constraintTop_toBottomOf="@+id/text_vibrate" />
 
                 <TextView
                     android:id="@+id/text_decide"
@@ -104,9 +103,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_16"
                     android:layout_marginTop="16dp"
+                    android:fontFamily="@font/roboto_regular"
                     android:text="We alarmed you "
                     android:textColor="@color/color_white"
-                    android:fontFamily="@font/roboto_regular"
                     android:textSize="12sp"
                     app:layout_constraintBottom_toTopOf="@+id/text_user"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -122,7 +121,6 @@
                     android:background="@drawable/text_gradient"
                     android:fontFamily="@font/roboto_bold"
                     android:padding="4dp"
-                    tools:text="200 times"
                     android:textAllCaps="false"
                     android:textColor="@color/md_black_1000"
                     android:textSize="@dimen/font_14"
@@ -132,7 +130,8 @@
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toEndOf="@+id/text_decide"
                     app:layout_constraintTop_toBottomOf="@+id/text_sub_title_cool"
-                    app:layout_constraintTop_toTopOf="@+id/text_decide" />
+                    app:layout_constraintTop_toTopOf="@+id/text_decide"
+                    tools:text="200 times" />
 
                 <TextView
                     android:id="@+id/text_user"
@@ -140,10 +139,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_16"
                     android:layout_marginTop="5dp"
+                    android:fontFamily="@font/roboto_regular"
                     android:text="for your most important messages so far"
                     android:textColor="@color/color_white"
                     android:textSize="12sp"
-                    android:fontFamily="@font/roboto_regular"
                     app:layout_constraintBottom_toTopOf="@+id/text_pro_version"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
@@ -155,31 +154,31 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
+                    android:fontFamily="@font/roboto_medium_italic"
+                    android:gravity="center"
                     android:text="@string/txt_checkout_pro"
                     android:textColor="#E0A74C"
                     android:textSize="12sp"
-                    android:fontFamily="@font/roboto_medium_italic"
-                    android:gravity="center"
-                    app:layout_constraintBottom_toTopOf="@+id/button_pro"
+                    app:layout_constraintBottom_toTopOf="@+id/button_vibrate"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_user" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button_pro"
+                    android:id="@+id/button_vibrate"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="@dimen/margin_16"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="@dimen/margin_16"
                     android:layout_marginBottom="@dimen/margin_16"
-                    android:fontFamily="@font/roboto_bold"
                     android:background="@drawable/button_gradient_pro_dialog"
                     android:elevation="6dp"
-                    android:textColor="@android:color/black"
-                    android:textAllCaps="false"
+                    android:fontFamily="@font/roboto_bold"
                     android:text="PRO Version - Onetime Payment"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/black"
                     app:backgroundTint="@null"
                     app:cornerRadius="12dp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -192,6 +191,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
