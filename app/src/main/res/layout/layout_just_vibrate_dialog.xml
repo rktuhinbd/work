@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -51,26 +50,45 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/text_vibrate"
+                    android:id="@+id/text_vibrate_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_16"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="8dp"
                     android:ellipsize="end"
                     android:fontFamily="@font/roboto_bold"
                     android:gravity="start"
-                    android:maxLines="5"
-                    android:text="You were alarmed, when Brain Baur sent you message via Upwork - Freelancer And we are taking care of it, Thanks for your udpate!"
+                    android:maxLines="2"
+                    android:text="Just Vibrate Control"
+                    android:textColor="#E0A74C"
+                    android:textSize="22sp"
+                    app:layout_constraintBottom_toTopOf="@+id/text_vibrate_sub_title"
+                    app:layout_constraintEnd_toStartOf="@+id/image_just_vibrate"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/text_vibrate_sub_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_16"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginEnd="8dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/roboto_regular"
+                    android:gravity="start"
+                    android:maxLines="3"
+                    android:text="You were alarmed, when Brain Baur sent you message via Upwork -Freelancer Thanks for your update.!"
                     android:textAllCaps="false"
                     android:textColor="@color/color_white"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toTopOf="@+id/text_sub_title_cool"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/image_just_vibrate"
                     app:layout_constraintEnd_toStartOf="@id/image_just_vibrate"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/text_vibrate_title" />
 
                 <ImageView
                     android:id="@+id/image_just_vibrate"
@@ -80,7 +98,7 @@
                     android:layout_marginEnd="@dimen/margin_16"
                     android:padding="5dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_tutorial"
+                    android:src="@drawable/ic_vibrate_sound"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1"
@@ -90,7 +108,7 @@
                     app:layout_constraintVertical_bias="0" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button_vibrate"
+                    android:id="@+id/button_sound"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="@dimen/margin_16"
@@ -109,14 +127,12 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_vibrate" />
+                    app:layout_constraintTop_toBottomOf="@+id/image_just_vibrate" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
     </androidx.cardview.widget.CardView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
