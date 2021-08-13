@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -61,11 +60,12 @@
                     android:fontFamily="@font/roboto_bold"
                     android:gravity="start"
                     android:maxLines="2"
-                    android:text="Just Sound Control"
-                    android:textColor="#E0A74C"
-                    android:textSize="22sp"
+                    android:text="Alarm Volume"
+                    android:textColor="#F1DE88"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toTopOf="@+id/text_vibrate_sub_title"
                     app:layout_constraintEnd_toStartOf="@+id/image_just_vibrate"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -74,42 +74,64 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_16"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:ellipsize="end"
                     android:fontFamily="@font/roboto_regular"
                     android:gravity="start"
-                    android:maxLines="3"
-                    android:text="You were alarmed, when Brain Baur sent you message via Upwork -Freelancer Thanks for your update.!"
+                    android:lineSpacingExtra="2dp"
+                    android:maxLines="5"
+                    android:text="@string/hint_sound_control"
                     android:textAllCaps="false"
                     android:textColor="@color/color_white"
                     android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/image_just_vibrate"
                     app:layout_constraintEnd_toStartOf="@id/image_just_vibrate"
                     app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_vibrate_title" />
 
+
+
+                <TextView
+                    android:id="@+id/text_vibrate_sound_hint"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_16"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/roboto_bold"
+                    android:gravity="start"
+                    android:maxLines="5"
+                    android:lineSpacingExtra="4dp"
+                    android:text="@string/hint_sound_subtitle"
+                    android:textAllCaps="false"
+                    android:textColor="@color/color_white"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toStartOf="@id/image_just_vibrate"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_vibrate_sub_title" />
+
+
                 <ImageView
                     android:id="@+id/image_just_vibrate"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_marginTop="@dimen/margin_16"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="@dimen/margin_16"
                     android:padding="5dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_vibrate_sound"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:src="@drawable/ic_sound_control_img"
+                    android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button_sound"
+                    android:id="@+id/button_sound_control"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="@dimen/margin_16"
@@ -119,16 +141,17 @@
                     android:background="@drawable/button_gradient_pro_dialog"
                     android:elevation="6dp"
                     android:fontFamily="@font/roboto_bold"
-                    android:text="PRO Version - Onetime Payment"
+                    android:text="Buy PRO - Control Alarm Volume"
                     android:textAllCaps="false"
                     android:textColor="@android:color/black"
                     app:backgroundTint="@null"
+                    android:textSize="14sp"
                     app:cornerRadius="12dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/image_just_vibrate" />
+                    app:layout_constraintTop_toBottomOf="@+id/text_vibrate_sound_hint" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

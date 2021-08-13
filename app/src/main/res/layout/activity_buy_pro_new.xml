@@ -240,6 +240,79 @@
                 android:layout_marginStart="16dp"
                 />
 
+            <!--fifth part-->
+
+            <TextView
+                android:id="@+id/txt_point_five"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:text="5"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:fontFamily="@font/roboto_bold"
+                app:layout_constraintHorizontal_bias="0"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/txt_point_four"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textColor="@color/color_white"
+                android:background="@drawable/number_bg_in_purchase"
+                />
+
+            <TextView
+                android:id="@+id/txt_value_point_five"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Full controls on Message Filters"
+                android:textColor="@color/color_white"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="16sp"
+                app:layout_constraintTop_toTopOf="@id/txt_point_five"
+                app:layout_constraintBottom_toBottomOf="@id/txt_point_five"
+                app:layout_constraintStart_toEndOf="@id/txt_point_five"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                android:layout_marginStart="16dp"
+                />
+
+            <!--sixth part-->
+
+            <TextView
+                android:id="@+id/txt_point_six"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:text="6"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:fontFamily="@font/roboto_bold"
+                app:layout_constraintHorizontal_bias="0"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/txt_point_five"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textColor="@color/color_white"
+                android:background="@drawable/number_bg_in_purchase"
+                />
+
+            <TextView
+                android:id="@+id/txt_value_point_six"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Access to all upcoming PRO features"
+                android:textColor="@color/color_white"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="16sp"
+                app:layout_constraintTop_toTopOf="@id/txt_point_six"
+                app:layout_constraintBottom_toBottomOf="@id/txt_point_six"
+                app:layout_constraintStart_toEndOf="@id/txt_point_six"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                android:layout_marginStart="16dp"
+                />
+
+
             <TextView
                 android:id="@+id/txt_one_time_payment"
                 android:layout_width="wrap_content"
@@ -248,7 +321,7 @@
                 android:fontFamily="@font/roboto_regular"
                 android:textColor="@color/color_white"
                 android:layout_marginTop="26dp"
-                app:layout_constraintTop_toBottomOf="@id/txt_point_four"
+                app:layout_constraintTop_toBottomOf="@id/txt_point_six"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:textSize="16sp"

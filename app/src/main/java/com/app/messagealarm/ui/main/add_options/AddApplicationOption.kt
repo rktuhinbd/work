@@ -447,8 +447,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 if (isProModeEnabled()) {
                     switch_vibrate?.performClick()
                 } else {
-                    //trigger pro screen
-                    visitProScreen()
+                    showVibrateDialog()
                 }
             }
         }
@@ -477,7 +476,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             if (!BaseApplication.isHintShowing) {
                 if (!isProModeEnabled()) {
                     //trigger pro screen
-                    visitProScreen()
+                    showSoundControlDialog()
                 }
             }
         }
@@ -487,8 +486,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 if (isProModeEnabled()) {
                     switch_just_vibrate?.performClick()
                 } else {
-                    //trigger pro screen
-                    visitProScreen()
+                    showJustVibrateDialog()
                 }
 
             }
@@ -826,6 +824,97 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
     }
 
+
+    /**
+     * show just vibrate dialog
+     */
+
+    private fun showJustVibrateDialog(){
+        val dialog = Dialog(requireActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.layout_just_vibrate_dialog)
+        val btnClose = dialog.findViewById<FloatingActionButton>(R.id.fab_close_vibrate)
+        val btnBuyProJustVibrate = dialog.findViewById<MaterialButton>(R.id.button_just_vibrate)
+        btnBuyProJustVibrate.setOnClickListener {
+            if(dialog.isShowing){
+                dialog.dismiss()
+            }
+            visitProScreen()
+        }
+        btnClose?.setOnClickListener {
+            if(dialog.isShowing){
+                dialog.dismiss()
+            }
+        }
+        val window: Window = dialog.window!!
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        //
+        if (!dialog.isShowing) {
+            dialog.show()
+        }
+    }
+
+    /**
+     * show sound & vibration dialog
+     */
+    private fun showVibrateDialog(){
+        val dialog = Dialog(requireActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.layout_vibrate_dialog)
+        val btnClose = dialog.findViewById<FloatingActionButton>(R.id.fab_close_vibrate)
+        val btnBuyProVibrate = dialog.findViewById<MaterialButton>(R.id.button_vibrate)
+        btnBuyProVibrate.setOnClickListener {
+            if(dialog.isShowing){
+                dialog.dismiss()
+            }
+            visitProScreen()
+        }
+        btnClose?.setOnClickListener {
+            if(dialog.isShowing){
+                dialog.dismiss()
+            }
+        }
+        val window: Window = dialog.window!!
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        //
+        if (!dialog.isShowing) {
+            dialog.show()
+        }
+    }
+
+    /**
+     * show sound control dialog
+     */
+    private fun showSoundControlDialog(){
+        val dialog = Dialog(requireActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.layout_sound_dialog)
+        val btnClose = dialog.findViewById<FloatingActionButton>(R.id.fab_close_vibrate)
+        val btnBuyProSoundControl = dialog.findViewById<MaterialButton>(R.id.button_sound_control)
+        btnBuyProSoundControl.setOnClickListener {
+            if(dialog.isShowing){
+                dialog.dismiss()
+            }
+            visitProScreen()
+        }
+        btnClose?.setOnClickListener {
+            if(dialog.isShowing){
+                dialog.dismiss()
+            }
+        }
+        val window: Window = dialog.window!!
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        //
+        if (!dialog.isShowing) {
+            dialog.show()
+        }
+    }
 
     /**
      * @param List of String

@@ -102,5 +102,9 @@
     <string name="txt_checkout_pro"><u>Checkout What We are Offering In PRO!</u></string>
     <string name="how_we_use_notification_permission">We take this permission so we can read and parse the notification title and body, based on this we generate an alarm when matched with your preset constraints and filters</string>
     <string name="how_we_use_your_notification_permission">How we use your notification permission</string>
+    <string name="hint_just_vibration">Get alarmed by only vibration, best use case is in pocket! \n\n<b>No Sounds, Just Vibrations!</b></string>
+    <string name="hint_sound_control">Get full volume for Alarm, You can control the volume!</string>
+    <string name="hint_sound_subtitle">1 Alarm reduce 1% volume until 50%, <b>you reached 71%</b></string>
+    <string name="vibration_and_sound_hint">Vibration and music together, powerful alarm. \n\n<b>Best use case, enough power to awake you up from sleep!</b></string>
 
 </resources>
