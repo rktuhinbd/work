@@ -164,7 +164,6 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
                 val appSize = appDatabase.appDao().totalCountOfApp
                 val langSize = appDatabase.languageDao().totalCountOfLanguage
                 val appConstrainSize = appDatabase.appConstrainDao().totalCountOfAppConstrain
-                if (!WorkManagerUtils.isWorkScheduled(context, Constants.Default.WORK_SYNC)) {
                     if (SharedPrefUtils.contains(Constants.PreferenceKeys.CONSTRAIN_COUNT)) {
                         if (appConstrainSize < SharedPrefUtils.readInt(Constants.PreferenceKeys.CONSTRAIN_COUNT)) {
                             alarmApplicationView.onTablesSizeRequestSuccess(
@@ -173,7 +172,6 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
                                 appConstrainSize
                             )
                         }
-                    }
                 }
             } catch (e: SQLiteException) {
 
