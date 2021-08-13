@@ -40,7 +40,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/text_vibrate"
+                    android:id="@+id/text_vibrate_sub_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_16"
@@ -95,7 +95,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_vibrate" />
+                    app:layout_constraintTop_toBottomOf="@+id/text_vibrate_sub_title" />
 
                 <TextView
                     android:id="@+id/text_decide"
@@ -159,14 +159,14 @@
                     android:text="@string/txt_checkout_pro"
                     android:textColor="#E0A74C"
                     android:textSize="12sp"
-                    app:layout_constraintBottom_toTopOf="@+id/button_vibrate"
+                    app:layout_constraintBottom_toTopOf="@+id/button_sound"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_user" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button_vibrate"
+                    android:id="@+id/button_sound"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="@dimen/margin_16"
