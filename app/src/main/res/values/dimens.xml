@@ -4,4 +4,11 @@
     <dimen name="elevation_4">4dp</dimen>
     <dimen name="margin_24">24dp</dimen>
     <dimen name="margin_8">8dp</dimen>
+    <dimen name="sd_close_elevation">8dp</dimen>
+    <dimen name="sd_fab_mini_size">64dp</dimen>
+    <dimen name="sd_fab_normal_size">72dp</dimen>
+    <dimen name="sd_fab_side_margin">8dp</dimen>|
+    <dimen name="sd_label_max_width">160dp</dimen>
+    <dimen name="sd_open_elevation">8dp</dimen>
+    <dimen name="sd_overlay_elevation">@dimen/sd_close_elevation</dimen>
 </resources>

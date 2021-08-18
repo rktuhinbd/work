@@ -22,8 +22,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -45,10 +48,13 @@ import com.app.messagealarm.ui.widget.BottomSheetFragmentLang
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.judemanutd.autostarter.AutoStartPermissionHelper
+import com.leinardi.android.speeddial.SpeedDialActionItem
+import com.leinardi.android.speeddial.SpeedDialView
 import es.dmoral.toasty.Toasty
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.activity_main.*
@@ -380,6 +386,78 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 startActivity(Intent(this, AddApplicationActivity::class.java))
             }
         }
+
+        /**
+         * setup the SpeedDialView
+         */
+
+        val drawableOne = AppCompatResources.getDrawable(this, R.drawable.ic_youtube)
+         val itemOne =  SpeedDialActionItem.Builder(R.id.fab_action1, drawableOne)
+             .setFabImageTintColor(ResourcesCompat.getColor(
+                 resources, R.color.color_white,
+                 theme
+             ))
+             .setLabel("Tutorial")
+             .setContentDescription("Tutorial of the app")
+             .setLabelColor(Color.WHITE)
+             .setFabSize(FloatingActionButton.SIZE_MINI)
+             .setFabBackgroundColor(ResourcesCompat.getColor(resources, R.color.success_color, theme))
+             .setLabelBackgroundColor(ResourcesCompat.getColor(resources, R.color.success_color, theme))
+             .setLabelClickable(true)
+             .create()
+
+        val drawable = AppCompatResources.getDrawable(this, R.drawable.ic_add)
+       val itemTwo =  SpeedDialActionItem.Builder(R.id.fab_action2, drawable)
+
+            .setFabImageTintColor(ResourcesCompat.getColor(
+                resources, R.color.color_white,
+                theme
+            ))
+            .setLabel("Add Application")
+           .setFabSize(FloatingActionButton.SIZE_MINI)
+           .setContentDescription("Add application for playing alarm")
+            .setLabelColor(Color.WHITE)
+           .setFabBackgroundColor(ResourcesCompat.getColor(resources, R.color.colorPrimaryDark, theme))
+            .setLabelBackgroundColor(ResourcesCompat.getColor(resources, R.color.colorPrimaryDark, theme))
+            .setLabelClickable(true)
+           .create()
+
+
+        speedDial.addActionItem(itemTwo)
+        speedDial.addActionItem(itemOne)
+
+        // Set option fabs clicklisteners.
+        speedDial.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
+            when (actionItem.id) {
+                R.id.fab_action1 -> {
+                    speedDial.close()
+                    Toasty.success(this, "Show tutorial").show()
+                    return@OnActionSelectedListener true // false will close it without animation
+                }
+                R.id.fab_action2 -> {
+                    speedDial.close()
+                    fab_button_add_application?.performClick()
+                    return@OnActionSelectedListener true
+                }
+            }
+            false // To keep the Speed Dial open
+        })
+
+
+        // Set main action clicklistener.
+        speedDial.setOnChangeListener(object : SpeedDialView.OnChangeListener {
+            override fun onMainActionSelected(): Boolean {
+                return false // True to keep the Speed Dial open
+            }
+
+            override fun onToggleChanged(isOpen: Boolean) {
+
+            }
+        })
+
+        /**
+         * end of SpeedDialView
+         */
 
         switch_alarm_status?.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
