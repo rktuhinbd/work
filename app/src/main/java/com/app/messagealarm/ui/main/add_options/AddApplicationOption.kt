@@ -65,6 +65,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setStyle(STYLE_NORMAL,R.style.BottomSheetDialog)
         addApplicationOptionPresenter = AddApplicationOptionPresenter(this)
         once = Once()
         // Obtain the FirebaseAnalytics instance.

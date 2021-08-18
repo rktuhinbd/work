@@ -390,7 +390,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         /**
          * setup the SpeedDialView
          */
-
         val drawableOne = AppCompatResources.getDrawable(this, R.drawable.ic_youtube)
          val itemOne =  SpeedDialActionItem.Builder(R.id.fab_action1, drawableOne)
              .setFabImageTintColor(ResourcesCompat.getColor(
@@ -405,15 +404,14 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
              .setLabelBackgroundColor(ResourcesCompat.getColor(resources, R.color.success_color, theme))
              .setLabelClickable(true)
              .create()
-
         val drawable = AppCompatResources.getDrawable(this, R.drawable.ic_add)
-       val itemTwo =  SpeedDialActionItem.Builder(R.id.fab_action2, drawable)
 
+       val itemTwo =  SpeedDialActionItem.Builder(R.id.fab_action2, drawable)
             .setFabImageTintColor(ResourcesCompat.getColor(
                 resources, R.color.color_white,
                 theme
             ))
-            .setLabel("Add Application")
+           .setLabel("Add Application")
            .setFabSize(FloatingActionButton.SIZE_MINI)
            .setContentDescription("Add application for playing alarm")
             .setLabelColor(Color.WHITE)
@@ -431,7 +429,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             when (actionItem.id) {
                 R.id.fab_action1 -> {
                     speedDial.close()
-                    Toasty.success(this, "Show tutorial").show()
+                    if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_VIDEO_SHOWED)) {
+
+                    }
                     return@OnActionSelectedListener true // false will close it without animation
                 }
                 R.id.fab_action2 -> {
@@ -442,7 +442,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             }
             false // To keep the Speed Dial open
         })
-
 
         // Set main action clicklistener.
         speedDial.setOnChangeListener(object : SpeedDialView.OnChangeListener {
@@ -541,6 +540,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             })
         }
     }
+
 
 
     private fun showOfferDialog(){
@@ -650,12 +650,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     dialog.show()
                 }
             }
-        } else {
-            Handler(Looper.myLooper()!!).postDelayed({
-                if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_VIDEO_SHOWED)) {
-                    showQuickStartDialog()
-                }
-            }, 1000)
         }
     }
 
@@ -749,6 +743,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
         }
     }
+
+
+    private fun showVideoTutorial(){
+
+    }
+
 
     override fun onApplicationDeleteSuccess(position: Int) {
         runOnUiThread {
@@ -869,49 +869,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     }
 
     private fun showLanguageDoesNotSupported() {
-        if (AndroidUtils.getCurrentLangCode(this) != "en") {
+        if (AndroidUtils.getCurrentLangCode(this) == "en") {
             val bottomSheet = BottomSheetFragmentLang()
             bottomSheet.show(supportFragmentManager, bottomSheet.tag)
         }
     }
 
-
-   /* private fun showDialogTutorialDecision() {
-        if (!isFinishing) {
-            val dialog = Dialog(this)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-            dialog.setCancelable(false)
-            dialog.setContentView(R.layout.dialog_watch_tutorial)
-            val btnLater = dialog.findViewById<MaterialButton>(R.id.button_later)
-            val btnWatchVideo = dialog.findViewById<MaterialButton>(R.id.button_watch_video)
-            btnLater.setOnClickListener {
-                val bundle = Bundle()
-                bundle.putString("clicked_later_button", "yes")
-                Firebase.analytics.logEvent("video_from_popup_dialog", bundle)
-                Toasty.info(this, "You can always see the video from setting!").show()
-                if (dialog.isShowing) {
-                    dialog.dismiss()
-                }
-            }
-            btnWatchVideo.setOnClickListener {
-                if (dialog.isShowing) {
-                    dialog.dismiss()
-                }
-                val bundle = Bundle()
-                bundle.putString("clicked_watch_button", "yes")
-                Firebase.analytics.logEvent("video_from_popup_dialog", bundle)
-            }
-            val window: Window = dialog.window!!
-            window.setLayout(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            if (!dialog.isShowing) {
-                dialog.show()
-            }
-        }
-    }*/
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
