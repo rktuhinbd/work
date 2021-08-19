@@ -237,7 +237,7 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
             .setAutoCancel(true)
             .setContentIntent(contentIntent)
         if (remoteMessage!!.data["title"] != null && remoteMessage.data["title"]!!.isNotEmpty()) {
-            builder.setContentTitle(remoteMessage.data["title"])
+            builder.setContentTitle("Message Alarm")
         }
         if (remoteMessage.data["image"] != null) {
             // Set the image for the notification
@@ -247,6 +247,7 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
                     .bigPicture(bitmap)
                     .bigLargeIcon(null)
             ).setLargeIcon(bitmap)
+            //content text as title and we will pass description in the app dialog for description
             if (remoteMessage.data["body"] != null && remoteMessage.data["body"]!!.isNotEmpty()) {
                 builder.setContentText(remoteMessage.data["body"])
             }
