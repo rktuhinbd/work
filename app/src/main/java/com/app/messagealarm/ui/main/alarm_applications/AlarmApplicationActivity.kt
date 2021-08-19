@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.*
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
@@ -125,6 +126,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     override fun onResume() {
         super.onResume()
+        changeStateOfSpeedDial()
         lookForAlarmApplication()
         if (BaseApplication.installedApps.isEmpty()) {
             val mIntent = Intent(this, AppsReaderIntentService::class.java)
@@ -391,63 +393,101 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         /**
          * setup the SpeedDialView
          */
-        val drawableOne = AppCompatResources.getDrawable(this, R.drawable.ic_youtube)
-         val itemOne =  SpeedDialActionItem.Builder(R.id.fab_action1, drawableOne)
-             .setFabImageTintColor(ResourcesCompat.getColor(
-                 resources, R.color.color_white,
-                 theme
-             ))
-             .setLabel("Tutorial")
-             .setContentDescription("Tutorial of the app")
-             .setLabelColor(Color.WHITE)
-             .setFabSize(FloatingActionButton.SIZE_MINI)
-             .setFabBackgroundColor(ResourcesCompat.getColor(resources, R.color.success_color, theme))
-             .setLabelBackgroundColor(ResourcesCompat.getColor(resources, R.color.success_color, theme))
-             .setLabelClickable(true)
-             .create()
-        val drawable = AppCompatResources.getDrawable(this, R.drawable.ic_add)
 
-       val itemTwo =  SpeedDialActionItem.Builder(R.id.fab_action2, drawable)
-            .setFabImageTintColor(ResourcesCompat.getColor(
-                resources, R.color.color_white,
-                theme
-            ))
-           .setLabel("Add Application")
-           .setFabSize(FloatingActionButton.SIZE_MINI)
-           .setContentDescription("Add application for playing alarm")
-            .setLabelColor(Color.WHITE)
-           .setFabBackgroundColor(ResourcesCompat.getColor(resources, R.color.colorPrimaryDark, theme))
-            .setLabelBackgroundColor(ResourcesCompat.getColor(resources, R.color.colorPrimaryDark, theme))
-            .setLabelClickable(true)
-           .create()
+        if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_VIDEO_SHOWED)) {
+            val drawableOne = AppCompatResources.getDrawable(this, R.drawable.ic_youtube)
+            val itemOne = SpeedDialActionItem.Builder(R.id.fab_action1, drawableOne)
+                .setFabImageTintColor(
+                    ResourcesCompat.getColor(
+                        resources, R.color.color_white,
+                        theme
+                    )
+                )
+                .setLabel("Tutorial")
+                .setContentDescription("Tutorial of the app")
+                .setLabelColor(Color.WHITE)
+                .setFabSize(FloatingActionButton.SIZE_MINI)
+                .setFabBackgroundColor(
+                    ResourcesCompat.getColor(
+                        resources,
+                        R.color.success_color,
+                        theme
+                    )
+                )
+                .setLabelBackgroundColor(
+                    ResourcesCompat.getColor(
+                        resources,
+                        R.color.success_color,
+                        theme
+                    )
+                )
+                .setLabelClickable(true)
+                .create()
+            val drawable = AppCompatResources.getDrawable(this, R.drawable.ic_add)
+
+            val itemTwo = SpeedDialActionItem.Builder(R.id.fab_action2, drawable)
+                .setFabImageTintColor(
+                    ResourcesCompat.getColor(
+                        resources, R.color.color_white,
+                        theme
+                    )
+                )
+                .setLabel("Add Application")
+                .setFabSize(FloatingActionButton.SIZE_MINI)
+                .setContentDescription("Add application for playing alarm")
+                .setLabelColor(Color.WHITE)
+                .setFabBackgroundColor(
+                    ResourcesCompat.getColor(
+                        resources,
+                        R.color.colorPrimaryDark,
+                        theme
+                    )
+                )
+                .setLabelBackgroundColor(
+                    ResourcesCompat.getColor(
+                        resources,
+                        R.color.colorPrimaryDark,
+                        theme
+                    )
+                )
+                .setLabelClickable(true)
+                .create()
 
 
-        speedDial.addActionItem(itemTwo)
-        speedDial.addActionItem(itemOne)
+            speedDial.addActionItem(itemTwo)
+            speedDial.addActionItem(itemOne)
 
-        // Set option fabs clicklisteners.
-        speedDial.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
-            when (actionItem.id) {
-                R.id.fab_action1 -> {
-                    speedDial.close()
-//                    if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_VIDEO_SHOWED)) {
-//
-//                    }
-                    showVideoTutorial()
-                    return@OnActionSelectedListener true // false will close it without animation
+            // Set option fabs clicklisteners.
+            speedDial.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
+                when (actionItem.id) {
+                    R.id.fab_action1 -> {
+                        speedDial.close()
+                        showVideoTutorial()
+                        return@OnActionSelectedListener true // false will close it without animation
+                    }
+                    R.id.fab_action2 -> {
+                        speedDial.close()
+                        fab_button_add_application?.performClick()
+                        return@OnActionSelectedListener true
+                    }
                 }
-                R.id.fab_action2 -> {
-                    speedDial.close()
-                    fab_button_add_application?.performClick()
-                    return@OnActionSelectedListener true
-                }
+                false // To keep the Speed Dial open
+            })
+        } else {
+            try {
+                speedDial.clearActionItems()
+            } catch (e: Exception) {
+
             }
-            false // To keep the Speed Dial open
-        })
+        }
+
 
         // Set main action clicklistener.
         speedDial.setOnChangeListener(object : SpeedDialView.OnChangeListener {
             override fun onMainActionSelected(): Boolean {
+                if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_VIDEO_SHOWED)) {
+                    fab_button_add_application?.performClick()
+                }
                 return false // True to keep the Speed Dial open
             }
 
@@ -477,11 +517,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 object : DialogUtils.Callback {
                     override fun onPositive() {
                         try {
-                            val isOpened = AutoStartPermissionHelper.getInstance().getAutoStartPermission(
-                                this@AlarmApplicationActivity,
-                                open = true,
-                                newTask = true
-                            )
+                            val isOpened =
+                                AutoStartPermissionHelper.getInstance().getAutoStartPermission(
+                                    this@AlarmApplicationActivity,
+                                    open = true,
+                                    newTask = true
+                                )
                             if (isOpened) {
                                 SharedPrefUtils.write(
                                     Constants.PreferenceKeys.IS_AUTO_STARTED,
@@ -509,52 +550,48 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             DialogUtils.showOnlyPositiveDialog(this, "Battery Restriction",
                 "We recommend you to disable battery restriction on our app, as it kills" +
                         " our app sometime from background. For further help, please visit 'Not working sometime' from (Setting) page",
-            object : DialogUtils.Callback{
-                override fun onPositive() {
-                    //open app info screen
-                    try {
-                        //Open the specific App Info page:
-                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                        intent.data = Uri.parse("package:$packageName")
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(intent)
-                        SharedPrefUtils.write(
-                            Constants.PreferenceKeys.IS_BATTERY_RESTRICTED,
-                            true
-                        )
-                    } catch (e: ActivityNotFoundException) {
-                        //e.printStackTrace();
-                        //Open the generic Apps page:
-                        val intent = Intent(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(intent)
-                        SharedPrefUtils.write(
-                            Constants.PreferenceKeys.IS_BATTERY_RESTRICTED,
-                            true
-                        )
+                object : DialogUtils.Callback {
+                    override fun onPositive() {
+                        //open app info screen
+                        try {
+                            //Open the specific App Info page:
+                            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                            intent.data = Uri.parse("package:$packageName")
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(intent)
+                            SharedPrefUtils.write(
+                                Constants.PreferenceKeys.IS_BATTERY_RESTRICTED,
+                                true
+                            )
+                        } catch (e: ActivityNotFoundException) {
+                            //e.printStackTrace();
+                            //Open the generic Apps page:
+                            val intent = Intent(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(intent)
+                            SharedPrefUtils.write(
+                                Constants.PreferenceKeys.IS_BATTERY_RESTRICTED,
+                                true
+                            )
+                        }
                     }
-                }
 
-                override fun onNegative() {
+                    override fun onNegative() {
 
-                }
+                    }
 
-            })
+                })
         }
     }
 
 
-
-    private fun showOfferDialog(){
+    private fun showOfferDialog() {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.setCancelable(false)
         dialog.setContentView(R.layout.dialog_buy_pro_layout)
-
         val videoView = dialog.findViewById<VideoView>(R.id.button_vibrate)
-
-
         val window: Window = dialog.window!!
         window.setLayout(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -565,8 +602,20 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         }
     }
 
+    public fun changeStateOfSpeedDial(){
+        try{
+            if(speedDial != null){
+                if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_VIDEO_SHOWED)){
+                    speedDial.clearActionItems()
+                }
+            }
+        }catch (e:java.lang.Exception){
 
-    @SuppressLint("SetTextI18n")
+        }
+    }
+
+
+            @SuppressLint("SetTextI18n")
     private fun triggerBuyProDialog() {
         /**
          * Every 10 times show buy pro dialog with
@@ -737,19 +786,14 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     }
 
-    private fun showQuickStartDialog() {
+
+    private fun showVideoTutorial() {
         try {
-            val quickStartDialog = OnboardingDialog()
-            quickStartDialog.show(supportFragmentManager, "quick_start")
+            val bottomSheet = TutorialBottomSheetDialog(this)
+            bottomSheet.show(supportFragmentManager, bottomSheet.tag)
         } catch (e: IllegalStateException) {
 
         }
-    }
-
-
-    private fun showVideoTutorial(){
-        val bottomSheet = TutorialBottomSheetDialog()
-        bottomSheet.show(supportFragmentManager, bottomSheet.tag)
     }
 
 
@@ -825,7 +869,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                         topMargin = ViewUtils.dpToPx(12).toInt()
                     }
                 }
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 //skip it to default
             }
             txt_battery_detail?.visibility = View.VISIBLE

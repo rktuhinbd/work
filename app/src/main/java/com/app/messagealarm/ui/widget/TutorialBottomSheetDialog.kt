@@ -3,6 +3,7 @@ package com.app.messagealarm.ui.widget
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
@@ -15,19 +16,20 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.VideoView
 import com.app.messagealarm.R
+import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
+import com.app.messagealarm.utils.Constants
+import com.app.messagealarm.utils.SharedPrefUtils
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.layout_dialog_onboarding.*
 
-class TutorialBottomSheetDialog : BottomSheetDialogFragment() {
+class TutorialBottomSheetDialog(val activity: Activity) : BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_FRAME, R.style.AppBottomSheetDialogTheme)
     }
-
-
 
     private fun setupFullHeight(bottomSheetDialog: BottomSheetDialog) {
         try {
@@ -66,16 +68,10 @@ class TutorialBottomSheetDialog : BottomSheetDialogFragment() {
         val videoView = v.findViewById<VideoView>(R.id.video_view_tutorial)
         val skipButton = v.findViewById<TextView>(R.id.btn_skip)
         skipButton.setOnClickListener {
+            (activity as AlarmApplicationActivity).changeStateOfSpeedDial()
+            SharedPrefUtils.write(Constants.PreferenceKeys.IS_VIDEO_SHOWED, true)
             dismiss()
         }
-        //start full sound
-     /*   val mobilemode =
-            context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
-        mobilemode!!.setStreamVolume(
-            AudioManager.STREAM_MUSIC,
-            mobilemode.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
-            0
-        )*/
         val path = "android.resource://" + requireActivity().packageName.toString() + "/" + R.raw.video_tutorial
         videoView.setVideoURI(Uri.parse(path))
         videoView.setOnPreparedListener {
@@ -106,5 +102,14 @@ class TutorialBottomSheetDialog : BottomSheetDialogFragment() {
 
         return bottomSheetDialog
     }
+
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_VIDEO_SHOWED)){
+            (activity as AlarmApplicationActivity).changeStateOfSpeedDial()
+        }
+    }
+
 
 }
