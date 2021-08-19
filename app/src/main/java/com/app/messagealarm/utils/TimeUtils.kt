@@ -59,6 +59,7 @@ class TimeUtils private constructor() {
          * Note: All times are in BST time
          */
         fun getPossibleReplyTime() : String{
+            Log.e("C_H", getCurrentHourBDTime().toString())
             var possibleTime: String
             when(getCurrentDayNameBDTime().toUpperCase(Locale.getDefault())) {
                 /**
