@@ -45,6 +45,7 @@ import com.app.messagealarm.ui.main.add_options.AddApplicationOption
 import com.app.messagealarm.ui.onboarding.OnboardingDialog
 import com.app.messagealarm.ui.setting.SettingsActivity
 import com.app.messagealarm.ui.widget.BottomSheetFragmentLang
+import com.app.messagealarm.ui.widget.TutorialBottomSheetDialog
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.android.material.button.MaterialButton
@@ -429,9 +430,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             when (actionItem.id) {
                 R.id.fab_action1 -> {
                     speedDial.close()
-                    if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_VIDEO_SHOWED)) {
-
-                    }
+//                    if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_VIDEO_SHOWED)) {
+//
+//                    }
+                    showVideoTutorial()
                     return@OnActionSelectedListener true // false will close it without animation
                 }
                 R.id.fab_action2 -> {
@@ -746,7 +748,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
 
     private fun showVideoTutorial(){
-
+        val bottomSheet = TutorialBottomSheetDialog()
+        bottomSheet.show(supportFragmentManager, bottomSheet.tag)
     }
 
 
@@ -869,7 +872,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     }
 
     private fun showLanguageDoesNotSupported() {
-        if (AndroidUtils.getCurrentLangCode(this) == "en") {
+        if (AndroidUtils.getCurrentLangCode(this) != "en") {
             val bottomSheet = BottomSheetFragmentLang()
             bottomSheet.show(supportFragmentManager, bottomSheet.tag)
         }
