@@ -5,7 +5,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.*
 import android.content.pm.PackageManager
-import android.content.res.Configuration
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
@@ -25,7 +25,6 @@ import android.widget.VideoView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -43,7 +42,6 @@ import com.app.messagealarm.ui.adapters.AddedAppsListAdapter
 import com.app.messagealarm.ui.buy_pro.BuyProActivity
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
-import com.app.messagealarm.ui.onboarding.OnboardingDialog
 import com.app.messagealarm.ui.setting.SettingsActivity
 import com.app.messagealarm.ui.widget.BottomSheetFragmentLang
 import com.app.messagealarm.ui.widget.TutorialBottomSheetDialog
@@ -87,6 +85,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         lookForTablesSize()
         showLanguageDoesNotSupported()
         triggerBuyProDialog()
+        handlePushNotificationData()
         /**
          * check for review
          */
@@ -98,8 +97,116 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 switch_alarm_status?.isChecked = false
             }
         }
-
     }
+
+    /**
+     * handle push notification
+     */
+    private fun handlePushNotificationData() {
+        if (intent.extras != null) {
+            if (intent.hasExtra(Constants.IntentKeys.PUSH_IMAGE)) {
+                //image available
+                showPushNotificationDialog(
+                    intent.getBooleanExtra(Constants.IntentKeys.IS_PUSH_URL, false),
+                    intent.getBooleanExtra(Constants.IntentKeys.IS_BUY_PRO, false),
+                    intent.getStringExtra(Constants.IntentKeys.PUSH_TITLE)!!,
+                    intent.getStringExtra(Constants.IntentKeys.PUSH_DESC)!!,
+                    intent.getByteArrayExtra(Constants.IntentKeys.PUSH_IMAGE)!!,
+                    intent.getStringExtra(Constants.IntentKeys.PUSH_URL)
+                )
+            } else {
+                //no image
+                showPushNotificationDialog(
+                    intent.getBooleanExtra(Constants.IntentKeys.IS_PUSH_URL, false),
+                    intent.getBooleanExtra(Constants.IntentKeys.IS_BUY_PRO, false),
+                    intent.getStringExtra(Constants.IntentKeys.PUSH_TITLE)!!,
+                    intent.getStringExtra(Constants.IntentKeys.PUSH_DESC)!!,
+                    null,
+                    intent.getStringExtra(Constants.IntentKeys.PUSH_URL)
+                )
+            }
+        }
+    }
+
+    private fun showPushNotificationDialog(
+        isWebUrl: Boolean,
+        isBuyPRO: Boolean, title: String,
+        desc: String, image: ByteArray?, webUrl:String?
+    ) {
+        var bitmap: Bitmap? = null
+        if (image != null) {
+            //convert the bitmap data to bitmap
+            try {
+                bitmap = BitmapFactory.decodeByteArray(image, 0, image.size)
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+        }
+        runOnUiThread {
+            val dialog = Dialog(this)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+            dialog.setCancelable(false)
+            dialog.setContentView(R.layout.dialog_push_notification)
+            val imageView = dialog.findViewById<ImageView>(R.id.image_logo)
+            val fabCloseButton = dialog.findViewById<FloatingActionButton>(R.id.fab_close_push)
+            val btnBuyPro = dialog.findViewById<MaterialButton>(R.id.button_pro)
+            val btnExplore = dialog.findViewById<MaterialButton>(R.id.button_web)
+            if(isWebUrl && !isBuyPRO){
+                btnBuyPro.visibility = View.GONE
+                btnExplore.visibility = View.VISIBLE
+            }else if(isBuyPRO && !isWebUrl){
+                btnBuyPro.visibility = View.VISIBLE
+                btnExplore.visibility = View.GONE
+            }else{
+                btnBuyPro.visibility = View.GONE
+                btnExplore.visibility = View.GONE
+            }
+            btnExplore.setOnClickListener {
+                if (dialog.isShowing) {
+                    dialog.dismiss()
+                }
+                if(webUrl != null){
+                    VisitUrlUtils.visitWebsite(this, webUrl)
+                }
+            }
+            btnBuyPro.setOnClickListener {
+                if (dialog.isShowing) {
+                    dialog.dismiss()
+                }
+                val intent = Intent(this, BuyProActivity::class.java)
+                startActivityForResult(
+                    intent,
+                    Constants.ACTION.ACTION_PURCHASE_FROM_MAIN
+                )
+            }
+            fabCloseButton.setOnClickListener {
+                if (dialog.isShowing) {
+                    dialog.dismiss()
+                }
+            }
+            if (bitmap != null) {
+                imageView.setImageBitmap(bitmap)
+            }
+            val txtTitle = dialog.findViewById<TextView>(R.id.text_title)
+            txtTitle?.text = title
+            val subTitle = dialog.findViewById<TextView>(R.id.text_sub_title)
+            subTitle?.text = desc
+            val window: Window = dialog.window!!
+            window.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            if (!isFinishing && !dialog.isShowing) {
+                dialog.show()
+            }
+        }
+    }
+
+    /**
+     * end of handling push notification
+     */
+
 
     private fun lookForTablesSize() {
         alarmAppPresenter.getRequiredTableSize()
@@ -602,20 +709,20 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         }
     }
 
-    public fun changeStateOfSpeedDial(){
-        try{
-            if(speedDial != null){
-                if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_VIDEO_SHOWED)){
+    public fun changeStateOfSpeedDial() {
+        try {
+            if (speedDial != null) {
+                if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_VIDEO_SHOWED)) {
                     speedDial.clearActionItems()
                 }
             }
-        }catch (e:java.lang.Exception){
+        } catch (e: java.lang.Exception) {
 
         }
     }
 
 
-            @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n")
     private fun triggerBuyProDialog() {
         /**
          * Every 10 times show buy pro dialog with

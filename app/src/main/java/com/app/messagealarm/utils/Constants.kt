@@ -55,6 +55,7 @@ class Constants {
             const val SYNC = "SYNC"
             const val UPDATE = "UPDATE"
             const val BUY = "BUY"
+            const val WEB_URL = "url_web"
             const val OPEN_SERVICE = "OPEN_SERVICE"
         }
     }
@@ -199,6 +200,11 @@ class Constants {
             const val PACKAGE_NAME = "package"
             const val TYPE_ALARM = "type_alarm"
             const val JUST_CANCEL = "just_cancel"
+            const val PUSH_TITLE = "push_title"
+            const val PUSH_DESC = "push_desc"
+            const val PUSH_IMAGE = "push_image"
+            const val PUSH_URL = "url_push"
+            const val IS_PUSH_URL = "push_url"
             const val APP_NAME = "app_name"
             const val TONE = "tone"
             const val SOUND_LEVEL = "sound_level"
@@ -206,6 +212,7 @@ class Constants {
             const val NUMBER_OF_PLAY = "number_of_play"
             const val IS_VIBRATE = "is_vibrate"
             const val IS_JUST_VIBRATE = "is_just_vibrate"
+            const val IS_BUY_PRO = "is_buy_pro"
         }
     }
 

@@ -14,8 +14,6 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.text.format.Formatter
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.app.messagealarm.BaseApplication
@@ -24,10 +22,8 @@ import com.app.messagealarm.R
 import com.app.messagealarm.common.CommonPresenter
 import com.app.messagealarm.common.CommonView
 import com.app.messagealarm.model.response.TokenResponse
-import com.app.messagealarm.model.response.UserInfoGlobal
 import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.service.notification_service.NotificationListener
-import com.app.messagealarm.ui.buy_pro.BuyProActivity
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
@@ -39,6 +35,7 @@ import com.google.firebase.messaging.RemoteMessage
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
@@ -48,6 +45,7 @@ import java.util.*
 class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
+    var bmp:Bitmap? = null
 
     override fun onMessageReceived(p0: RemoteMessage) {
         // Obtain the FirebaseAnalytics instance.
@@ -87,6 +85,10 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
                             if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_TERMS_ACCEPTED)){
                                 startMagicService(this)
                             }
+                        }else{
+                            val bundleService = Bundle()
+                            bundleService.putString("service_running", "yes")
+                            firebaseAnalytics.logEvent("service_running", bundleService)
                         }
                     }
                 }
@@ -128,16 +130,20 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
         Thread {
             val tokenCall = RetrofitClient.getApiService().registerToken(
                 p0,
-               if (SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY).isNotEmpty())
-                   SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY) else "Unknown")
+                if (SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY).isNotEmpty())
+                    SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY) else "Unknown"
+            )
             tokenCall.enqueue(object : Callback<TokenResponse> {
                 override fun onResponse(
                     call: Call<TokenResponse>,
                     response: Response<TokenResponse>
                 ) {
-                   if(response.isSuccessful){
-                       SharedPrefUtils.write(Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2, true)
-                   }
+                    if (response.isSuccessful) {
+                        SharedPrefUtils.write(
+                            Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2,
+                            true
+                        )
+                    }
                 }
 
                 override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
@@ -153,7 +159,7 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
         //create vibration for 4 seconds
         Thread(Runnable {
             //start vibration
-            VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext(), 1500)
+            VibratorUtils.startVibrate(BaseApplication.getBaseApplicationContext(), 2500)
             while (count < 3) {
                 Thread.sleep(500)
                 count++
@@ -197,12 +203,6 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
          */
         var contentIntent: PendingIntent? = null
         when (action) {
-            Constants.ACTION.BUY -> {
-                contentIntent = PendingIntent.getActivity(
-                    this, 0,
-                    Intent(this, BuyProActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT
-                )
-            }
             Constants.ACTION.UPDATE -> {
                 val intent: Intent = try {
                     Intent(
@@ -228,33 +228,83 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
                     Intent(this, AlarmApplicationActivity::class.java),
                     PendingIntent.FLAG_UPDATE_CURRENT
                 )
+                try {
+                    if(remoteMessage!!.data["image"] != null){
+                            //Write file
+                            bmp = getBitmapfromUrl(/*remoteMessage.data["image"]*/"https://picsum.photos/seed/picsum/500/300")
+                            val bitmap = bmp
+                            //Convert to byte array
+                            val stream = ByteArrayOutputStream()
+                            bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                            val byteArray: ByteArray = stream.toByteArray()
+                            contentIntent = PendingIntent.getActivity(
+                                this, 0,
+                                Intent(this, AlarmApplicationActivity::class.java)
+                                    .putExtra(Constants.IntentKeys.PUSH_IMAGE, byteArray)
+                                    .putExtra(
+                                        Constants.IntentKeys.IS_BUY_PRO,
+                                        action == Constants.ACTION.BUY
+                                    )
+                                    .putExtra(Constants.IntentKeys.IS_PUSH_URL, true)
+                                    .putExtra(Constants.IntentKeys.PUSH_URL, "https://www.facebook.com/")
+                                    .putExtra(
+                                        Constants.IntentKeys.PUSH_TITLE,
+                                        remoteMessage.data["title"]
+                                    )
+                                    .putExtra(
+                                        Constants.IntentKeys.PUSH_DESC,
+                                        remoteMessage.data["body"]
+                                    ), PendingIntent.FLAG_UPDATE_CURRENT
+                            )
+                    }else{
+                        contentIntent = PendingIntent.getActivity(
+                            this, 0,
+                            Intent(this, AlarmApplicationActivity::class.java)
+                                .putExtra(
+                                    Constants.IntentKeys.IS_BUY_PRO,
+                                    action == Constants.ACTION.BUY
+                                )
+                                .putExtra(
+                                    Constants.IntentKeys.PUSH_TITLE,
+                                    remoteMessage.data["title"]
+                                )
+                                .putExtra(Constants.IntentKeys.PUSH_URL, "https://www.facebook.com/")
+                                .putExtra(Constants.IntentKeys.IS_PUSH_URL, true)
+                                .putExtra(
+                                    Constants.IntentKeys.PUSH_DESC,
+                                    remoteMessage.data["body"]
+                                ), PendingIntent.FLAG_UPDATE_CURRENT
+                        )
+                    }
+
+                }catch (e: Exception){
+                    e.printStackTrace()
+                }
             }
         }
         builder
-            .setColor(ContextCompat.getColor(this, R.color.colorAccent))
+            .setColor(ContextCompat.getColor(this, R.color.success_color))
             .setSmallIcon(R.drawable.ic_notification)
             .setSound(defaultSoundUri)
             .setAutoCancel(true)
             .setContentIntent(contentIntent)
-        if (remoteMessage!!.data["title"] != null && remoteMessage.data["title"]!!.isNotEmpty()) {
-            builder.setContentTitle("Message Alarm")
-        }
-        if (remoteMessage.data["image"] != null) {
+            builder.setContentTitle("messageAlarm")
+        if (remoteMessage!!.data["image"] != null && bmp != null) {
             // Set the image for the notification
-            val bitmap: Bitmap = getBitmapfromUrl(remoteMessage.data["image"])!!
+            val bitmap = bmp
             builder.setStyle(
                 NotificationCompat.BigPictureStyle()
                     .bigPicture(bitmap)
                     .bigLargeIcon(null)
             ).setLargeIcon(bitmap)
             //content text as title and we will pass description in the app dialog for description
-            if (remoteMessage.data["body"] != null && remoteMessage.data["body"]!!.isNotEmpty()) {
-                builder.setContentText(remoteMessage.data["body"])
+            if (remoteMessage.data["title"] != null && remoteMessage.data["title"]!!.isNotEmpty()) {
+                builder.setContentText(remoteMessage.data["title"])
             }
         } else {
-            if (remoteMessage.data["body"] != null && remoteMessage.data["body"]!!.isNotEmpty()) {
+            if (remoteMessage.data["title"] != null && remoteMessage.data["title"]!!.isNotEmpty()) {
                 builder.setStyle(
-                    NotificationCompat.BigTextStyle().bigText(remoteMessage.data["body"])
+                    NotificationCompat.BigTextStyle().bigText(remoteMessage.data["title"])
                 )
             }
         }
@@ -264,16 +314,16 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
     }
 
     private fun getBitmapfromUrl(imageUrl: String?): Bitmap? {
-        return try {
-            val url = URL(imageUrl)
-            val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
-            connection.doInput = true
-            connection.connect()
-            val input: InputStream = connection.inputStream
-            BitmapFactory.decodeStream(input)
-        } catch (e: Exception) {
-            null
-        }
+            return try {
+                val url = URL(imageUrl)
+                val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+                connection.doInput = true
+                connection.connect()
+                val input: InputStream = connection.inputStream
+                BitmapFactory.decodeStream(input)
+            } catch (e: Exception) {
+                null
+            }
     }
 
     override fun onDbCleanSuccess() {
@@ -284,7 +334,7 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
 
     }
 
-    override fun onSuccess(token:String) {
+    override fun onSuccess(token: String) {
         //if app is build in debug mode don't call this function
             sendPushToken(token)
             //send push token for non debug mode
@@ -303,6 +353,7 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
                                 )
                             }
                         }
+
                         override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
 
                         }
