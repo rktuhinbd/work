@@ -6,17 +6,22 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import com.app.messagealarm.R
+import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationPresenter
 import com.app.messagealarm.ui.terms_privacy.TermsAndConditionActivity
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.PermissionUtils
 import com.app.messagealarm.utils.SharedPrefUtils
+import com.app.messagealarm.work_manager.WorkManagerUtils
 
-class FirstTimeSplashScreen : AppCompatActivity() {
+class FirstTimeSplashScreen : AppCompatActivity(), FirstSplashView {
+
+    private val alarmAppPresenter = FirstSplashPresenter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_first_time_splash_screen)
         startAction()
+        alarmAppPresenter.getRequiredTableSize()
     }
 
     private fun startAction(){
@@ -50,5 +55,9 @@ class FirstTimeSplashScreen : AppCompatActivity() {
     private fun openSplashActivity(){
         startActivity(Intent(this, SplashActivity::class.java))
         finish()
+    }
+
+    override fun onTablesSizeRequestSuccess(appSize: Int, langSize: Int, appConstrainSize: Int) {
+        WorkManagerUtils.scheduleSyncWork(this, appSize, langSize, appConstrainSize)
     }
 }
