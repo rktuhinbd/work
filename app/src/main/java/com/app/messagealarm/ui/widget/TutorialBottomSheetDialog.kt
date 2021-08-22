@@ -69,14 +69,18 @@ class TutorialBottomSheetDialog(val activity: Activity) : BottomSheetDialogFragm
         val skipButton = v.findViewById<TextView>(R.id.btn_skip)
         skipButton.setOnClickListener {
             (activity as AlarmApplicationActivity).changeStateOfSpeedDial()
-            SharedPrefUtils.write(Constants.PreferenceKeys.IS_VIDEO_SHOWED, true)
+            //SharedPrefUtils.write(Constants.PreferenceKeys.IS_VIDEO_SHOWED, true)
             dismiss()
         }
         val path = "android.resource://" + requireActivity().packageName.toString() + "/" + R.raw.video_tutorial
         videoView.setVideoURI(Uri.parse(path))
+        videoView.setZOrderOnTop(true)
+        videoView.animate().alpha(1f)
+        videoView.seekTo(100)
         videoView.setOnPreparedListener {
             requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             it.setScreenOnWhilePlaying(true)
+            videoView.setZOrderOnTop(false)
         }
         videoView.setOnCompletionListener {
             skipButton.text = "CLOSE"

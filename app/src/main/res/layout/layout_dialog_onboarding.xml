@@ -9,6 +9,7 @@
     <VideoView
         android:id="@+id/quick_start_video"
         android:layout_width="0dp"
+        android:alpha="0"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/view_line"
         app:layout_constraintEnd_toEndOf="parent"

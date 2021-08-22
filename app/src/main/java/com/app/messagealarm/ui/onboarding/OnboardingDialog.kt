@@ -88,9 +88,13 @@ class OnboardingDialog : DialogFragment(){
         )
         val path = "android.resource://" + requireActivity().packageName.toString() + "/" + R.raw.video_tutorial
         quick_start_video?.setVideoURI(Uri.parse(path))
+        quick_start_video.setZOrderOnTop(true)
+        quick_start_video.animate().alpha(1f)
+        quick_start_video.seekTo(100)
         quick_start_video?.setOnPreparedListener {
             requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             it.setScreenOnWhilePlaying(true)
+            quick_start_video.setZOrderOnTop(false)
         }
         quick_start_video?.setOnCompletionListener {
             val bundle = Bundle()
