@@ -177,22 +177,26 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
     }
 
+    /**
+     * Note: On 22 aug MK changed the just vibrate code,
+     *as Mk planned to make just vibrate a free feature
+     */
     private fun enableProMode() {
         if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
-            switch_just_vibrate?.isEnabled = true
+           // switch_just_vibrate?.isEnabled = true
             switch_vibrate?.isEnabled = true
             progress_sound_level?.isEnabled = true
-            txt_pro_just_vibrate?.visibility = View.GONE
+            //txt_pro_just_vibrate?.visibility = View.GONE
             txt_pro_vibrate?.visibility = View.GONE
             txt_pro_sound_level?.visibility = View.GONE
         } else {
             switch_vibrate?.isChecked = false
             switch_vibrate?.isEnabled = false
             progress_sound_level?.isEnabled = false
-            switch_just_vibrate?.isChecked = false
-            switch_just_vibrate?.isEnabled = false
+           // switch_just_vibrate?.isChecked = false
+            //switch_just_vibrate?.isEnabled = false
             txt_pro_sound_level?.visibility = View.VISIBLE
-            txt_pro_just_vibrate?.visibility = View.VISIBLE
+           // txt_pro_just_vibrate?.visibility = View.VISIBLE
             txt_pro_vibrate?.visibility = View.VISIBLE
         }
     }

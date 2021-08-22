@@ -401,6 +401,7 @@
                     android:layout_height="30dp"
                     android:layout_marginStart="8dp"
                     android:padding="7dp"
+                    android:visibility="gone"
                     android:src="@drawable/ic_premium_gold"
                     app:layout_constraintBottom_toBottomOf="@id/view_just_vibrate"
                     app:layout_constraintEnd_toStartOf="@id/switch_just_vibrate"
@@ -419,7 +420,8 @@
                     app:layout_constraintHorizontal_bias="1"
                     app:layout_constraintStart_toEndOf="@id/txt_just_vibrate"
                     app:layout_constraintTop_toTopOf="@id/view_just_vibrate"
-                    tools:targetApi="m" />
+                    tools:targetApi="m"
+                    tools:ignore="UseSwitchCompatOrMaterialXml" />
 
                 <View
                     android:layout_width="0dp"
