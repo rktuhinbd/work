@@ -142,7 +142,7 @@
                     android:elevation="6dp"
                     android:fontFamily="@font/roboto_bold"
                     android:text="Buy PRO - Control Alarm Volume"
-                    android:textAllCaps="false"
+                    android:textAllCaps="true"
                     android:textColor="@android:color/black"
                     app:backgroundTint="@null"
                     android:textSize="14sp"

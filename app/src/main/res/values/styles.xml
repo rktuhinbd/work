@@ -20,9 +20,9 @@
     </style>
 
     <style name="AppThemeBuy" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="colorPrimary">#C9A666</item>
-        <item name="colorPrimaryDark">#C9A666</item>
-        <item name="colorAccent">#C9A666</item>
+        <item name="colorPrimary">#55b9e3</item>
+        <item name="colorPrimaryDark">#55b9e3</item>
+        <item name="colorAccent">#55b9e3</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
     </style>

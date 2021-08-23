@@ -177,7 +177,7 @@
                     android:elevation="6dp"
                     android:fontFamily="@font/roboto_bold"
                     android:text="PRO Version - Onetime Payment"
-                    android:textAllCaps="false"
+                    android:textAllCaps="true"
                     android:textColor="@android:color/black"
                     app:backgroundTint="@null"
                     app:cornerRadius="12dp"
