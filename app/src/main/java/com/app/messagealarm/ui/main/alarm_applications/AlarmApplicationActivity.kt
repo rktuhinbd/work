@@ -131,7 +131,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     private fun showPushNotificationDialog(
         isWebUrl: Boolean,
         isBuyPRO: Boolean, title: String,
-        desc: String, image: ByteArray?, webUrl:String?
+        desc: String, image: ByteArray?, webUrl: String?
     ) {
         var bitmap: Bitmap? = null
         if (image != null) {
@@ -152,13 +152,13 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             val fabCloseButton = dialog.findViewById<FloatingActionButton>(R.id.fab_close_push)
             val btnBuyPro = dialog.findViewById<MaterialButton>(R.id.button_pro)
             val btnExplore = dialog.findViewById<MaterialButton>(R.id.button_web)
-            if(isWebUrl && !isBuyPRO){
+            if (isWebUrl && !isBuyPRO) {
                 btnBuyPro.visibility = View.GONE
                 btnExplore.visibility = View.VISIBLE
-            }else if(isBuyPRO && !isWebUrl){
+            } else if (isBuyPRO && !isWebUrl) {
                 btnBuyPro.visibility = View.VISIBLE
                 btnExplore.visibility = View.GONE
-            }else{
+            } else {
                 btnBuyPro.visibility = View.GONE
                 btnExplore.visibility = View.GONE
             }
@@ -166,7 +166,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 if (dialog.isShowing) {
                     dialog.dismiss()
                 }
-                if(webUrl != null){
+                if (webUrl != null) {
                     VisitUrlUtils.visitWebsite(this, webUrl)
                 }
             }
@@ -1023,9 +1023,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     }
 
     private fun showLanguageDoesNotSupported() {
-        if (AndroidUtils.getCurrentLangCode(this) != "en") {
-            val bottomSheet = BottomSheetFragmentLang()
-            bottomSheet.show(supportFragmentManager, bottomSheet.tag)
+        if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_LANG_WARNING_SHOWED)) {
+            if (AndroidUtils.getCurrentLangCode(this) != "en") {
+                val bottomSheet = BottomSheetFragmentLang()
+                bottomSheet.show(supportFragmentManager, bottomSheet.tag)
+                SharedPrefUtils.write(Constants.PreferenceKeys.IS_LANG_WARNING_SHOWED, true)
+            }
         }
     }
 
