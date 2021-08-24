@@ -86,6 +86,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         showLanguageDoesNotSupported()
         triggerBuyProDialog()
         handlePushNotificationData()
+        showLowVolumeWarning()
         /**
          * check for review
          */
@@ -98,6 +99,35 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             }
         }
     }
+
+
+    /**
+     * low sound volume warning
+     */
+
+    private fun showLowVolumeWarning(){
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.layout_dialog_warning)
+        val closeButton = dialog.findViewById<FloatingActionButton>(R.id.fab_close_warning)
+        closeButton.setOnClickListener {
+            if(dialog.isShowing){
+                dialog.dismiss()
+            }
+        }
+        val window: Window = dialog.window!!
+        window.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        if (!dialog.isShowing) {
+            dialog.show()
+        }
+    }
+
+
 
     /**
      * handle push notification

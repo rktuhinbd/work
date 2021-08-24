@@ -15,6 +15,7 @@ android {
         targetSdkVersion 30
         versionCode 13
         versionName "debug"
+        vectorDrawables.useSupportLibrary = true // For srcCompat
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 

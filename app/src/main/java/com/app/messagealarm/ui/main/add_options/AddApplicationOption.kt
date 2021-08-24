@@ -430,12 +430,18 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             if (!BaseApplication.isHintShowing) {
                 addApplicationEntity.isJustVibrate = isChecked
                 if (isChecked) {
-                    progress_sound_level.isEnabled = false
                     progress_sound_level.progress = 0
                     switch_vibrate.isChecked = false
                 }else{
-                    progress_sound_level.isEnabled = true
-                    progress_sound_level.progress = 100
+                    if(isProModeEnabled()){
+                        progress_sound_level.progress = 100
+                    }else{
+                        if(SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY_CODE) == "BD"){
+                            progress_sound_level.progress = 100
+                        }else{
+                            progress_sound_level.progress = 80
+                        }
+                    }
                 }
             }
         }
@@ -487,12 +493,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
         view_just_vibrate?.setOnClickListener {
             if (!BaseApplication.isHintShowing) {
-                if (isProModeEnabled()) {
-                    switch_just_vibrate?.performClick()
-                } else {
-                    showJustVibrateDialog()
-                }
-
+                switch_just_vibrate?.performClick()
             }
         }
 
@@ -1279,8 +1280,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     holderEntity.sound_level = 100
                     addApplicationEntity.sound_level = 100
                 }else{
-                    holderEntity.sound_level = 70
-                    addApplicationEntity.sound_level = 70
+                    holderEntity.sound_level = 80
+                    addApplicationEntity.sound_level = 80
                 }
             }
         }else{
@@ -1288,8 +1289,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 holderEntity.sound_level = 100
                 addApplicationEntity.sound_level = 100
             }else{
-                holderEntity.sound_level = 70
-                addApplicationEntity.sound_level = 70
+                holderEntity.sound_level = 80
+                addApplicationEntity.sound_level = 80
             }
         }
         //set this to holder object for checking default
