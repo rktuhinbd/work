@@ -124,7 +124,7 @@ class SettingsActivity : AppCompatActivity() {
               chatFeature!!.layoutResource = R.layout.layout_preference_chat
             //change the title and desc after the purchase is made
                 chatFeature.title = "Live Chat (Support & Sales)"
-                chatFeature.summary = "Estimated reply time ${TimeUtils.getPossibleReplyTime()}"
+                chatFeature.summary = TimeUtils.getPossibleReplyTime()
 
             chatFeature.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 val bundle = Bundle()

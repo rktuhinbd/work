@@ -59,82 +59,16 @@ class TimeUtils private constructor() {
          * Note: All times are in BST time
          */
         fun getPossibleReplyTime() : String{
-            Log.e("C_H", getCurrentHourBDTime().toString())
-            var possibleTime: String
-            when(getCurrentDayNameBDTime().toUpperCase(Locale.getDefault())) {
-                /**
-                 * Weekends
-                 */
-                "FRI", "SAT" -> {
-                    when {
-                        getCurrentHourBDTime() in 4..13 -> {
-                            /**
-                             * office hours
-                             */
-                            /**
-                             * office hours
-                             */
-                            possibleTime = "1 hour"
-                        }
-                        getCurrentHourBDTime() in 14..17 -> {
-                            /**
-                             * office off hours
-                             */
-                            /**
-                             * office off hours
-                             */
-                            possibleTime = "1.5 hours"
-                        }
-                        getCurrentHourBDTime() in 1..3 -> {
-                            /**
-                             * office off hours
-                             */
-                            /**
-                             * office off hours
-                             */
-                            possibleTime = "2 hours"
-                        }
-                        else -> {
-                            possibleTime = "4 hours"
-                        }
-                    }
+            var possibleTime: String = ""
+            possibleTime = when {
+                getCurrentHourBDTime() in 0..5 -> {
+                    "Sleeping hours"
                 }
-                else ->{
-                    /**
-                     * Office day
-                     */
-                    when {
-                        getCurrentHourBDTime() in 4..13 -> {
-                            /**
-                             * office hours
-                             */
-                            /**
-                             * office hours
-                             */
-                            possibleTime = "20 minutes"
-                        }
-                        getCurrentHourBDTime() in 14..17 -> {
-                            /**
-                             * office off hours
-                             */
-                            /**
-                             * office off hours
-                             */
-                            possibleTime = "1 hour"
-                        }
-                        getCurrentHourBDTime() in 1..3 -> {
-                            /**
-                             * office off hours
-                             */
-                            /**
-                             * office off hours
-                             */
-                            possibleTime = "1.5 hours"
-                        }
-                        else -> {
-                            possibleTime = "3 hours"
-                        }
-                    }
+                getCurrentHourBDTime() in 22..24 -> {
+                    "Sleeping hours"
+                }
+                else -> {
+                    "Instant replay within 10 min"
                 }
             }
             return possibleTime
