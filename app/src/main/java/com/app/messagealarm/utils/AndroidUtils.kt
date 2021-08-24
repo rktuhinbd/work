@@ -53,6 +53,30 @@ class AndroidUtils private constructor() {
             }
         }
 
+        /**
+         * get sound level based on country
+         */
+        fun getDefaultSoundLevel(){
+            if(SharedPrefUtils.contains(Constants.PreferenceKeys.COUNTRY_CODE)){
+               if(SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY_CODE) == "BD"){
+                   SharedPrefUtils.write(Constants.PreferenceKeys.SOUND_LEVEL, 100)
+               }else{
+                   SharedPrefUtils.write(Constants.PreferenceKeys.SOUND_LEVEL, 80)
+               }
+            }else{
+                SharedPrefUtils.write(Constants.PreferenceKeys.SOUND_LEVEL, 80)
+            }
+        }
+
+        fun getSoundLevel() : Int{
+            return if(SharedPrefUtils.contains(Constants.PreferenceKeys.SOUND_LEVEL)){
+                SharedPrefUtils.readInt(Constants.PreferenceKeys.SOUND_LEVEL)
+            }else{
+                80
+            }
+        }
+
+
         fun isAppRunning(
             context: Context,
             packageName: String

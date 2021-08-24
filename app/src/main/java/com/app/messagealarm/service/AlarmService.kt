@@ -2,9 +2,12 @@ package com.app.messagealarm.service
 
 import android.app.Service
 import android.content.Intent
+import android.database.sqlite.SQLiteException
 import android.os.Build
 import android.os.Bundle
 import android.service.notification.StatusBarNotification
+import com.app.messagealarm.BaseApplication
+import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.ui.alarm.AlarmActivity
 import com.app.messagealarm.ui.notifications.FloatingNotification
@@ -12,6 +15,7 @@ import com.app.messagealarm.utils.*
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
+import java.lang.NullPointerException
 import java.util.*
 import java.util.regex.Pattern
 
@@ -42,28 +46,28 @@ class AlarmService {
                 if (sbn?.packageName != null) {
                     if (sbn.packageName == app.packageName) {
                         //check for player not playing
-                            //check for alarm repeat
-                            if (checkByTimeConstrain(app)) {
-                                //check for title not null
-                                if (sbn.notification.extras["android.title"] != null) {
-                                    if (checkBySenderName(app, sbn)) {
-                                        if(checkByIgnoredName(app, sbn)){
-                                            if (checkByMessageBody(app, sbn)) {
-                                                //check if app is in not muted
-                                                if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_MUTED)) {
-                                                    if (alarmRepeatOutput(app.alarmRepeat, app)) {
-                                                        if (!MediaUtils.isPlaying()) {
-                                                            //save activity started as false
-                                                            SharedPrefUtils.write(
-                                                                Constants.PreferenceKeys.IS_ACTIVITY_STARTED,
-                                                                false
-                                                            )
-                                                            magicPlay(app.ringTone, service, sbn, app)
-                                                        }
+                        //check for alarm repeat
+                        if (checkByTimeConstrain(app)) {
+                            //check for title not null
+                            if (sbn.notification.extras["android.title"] != null) {
+                                if (checkBySenderName(app, sbn)) {
+                                    if (checkByIgnoredName(app, sbn)) {
+                                        if (checkByMessageBody(app, sbn)) {
+                                            //check if app is in not muted
+                                            if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_MUTED)) {
+                                                if (alarmRepeatOutput(app.alarmRepeat, app)) {
+                                                    if (!MediaUtils.isPlaying()) {
+                                                        //save activity started as false
+                                                        SharedPrefUtils.write(
+                                                            Constants.PreferenceKeys.IS_ACTIVITY_STARTED,
+                                                            false
+                                                        )
+                                                        magicPlay(app.ringTone, service, sbn, app)
                                                     }
                                                 }
                                             }
                                         }
+                                    }
                                 }
                             }
                         }
@@ -76,12 +80,37 @@ class AlarmService {
         /**
          *
          */
-        private fun alarmRecord(lastAppName:String,
-                                lastSenderName:String,
-                                lastAppIconPath:String){
+        private fun alarmRecord(
+            lastAppName: String,
+            lastSenderName: String,
+            lastAppIconPath: String
+        ) {
             //Alarm Count
-            SharedPrefUtils.write(Constants.PreferenceKeys.ALARM_COUNT,
-                    SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT) + 1)
+            SharedPrefUtils.write(
+                Constants.PreferenceKeys.ALARM_COUNT,
+                SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT) + 1
+            )
+            if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
+                if(SharedPrefUtils.readInt(Constants.PreferenceKeys.SOUND_LEVEL) > 50){
+                    SharedPrefUtils.write(
+                        Constants.PreferenceKeys.SOUND_LEVEL,
+                        SharedPrefUtils.readInt(Constants.PreferenceKeys.SOUND_LEVEL) - 1
+                    )
+                    //start a thread and decrease the sound level of saved app
+                    Thread {
+                        val appDatabase =
+                            AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
+                        try {
+                            appDatabase.applicationDao()
+                                .rollBackAppsFromDefaultSoundLevel(AndroidUtils.getSoundLevel())
+                        } catch (e: NullPointerException) {
+
+                        } catch (e: SQLiteException) {
+
+                        }
+                    }.start()
+                }
+            }
             //save last app name
             SharedPrefUtils.write(Constants.PreferenceKeys.LAST_APP_NAME, lastAppName)
             //save last sender_name
@@ -102,7 +131,7 @@ class AlarmService {
             /**
              * set alarm record
              */
-            Thread{
+            Thread {
                 alarmRecord(app.appName, title, app.bitmapPath)
             }.start()
             /**
@@ -195,8 +224,10 @@ class AlarmService {
          * @param app app from local db
          * @param sbn notification object
          */
-        private fun checkByIgnoredName(app: ApplicationEntity,
-                                        sbn: StatusBarNotification?): Boolean{
+        private fun checkByIgnoredName(
+            app: ApplicationEntity,
+            sbn: StatusBarNotification?
+        ): Boolean {
             var result = true
             val title = sbn?.notification?.extras!!["android.title"]
             val nameArray = app.ignored_names.trim().split(", ")
@@ -325,7 +356,7 @@ class AlarmService {
                 }).execute()
             })
 
-            if(!isExecute){
+            if (!isExecute) {
                 isExecute = true
                 val title = sbn.notification!!.extras["android.title"].toString()
                 val desc = sbn.notification!!.extras["android.text"].toString()

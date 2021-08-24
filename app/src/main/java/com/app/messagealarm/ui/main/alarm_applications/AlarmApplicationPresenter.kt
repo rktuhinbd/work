@@ -10,6 +10,7 @@ import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.model.response.TokenResponse
 import com.app.messagealarm.networking.RetrofitClient
+import com.app.messagealarm.utils.AndroidUtils
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.SharedPrefUtils
 import com.app.messagealarm.work_manager.WorkManagerUtils
@@ -43,7 +44,7 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread {
             try {
-                appDatabase.applicationDao().rollBackAppsFromDefaultSoundLevel(70)
+                appDatabase.applicationDao().rollBackAppsFromDefaultSoundLevel(AndroidUtils.getSoundLevel())
                 SharedPrefUtils.write(Constants.PreferenceKeys.IS_DB_ROLLED_BACK, true)
             } catch (e: NullPointerException) {
 

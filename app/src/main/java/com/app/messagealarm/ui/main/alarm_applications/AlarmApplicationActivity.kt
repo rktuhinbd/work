@@ -86,7 +86,11 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         showLanguageDoesNotSupported()
         triggerBuyProDialog()
         handlePushNotificationData()
-        showLowVolumeWarning()
+        if(AndroidUtils.getSoundLevel() != 100 || AndroidUtils.getSoundLevel() != 80){
+            if(AndroidUtils.getSoundLevel() % 10 == 0){
+                showLowVolumeWarning()
+            }
+        }
         /**
          * check for review
          */
@@ -244,11 +248,14 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     }
 
     private fun lookForAlarmApplication() {
+        if(!SharedPrefUtils.contains(Constants.PreferenceKeys.SOUND_LEVEL)){
+            AndroidUtils.getDefaultSoundLevel()
+        }
         alarmAppPresenter.getApplicationList()
         alarmAppPresenter.syncFirebaseTokenToHeroku()
         alarmAppPresenter.isAutoStartPermissionAvailable(this)
         /**
-         * rollback db to 70 if user is unpaid and from previous version and from outside bd
+         * rollback db to 80 if user is unpaid and from previous version and from outside bd
          */
         if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
             if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2)) {

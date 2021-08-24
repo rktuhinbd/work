@@ -43,6 +43,7 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
+import org.jetbrains.anko.Android
 import xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity
 import xyz.aprildown.ultimateringtonepicker.UltimateRingtonePicker
 import java.text.ParseException
@@ -436,11 +437,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     if(isProModeEnabled()){
                         progress_sound_level.progress = 100
                     }else{
-                        if(SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY_CODE) == "BD"){
-                            progress_sound_level.progress = 100
-                        }else{
-                            progress_sound_level.progress = 80
-                        }
+                       progress_sound_level.progress = AndroidUtils.getSoundLevel()
                     }
                 }
             }
@@ -1267,11 +1264,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         addApplicationEntity.ignored_names = "None"
         addApplicationEntity.messageBody = "None"
         addApplicationEntity.isRunningStatus = true
-        /**
-         * if user from BD then sound level 100 for free
-         * else 70 for free
-         */
-        if(SharedPrefUtils.contains(Constants.PreferenceKeys.COUNTRY_CODE)){
+       /* if(SharedPrefUtils.contains(Constants.PreferenceKeys.COUNTRY_CODE)){
             if(SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY_CODE) == "BD"){
                 addApplicationEntity.sound_level = 100
                 holderEntity.sound_level = 100
@@ -1292,6 +1285,13 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 holderEntity.sound_level = 80
                 addApplicationEntity.sound_level = 80
             }
+        }*/
+        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)){
+            holderEntity.sound_level = 100
+            addApplicationEntity.sound_level = 100
+        }else{
+            holderEntity.sound_level = AndroidUtils.getSoundLevel()
+            addApplicationEntity.sound_level = AndroidUtils.getSoundLevel()
         }
         //set this to holder object for checking default
         holderEntity.alarmRepeat = "Always"

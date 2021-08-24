@@ -183,6 +183,7 @@ class Constants {
             const val IS_TERMS_ACCEPTED = "terms_accepted"
             const val GOT_ONE_MESSAGE = "got_one_message"
             const val COUNTRY_CODE = "country_code"
+            const val SOUND_LEVEL = "sound_level"
             const val COUNTRY = "country"
             const val CURRENCY_CODE = "currency_code"
             const val CURRENCY_SYMBOL = "currency_symbol"
