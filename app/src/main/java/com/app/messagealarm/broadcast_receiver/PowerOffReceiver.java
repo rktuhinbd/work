@@ -19,7 +19,7 @@ public class PowerOffReceiver extends BroadcastReceiver {
         stopService(context);
         stopPowerSwitchInActivity(context);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            MediaUtils.Companion.stopAlarm();
+            MediaUtils.Companion.stopAlarm(context);
             NotificationManager nMgr = (NotificationManager)
                     context.getSystemService(Context.NOTIFICATION_SERVICE);
             nMgr.cancelAll();

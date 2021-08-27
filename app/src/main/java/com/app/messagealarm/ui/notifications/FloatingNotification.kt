@@ -431,10 +431,10 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
         }
 
         /* Used to build and start foreground service. */
-        fun startForegroundService(context: Service, isMuted: Boolean) {
+        fun startForegroundService(context: Service) {
             SharedPrefUtils.write(Constants.PreferenceKeys.IS_SERVICE_STOPPED, false)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                createNotificationChannel("my_service", "My Background Service", context, isMuted)
+                createNotificationChannel("my_service", "My Background Service", context)
             } else { // Create notification default intent.
                 //create save notification for android 7
                 //init service
@@ -511,7 +511,6 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
             channelId: String,
             channelName: String,
             context: Service,
-            isMuted: Boolean
         ) {
             //init service
             service = context

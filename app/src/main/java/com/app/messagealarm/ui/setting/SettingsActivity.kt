@@ -255,14 +255,14 @@ class SettingsActivity : AppCompatActivity() {
                     firebaseAnalytics.logEvent("mute_options", bundle)
                     if(newValue == "Until I unmute it" || newValue == "Never"){
                         if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_MUTED)){
-                                Toasty.info(requireActivity(), "Application will not unmute automatically," +
+                                Toasty.info(requireActivity(), "App will not unmute automatically," +
                                         " unmute from notification bar!").show()
                             WorkManager.getInstance(requireActivity()).cancelAllWorkByTag("MUTE")
                         }else{
                             if(newValue == "Never"){
-                                Toasty.info(requireActivity(), "App will never mute!").show()
+                                Toasty.info(requireActivity(), "App will never mute after alarm!").show()
                             }else{
-                                Toasty.info(requireActivity(), "Mute time changed to Until you unmute it!").show()
+                                Toasty.info(requireActivity(), "App will not unmute until you do it!").show()
                             }
                             WorkManager.getInstance(requireActivity()).cancelAllWorkByTag("MUTE")
                         }

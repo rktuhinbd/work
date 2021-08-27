@@ -216,7 +216,7 @@ class AlarmActivity : BaseActivity() {
                         }
                         FloatingNotification.cancelPageDismissNotification()
                         isSwiped = true
-                        MediaUtils.stopAlarm()
+                        MediaUtils.stopAlarm(this@AlarmActivity)
                         openApp()
                         finish()
                     }catch (e:NullPointerException){

@@ -9,6 +9,7 @@ import android.service.notification.StatusBarNotification
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.entity.ApplicationEntity
+import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.ui.alarm.AlarmActivity
 import com.app.messagealarm.ui.notifications.FloatingNotification
 import com.app.messagealarm.utils.*
@@ -77,6 +78,10 @@ class AlarmService {
             }
         }
 
+        private fun dismissTheMainNotification() {
+
+        }
+
         /**
          *
          */
@@ -134,6 +139,11 @@ class AlarmService {
             Thread {
                 alarmRecord(app.appName, title, app.bitmapPath)
             }.start()
+
+            /**
+             * stop the service
+             */
+            dismissTheMainNotification()
             /**
              * play alarm
              */

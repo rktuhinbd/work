@@ -184,7 +184,7 @@ class NotificationListener : NotificationListenerService(),
                     SharedPrefUtils.write(Constants.PreferenceKeys.IS_NOTIFICATION_SWIPED, true)
                 }
             }
-            MediaUtils.stopAlarm()
+            MediaUtils.stopAlarm(this)
         } else if (sbn.packageName == AndroidUtils.getPackageInfo()!!.packageName) {
             Toasty.info(this, "Alarm Service Stopped!").show()
         }
@@ -195,7 +195,7 @@ class NotificationListener : NotificationListenerService(),
             when (intent.action) {
                 ACTION_STOP_FOREGROUND_SERVICE -> stopForeGroundService()
                 else -> {
-                    FloatingNotification.startForegroundService(this, false)
+                    FloatingNotification.startForegroundService(this)
                 }
             }
         }
