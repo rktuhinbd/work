@@ -149,7 +149,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         for (purchase in purchases) {
             //if item is purchased
             if (Constants.Purchase.PRODUCT_ID == purchase.sku && purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-               //buyProPresenter?.verifyPurchase(this,purchase.originalJson, purchase.signature, purchase)
+               buyProPresenter?.verifyPurchase(this,purchase.originalJson, purchase.signature, purchase)
             } else if (Constants.Purchase.PRODUCT_ID == purchase.sku && purchase.purchaseState == Purchase.PurchaseState.PENDING) {
                 Toast.makeText(
                     applicationContext,
@@ -194,7 +194,10 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
             VisitUrlUtils.visitWebsite(this, "https://www.mk7lab.com/Company/charity/")
         }
 
-        txt_restore_purchase?.setOnClickListener {
+        /**
+         * @exception We ignored it
+         */
+      /*  txt_restore_purchase?.setOnClickListener {
             val bundle = Bundle()
             bundle.putString("click_on_restore_purchase", "yes")
             firebaseAnalytics.logEvent("restore_purchase", bundle)
@@ -216,7 +219,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                 }
 
             })
-        }
+        }*/
 
         btn_buy_pro_user?.setOnClickListener {
             if(AndroidUtils.isOnline(this)){
