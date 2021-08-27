@@ -36,18 +36,18 @@
     <string name="signature_title">Your signature</string>
     <string name="reply_title">Theme</string>
     <!-- Sync Preferences -->
-    <string name="email_us">Email Us</string>
+    <string name="email_us">Email us</string>
     <string name="attachment_title">Download incoming attachments</string>
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="txt_themes">Themes</string>
-    <string name="txt_not_background">Not Working When App In Background?</string>
+    <string name="txt_not_background">Not working sometime?</string>
     <string name="notification_channel">sells_post</string>
     <string name="notification_channel_name">posts</string>
     <string name="txt_search_app">Search Apps</string>
     <string name="txt_mute">Mute App</string>
-    <string name="txt_alarm_mute">Mute Time</string>
+    <string name="txt_alarm_mute">Mute time</string>
     <string name="txt_remove_from_snooze">Remove from Snooze</string>
     <string name="txt_remove">Remove</string>
     <string name="txt_invalid_request">Invalid request!</string>
@@ -82,7 +82,7 @@
     <string name="txt_clear_ignore_name">Clear Ignored names</string>
     <string name="txt_desc_clear_sender_namne">Do you wants to clear sender names?</string>
     <string name="txt_desc_clear_ignored_namne">Do you wants to clear ignored names?</string>
-    <string name="txt_alarm_repeat">Alarm Repeat</string>
+    <string name="txt_alarm_repeat">Alarm repeat</string>
     <string name="txt_hint_sender_name">Hint: Please add complete name with space!</string>
     <string name="txt_dismiss">Dismiss</string>
     <string name="txt_swipe_bottom_to_expand">Swipe bottom to expand</string>
@@ -91,7 +91,7 @@
     <string name="txt_lang_error">Sorry, Our application right now doesn\'t support your phone language! You may get unexpected alarms if you don\'t take this action, Please contact us by mentioning what language you want. We will start work on it real soon, and you will be notified when it’s ready! For now switch to English or hold on, until we get back to you. Thanks for understanding</string>
     <string name="sell_notice">5% of every sales goes to poor children\'s for education and food!</string>
     <string name="better_exprience">We know you hate ads, that\'s why \n we said goodbye to it!</string>
-    <string name="txt_idea_desc">We can help you develop your dream project into real, with our dedicated team we are always focused on quality</string>
+    <string name="txt_idea_desc">We can help you develop your dream project. Contact with us, we will have a meeting with you!</string>
     <string name="missing_file">File is missing!</string>
     <string name="text_terms_policy">When you click \'Get Started\' you accept our <a href="https://www.messagealarm.app/privacy_policy"><u>Privacy Policy</u></a>. We recommend you review our policies so you can understand what we are doing with the permission and data we are taking from our users</string>
     <string name="text_sub_title_privacy">Please take your time to review the key points of our <a href="https://www.messagealarm.app/privacy_policy">Privacy Policy</a> and how we process your data.</string>
@@ -102,5 +102,9 @@
     <string name="txt_checkout_pro"><u>Checkout What We are Offering In PRO!</u></string>
     <string name="how_we_use_notification_permission">We take this permission so we can read and parse the notification title and body, based on this we generate an alarm when matched with your preset constraints and filters</string>
     <string name="how_we_use_your_notification_permission">How we use your notification permission</string>
+    <string name="hint_just_vibration">Get alarmed by only vibration, best use case is in pocket! \n\n<b>No Sounds, Just Vibrations!</b></string>
+    <string name="hint_sound_control">Get full volume for Alarm, You can control the volume!</string>
+    <string name="hint_sound_subtitle">1 Alarm reduce 1% volume until 50%, <b>you reached 71%</b></string>
+    <string name="vibration_and_sound_hint">Vibration and music together, powerful alarm. \n\n<b>Best use case, enough power to awake you up from sleep!</b></string>
 
 </resources>

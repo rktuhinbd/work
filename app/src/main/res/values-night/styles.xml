@@ -14,6 +14,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="alertDialogTheme">@style/MyAlertDialogTheme</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <item name="android:statusBarColor" tools:targetApi="lollipop">@color/background_screen</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
@@ -54,10 +55,7 @@
 
     <!-- Alert Dialog -->
     <style name="MyAlertDialogTheme" parent="Theme.MaterialComponents.DayNight.Dialog">
-       <!-- <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:colorBackground">#40FFFFFF</item>
-        <item name="android:windowBackground">#40FFFFFF</item>
-        <item name="android:textColorPrimary">@color/color_white</item>-->
+
     </style>
 
 

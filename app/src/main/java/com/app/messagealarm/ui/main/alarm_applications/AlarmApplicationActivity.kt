@@ -584,14 +584,14 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 .setFabBackgroundColor(
                     ResourcesCompat.getColor(
                         resources,
-                        R.color.colorPrimaryDark,
+                        R.color.floating,
                         theme
                     )
                 )
                 .setLabelBackgroundColor(
                     ResourcesCompat.getColor(
                         resources,
-                        R.color.colorPrimaryDark,
+                        R.color.floating,
                         theme
                     )
                 )

@@ -12,6 +12,7 @@ import com.app.messagealarm.ui.notifications.FloatingNotification
 import com.app.messagealarm.ui.notifications.FloatingNotification.Companion.notifyMute
 import com.app.messagealarm.utils.SharedPrefUtils.write
 import java.io.IOException
+import java.util.*
 import kotlin.math.ln
 
 
@@ -191,7 +192,11 @@ class MediaUtils {
                     thread!!.interrupt()
                     thread = null
                     stopVibration()
-                    if(SharedPrefUtils.readString(Constants.PreferenceKeys.MUTE_TIME) != Constants.Default.NEVER){
+                    if(SharedPrefUtils.readString(Constants.PreferenceKeys.MUTE_TIME).trim()
+                            .toLowerCase(Locale.getDefault()) != Constants.Default.NEVER.trim().toLowerCase(
+                            Locale.getDefault()
+                        )
+                    ) {
                         write(Constants.PreferenceKeys.IS_MUTED, true)
                         notifyMute(true)
                     }
