@@ -3,6 +3,7 @@ package com.app.messagealarm.ui.setting
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.*
@@ -121,9 +122,12 @@ class SettingsActivity : AppCompatActivity() {
           /*  val themeCategory = findPreference("theme_cat") as PreferenceCategory?
             themeCategory?.isEnabled = isPurchased()*/
             val chatFeature = findPreference("chat") as Preference?
-              chatFeature!!.layoutResource = R.layout.layout_preference_chat
-            //change the title and desc after the purchase is made
-                chatFeature.title = "Live Chat (Support & Sales)"
+            if(TimeUtils.getPossibleReplyTime().contains("Sleeping")){
+                chatFeature!!.layoutResource = R.layout.layout_preference_chat_offline
+            }else{
+                chatFeature!!.layoutResource = R.layout.layout_preference_chat
+            }
+                chatFeature.title = "Live Chat"
                 chatFeature.summary = TimeUtils.getPossibleReplyTime()
 
             chatFeature.onPreferenceClickListener = Preference.OnPreferenceClickListener {
@@ -247,14 +251,19 @@ class SettingsActivity : AppCompatActivity() {
                 val bundle = Bundle()
                 override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
                     bundle.putString("mute_status", newValue.toString())
+                   // Log.e("mute_status", newValue.toString())
                     firebaseAnalytics.logEvent("mute_options", bundle)
-                    if(newValue == "Manual"){
+                    if(newValue == "Until I unmute it" || newValue == "Never"){
                         if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_MUTED)){
-                            Toasty.info(requireActivity(), "Application will never unmute automatically," +
-                                    " unmute from notification bar!").show()
+                                Toasty.info(requireActivity(), "Application will not unmute automatically," +
+                                        " unmute from notification bar!").show()
                             WorkManager.getInstance(requireActivity()).cancelAllWorkByTag("MUTE")
                         }else{
-                            Toasty.info(requireActivity(), "Mute time changed to Manual").show()
+                            if(newValue == "Never"){
+                                Toasty.info(requireActivity(), "App will never mute!").show()
+                            }else{
+                                Toasty.info(requireActivity(), "Mute time changed to Until you unmute it!").show()
+                            }
                             WorkManager.getInstance(requireActivity()).cancelAllWorkByTag("MUTE")
                         }
                     }else{

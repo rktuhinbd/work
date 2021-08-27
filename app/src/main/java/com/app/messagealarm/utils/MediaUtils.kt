@@ -191,8 +191,10 @@ class MediaUtils {
                     thread!!.interrupt()
                     thread = null
                     stopVibration()
-                    write(Constants.PreferenceKeys.IS_MUTED, true)
-                    notifyMute(true)
+                    if(SharedPrefUtils.readString(Constants.PreferenceKeys.MUTE_TIME) != Constants.Default.NEVER){
+                        write(Constants.PreferenceKeys.IS_MUTED, true)
+                        notifyMute(true)
+                    }
                 }
             }catch (e: java.lang.NullPointerException){
                 //skipped the crash of 2.0.1

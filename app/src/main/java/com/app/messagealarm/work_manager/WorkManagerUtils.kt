@@ -16,9 +16,8 @@ class WorkManagerUtils {
         fun scheduleWorks(context: Context){
             //get mute time from preferences
             val time = SharedPrefUtils.readString(Constants.PreferenceKeys.MUTE_TIME)
-            if(time != Constants.Default.MANUAL){
-                var duration = 10
-                duration = try {
+            if(time != Constants.Default.MANUAL || time != Constants.Default.NEVER){
+                val duration: Int = try {
                     time.split(" ")[0].toInt()
                 }catch (e: NumberFormatException){
                     10
@@ -38,7 +37,7 @@ class WorkManagerUtils {
 
         fun scheduleWorkWithTime(time: String, context: Context){
             //get mute time from preferences
-            if(time != Constants.Default.MANUAL){
+            if(time != Constants.Default.MANUAL || time != Constants.Default.NEVER){
                 var duration = 10
                 duration = try {
                     time.split(" ")[0].toInt()

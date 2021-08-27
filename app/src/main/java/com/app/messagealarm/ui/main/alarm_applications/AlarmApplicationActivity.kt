@@ -86,12 +86,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         showLanguageDoesNotSupported()
         triggerBuyProDialog()
         handlePushNotificationData()
-        if(!isPurchased() && (AndroidUtils.getSoundLevel() != 100
+        /*if(!isPurchased() && (AndroidUtils.getSoundLevel() != 100
             || AndroidUtils.getSoundLevel() != 80)){
             if(AndroidUtils.getSoundLevel() % 10 == 0){
                 showLowVolumeWarning()
             }
-        }
+        }*/
         /**
          * check for review
          */

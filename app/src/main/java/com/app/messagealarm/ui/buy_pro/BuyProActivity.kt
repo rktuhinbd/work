@@ -68,6 +68,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         //to check if item already Purchased previously or refunded
         billingClient = BillingClient.newBuilder(this)
             .enablePendingPurchases().setListener(this).build()
+
         billingClient!!.startConnection(object : BillingClientStateListener{
             override fun onBillingServiceDisconnected() {
 
@@ -116,11 +117,6 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                             SharedPrefUtils.readString(Constants.PreferenceKeys.CURRENCY_CODE)
                             ){
                                 try {
-                                    //unused code, will remove if mind doesn't change, MK: 2 JUl 2k21
-                                    /*btn_buy_pro_user?.text =
-                                        "Buy for ${skuDetailsList[0].price} ${SharedPrefUtils.readString(Constants.PreferenceKeys.CURRENCY_SYMBOL)} " +
-                                                skuDetailsList[0].originalPrice.split(skuDetailsList[0].priceCurrencyCode)[1].trim() +
-                                                " " + skuDetailsList[0].priceCurrencyCode*/
                                     btn_buy_pro_user?.text =
                                         "Buy for ${skuDetailsList[0].price} " + SharedPrefUtils.readString(Constants.PreferenceKeys.CURRENCY_SYMBOL)
                                 }catch (e:Exception){
@@ -196,6 +192,27 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
             bundle.putString("click_on_learn_more", "yes")
             firebaseAnalytics.logEvent("click_on_learn_more", bundle)
             VisitUrlUtils.visitWebsite(this, "https://www.mk7lab.com/Company/charity/")
+        }
+
+        txt_restore_purchase?.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("click_on_restore_purchase", "yes")
+            firebaseAnalytics.logEvent("restore_purchase", bundle)
+            billingClient?.queryPurchaseHistoryAsync("inapp", object : PurchaseHistoryResponseListener{
+                override fun onPurchaseHistoryResponse(
+                    p0: BillingResult,
+                    p1: MutableList<PurchaseHistoryRecord>?
+                ) {
+                    if(p1 != null && p1.size > 0){
+                        for(item in p1){
+
+                        }
+                    }else{
+                        Toasty.error(this@BuyProActivity, "No purchase found!").show()
+                    }
+                }
+
+            })
         }
 
         btn_buy_pro_user?.setOnClickListener {

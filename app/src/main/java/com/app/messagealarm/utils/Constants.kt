@@ -44,6 +44,7 @@ class Constants {
             const val SYNC = "sync"
             const val WORK_SYNC = "work_sync"
             const val MANUAL = "Until I unmute it"
+            const val NEVER = "never"
         }
     }
     class ACTION{

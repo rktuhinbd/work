@@ -47,6 +47,26 @@
     </PreferenceCategory>
 
 
+    <!--support-->
+    <PreferenceCategory
+        app:allowDividerBelow="false"
+        app:allowDividerAbove="false"
+        app:layout="@layout/preference_category" app:title="Support">
+
+        <Preference
+            app:icon="@drawable/ic_baseline_chat_24"
+            app:key="chat"
+            app:summary="We are online"
+            app:title="Chat with us" />
+
+        <Preference
+            app:icon="@drawable/ic_email_black_24dp"
+            app:key="email"
+            app:summary="For any kind of help, send us email"
+            app:title="@string/email_us" />
+
+
+    </PreferenceCategory>
 
     <!--tutorial-->
     <PreferenceCategory
@@ -68,27 +88,6 @@
 
     </PreferenceCategory>
 
-    <!--support-->
-    <PreferenceCategory
-        app:allowDividerBelow="false"
-        app:allowDividerAbove="false"
-        app:layout="@layout/preference_category" app:title="Support">
-
-        <Preference
-            app:icon="@drawable/ic_baseline_chat_24"
-            app:key="chat"
-            app:summary="We are online"
-            app:title="Chat with us" />
-
-        <Preference
-            app:icon="@drawable/ic_email_black_24dp"
-            app:key="email"
-            app:summary="For any kind of help, send us email"
-            app:title="@string/email_us" />
-
-
-
-    </PreferenceCategory>
 
     <PreferenceCategory
         app:allowDividerBelow="false"
@@ -98,7 +97,7 @@
         <Preference
             app:icon="@drawable/ic_share_black_24dp"
             app:key="share"
-            app:summary="Tell A Friend"
+            app:summary="Tell a friend"
             app:title="Share this app" />
 
     </PreferenceCategory>
