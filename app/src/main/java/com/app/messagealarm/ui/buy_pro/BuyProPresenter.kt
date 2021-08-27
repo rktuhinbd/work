@@ -45,7 +45,7 @@ class BuyProPresenter(private val buyProView: BuyProView, private val firebaseAn
         context: Context,
         receipt: String,
         signature: String,
-        purchase: Purchase
+        purchase: Purchase?
     ){
         ProgressDialogUtils.on().showProgressDialog(context)
         RetrofitClient.getApiService().verifyPurchase(receipt, signature, SharedPrefUtils.readString(
@@ -56,16 +56,20 @@ class BuyProPresenter(private val buyProView: BuyProView, private val firebaseAn
                     val bundle = Bundle()
                     bundle.putString("purchase_server_internet_failed", "yes")
                     firebaseAnalytics.logEvent("purchase_server_internet_failed", bundle)
-                    buyProView.verifyPurchaseStatus(false, purchase)
+                    buyProView.verifyPurchaseStatus(false, purchase!!)
                 }
                 override fun onResponse(
                     call: Call<VerifyPurchaseResponse>,
                     response: Response<VerifyPurchaseResponse>
                 ) {
                    if(response.isSuccessful){
-                       if(response.body()!!.isSuccess){
-                           buyProView.verifyPurchaseStatus(true, purchase)
-                       }else{
+                       try {
+                           if(response.body()!!.isSuccess){
+                               buyProView.verifyPurchaseStatus(true, purchase)
+                           }else{
+                               buyProView.verifyPurchaseStatus(false, purchase)
+                           }
+                       }catch (e:NullPointerException){
                            buyProView.verifyPurchaseStatus(false, purchase)
                        }
                    }else{

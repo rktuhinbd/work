@@ -149,7 +149,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         for (purchase in purchases) {
             //if item is purchased
             if (Constants.Purchase.PRODUCT_ID == purchase.sku && purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-              // buyProPresenter?.verifyPurchase(this,purchase.originalJson, purchase.signature, purchase)
+               //buyProPresenter?.verifyPurchase(this,purchase.originalJson, purchase.signature, purchase)
             } else if (Constants.Purchase.PRODUCT_ID == purchase.sku && purchase.purchaseState == Purchase.PurchaseState.PENDING) {
                 Toast.makeText(
                     applicationContext,
@@ -205,10 +205,13 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                 ) {
                     if(p1 != null && p1.size > 0){
                         for(item in p1){
-
+                            buyProPresenter?.verifyPurchase(
+                                this@BuyProActivity,item.originalJson,
+                                item.signature, null)
+                            break
                         }
                     }else{
-                        Toasty.error(this@BuyProActivity, "No purchase found!").show()
+                        Toasty.error(this@BuyProActivity, "No previous purchase found!").show()
                     }
                 }
 
@@ -293,28 +296,39 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         }
     }
 
-    override fun verifyPurchaseStatus(boolean: Boolean, purchase: Purchase) {
+    override fun verifyPurchaseStatus(boolean: Boolean, purchase: Purchase?) {
         ProgressDialogUtils.on().hideProgressDialog()
        if(boolean){
            //complete purchase
            //if item is purchased and not acknowledged
-           if (!purchase.isAcknowledged) {
-               val acknowledgePurchaseParams =
-                   AcknowledgePurchaseParams.newBuilder()
-                       .setPurchaseToken(purchase.purchaseToken)
-                       .build()
-               billingClient!!.acknowledgePurchase(acknowledgePurchaseParams, ackPurchase)
-           } else {
-               // Grant entitlement to the user on item purchase
-               // restart activity
-               if (!isPurchased()) {
-                   val bundle = Bundle()
-                   bundle.putString("item_sold", "yes")
-                   firebaseAnalytics.logEvent("item_sold", bundle)
-                   setIsPurchased(true)
-                   finish()
+               if(purchase != null){
+                   if (!purchase.isAcknowledged) {
+                       val acknowledgePurchaseParams =
+                           AcknowledgePurchaseParams.newBuilder()
+                               .setPurchaseToken(purchase.purchaseToken)
+                               .build()
+                       billingClient!!.acknowledgePurchase(acknowledgePurchaseParams, ackPurchase)
+                   } else {
+                       // Grant entitlement to the user on item purchase
+                       // restart activity
+                       if (!isPurchased()) {
+                           val bundle = Bundle()
+                           bundle.putString("item_sold", "yes")
+                           firebaseAnalytics.logEvent("item_sold", bundle)
+                           setIsPurchased(true)
+                           finish()
+                       }
+                   }
+               }else{
+                   //restore purchase that's why purchase is null
+                   if (!isPurchased()) {
+                       val bundle = Bundle()
+                       bundle.putString("restore_purchased", "yes")
+                       firebaseAnalytics.logEvent("restore_purchase", bundle)
+                       setIsPurchased(true)
+                       finish()
+                   }
                }
-           }
        }else{
            val bundle = Bundle()
            bundle.putString("invalid_purchase", "yes")
