@@ -13,6 +13,10 @@ public class LatestInfo{
 	@SerializedName("current_version")
 	private String currentVersion;
 
+	//IS_OFFER_AVAILABLE = bool
+	//OFFER_PERCENT = 30%
+	//OFFER_TIME = 34982734983274
+
 	public boolean isSuccess(){
 		return success;
 	}

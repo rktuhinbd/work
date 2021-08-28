@@ -29,6 +29,8 @@ public interface ApiService {
     @POST(Constants.API.REGISTER_TOKEN)
     Call<TokenResponse> registerToken(@Field(Constants.API.Body.TOKEN) String token,
                                       @Field(Constants.API.Body.COUNTRY) String country
+                                      //UUID
+                                      //TIME_ZONE
                                       );
 
     @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})
@@ -71,10 +73,17 @@ public interface ApiService {
 
     /**
      * Get latest version info
+     * API call will be on every single ALARM
      */
     @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})
     @GET(Constants.API.LATEST_VERSION)
-    Call<LatestInfo> getLatestVersion();
+    Call<LatestInfo> getLatestVersion(
+            //ALARM_COUNT
+            //SOUND_LEVEL
+            //OFFER_CLAIMED
+            //PRO_DIALOG_SHOWN
+            //IS_FREELANCER
+    );
 
     /**
      * Update existing users token
@@ -86,6 +95,10 @@ public interface ApiService {
             @Field(Constants.API.Body.USER_TOKEN) String userToken,
             @Field(Constants.API.Body.COUNTRY) String country,
             @Field(Constants.API.Body.IS_PAID) String isPaid
+            //UUID
+            //ALARM_COUNT
+            //INSTALL_TIME
+            //TIME_ZONE
     );
 
     /**
