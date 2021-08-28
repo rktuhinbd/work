@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="8dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/review_profile_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/image_brain"
+            app:civ_border_color="#BE9117"
+            app:civ_border_width="1dp"
+            app:layout_constraintBottom_toTopOf="@+id/text_review"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RatingBar
+            android:id="@+id/review_rating_bar"
+            style="?android:attr/ratingBarStyleIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
+            android:isIndicator="false"
+            android:numStars="5"
+            app:layout_constraintBottom_toTopOf="@+id/review_text_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/review_profile_image"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/review_text_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="start"
+            android:text="Brain Baur"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/review_rating_bar"
+            app:layout_constraintEnd_toStartOf="@+id/review_flag"
+            app:layout_constraintStart_toStartOf="@+id/review_rating_bar"
+            app:layout_constraintTop_toBottomOf="@+id/review_rating_bar" />
+
+
+        <ImageView
+            android:id="@+id/review_flag"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:padding="4dp"
+            android:src="@drawable/flag_america"
+            app:layout_constraintBottom_toBottomOf="@+id/review_text_name"
+            app:layout_constraintEnd_toEndOf="@+id/review_text_name"
+            app:layout_constraintStart_toEndOf="@+id/review_text_name"
+            app:layout_constraintTop_toTopOf="@+id/review_text_name" />
+
+        <TextView
+            android:id="@+id/text_review"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="12dp"
+            android:text="Fantastic app!! Thanks to the premium version you will say goodbye to the announces forever!! "
+            app:layout_constraintTop_toBottomOf="@+id/review_profile_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</com.google.android.material.card.MaterialCardView>

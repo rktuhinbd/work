@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout android:id="@+id/coordinateLayout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinateLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#55b9e3"
-    android:fitsSystemWindows="true"
-    android:layout_alignParentTop="true"
     android:layout_alignParentStart="true"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_alignParentTop="true"
+    android:background="#55b9e3"
+    android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="210dp">
+        android:layout_height="140dp">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsingToolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:title="Why should you buy?"
-            app:titleEnabled="true"
-            app:expandedTitleGravity="center|bottom"
-            app:expandedTitleMarginBottom="26dp"
             app:collapsedTitleGravity="start"
             app:collapsedTitleTextAppearance="@style/CollapseText"
+            app:expandedTitleGravity="center|bottom"
+            app:expandedTitleMarginBottom="18dp"
             app:expandedTitleTextAppearance="@style/expandedText"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:title="Why should you buy?"
+            app:titleEnabled="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -40,9 +40,9 @@
                     android:layout_height="0dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_background_top"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <View
@@ -51,25 +51,23 @@
                     android:layout_height="0dp"
                     android:alpha="0.8"
                     android:background="@drawable/top_gradient_new"
-                    app:layout_constraintTop_toTopOf="@id/imageView"
-                    app:layout_constraintStart_toStartOf="@id/imageView"
-                    app:layout_constraintEnd_toEndOf="@id/imageView"
                     app:layout_constraintBottom_toBottomOf="@id/imageView"
-                    />
+                    app:layout_constraintEnd_toEndOf="@id/imageView"
+                    app:layout_constraintStart_toStartOf="@id/imageView"
+                    app:layout_constraintTop_toTopOf="@id/imageView" />
 
                 <ImageView
                     android:id="@+id/image_king"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
-                    android:src="@drawable/header_top"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:padding="12dp"
-                    app:layout_constraintTop_toTopOf="@id/view_top"
-                    app:layout_constraintStart_toStartOf="@id/view_top"
-                    app:layout_constraintEnd_toEndOf="@id/view_top"
-                    app:layout_constraintVertical_bias="0.4"
-                    app:layout_constraintBottom_toBottomOf="@id/view_top"
                     android:scaleType="fitCenter"
-                    />
+                    android:src="@drawable/header_top"
+                    app:layout_constraintBottom_toBottomOf="@id/view_top"
+                    app:layout_constraintEnd_toEndOf="@id/view_top"
+                    app:layout_constraintStart_toStartOf="@id/view_top"
+                    app:layout_constraintTop_toTopOf="@id/view_top"
+                    app:layout_constraintVertical_bias="0.0" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -78,8 +76,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@android:color/transparent"
-                app:navigationIcon="@drawable/ic_close_white_new"
-                app:layout_collapseMode="pin" />
+                app:layout_collapseMode="pin"
+                app:navigationIcon="@drawable/ic_close_white_new" />
 
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -90,121 +88,115 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/purchase_background"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-          >
+            android:layout_marginBottom="180dp">
 
             <!--Main part-->
             <TextView
                 android:id="@+id/txt_point_one"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:text="1"
-                android:gravity="center"
-                android:textSize="12sp"
-                android:fontFamily="@font/roboto_bold"
-                app:layout_constraintHorizontal_bias="0"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="20dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:textColor="@color/color_white"
-                app:layout_constraintBottom_toTopOf="@id/txt_point_two"
                 android:background="@drawable/number_bg_in_purchase"
-                />
+                android:fontFamily="@font/roboto_bold"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="@color/color_white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@id/txt_point_two"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/txt_value_point_one"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/roboto_bold"
                 android:text="Add unlimited apps"
                 android:textColor="@color/color_white"
-                android:fontFamily="@font/roboto_bold"
                 android:textSize="16sp"
-                app:layout_constraintTop_toTopOf="@id/txt_point_one"
                 app:layout_constraintBottom_toBottomOf="@id/txt_point_one"
-                app:layout_constraintStart_toEndOf="@id/txt_point_one"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
-                android:layout_marginStart="16dp"
-                />
+                app:layout_constraintStart_toEndOf="@id/txt_point_one"
+                app:layout_constraintTop_toTopOf="@id/txt_point_one" />
 
-<!--item two-->
+            <!--item two-->
 
             <TextView
                 android:id="@+id/txt_point_two"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:text="2"
-                android:gravity="center"
-                android:textSize="12sp"
-                android:fontFamily="@font/roboto_bold"
-                app:layout_constraintHorizontal_bias="0"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="12dp"
-                app:layout_constraintTop_toBottomOf="@id/txt_point_one"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:textColor="@color/color_white"
-                app:layout_constraintBottom_toTopOf="@id/txt_point_three"
                 android:background="@drawable/number_bg_in_purchase"
-                />
+                android:fontFamily="@font/roboto_bold"
+                android:gravity="center"
+                android:text="2"
+                android:textColor="@color/color_white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@id/txt_point_three"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_point_one" />
 
             <TextView
                 android:id="@+id/txt_value_point_two"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/roboto_bold"
                 android:text="Get vibration option for alarm"
                 android:textColor="@color/color_white"
-                android:fontFamily="@font/roboto_bold"
                 android:textSize="16sp"
-                app:layout_constraintTop_toTopOf="@id/txt_point_two"
                 app:layout_constraintBottom_toBottomOf="@id/txt_point_two"
-                app:layout_constraintStart_toEndOf="@id/txt_point_two"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
-                android:layout_marginStart="16dp"
-                />
+                app:layout_constraintStart_toEndOf="@id/txt_point_two"
+                app:layout_constraintTop_toTopOf="@id/txt_point_two" />
 
-<!--third part-->
+            <!--third part-->
 
             <TextView
                 android:id="@+id/txt_point_three"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:text="3"
-                android:gravity="center"
-                android:textSize="12sp"
-                android:fontFamily="@font/roboto_bold"
-                app:layout_constraintHorizontal_bias="0"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="12dp"
-                app:layout_constraintTop_toBottomOf="@id/txt_point_two"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:textColor="@color/color_white"
                 android:background="@drawable/number_bg_in_purchase"
-                />
+                android:fontFamily="@font/roboto_bold"
+                android:gravity="center"
+                android:text="3"
+                android:textColor="@color/color_white"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_point_two" />
 
             <TextView
                 android:id="@+id/txt_value_point_three"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/roboto_bold"
                 android:text="Get dark theme"
                 android:textColor="@color/color_white"
-                android:fontFamily="@font/roboto_bold"
                 android:textSize="16sp"
-                app:layout_constraintTop_toTopOf="@id/txt_point_three"
                 app:layout_constraintBottom_toBottomOf="@id/txt_point_three"
-                app:layout_constraintStart_toEndOf="@id/txt_point_three"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
-                android:layout_marginStart="16dp"
-                />
+                app:layout_constraintStart_toEndOf="@id/txt_point_three"
+                app:layout_constraintTop_toTopOf="@id/txt_point_three" />
 
 
             <!--Fourth part-->
@@ -212,35 +204,33 @@
                 android:id="@+id/txt_point_four"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:text="4"
-                android:gravity="center"
-                android:textSize="12sp"
-                android:fontFamily="@font/roboto_bold"
-                app:layout_constraintHorizontal_bias="0"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="12dp"
-                app:layout_constraintTop_toBottomOf="@id/txt_point_three"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:textColor="@color/color_white"
                 android:background="@drawable/number_bg_in_purchase"
-                />
+                android:fontFamily="@font/roboto_bold"
+                android:gravity="center"
+                android:text="4"
+                android:textColor="@color/color_white"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_point_three" />
 
             <TextView
                 android:id="@+id/txt_value_point_four"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/roboto_bold"
                 android:text="Custom alarm sound level"
                 android:textColor="@color/color_white"
-                android:fontFamily="@font/roboto_bold"
                 android:textSize="16sp"
-                app:layout_constraintTop_toTopOf="@id/txt_point_four"
                 app:layout_constraintBottom_toBottomOf="@id/txt_point_four"
-                app:layout_constraintStart_toEndOf="@id/txt_point_four"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
-                android:layout_marginStart="16dp"
-                />
+                app:layout_constraintStart_toEndOf="@id/txt_point_four"
+                app:layout_constraintTop_toTopOf="@id/txt_point_four" />
 
             <!--fifth part-->
 
@@ -248,35 +238,33 @@
                 android:id="@+id/txt_point_five"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:text="5"
-                android:gravity="center"
-                android:textSize="12sp"
-                android:fontFamily="@font/roboto_bold"
-                app:layout_constraintHorizontal_bias="0"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="12dp"
-                app:layout_constraintTop_toBottomOf="@id/txt_point_four"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:textColor="@color/color_white"
                 android:background="@drawable/number_bg_in_purchase"
-                />
+                android:fontFamily="@font/roboto_bold"
+                android:gravity="center"
+                android:text="5"
+                android:textColor="@color/color_white"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_point_four" />
 
             <TextView
                 android:id="@+id/txt_value_point_five"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/roboto_bold"
                 android:text="Full controls on message filters"
                 android:textColor="@color/color_white"
-                android:fontFamily="@font/roboto_bold"
                 android:textSize="16sp"
-                app:layout_constraintTop_toTopOf="@id/txt_point_five"
                 app:layout_constraintBottom_toBottomOf="@id/txt_point_five"
-                app:layout_constraintStart_toEndOf="@id/txt_point_five"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
-                android:layout_marginStart="16dp"
-                />
+                app:layout_constraintStart_toEndOf="@id/txt_point_five"
+                app:layout_constraintTop_toTopOf="@id/txt_point_five" />
 
             <!--sixth part-->
 
@@ -284,118 +272,136 @@
                 android:id="@+id/txt_point_six"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:text="6"
-                android:gravity="center"
-                android:textSize="12sp"
-                android:fontFamily="@font/roboto_bold"
-                app:layout_constraintHorizontal_bias="0"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="12dp"
-                app:layout_constraintTop_toBottomOf="@id/txt_point_five"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:textColor="@color/color_white"
                 android:background="@drawable/number_bg_in_purchase"
-                />
+                android:fontFamily="@font/roboto_bold"
+                android:gravity="center"
+                android:text="6"
+                android:textColor="@color/color_white"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_point_five" />
 
             <TextView
                 android:id="@+id/txt_value_point_six"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/roboto_bold"
                 android:text="Access to all upcoming PRO features"
                 android:textColor="@color/color_white"
-                android:fontFamily="@font/roboto_bold"
                 android:textSize="16sp"
-                app:layout_constraintTop_toTopOf="@id/txt_point_six"
                 app:layout_constraintBottom_toBottomOf="@id/txt_point_six"
-                app:layout_constraintStart_toEndOf="@id/txt_point_six"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
-                android:layout_marginStart="16dp"
-                />
+                app:layout_constraintStart_toEndOf="@id/txt_point_six"
+                app:layout_constraintTop_toTopOf="@id/txt_point_six" />
 
 
             <TextView
                 android:id="@+id/txt_one_time_payment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="One time payment, Lifetime access"
-                android:fontFamily="@font/roboto_regular"
-                android:textColor="@color/color_white"
                 android:layout_marginTop="26dp"
-                app:layout_constraintTop_toBottomOf="@id/txt_point_six"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:fontFamily="@font/roboto_regular"
+                android:text="One time payment, Lifetime access"
+                android:textColor="@color/color_white"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@id/view_underline_one_time_payment"
-                />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_point_six" />
 
             <View
                 android:id="@+id/view_underline_one_time_payment"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:background="@color/color_white"
-                app:layout_constraintStart_toStartOf="@id/txt_one_time_payment"
-                app:layout_constraintEnd_toEndOf="@id/txt_one_time_payment"
-                app:layout_constraintTop_toBottomOf="@id/txt_one_time_payment"
                 android:layout_marginBottom="32dp"
-                />
+                android:background="@color/color_white"
+                app:layout_constraintEnd_toEndOf="@id/txt_one_time_payment"
+                app:layout_constraintStart_toStartOf="@id/txt_one_time_payment"
+                app:layout_constraintTop_toBottomOf="@id/txt_one_time_payment" />
 
 
             <ImageView
                 android:id="@+id/image_poor_children"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:src="@drawable/poor"
                 android:layout_marginTop="16dp"
-                app:layout_constraintStart_toStartOf="parent"
+                android:src="@drawable/poor"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/view_underline_one_time_payment"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_underline_one_time_payment" />
 
             <TextView
                 android:id="@+id/txt_sell_notice"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/sell_notice"
-                android:textSize="16sp"
-                android:textColor="@color/color_white"
-                android:fontFamily="@font/roboto_light"
-                app:layout_constraintTop_toBottomOf="@id/image_poor_children"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="32dp"
+                android:fontFamily="@font/roboto_light"
+                android:text="@string/sell_notice"
                 android:textAlignment="center"
-                />
+                android:textColor="@color/color_white"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/image_poor_children" />
 
             <TextView
                 android:id="@+id/txt_learn_more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Learn More"
-                android:textSize="14sp"
-                android:textColor="#F1DE88"
-                android:fontFamily="@font/roboto_regular"
-                app:layout_constraintTop_toBottomOf="@id/txt_sell_notice"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="8dp"
-                />
+                android:fontFamily="@font/roboto_regular"
+                android:text="Learn More"
+                android:textColor="#F1DE88"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@+id/view_learn_more"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_sell_notice" />
 
             <View
                 android:id="@+id/view_learn_more"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:background="#E0A74C"
-                app:layout_constraintStart_toStartOf="@id/txt_learn_more"
                 app:layout_constraintEnd_toEndOf="@id/txt_learn_more"
-                app:layout_constraintTop_toBottomOf="@id/txt_learn_more"
-                />
+                app:layout_constraintStart_toStartOf="@id/txt_learn_more"
+                app:layout_constraintTop_toBottomOf="@id/txt_learn_more" />
+
+            <TextView
+                android:id="@+id/text_user_review"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="User reviews"
+                android:textColor="@color/color_white"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toTopOf="@+id/recycler_review_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view_learn_more" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_review_view"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_user_review" />
 
 
-            <ImageView
+            <!--<ImageView
                 android:id="@+id/img_no_ads"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
@@ -407,51 +413,51 @@
                 android:layout_marginTop="22dp"
                 />
 
-            <TextView
-                android:id="@+id/txt_no_ads"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/better_exprience"
-                android:textColor="#F1DE88"
-                android:layout_marginStart="32dp"
-                android:textSize="16sp"
-                android:layout_marginEnd="32dp"
-                android:fontFamily="@font/roboto_regular"
-                android:textAlignment="center"
-                app:layout_constraintTop_toBottomOf="@id/img_no_ads"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginBottom="80dp"
-                />
+           <TextView
+               android:id="@+id/txt_no_ads"
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:text="@string/better_exprience"
+               android:textColor="#F1DE88"
+               android:layout_marginStart="32dp"
+               android:textSize="16sp"
+               android:layout_marginEnd="32dp"
+               android:fontFamily="@font/roboto_regular"
+               android:textAlignment="center"
+               app:layout_constraintTop_toBottomOf="@id/img_no_ads"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintEnd_toEndOf="parent"
+               android:layout_marginTop="8dp"
+               app:layout_constraintBottom_toBottomOf="parent"
+               android:layout_marginBottom="80dp"
+               />-->
 
 
-           <!-- <TextView
-                android:id="@+id/txt_restore_purchase"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Restore Purchase"
-                android:textSize="14sp"
-                android:textColor="@color/color_white"
-                android:fontFamily="@font/roboto_regular"
-                app:layout_constraintTop_toBottomOf="@id/txt_no_ads"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginBottom="80dp"
-                android:layout_marginTop="16dp"
-                />
+            <!-- <TextView
+                 android:id="@+id/txt_restore_purchase"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="Restore Purchase"
+                 android:textSize="14sp"
+                 android:textColor="@color/color_white"
+                 android:fontFamily="@font/roboto_regular"
+                 app:layout_constraintTop_toBottomOf="@id/txt_no_ads"
+                 app:layout_constraintStart_toStartOf="parent"
+                 app:layout_constraintEnd_toEndOf="parent"
+                 app:layout_constraintBottom_toBottomOf="parent"
+                 android:layout_marginBottom="80dp"
+                 android:layout_marginTop="16dp"
+                 />
 
-            <View
-                android:id="@+id/view_rp"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:background="@color/color_white"
-                app:layout_constraintStart_toStartOf="@id/txt_restore_purchase"
-                app:layout_constraintEnd_toEndOf="@id/txt_restore_purchase"
-                app:layout_constraintTop_toBottomOf="@id/txt_restore_purchase"
-                />-->
+             <View
+                 android:id="@+id/view_rp"
+                 android:layout_width="0dp"
+                 android:layout_height="1dp"
+                 android:background="@color/color_white"
+                 app:layout_constraintStart_toStartOf="@id/txt_restore_purchase"
+                 app:layout_constraintEnd_toEndOf="@id/txt_restore_purchase"
+                 app:layout_constraintTop_toBottomOf="@id/txt_restore_purchase"
+                 />-->
 
             <!--End of main part-->
 
@@ -459,41 +465,80 @@
 
     </androidx.core.widget.NestedScrollView>
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.google.android.material.card.MaterialCardView
+        style="@style/CustomCardViewStyle"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="155dp"
         android:layout_gravity="bottom"
-        >
+        app:cardBackgroundColor="#303960"
+        app:cardElevation="5dp">
 
-        <ProgressBar
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/progress_purchase"
-            android:elevation="5dp"
-            style="?android:attr/progressBarStyleSmall"
-            app:layout_constraintTop_toTopOf="@id/btn_buy_pro_user"
-            app:layout_constraintStart_toStartOf="@id/btn_buy_pro_user"
-            app:layout_constraintBottom_toBottomOf="@id/btn_buy_pro_user"
-            app:layout_constraintEnd_toEndOf="@id/btn_buy_pro_user"/>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_buy_pro_user"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:background="@drawable/button_gradient"
-            tools:text="BUY FOR $4.99"
-            android:maxLines="1"
-            android:textSize="16sp"
-            android:fontFamily="@font/roboto_bold"
-            android:textAllCaps="true"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:foreground="?selectableItemBackground"
-            />
+            android:layout_height="155dp">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageView
+                android:id="@+id/img_no_ads"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="4dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_no_ads"
+                app:layout_constraintBottom_toTopOf="@+id/txt_no_ads"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:id="@+id/txt_no_ads"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:fontFamily="@font/roboto_light"
+                android:text="@string/better_exprience"
+                android:textAlignment="center"
+                android:textColor="@color/color_white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/btn_buy_pro_user"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/img_no_ads" />
+
+            <ProgressBar
+                android:id="@+id/progress_purchase"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:elevation="5dp"
+                app:layout_constraintBottom_toBottomOf="@id/btn_buy_pro_user"
+                app:layout_constraintEnd_toEndOf="@id/btn_buy_pro_user"
+                app:layout_constraintStart_toStartOf="@id/btn_buy_pro_user"
+                app:layout_constraintTop_toTopOf="@id/btn_buy_pro_user" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_buy_pro_user"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/button_gradient"
+                android:fontFamily="@font/roboto_bold"
+                android:foreground="?selectableItemBackground"
+                android:maxLines="1"
+                android:textAllCaps="true"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_no_ads"
+                tools:text="BUY FOR $4.99" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
