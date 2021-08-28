@@ -78,9 +78,7 @@ class AlarmService {
             }
         }
 
-        private fun dismissTheMainNotification() {
 
-        }
 
         /**
          *
@@ -140,10 +138,6 @@ class AlarmService {
                 alarmRecord(app.appName, title, app.bitmapPath)
             }.start()
 
-            /**
-             * stop the service
-             */
-            dismissTheMainNotification()
             /**
              * play alarm
              */

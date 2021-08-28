@@ -29,6 +29,9 @@ class MediaUtils {
         var thread:Thread? = null
 
 
+        /**
+         *  @POSTPONED
+         */
         private fun stopService(context: Context) {
             if (isServiceRunning(context, NotificationListener::class.java)) {
                 val intent = Intent(context, NotificationListener::class.java)
@@ -223,7 +226,7 @@ class MediaUtils {
                 /**
                  * start the service again
                  */
-               // startService(context)
+                //startService(context)
             }catch (e: java.lang.NullPointerException){
                 //skipped the crash of 2.0.1
                 //TOOD(Have to look at if any problem creates to any devices, during alarm dismiss)
@@ -236,15 +239,18 @@ class MediaUtils {
 
 
         /**
+         * @POSTPONED
          * overloaded with activity
          */
         private fun startService(context: Context) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val intent = Intent(context, NotificationListener::class.java)
                 context.startForegroundService(intent)
+                SharedPrefUtils.write(Constants.PreferenceKeys.IS_SERVICE_STOPPED, false)
             } else {
                 val intent = Intent(context, NotificationListener::class.java)
                 context.startService(intent)
+                SharedPrefUtils.write(Constants.PreferenceKeys.IS_SERVICE_STOPPED, false)
             }
         }
 

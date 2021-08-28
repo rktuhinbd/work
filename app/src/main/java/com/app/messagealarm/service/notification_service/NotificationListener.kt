@@ -32,6 +32,7 @@ class NotificationListener : NotificationListenerService(),
     companion object {
         private val MESSENGER_PKG = "com.facebook.orca"
         private val WHATSAPP_PKG = "com.whatsapp"
+        private val WHATS_APP_BUSINESS = "com.whatsapp.w4b"
         private val VIBER_PKG = ""
         private val IMO_PKG = ""
         const val ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE"
@@ -115,7 +116,8 @@ class NotificationListener : NotificationListenerService(),
                     if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_SERVICE_STOPPED)) {
                         Log.e("SBN_SIZE", listItems.size.toString())
                         if (listItems.size > 0) {
-                            if (listItems[0].packageName.toString() == WHATSAPP_PKG) {
+                            if (listItems[0].packageName.toString() == WHATSAPP_PKG ||
+                                listItems[0].packageName.toString() == WHATS_APP_BUSINESS) {
                                 NotificationListenerPresenter(this).filterByAppConstrains(
                                     listItems[listItems.size - 1].packageName.toString(),
                                     AndroidUtils.getCurrentLangCode(this),
@@ -165,7 +167,6 @@ class NotificationListener : NotificationListenerService(),
             }
         }
     }
-
 
     @Synchronized
     fun doMagic(sbn: StatusBarNotification?) {
