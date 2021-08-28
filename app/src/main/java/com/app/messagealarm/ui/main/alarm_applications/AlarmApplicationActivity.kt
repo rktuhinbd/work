@@ -15,6 +15,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -104,34 +105,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             }
         }
     }
-
-
-    /**
-     * low sound volume warning
-     */
-
-    private fun showLowVolumeWarning(){
-        val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog.setCancelable(false)
-        dialog.setContentView(R.layout.layout_dialog_warning)
-        val closeButton = dialog.findViewById<FloatingActionButton>(R.id.fab_close_warning)
-        closeButton.setOnClickListener {
-            if(dialog.isShowing){
-                dialog.dismiss()
-            }
-        }
-        val window: Window = dialog.window!!
-        window.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        if (!dialog.isShowing) {
-            dialog.show()
-        }
-    }
-
 
 
     /**
@@ -627,7 +600,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         }
 
 
-        // Set main action clicklistener.
+        // Set main action checklist.
         speedDial.setOnChangeListener(object : SpeedDialView.OnChangeListener {
             override fun onMainActionSelected(): Boolean {
                 if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_VIDEO_SHOWED)) {
@@ -720,11 +693,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                             )
                         }
                     }
-
                     override fun onNegative() {
 
                     }
-
                 })
         }
     }
@@ -760,6 +731,55 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     }
 
 
+
+
+    /**
+     * low sound volume warning
+     */
+
+    private fun showLowVolumeWarning(){
+        if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED) &&
+            SharedPrefUtils.readInt(Constants.PreferenceKeys.SHOW_SOUND_WARNING_COUNT)  <
+                SharedPrefUtils.readInt(Constants.PreferenceKeys.SHOW_PRO_DIALOG_COUNT)
+                ){
+                    SharedPrefUtils.write(Constants.PreferenceKeys.SHOW_SOUND_WARNING_COUNT,
+                            SharedPrefUtils.readInt(Constants.PreferenceKeys.SHOW_PRO_DIALOG_COUNT)
+                        )
+            val dialog = Dialog(this)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+            dialog.setCancelable(false)
+            dialog.setContentView(R.layout.layout_dialog_warning)
+            val txtMsg = dialog.findViewById<TextView
+                    >(R.id.text_warning_sub_title)
+            val html = String.format("Your alarm volume getting low by : <font color='red'><b>- %d%%</b></font>",
+                (SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT))
+                )
+            txtMsg?.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)
+            } else {
+                Html.fromHtml(html)
+            }
+            val closeButton = dialog.findViewById<FloatingActionButton>(R.id.fab_close_warning)
+            closeButton.setOnClickListener {
+                if(dialog.isShowing){
+                    dialog.dismiss()
+                }
+            }
+            val window: Window = dialog.window!!
+            window.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            if (!dialog.isShowing) {
+                dialog.show()
+            }
+        }
+    }
+
+
+
+
     @SuppressLint("SetTextI18n")
     private fun triggerBuyProDialog() {
         /**
@@ -767,7 +787,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
          */
         if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED) &&
             (SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT) -
-                    SharedPrefUtils.readInt(Constants.PreferenceKeys.MAIN_SCREEN_OPENED)) >= 10
+                    SharedPrefUtils.readInt(Constants.PreferenceKeys.MAIN_SCREEN_OPENED)) >= 2
         ) {
             SharedPrefUtils.write(
                 Constants.PreferenceKeys.MAIN_SCREEN_OPENED,
@@ -844,8 +864,13 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 }
                 if (!dialog.isShowing) {
                     dialog.show()
+                    SharedPrefUtils.write(Constants.PreferenceKeys.SHOW_PRO_DIALOG_COUNT,
+                            SharedPrefUtils.readInt(Constants.PreferenceKeys.SHOW_PRO_DIALOG_COUNT) + 1
+                        )
                 }
             }
+        }else{
+            showLowVolumeWarning()
         }
     }
 

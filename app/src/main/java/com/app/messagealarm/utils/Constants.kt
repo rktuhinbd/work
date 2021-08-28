@@ -159,6 +159,8 @@ class Constants {
             const val IS_FIRST_TIME_ALARM_PLAYED = "alarm_played"
             const val ALARM_COUNT = "alarm_count"
             const val MAIN_SCREEN_OPENED = "main_screen_opened"
+            const val SHOW_PRO_DIALOG_COUNT = "shown_pro_count"
+            const val SHOW_SOUND_WARNING_COUNT = "sound_warning_count"
             const val LAST_APP_NAME = "last_app_name"
             const val LAST_SENDER_NAME = "last_sender_name"
             const val LAST_APP_ICON_NAME = "last_app_icon_name"

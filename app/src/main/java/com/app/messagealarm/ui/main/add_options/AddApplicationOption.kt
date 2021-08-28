@@ -1264,6 +1264,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         addApplicationEntity.ignored_names = "None"
         addApplicationEntity.messageBody = "None"
         addApplicationEntity.isRunningStatus = true
+        //previous code
        /* if(SharedPrefUtils.contains(Constants.PreferenceKeys.COUNTRY_CODE)){
             if(SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY_CODE) == "BD"){
                 addApplicationEntity.sound_level = 100

@@ -94,7 +94,7 @@ class AlarmService {
                 SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT) + 1
             )
             if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
-                if(SharedPrefUtils.readInt(Constants.PreferenceKeys.SOUND_LEVEL) > 50){
+                if(SharedPrefUtils.readInt(Constants.PreferenceKeys.SOUND_LEVEL) > 86/*50*/){
                     SharedPrefUtils.write(
                         Constants.PreferenceKeys.SOUND_LEVEL,
                         SharedPrefUtils.readInt(Constants.PreferenceKeys.SOUND_LEVEL) - 1
