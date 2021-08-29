@@ -177,7 +177,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
         android:fontFamily="@font/roboto_bold"
-        android:text="Synchronize was impossible, Due to Internet!"
+        android:text="Synchronize unsuccessful, due to internet!"
         android:textAlignment="center"
         android:textColor="@color/colorTextRegular"
         android:textSize="16sp"

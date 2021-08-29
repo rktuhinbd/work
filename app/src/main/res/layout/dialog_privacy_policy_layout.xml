@@ -32,7 +32,6 @@
             android:layout_height="wrap_content"
        >
 
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint_vibrate"
                 android:layout_width="match_parent"

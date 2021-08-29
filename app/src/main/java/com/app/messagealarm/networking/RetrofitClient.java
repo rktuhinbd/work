@@ -65,7 +65,7 @@ public class RetrofitClient {
                    whatismyip.openStream()));
            return in.readLine();
        }catch (Exception e){
-           return "Unknown";
+           return getExternalIpAddressFromDyn().replaceAll("<.*?>", "");
        }finally {
            if (in != null) {
                try {
@@ -76,6 +76,27 @@ public class RetrofitClient {
            }
        }
    }
+
+    public static String getExternalIpAddressFromDyn() throws Exception {
+        URL whatismyip = new URL("http://checkip.dyndns.org/");
+        BufferedReader in = null;
+        try {
+            in = new BufferedReader(new InputStreamReader(
+                    whatismyip.openStream()));
+            return in.readLine().split(":")[1].trim();
+        }catch (Exception e){
+            return "23.235.60.92";
+        }finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 
     /**
      * Get Retrofit In
