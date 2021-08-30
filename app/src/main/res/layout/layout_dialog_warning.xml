@@ -24,12 +24,12 @@
         app:layout_constraintTop_toTopOf="@+id/card_view_warning"
         app:layout_constraintVertical_bias="0" />
 
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/fab_warning"
         android:layout_width="60dp"
         android:layout_height="60dp"
         app:cardCornerRadius="30dp"
-        app:backgroundTint="@color/color_white"
         app:cardElevation="3dp"
         app:layout_constraintBottom_toTopOf="@+id/card_view_warning"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,8 +40,9 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/icon_warning"
-            android:padding="10dp"
+            android:src="@drawable/icon_warnings"
+            android:padding="5dp"
+            android:scaleType="fitXY"
             android:layout_marginBottom="3dp"
             />
 
