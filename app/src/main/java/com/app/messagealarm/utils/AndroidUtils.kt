@@ -60,11 +60,14 @@ class AndroidUtils private constructor() {
             if(SharedPrefUtils.contains(Constants.PreferenceKeys.COUNTRY_CODE)){
                if(SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY_CODE) == "BD"){
                    SharedPrefUtils.write(Constants.PreferenceKeys.SOUND_LEVEL, 100)
+                   SharedPrefUtils.write(Constants.PreferenceKeys.DEFAULT_SOUND_LEVEL, 100)
                }else{
                    SharedPrefUtils.write(Constants.PreferenceKeys.SOUND_LEVEL, 80)
+                   SharedPrefUtils.write(Constants.PreferenceKeys.DEFAULT_SOUND_LEVEL, 80)
                }
             }else{
                 SharedPrefUtils.write(Constants.PreferenceKeys.SOUND_LEVEL, 80)
+                SharedPrefUtils.write(Constants.PreferenceKeys.DEFAULT_SOUND_LEVEL, 80)
             }
         }
 

@@ -85,7 +85,7 @@ public class RetrofitClient {
                     whatismyip.openStream()));
             return in.readLine().split(":")[1].trim();
         }catch (Exception e){
-            return "23.235.60.92";
+            return "";
         }finally {
             if (in != null) {
                 try {

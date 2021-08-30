@@ -87,12 +87,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         showLanguageDoesNotSupported()
         triggerBuyProDialog()
         handlePushNotificationData()
-        /*if(!isPurchased() && (AndroidUtils.getSoundLevel() != 100
-            || AndroidUtils.getSoundLevel() != 80)){
-            if(AndroidUtils.getSoundLevel() % 10 == 0){
-                showLowVolumeWarning()
-            }
-        }*/
         /**
          * check for review
          */
@@ -222,7 +216,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     }
 
     private fun lookForAlarmApplication() {
-        if(!SharedPrefUtils.contains(Constants.PreferenceKeys.SOUND_LEVEL)){
+        if(!SharedPrefUtils.contains(Constants.PreferenceKeys.SOUND_LEVEL) && !SharedPrefUtils.contains(
+                Constants.PreferenceKeys.DEFAULT_SOUND_LEVEL
+        )){
             AndroidUtils.getDefaultSoundLevel()
         }
         alarmAppPresenter.getApplicationList()
@@ -753,7 +749,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             val txtMsg = dialog.findViewById<TextView
                     >(R.id.text_warning_sub_title)
             val html = String.format("Your alarm volume getting low by : <font color='red'><b>- %d%%</b></font>",
-                (SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT))
+                (SharedPrefUtils.readInt(Constants.PreferenceKeys.DEFAULT_SOUND_LEVEL) -
+                       SharedPrefUtils.readInt(Constants.PreferenceKeys.SOUND_LEVEL))
                 )
             txtMsg?.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)

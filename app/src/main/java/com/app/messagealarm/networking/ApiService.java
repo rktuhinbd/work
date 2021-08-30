@@ -83,6 +83,7 @@ public interface ApiService {
             //OFFER_CLAIMED
             //PRO_DIALOG_SHOWN
             //IS_FREELANCER
+            //UUID
     );
 
     /**

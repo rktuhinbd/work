@@ -45,6 +45,7 @@ class Constants {
             const val WORK_SYNC = "work_sync"
             const val MANUAL = "Until I unmute it"
             const val NEVER = "never"
+            const val MIN_SOUND_LEVEL: Int = 96
         }
     }
     class ACTION{
@@ -187,6 +188,7 @@ class Constants {
             const val GOT_ONE_MESSAGE = "got_one_message"
             const val COUNTRY_CODE = "country_code"
             const val SOUND_LEVEL = "sound_level"
+            const val DEFAULT_SOUND_LEVEL = "default_sound"
             const val COUNTRY = "country"
             const val CURRENCY_CODE = "currency_code"
             const val CURRENCY_SYMBOL = "currency_symbol"
