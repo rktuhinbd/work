@@ -8,6 +8,8 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.billingclient.api.*
 import com.android.billingclient.api.BillingClient.SkuType
 import com.app.messagealarm.R
@@ -28,51 +30,71 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
 
     private var billingClient: BillingClient? = null
     var buyProPresenter: BuyProPresenter? = null
-    var flowParams:BillingFlowParams? = null
+    var flowParams: BillingFlowParams? = null
     private lateinit var firebaseAnalytics: FirebaseAnalytics
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var mAdapter: ReviewAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buy_pro_new)
         changeStatusBarColorInLightMode()
+        recyclerView = findViewById(R.id.recycler_review_view)
+        /**
+         * uzzal code for recycler view..
+         */
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.layoutManager = layoutManager
+        mAdapter = ReviewAdapter(this, generateReviewList());
+        recyclerView.adapter = mAdapter;
+
+
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
         //log about screen open log
         val bundle = Bundle()
         bundle.putString("open_buy_page", "yes")
         firebaseAnalytics.logEvent("open_buy_page", bundle)
-       // setListener()
+        // setListener()
         buyProPresenter = BuyProPresenter(this, firebaseAnalytics)
         appBarLayout?.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout, verticalOffset ->
             val totalOffset = appBarLayout.totalScrollRange
             image_king?.alpha = calculateAlpha(abs(totalOffset), abs(verticalOffset))
         })
+
+
+
+
         setListener()
         buyingProcess()
+
+
     }
 
 
-    private fun buyingProcess(){
-        if(AndroidUtils.isOnline(this)){
+    private fun buyingProcess() {
+        if (AndroidUtils.isOnline(this)) {
             progress_purchase?.visibility = View.VISIBLE
             checkPurchaseStatus()
-        }else{
+        } else {
             btn_buy_pro_user.text = "No Internet!"
             progress_purchase?.visibility = View.GONE
         }
     }
 
-    private fun checkPurchaseStatus(){
+    private fun checkPurchaseStatus() {
         // Establish connection to billing client
         //check purchase status from google play store cache
         //to check if item already Purchased previously or refunded
         billingClient = BillingClient.newBuilder(this)
             .enablePendingPurchases().setListener(this).build()
 
-        billingClient!!.startConnection(object : BillingClientStateListener{
+        billingClient!!.startConnection(object : BillingClientStateListener {
             override fun onBillingServiceDisconnected() {
 
             }
+
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     initiatePurchase()
@@ -91,7 +113,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     }
 
 
-    private fun isPurchased(): Boolean{
+    private fun isPurchased(): Boolean {
         return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
     }
 
@@ -107,23 +129,25 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         ) { billingResult, skuDetailsList ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 if (skuDetailsList != null && skuDetailsList.size > 0) {
-                   flowParams = BillingFlowParams.newBuilder()
+                    flowParams = BillingFlowParams.newBuilder()
                         .setSkuDetails(skuDetailsList[0])
                         .build()
                     //set price
-                    if(SharedPrefUtils.contains(Constants.PreferenceKeys.CURRENCY_CODE) &&
+                    if (SharedPrefUtils.contains(Constants.PreferenceKeys.CURRENCY_CODE) &&
                         SharedPrefUtils.contains(Constants.PreferenceKeys.CURRENCY_SYMBOL)
                         && skuDetailsList[0].priceCurrencyCode ==
-                            SharedPrefUtils.readString(Constants.PreferenceKeys.CURRENCY_CODE)
-                            ){
-                                try {
-                                    btn_buy_pro_user?.text =
-                                        "Buy for ${skuDetailsList[0].price} " + SharedPrefUtils.readString(Constants.PreferenceKeys.CURRENCY_SYMBOL)
-                                }catch (e:Exception){
-                                    btn_buy_pro_user?.text =
-                                        "Buy for ${skuDetailsList[0].price}"
-                                }
-                    }else{
+                        SharedPrefUtils.readString(Constants.PreferenceKeys.CURRENCY_CODE)
+                    ) {
+                        try {
+                            btn_buy_pro_user?.text =
+                                "Buy for ${skuDetailsList[0].price} " + SharedPrefUtils.readString(
+                                    Constants.PreferenceKeys.CURRENCY_SYMBOL
+                                )
+                        } catch (e: Exception) {
+                            btn_buy_pro_user?.text =
+                                "Buy for ${skuDetailsList[0].price}"
+                        }
+                    } else {
                         btn_buy_pro_user?.text =
                             "Buy for ${skuDetailsList[0].price}"
                     }
@@ -149,7 +173,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         for (purchase in purchases) {
             //if item is purchased
             if (Constants.Purchase.PRODUCT_ID == purchase.sku && purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-             //  buyProPresenter?.verifyPurchase(this,purchase.originalJson, purchase.signature, purchase)
+                //  buyProPresenter?.verifyPurchase(this,purchase.originalJson, purchase.signature, purchase)
             } else if (Constants.Purchase.PRODUCT_ID == purchase.sku && purchase.purchaseState == Purchase.PurchaseState.PENDING) {
                 Toast.makeText(
                     applicationContext,
@@ -177,16 +201,16 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         }
 
 
-    private fun changeStatusBarColorInLightMode(){
+    private fun changeStatusBarColorInLightMode() {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.statusBarColor = ContextCompat.getColor(this, android.R.color.transparent)
     }
 
-    private fun calculateAlpha(totalOffset:Int, currentOffset:Int) : Float{
+    private fun calculateAlpha(totalOffset: Int, currentOffset: Int): Float {
         return (1.0 - ((currentOffset * 0.9999) / totalOffset)).toFloat()
     }
 
-    private fun setListener(){
+    private fun setListener() {
         txt_learn_more?.setOnClickListener {
             val bundle = Bundle()
             bundle.putString("click_on_learn_more", "yes")
@@ -197,42 +221,43 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         /**
          * @exception We ignored it
          */
-      /*  txt_restore_purchase?.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putString("click_on_restore_purchase", "yes")
-            firebaseAnalytics.logEvent("restore_purchase", bundle)
-            billingClient?.queryPurchaseHistoryAsync("inapp", object : PurchaseHistoryResponseListener{
-                override fun onPurchaseHistoryResponse(
-                    p0: BillingResult,
-                    p1: MutableList<PurchaseHistoryRecord>?
-                ) {
-                    if(p1 != null && p1.size > 0){
-                        for(item in p1){
-                            buyProPresenter?.verifyPurchase(
-                                this@BuyProActivity,item.originalJson,
-                                item.signature, null)
-                            break
-                        }
-                    }else{
-                        Toasty.error(this@BuyProActivity, "No previous purchase found!").show()
-                    }
-                }
+        /*  txt_restore_purchase?.setOnClickListener {
+              val bundle = Bundle()
+              bundle.putString("click_on_restore_purchase", "yes")
+              firebaseAnalytics.logEvent("restore_purchase", bundle)
+              billingClient?.queryPurchaseHistoryAsync("inapp", object : PurchaseHistoryResponseListener{
+                  override fun onPurchaseHistoryResponse(
+                      p0: BillingResult,
+                      p1: MutableList<PurchaseHistoryRecord>?
+                  ) {
+                      if(p1 != null && p1.size > 0){
+                          for(item in p1){
+                              buyProPresenter?.verifyPurchase(
+                                  this@BuyProActivity,item.originalJson,
+                                  item.signature, null)
+                              break
+                          }
+                      }else{
+                          Toasty.error(this@BuyProActivity, "No previous purchase found!").show()
+                      }
+                  }
 
-            })
-        }*/
+              })
+          }*/
 
         btn_buy_pro_user?.setOnClickListener {
-            if(AndroidUtils.isOnline(this)){
+            if (AndroidUtils.isOnline(this)) {
                 val bundle = Bundle()
                 bundle.putString("click_on_buy_button", "yes")
                 firebaseAnalytics.logEvent("click_on_buy_button", bundle)
-                if(billingClient?.isReady!!){
-                    if(flowParams != null){
+                if (billingClient?.isReady!!) {
+                    if (flowParams != null) {
                         billingClient!!.launchBillingFlow(this, flowParams!!)
                     }
-                }else{
+                } else {
                     billingClient =
-                        BillingClient.newBuilder(this).enablePendingPurchases().setListener(this).build()
+                        BillingClient.newBuilder(this).enablePendingPurchases().setListener(this)
+                            .build()
                     billingClient!!.startConnection(object : BillingClientStateListener {
                         override fun onBillingSetupFinished(billingResult: BillingResult) {
                             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
@@ -251,7 +276,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                         }
                     })
                 }
-            }else{
+            } else {
                 Toasty.info(this, "No Internet!").show()
                 checkPurchaseStatus()
             }
@@ -264,14 +289,17 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     }
 
     override fun onBackPressed() {
-      finish()
+        finish()
     }
 
-    private fun setIsPurchased(boolean: Boolean){
+    private fun setIsPurchased(boolean: Boolean) {
         SharedPrefUtils.write(Constants.PreferenceKeys.IS_PURCHASED, boolean)
     }
 
-    override fun onPurchasesUpdated(billingResult: BillingResult, purchases: MutableList<Purchase>?) {
+    override fun onPurchasesUpdated(
+        billingResult: BillingResult,
+        purchases: MutableList<Purchase>?
+    ) {
         //if item newly purchased
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
             handlePurchases(purchases)
@@ -301,50 +329,66 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
 
     override fun verifyPurchaseStatus(boolean: Boolean, purchase: Purchase?) {
         ProgressDialogUtils.on().hideProgressDialog()
-       if(boolean){
-           //complete purchase
-           //if item is purchased and not acknowledged
-               if(purchase != null){
-                   if (!purchase.isAcknowledged) {
-                       val acknowledgePurchaseParams =
-                           AcknowledgePurchaseParams.newBuilder()
-                               .setPurchaseToken(purchase.purchaseToken)
-                               .build()
-                       billingClient!!.acknowledgePurchase(acknowledgePurchaseParams, ackPurchase)
-                   } else {
-                       // Grant entitlement to the user on item purchase
-                       // restart activity
-                       if (!isPurchased()) {
-                           val bundle = Bundle()
-                           bundle.putString("item_sold", "yes")
-                           firebaseAnalytics.logEvent("item_sold", bundle)
-                           setIsPurchased(true)
-                           finish()
-                       }
-                   }
-               }else{
-                   //restore purchase that's why purchase is null
-                   if (!isPurchased()) {
-                       val bundle = Bundle()
-                       bundle.putString("restore_purchased", "yes")
-                       firebaseAnalytics.logEvent("restore_purchase", bundle)
-                       setIsPurchased(true)
-                       finish()
-                   }
-               }
-       }else{
-           val bundle = Bundle()
-           bundle.putString("invalid_purchase", "yes")
-           firebaseAnalytics.logEvent("invalid_purchase", bundle)
-           // Invalid purchase
-           // show error to user
-           Toast.makeText(
-               applicationContext,
-               "Error : Invalid Purchase",
-               Toast.LENGTH_SHORT
-           ).show()
-           return
-       }
+        if (boolean) {
+            //complete purchase
+            //if item is purchased and not acknowledged
+            if (purchase != null) {
+                if (!purchase.isAcknowledged) {
+                    val acknowledgePurchaseParams =
+                        AcknowledgePurchaseParams.newBuilder()
+                            .setPurchaseToken(purchase.purchaseToken)
+                            .build()
+                    billingClient!!.acknowledgePurchase(acknowledgePurchaseParams, ackPurchase)
+                } else {
+                    // Grant entitlement to the user on item purchase
+                    // restart activity
+                    if (!isPurchased()) {
+                        val bundle = Bundle()
+                        bundle.putString("item_sold", "yes")
+                        firebaseAnalytics.logEvent("item_sold", bundle)
+                        setIsPurchased(true)
+                        finish()
+                    }
+                }
+            } else {
+                //restore purchase that's why purchase is null
+                if (!isPurchased()) {
+                    val bundle = Bundle()
+                    bundle.putString("restore_purchased", "yes")
+                    firebaseAnalytics.logEvent("restore_purchase", bundle)
+                    setIsPurchased(true)
+                    finish()
+                }
+            }
+        } else {
+            val bundle = Bundle()
+            bundle.putString("invalid_purchase", "yes")
+            firebaseAnalytics.logEvent("invalid_purchase", bundle)
+            // Invalid purchase
+            // show error to user
+            Toast.makeText(
+                applicationContext,
+                "Error : Invalid Purchase",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+    }
+
+    /**
+     * uzzal create a function for recycler view..
+     */
+    private fun recyclerInIt() {
+
+        val layoutManager = LinearLayoutManager(
+            this,
+            LinearLayoutManager.HORIZONTAL, false
+        )
+        recyclerView.layoutManager = layoutManager;
+        val adapter = ReviewAdapter(this, generateReviewList());
+        recyclerView.adapter = adapter;
+
+
     }
 
 }
