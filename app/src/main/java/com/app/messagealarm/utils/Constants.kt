@@ -51,6 +51,7 @@ class Constants {
     class ACTION{
         companion object{
             const val ACTION_PURCHASE_FROM_MAIN = 12
+            const val ACTION_SAVE_APPLICATION = 64
             const val ACTION_PURCHASE_FROM_ADD = 13
             const val ACTION_PURCHASE_FROM_SETTING = 14
             const val ACTION_UN_MUTE = "un_mute"

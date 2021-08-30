@@ -61,6 +61,8 @@ import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import kotlinx.android.synthetic.main.item_added_applications.view.*
+import nl.dionsegijn.konfetti.models.Shape
+import nl.dionsegijn.konfetti.models.Size
 import xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity
 import java.io.File
 
@@ -98,6 +100,22 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 switch_alarm_status?.isChecked = false
             }
         }
+    }
+
+    private fun showFirstSavedAnimation(){
+        viewKonfetti.build()
+            .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA, Color.RED, Color.BLUE, Color.CYAN)
+            .setDirection(0.0, 359.0)
+            .setSpeed(1f, 3f)
+            .setFadeOutEnabled(true)
+            .setTimeToLive(5000L)
+            .addShapes(Shape.DrawableShape(ResourcesCompat.getDrawable(resources, R.drawable.balloon,null)!!),
+                Shape.DrawableShape(ResourcesCompat.getDrawable(resources, R.drawable.balloon_two,null)!!),
+                Shape.DrawableShape(ResourcesCompat.getDrawable(resources, R.drawable.balloon_three,null)!!)
+                )
+            .addSizes(Size(40))
+            .setPosition(-50f, viewKonfetti.width + 50f, -50f, -50f)
+            .streamFor(200, 3000L)
     }
 
 
@@ -356,6 +374,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     menu?.getItem(0)?.isVisible = false
                 }
             }
+        }else if(requestCode == Constants.ACTION.ACTION_SAVE_APPLICATION){
+            showFirstSavedAnimation()
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -489,7 +509,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         fab_button_add_application?.setOnClickListener {
             if (!isPurchased()) {
                 if (rv_application_list?.adapter?.itemCount!! < 3) {
-                    startActivity(Intent(this, AddApplicationActivity::class.java))
+                    startActivityForResult(Intent(this, AddApplicationActivity::class.java),
+                        Constants.ACTION.ACTION_SAVE_APPLICATION
+                        )
                 } else {
                     Toasty.info(this, "Please buy pro version to add more apps!").show()
                     //one app added now take user to buy
@@ -500,7 +522,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     )
                 }
             } else {
-                startActivity(Intent(this, AddApplicationActivity::class.java))
+                startActivityForResult(Intent(this, AddApplicationActivity::class.java),
+                    Constants.ACTION.ACTION_SAVE_APPLICATION
+                    )
             }
         }
 
