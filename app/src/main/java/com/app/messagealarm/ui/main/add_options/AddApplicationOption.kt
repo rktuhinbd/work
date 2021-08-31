@@ -12,6 +12,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.method.LinkMovementMethod
 import android.text.style.ForegroundColorSpan
 import android.util.DisplayMetrics
 import android.view.*
@@ -58,6 +59,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     var once: Once? = null
     public var alarmTonePath: String? = null
+    var appName: String? = ""
     var ringtoneName: String? = null
     private var addApplicationEntity = ApplicationEntity()
     private var holderEntity = ApplicationEntity()
@@ -66,7 +68,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL,R.style.BottomSheetDialog)
+        setStyle(STYLE_NORMAL, R.style.BottomSheetDialog)
         addApplicationOptionPresenter = AddApplicationOptionPresenter(this)
         once = Once()
         // Obtain the FirebaseAnalytics instance.
@@ -124,12 +126,12 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         setPresetValueToUi(defaultValuesToDataModel())
         darkMode()
         //should show after at least 2 seconds and need to fix the not attached to activity crash
-      /*  Handler(Looper.getMainLooper()).postDelayed(Runnable {
-            if(isAdded){
-                HintUtils.showHintsToUser(requireActivity(), getOptionTutorialHintText(), R.layout.layout_target,"OPTIONS",
-                     img_sender_name, img_exclude_sender_name, img_message_body)
-            }
-        },500)*/
+        /*  Handler(Looper.getMainLooper()).postDelayed(Runnable {
+              if(isAdded){
+                  HintUtils.showHintsToUser(requireActivity(), getOptionTutorialHintText(), R.layout.layout_target,"OPTIONS",
+                       img_sender_name, img_exclude_sender_name, img_message_body)
+              }
+          },500)*/
     }
 
     /**
@@ -184,7 +186,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
      */
     private fun enableProMode() {
         if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
-           // switch_just_vibrate?.isEnabled = true
+            // switch_just_vibrate?.isEnabled = true
             switch_vibrate?.isEnabled = true
             progress_sound_level?.isEnabled = true
             //txt_pro_just_vibrate?.visibility = View.GONE
@@ -194,10 +196,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             switch_vibrate?.isChecked = false
             switch_vibrate?.isEnabled = false
             progress_sound_level?.isEnabled = false
-           // switch_just_vibrate?.isChecked = false
+            // switch_just_vibrate?.isChecked = false
             //switch_just_vibrate?.isEnabled = false
             txt_pro_sound_level?.visibility = View.VISIBLE
-           // txt_pro_just_vibrate?.visibility = View.VISIBLE
+            // txt_pro_just_vibrate?.visibility = View.VISIBLE
             txt_pro_vibrate?.visibility = View.VISIBLE
         }
     }
@@ -207,9 +209,12 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             defaultValuesToDataModel()
             if (!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
                 if (arguments?.getSerializable(Constants.BundleKeys.APP) != null) {
+                    val app =
+                        (arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps)
                     addApplicationOptionPresenter?.getAppByPackageName(
-                        (arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps).packageName
+                        app.packageName
                     )
+                    this.appName = app.appName
                 }
             } else {
                 //edit mode from home
@@ -433,11 +438,11 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 if (isChecked) {
                     progress_sound_level.progress = 0
                     switch_vibrate.isChecked = false
-                }else{
-                    if(isProModeEnabled()){
+                } else {
+                    if (isProModeEnabled()) {
                         progress_sound_level.progress = 100
-                    }else{
-                       progress_sound_level.progress = AndroidUtils.getSoundLevel()
+                    } else {
+                        progress_sound_level.progress = AndroidUtils.getSoundLevel()
                     }
                 }
             }
@@ -831,7 +836,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
      * show just vibrate dialog
      */
 
-    private fun showJustVibrateDialog(){
+    private fun showJustVibrateDialog() {
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
@@ -840,13 +845,13 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         val btnClose = dialog.findViewById<FloatingActionButton>(R.id.fab_close_vibrate)
         val btnBuyProJustVibrate = dialog.findViewById<MaterialButton>(R.id.button_just_vibrate)
         btnBuyProJustVibrate.setOnClickListener {
-            if(dialog.isShowing){
+            if (dialog.isShowing) {
                 dialog.dismiss()
             }
             visitProScreen()
         }
         btnClose?.setOnClickListener {
-            if(dialog.isShowing){
+            if (dialog.isShowing) {
                 dialog.dismiss()
             }
         }
@@ -861,7 +866,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     /**
      * show sound & vibration dialog
      */
-    private fun showVibrateDialog(){
+    private fun showVibrateDialog() {
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
@@ -870,13 +875,13 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         val btnClose = dialog.findViewById<FloatingActionButton>(R.id.fab_close_vibrate)
         val btnBuyProVibrate = dialog.findViewById<MaterialButton>(R.id.button_vibrate)
         btnBuyProVibrate.setOnClickListener {
-            if(dialog.isShowing){
+            if (dialog.isShowing) {
                 dialog.dismiss()
             }
             visitProScreen()
         }
         btnClose?.setOnClickListener {
-            if(dialog.isShowing){
+            if (dialog.isShowing) {
                 dialog.dismiss()
             }
         }
@@ -891,7 +896,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     /**
      * show sound control dialog
      */
-    private fun showSoundControlDialog(){
+    private fun showSoundControlDialog() {
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
@@ -900,13 +905,13 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         val btnClose = dialog.findViewById<FloatingActionButton>(R.id.fab_close_vibrate)
         val btnBuyProSoundControl = dialog.findViewById<MaterialButton>(R.id.button_sound_control)
         btnBuyProSoundControl.setOnClickListener {
-            if(dialog.isShowing){
+            if (dialog.isShowing) {
                 dialog.dismiss()
             }
             visitProScreen()
         }
         btnClose?.setOnClickListener {
-            if(dialog.isShowing){
+            if (dialog.isShowing) {
                 dialog.dismiss()
             }
         }
@@ -939,11 +944,19 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
          */
         try {
             if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
-               val text =
-                    String.format("Hint: Only messages from this users will play alarm, add username from %s", holderEntity.appName)
+                val text =
+                    String.format(
+                        "Hint: Only messages from this users will play alarm, add username from %s",
+                        holderEntity.appName
+                    )
                 val spannable: Spannable = SpannableString(text)
                 spannable.setSpan(
-                    ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.success_color)),
+                    ForegroundColorSpan(
+                        ContextCompat.getColor(
+                            requireActivity(),
+                            R.color.success_color
+                        )
+                    ),
                     70,
                     text.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -952,10 +965,18 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             } else {
                 val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
                 val text =
-                    String.format("Hint: Only messages from this users will play alarm, add username from %s", app.appName)
+                    String.format(
+                        "Hint: Only messages from this users will play alarm, add username from %s",
+                        app.appName
+                    )
                 val spannable: Spannable = SpannableString(text)
                 spannable.setSpan(
-                    ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.success_color)),
+                    ForegroundColorSpan(
+                        ContextCompat.getColor(
+                            requireActivity(),
+                            R.color.success_color
+                        )
+                    ),
                     70,
                     text.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -1063,30 +1084,25 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
          * show app name at end of hint and make app name green color
          */
         try {
-            if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
-                val text =
-                    String.format("Messages from this users will not play alarm, add username from %s", holderEntity.appName)
-                val spannable: Spannable = SpannableString(text)
-                spannable.setSpan(
-                    ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.success_color)),
-                    64,
-                    text.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            val text =
+                String.format(
+                    "Messages from this users will not play alarm, add username from %s",
+                    appName
                 )
-                txtHint.setText(spannable, TextView.BufferType.SPANNABLE)
-            } else {
-                val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
-                val text =
-                    String.format("Messages from this users will not play alarm, add username from %s", app.appName)
-                val spannable: Spannable = SpannableString(text)
-                spannable.setSpan(
-                    ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.success_color)),
-                    64,
-                    text.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                txtHint.setText(spannable, TextView.BufferType.SPANNABLE)
-            }
+            val spannable: Spannable = SpannableString(text)
+            spannable.setSpan(
+                ForegroundColorSpan(
+                    ContextCompat.getColor(
+                        requireActivity(),
+                        R.color.success_color
+                    )
+                ),
+                64,
+                text.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            txtHint.setText(spannable, TextView.BufferType.SPANNABLE)
+            txtHint.movementMethod = LinkMovementMethod.getInstance()
         } catch (e: java.lang.NullPointerException) {
 
         }
@@ -1101,6 +1117,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 imageButton.isEnabled = true
                 imageButton.setBackgroundResource(R.drawable.add_button_background)
             }
+
             override fun onSingleItemRemove(list: ArrayList<String>) {
 
             }
@@ -1109,22 +1126,22 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         /**
          * buy pro status
          */
-        if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)){
+        if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
             //free user
-            if(list.size > 0){
+            if (list.size > 0) {
                 btnPro.visibility = View.VISIBLE
                 txtInfoHint.visibility = View.VISIBLE
                 etName.isEnabled = false
                 imageButton.setBackgroundResource(R.drawable.disabled_add_button)
                 imageButton.isEnabled = false
-            }else{
+            } else {
                 btnPro.visibility = View.GONE
                 txtInfoHint.visibility = View.GONE
                 etName.isEnabled = true
                 imageButton.isEnabled = true
                 imageButton.setBackgroundResource(R.drawable.add_button_background)
             }
-        }else{
+        } else {
             btnPro.visibility = View.GONE
             txtInfoHint.visibility = View.GONE
             etName.isEnabled = true
@@ -1148,7 +1165,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             if (etName.text.toString().isNotEmpty()) {
                 adapter.addName(etName.text.toString().trim())
                 etName.setText("")
-                    fabSave.visibility = View.VISIBLE
+                fabSave.visibility = View.VISIBLE
                 placeHolder.visibility = View.INVISIBLE
                 recyclerView.visibility = View.VISIBLE
                 if (adapter.itemCount > 0) {
@@ -1157,22 +1174,22 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 /**
                  * buy pro status
                  */
-                if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)){
+                if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
                     //free user
-                    if((recyclerView.adapter as SenderNameAdapter).itemCount > 0){
+                    if ((recyclerView.adapter as SenderNameAdapter).itemCount > 0) {
                         btnPro.visibility = View.VISIBLE
                         txtInfoHint.visibility = View.VISIBLE
                         etName.isEnabled = false
                         imageButton.setBackgroundResource(R.drawable.disabled_add_button)
                         imageButton.isEnabled = false
-                    }else{
+                    } else {
                         btnPro.visibility = View.GONE
                         txtInfoHint.visibility = View.GONE
                         etName.isEnabled = true
                         imageButton.isEnabled = true
                         imageButton.setBackgroundResource(R.drawable.add_button_background)
                     }
-                }else{
+                } else {
                     btnPro.visibility = View.GONE
                     txtInfoHint.visibility = View.GONE
                     etName.isEnabled = true
@@ -1210,14 +1227,14 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
 
         btnPro.setOnClickListener {
-            if(dialog.isShowing){
+            if (dialog.isShowing) {
                 dialog.dismiss()
             }
             visitProScreen()
         }
 
         cancelFloatingButton.setOnClickListener {
-            if(dialog.isShowing){
+            if (dialog.isShowing) {
                 dialog.dismiss()
             }
         }
@@ -1274,32 +1291,32 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         addApplicationEntity.messageBody = "None"
         addApplicationEntity.isRunningStatus = true
         //previous code
-       /* if(SharedPrefUtils.contains(Constants.PreferenceKeys.COUNTRY_CODE)){
-            if(SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY_CODE) == "BD"){
-                addApplicationEntity.sound_level = 100
-                holderEntity.sound_level = 100
-            }else{
-                if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)){
-                    holderEntity.sound_level = 100
-                    addApplicationEntity.sound_level = 100
-                }else{
-                    holderEntity.sound_level = 80
-                    addApplicationEntity.sound_level = 80
-                }
-            }
-        }else{
-            if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)){
-                holderEntity.sound_level = 100
-                addApplicationEntity.sound_level = 100
-            }else{
-                holderEntity.sound_level = 80
-                addApplicationEntity.sound_level = 80
-            }
-        }*/
-        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)){
+        /* if(SharedPrefUtils.contains(Constants.PreferenceKeys.COUNTRY_CODE)){
+             if(SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY_CODE) == "BD"){
+                 addApplicationEntity.sound_level = 100
+                 holderEntity.sound_level = 100
+             }else{
+                 if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)){
+                     holderEntity.sound_level = 100
+                     addApplicationEntity.sound_level = 100
+                 }else{
+                     holderEntity.sound_level = 80
+                     addApplicationEntity.sound_level = 80
+                 }
+             }
+         }else{
+             if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)){
+                 holderEntity.sound_level = 100
+                 addApplicationEntity.sound_level = 100
+             }else{
+                 holderEntity.sound_level = 80
+                 addApplicationEntity.sound_level = 80
+             }
+         }*/
+        if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
             holderEntity.sound_level = 100
             addApplicationEntity.sound_level = 100
-        }else{
+        } else {
             holderEntity.sound_level = AndroidUtils.getSoundLevel()
             addApplicationEntity.sound_level = AndroidUtils.getSoundLevel()
         }
@@ -1355,7 +1372,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                             addApplicationEntity.packageName
                         )
                     } catch (e: Exception) {
-                       e.printStackTrace()
+                        e.printStackTrace()
                     }
                 }).start()
             } else {
@@ -1397,7 +1414,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                                 if (txt_sender_name_value?.text.toString() == holderEntity.senderNames) {
                                     if (txt_exclude_sender_name_value?.text.toString() == holderEntity.ignored_names) {
                                         if (txt_message_body_value?.text.toString() == holderEntity.messageBody) {
-                                            if(progress_sound_level?.progress == holderEntity.sound_level){
+                                            if (progress_sound_level?.progress == holderEntity.sound_level) {
                                                 isDefault = true
                                             }
                                         }
@@ -1561,6 +1578,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
         addApplicationEntity = app
         alarmTonePath = app.tone_path
+        this.appName = app.appName
         convertToHolderEntity(addApplicationEntity)
         if (isAdded) {
             requireActivity().runOnUiThread {
