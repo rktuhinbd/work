@@ -104,18 +104,23 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     private fun showFirstSavedAnimation(){
         viewKonfetti.build()
-            .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA, Color.RED, Color.BLUE, Color.CYAN)
             .setDirection(0.0, 359.0)
-            .setSpeed(1f, 3f)
+            .setSpeed(1f, 2f)
             .setFadeOutEnabled(true)
-            .setTimeToLive(5000L)
-            .addShapes(Shape.DrawableShape(ResourcesCompat.getDrawable(resources, R.drawable.balloon,null)!!),
-                Shape.DrawableShape(ResourcesCompat.getDrawable(resources, R.drawable.balloon_two,null)!!),
-                Shape.DrawableShape(ResourcesCompat.getDrawable(resources, R.drawable.balloon_three,null)!!)
+            .setTimeToLive(1000L)
+            .addColors(Color.parseColor("#FF3F62"),
+                Color.parseColor("#307E45")
                 )
-            .addSizes(Size(40))
+            .addShapes(Shape.DrawableShape(ResourcesCompat.getDrawable(
+                resources, R.drawable.ic_leaf, null
+            )!!)
+                ,Shape.DrawableShape(ResourcesCompat.getDrawable(
+                resources, R.drawable.ic_flower, null
+            )!!
+            ))
+            .addSizes(Size(18))
             .setPosition(-50f, viewKonfetti.width + 50f, -50f, -50f)
-            .streamFor(200, 3000L)
+            .streamFor(100, 2500)
     }
 
 

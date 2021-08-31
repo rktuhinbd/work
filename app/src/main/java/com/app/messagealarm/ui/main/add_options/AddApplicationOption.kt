@@ -1057,17 +1057,19 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         val cancelFloatingButton = dialog.findViewById<FloatingActionButton>(R.id.fabClose)
         val fabSave = dialog.findViewById<FloatingActionButton>(R.id.fabSave)
         val btnPro = dialog.findViewById<MaterialButton>(R.id.btn_pro)
+        val txtInfoHint = dialog.findViewById<TextView>(R.id.txt_hint)
+
         /**
          * show app name at end of hint and make app name green color
          */
         try {
             if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
                 val text =
-                    String.format("Hint: Messages from this users will not play alarm, add username from %s", holderEntity.appName)
+                    String.format("Messages from this users will not play alarm, add username from %s", holderEntity.appName)
                 val spannable: Spannable = SpannableString(text)
                 spannable.setSpan(
                     ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.success_color)),
-                    70,
+                    64,
                     text.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
@@ -1075,11 +1077,11 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             } else {
                 val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
                 val text =
-                    String.format("Hint: Messages from this users will not play alarm, add username from %s", app.appName)
+                    String.format("Messages from this users will not play alarm, add username from %s", app.appName)
                 val spannable: Spannable = SpannableString(text)
                 spannable.setSpan(
                     ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.success_color)),
-                    70,
+                    64,
                     text.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
@@ -1094,6 +1096,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 placeHolder.visibility = View.VISIBLE
                 recyclerView.visibility = View.INVISIBLE
                 btnPro.visibility = View.GONE
+                txtInfoHint.visibility = View.GONE
                 etName.isEnabled = true
                 imageButton.isEnabled = true
                 imageButton.setBackgroundResource(R.drawable.add_button_background)
@@ -1110,17 +1113,20 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             //free user
             if(list.size > 0){
                 btnPro.visibility = View.VISIBLE
+                txtInfoHint.visibility = View.VISIBLE
                 etName.isEnabled = false
                 imageButton.setBackgroundResource(R.drawable.disabled_add_button)
                 imageButton.isEnabled = false
             }else{
                 btnPro.visibility = View.GONE
+                txtInfoHint.visibility = View.GONE
                 etName.isEnabled = true
                 imageButton.isEnabled = true
                 imageButton.setBackgroundResource(R.drawable.add_button_background)
             }
         }else{
             btnPro.visibility = View.GONE
+            txtInfoHint.visibility = View.GONE
             etName.isEnabled = true
             imageButton.isEnabled = true
             imageButton.setBackgroundResource(R.drawable.add_button_background)
@@ -1155,17 +1161,20 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     //free user
                     if((recyclerView.adapter as SenderNameAdapter).itemCount > 0){
                         btnPro.visibility = View.VISIBLE
+                        txtInfoHint.visibility = View.VISIBLE
                         etName.isEnabled = false
                         imageButton.setBackgroundResource(R.drawable.disabled_add_button)
                         imageButton.isEnabled = false
                     }else{
                         btnPro.visibility = View.GONE
+                        txtInfoHint.visibility = View.GONE
                         etName.isEnabled = true
                         imageButton.isEnabled = true
                         imageButton.setBackgroundResource(R.drawable.add_button_background)
                     }
                 }else{
                     btnPro.visibility = View.GONE
+                    txtInfoHint.visibility = View.GONE
                     etName.isEnabled = true
                     imageButton.isEnabled = true
                     imageButton.setBackgroundResource(R.drawable.add_button_background)
