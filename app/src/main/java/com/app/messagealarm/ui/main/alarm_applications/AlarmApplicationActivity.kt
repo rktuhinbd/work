@@ -380,7 +380,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 }
             }
         }else if(requestCode == Constants.ACTION.ACTION_SAVE_APPLICATION){
-            showFirstSavedAnimation()
+            if(resultCode == Activity.RESULT_OK){
+                showFirstSavedAnimation()
+            }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }

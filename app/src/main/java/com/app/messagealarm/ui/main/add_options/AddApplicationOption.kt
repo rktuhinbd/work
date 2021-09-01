@@ -1825,6 +1825,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 Toasty.success(requireActivity(), getString(R.string.application_save_success))
                     .show()
                 dismissAllowingStateLoss()
+                requireActivity().setResult(Activity.RESULT_OK)
                 requireActivity().finish()
             }
         }
