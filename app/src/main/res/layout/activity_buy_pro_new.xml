@@ -13,7 +13,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="140dp">
+        android:layout_height="120dp">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsingToolbar"
@@ -22,7 +22,7 @@
             app:collapsedTitleGravity="start"
             app:collapsedTitleTextAppearance="@style/CollapseText"
             app:expandedTitleGravity="center|bottom"
-            app:expandedTitleMarginBottom="18dp"
+            app:expandedTitleMarginBottom="12dp"
             app:expandedTitleTextAppearance="@style/expandedText"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:title="Why should you buy?"
@@ -58,11 +58,12 @@
 
                 <ImageView
                     android:id="@+id/image_king"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:padding="12dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:padding="5dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/header_top"
+                    android:layout_marginTop="16dp"
                     app:layout_constraintBottom_toBottomOf="@id/view_top"
                     app:layout_constraintEnd_toEndOf="@id/view_top"
                     app:layout_constraintStart_toStartOf="@id/view_top"
@@ -416,8 +417,8 @@
         android:layout_width="match_parent"
         android:layout_height="110dp"
         android:layout_gravity="bottom"
-        app:cardBackgroundColor="#303960"
-        app:cardElevation="5dp">
+        app:cardBackgroundColor="#F5C75D"
+        app:cardElevation="8dp">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -432,7 +433,7 @@
                 android:layout_marginTop="12dp"
                 android:fontFamily="@font/roboto_light"
                 android:text="One time payment, Lifetime access"
-                android:textColor="@color/color_white"
+                android:textColor="@color/colorTextRegular"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toTopOf="@id/view_underline_one_time_payments"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -444,7 +445,7 @@
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_marginBottom="32dp"
-                android:background="@color/color_white"
+                android:background="@color/colorTextRegular"
                 app:layout_constraintEnd_toEndOf="@id/text_one_time_payment"
                 app:layout_constraintStart_toStartOf="@id/text_one_time_payment"
                 app:layout_constraintTop_toBottomOf="@id/text_one_time_payment" />
@@ -473,6 +474,7 @@
                 android:foreground="?selectableItemBackground"
                 android:maxLines="1"
                 android:textAllCaps="true"
+                 android:textColor="@color/color_white"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

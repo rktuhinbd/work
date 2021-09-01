@@ -82,7 +82,7 @@
 
     <style name="CollapseText">
     <item name="android:textColor">@android:color/black</item>
-    <item name="android:textSize">20sp</item>
+    <item name="android:textSize">18sp</item>
     <item name="text_style">normal</item>
     <item name="android:fontFamily">@font/royal_font_2</item>
 
@@ -90,7 +90,7 @@
 
     <style name="expandedText">
         <item name="android:textColor">@android:color/black</item>
-        <item name="android:textSize">26sp</item>
+        <item name="android:textSize">20sp</item>
         <item name="text_style">bold</item>
         <item name="android:fontFamily">@font/royal_font_2</item>
     </style>

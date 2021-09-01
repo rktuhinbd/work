@@ -174,7 +174,6 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
             //if item is purchased
             if (Constants.Purchase.PRODUCT_ID == purchase.sku && purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
                  // buyProPresenter?.verifyPurchase(this,purchase.originalJson, purchase.signature, purchase)
-                verifyPurchaseStatus(true, purchase)
             } else if (Constants.Purchase.PRODUCT_ID == purchase.sku && purchase.purchaseState == Purchase.PurchaseState.PENDING) {
                 Toast.makeText(
                     applicationContext,
