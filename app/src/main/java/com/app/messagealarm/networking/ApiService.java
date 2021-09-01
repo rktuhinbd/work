@@ -98,7 +98,6 @@ public interface ApiService {
             @Field(Constants.API.Body.IS_PAID) String isPaid
             //UUID
             //ALARM_COUNT
-            //INSTALL_TIME
             //TIME_ZONE
     );
 

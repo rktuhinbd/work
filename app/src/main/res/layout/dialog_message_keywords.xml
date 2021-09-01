@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_bold"
                 android:gravity="center"
-                android:text="Ignore Sender Name"
+                android:text="Message Keywords"
                 android:textAllCaps="true"
                 android:padding="8dp"
                 android:textColor="@color/colorAccent"
@@ -126,7 +126,7 @@
                 />
 
             <EditText
-                android:id="@+id/et_sender_name"
+                android:id="@+id/et_message_keywords"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -135,7 +135,7 @@
                 android:background="@drawable/sender_name_background"
                 android:fontFamily="@font/roboto_regular"
                 android:gravity="start"
-                android:hint="Username..."
+                android:hint="Keyword..."
                 android:paddingStart="16dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="16dp"
@@ -163,11 +163,11 @@
                 android:padding="5dp"
                 android:src="@drawable/ic_add_name"
                 android:tint="@color/color_white"
-                app:layout_constraintBottom_toBottomOf="@id/et_sender_name"
-                app:layout_constraintEnd_toEndOf="@id/et_sender_name"
+                app:layout_constraintBottom_toBottomOf="@id/et_message_keywords"
+                app:layout_constraintEnd_toEndOf="@id/et_message_keywords"
                 app:layout_constraintHorizontal_bias="1"
-                app:layout_constraintStart_toStartOf="@id/et_sender_name"
-                app:layout_constraintTop_toTopOf="@id/et_sender_name" />
+                app:layout_constraintStart_toStartOf="@id/et_message_keywords"
+                app:layout_constraintTop_toTopOf="@id/et_message_keywords" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_sender_name"
@@ -181,7 +181,7 @@
                 app:layout_constraintBottom_toTopOf="@id/btn_pro"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/et_sender_name" />
+                app:layout_constraintTop_toBottomOf="@id/et_message_keywords" />
 
             <ImageView
                 android:id="@+id/img_placeholder"
@@ -201,7 +201,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/txt_hint"
-                android:text="Hint: 1 username in free version"
+                android:text="Hint: 1 keyword in free version"
                 app:layout_constraintStart_toStartOf="@id/btn_pro"
                 app:layout_constraintEnd_toEndOf="@id/btn_pro"
                 app:layout_constraintBottom_toTopOf="@id/btn_pro"
@@ -221,7 +221,7 @@
                 android:background="@drawable/button_gradient_pro_dialog"
                 android:elevation="6dp"
                 android:fontFamily="@font/roboto_bold"
-                android:text="PRO - Unlimited Ignored Names"
+                android:text="PRO - Unlimited Keywords"
                 android:textAllCaps="true"
                 android:textColor="@android:color/black"
                 android:textSize="14sp"

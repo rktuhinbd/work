@@ -79,7 +79,6 @@ class AlarmService {
         }
 
 
-
         /**
          *
          */
@@ -94,7 +93,7 @@ class AlarmService {
                 SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT) + 1
             )
             if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
-                if(SharedPrefUtils.readInt(Constants.PreferenceKeys.SOUND_LEVEL) > Constants.Default.MIN_SOUND_LEVEL/*50*/){
+                if (SharedPrefUtils.readInt(Constants.PreferenceKeys.SOUND_LEVEL) > Constants.Default.MIN_SOUND_LEVEL/*50*/) {
                     SharedPrefUtils.write(
                         Constants.PreferenceKeys.SOUND_LEVEL,
                         SharedPrefUtils.readInt(Constants.PreferenceKeys.SOUND_LEVEL) - 1
@@ -265,17 +264,25 @@ class AlarmService {
             app: ApplicationEntity,
             sbn: StatusBarNotification?
         ): Boolean {
+            var result = false
             val messageBody = sbn?.notification!!.extras["android.text"].toString()
-            return if (app.messageBody != "None") {
-                messageBody.toLowerCase(Locale.getDefault()).contains(
-                    app.messageBody.toLowerCase(
-                        Locale.getDefault()
-                    )
-                )
+            if (app.messageBody != "None") {
+                val keywordArray = app.messageBody.trim().split(", ")
+                for (x in keywordArray) {
+                    if (messageBody.trim().toLowerCase(Locale.getDefault())
+                            .contains(
+                                x.trim().toLowerCase(Locale.getDefault())
+                            )) {
+                        result = true
+                        break
+                    } else {
+                        continue
+                    }
+                }
             } else {
-                true
+                result = true
             }
-
+            return result
         }
 
         private fun replaceAll(regex: String?, input: String, replacement: String?): String? {
