@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="wrap_content">
 
     <com.app.messagealarm.ui.widget.CustomStatusBarView
         android:layout_width="0dp"
@@ -12,14 +12,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.card.MaterialCardView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="8dp"
         app:cardUseCompatPadding="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,14 +29,15 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-       >
+            android:layout_height="wrap_content">
 
+
+            <!--            background part-->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint_vibrate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/shape_congrats_dialog"
+                android:background="@drawable/background_incoming_notification"
                 app:layout_constraintBottom_toTopOf="@+id/constraint_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -56,25 +57,28 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+            <!--            title part-->
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/constraint_vibrate">
 
                 <TextView
                     android:id="@+id/text_dialog_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="22dp"
                     android:layout_marginStart="22dp"
+                    android:layout_marginTop="22dp"
                     android:layout_marginEnd="22dp"
                     android:fontFamily="@font/roboto_regular"
                     android:text="@string/txt_notification_permission_message"
-                     android:textAlignment="textStart"
+                    android:textAlignment="textStart"
                     android:textColor="@color/md_black_1000"
                     android:textSize="@dimen/font_18"
                     app:layout_constraintBottom_toTopOf="@+id/text_continue"
@@ -87,19 +91,19 @@
                     android:id="@+id/text_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
                     android:layout_marginTop="22dp"
+                    android:layout_marginEnd="16dp"
                     android:layout_marginBottom="16dp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="Cancel"
-                    android:textAllCaps="true"
-                    android:paddingBottom="5dp"
-                    android:foreground="?selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
-                    android:paddingTop="5dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:foreground="?selectableItemBackground"
                     android:paddingStart="5dp"
+                    android:paddingTop="5dp"
                     android:paddingEnd="5dp"
+                    android:paddingBottom="5dp"
+                    android:text="Cancel"
+                    android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/font_14"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -114,18 +118,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="Continue"
-                    android:paddingBottom="5dp"
-                    android:paddingTop="5dp"
                     android:layout_marginEnd="8dp"
-                    android:foreground="?selectableItemBackground"
+                    android:layout_marginBottom="16dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:textAllCaps="true"
+                    android:fontFamily="@font/roboto_regular"
+                    android:foreground="?selectableItemBackground"
                     android:paddingStart="5dp"
+                    android:paddingTop="5dp"
                     android:paddingEnd="5dp"
+                    android:paddingBottom="5dp"
+                    android:text="Continue"
+                    android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/font_14"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -139,6 +143,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
