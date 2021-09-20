@@ -125,6 +125,32 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
 
     /**
+     * show congratulations dialog
+     */
+
+    private fun showCongratulationDialog(){
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_congrats_layout)
+        val materialButton = dialog.findViewById<MaterialButton>(R.id.text_done)
+        materialButton.setOnClickListener {
+            if(dialog.isShowing){
+                dialog.dismiss()
+            }
+        }
+        val window: Window = dialog.window!!
+        window.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        if (!dialog.isShowing) {
+            dialog.show()
+        }
+    }
+
+    /**
      * handle push notification
      */
     private fun handlePushNotificationData() {
@@ -381,7 +407,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             }
         }else if(requestCode == Constants.ACTION.ACTION_SAVE_APPLICATION){
             if(resultCode == Activity.RESULT_OK){
-                showFirstSavedAnimation()
+                if(rv_application_list?.adapter?.itemCount!! == 0){
+                     showFirstSavedAnimation()
+                Handler(Looper.myLooper()!!).postDelayed(Runnable {
+                    showCongratulationDialog()
+                },2500)
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)

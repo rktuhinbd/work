@@ -62,14 +62,8 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
             val totalOffset = appBarLayout.totalScrollRange
             image_king?.alpha = calculateAlpha(abs(totalOffset), abs(verticalOffset))
         })
-
-
-
-
         setListener()
         buyingProcess()
-
-
     }
 
 

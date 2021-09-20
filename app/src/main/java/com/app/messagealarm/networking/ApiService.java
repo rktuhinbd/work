@@ -78,6 +78,7 @@ public interface ApiService {
     @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})
     @GET(Constants.API.LATEST_VERSION)
     Call<LatestInfo> getLatestVersion(
+            //token
             //ALARM_COUNT
             //SOUND_LEVEL
             //OFFER_CLAIMED
