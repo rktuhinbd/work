@@ -127,7 +127,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     /**
      * show congratulations dialog
      */
-
     private fun showCongratulationDialog(){
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -135,6 +134,17 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         dialog.setCancelable(false)
         dialog.setContentView(R.layout.dialog_congrats_layout)
         val materialButton = dialog.findViewById<MaterialButton>(R.id.text_done)
+        val textView = dialog.findViewById<TextView>(R.id.text_sub_message)
+        val appEntity = (rv_application_list?.adapter as AddedAppsListAdapter).getItem(
+            0
+        )
+        val html = String.format("<b>%s</b> is added successfully! You will get alarmed when " +
+                "there is a message from anyone!", appEntity.appName)
+        textView.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)
+        } else {
+            Html.fromHtml(html)
+        }
         materialButton.setOnClickListener {
             if(dialog.isShowing){
                 dialog.dismiss()
@@ -409,7 +419,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             if(resultCode == Activity.RESULT_OK){
                 if(rv_application_list?.adapter?.itemCount!! == 0){
                      showFirstSavedAnimation()
-                Handler(Looper.myLooper()!!).postDelayed(Runnable {
+                Handler(Looper.myLooper()!!).postDelayed({
                     showCongratulationDialog()
                 },2500)
                 }
@@ -787,9 +797,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
         }
     }
-
-
-
 
     /**
      * low sound volume warning

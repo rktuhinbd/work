@@ -143,6 +143,5 @@ class NotificationListenerPresenter(private val view: NotificationListenerView) 
                 view.isPlayAbleSuccess(sbn)
             }
         }).start()
-
     }
 }
