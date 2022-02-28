@@ -14,6 +14,7 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.app.messagealarm.BaseApplication
@@ -32,6 +33,7 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import org.jetbrains.anko.internals.AnkoInternals.getContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -131,25 +133,31 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
             val tokenCall = RetrofitClient.getApiService().registerToken(
                 p0,
                 if (SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY).isNotEmpty())
-                    SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY) else "Unknown"
-            )
-            tokenCall.enqueue(object : Callback<TokenResponse> {
-                override fun onResponse(
-                    call: Call<TokenResponse>,
-                    response: Response<TokenResponse>
-                ) {
-                    if (response.isSuccessful) {
-                        SharedPrefUtils.write(
-                            Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2,
-                            true
-                        )
+                    SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY) else "Unknown",
+                Settings.Secure.getString(
+                    contentResolver,
+                    Settings.Secure.ANDROID_ID
+                ),
+                TimeZone.getDefault().id
+            ).also {
+                it.enqueue(object : Callback<TokenResponse> {
+                    override fun onResponse(
+                        call: Call<TokenResponse>,
+                        response: Response<TokenResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            SharedPrefUtils.write(
+                                Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2,
+                                true
+                            )
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
+                    override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
 
-                }
-            })
+                    }
+                })
+            }
         }.start()
     }
 

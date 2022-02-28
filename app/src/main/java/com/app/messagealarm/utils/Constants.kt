@@ -260,6 +260,9 @@ class Constants {
                 const val SIGNATURE = "signature"
                 const val COUNTRY = "country"
                 const val IS_PAID = "is_paid"
+                const val UUID = "uuid"
+                const val TIME_ZONE = "time_zone"
+                const val ALARM_COUNT = "alarm_count"
             }
         }
         class ResponseFormat{

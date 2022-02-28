@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.provider.Settings
 import android.service.notification.NotificationListenerService.requestRebind
 import android.util.Log
 import android.view.animation.AnimationUtils
@@ -33,6 +34,7 @@ import kotlinx.android.synthetic.main.activity_splash.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 
 
 class SplashActivity : BaseActivity(), CommonView {
@@ -175,6 +177,7 @@ class SplashActivity : BaseActivity(), CommonView {
 
     /**
      * 2.0.1 user to 2.0.2 sending token and status to server so we can know user status
+     * 2.0.2 users to 2.0.3
      */
     private fun updateUserToken(isPaid:Boolean){
         Thread{
@@ -182,7 +185,15 @@ class SplashActivity : BaseActivity(), CommonView {
                 RetrofitClient.getApiService().updateCurrentToken(
                     SharedPrefUtils.readString(Constants.PreferenceKeys.FIREBASE_TOKEN),
                     SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY),
-                    if (isPaid) "1" else "0"
+                    if (isPaid) "1" else "0",
+                    Settings.Secure.getString(
+                        contentResolver,
+                        Settings.Secure.ANDROID_ID
+                    ),
+                    TimeZone.getDefault().id,
+                    SharedPrefUtils.readInt(
+                        Constants.PreferenceKeys.ALARM_COUNT
+                    )
                 ).execute()
             }
         }.start()
