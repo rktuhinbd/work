@@ -181,7 +181,7 @@ class SplashActivity : BaseActivity(), CommonView {
      */
     private fun updateUserToken(isPaid:Boolean){
         Thread{
-            if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2)){
+            if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2)){
                 RetrofitClient.getApiService().updateCurrentToken(
                     SharedPrefUtils.readString(Constants.PreferenceKeys.FIREBASE_TOKEN),
                     SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY),
