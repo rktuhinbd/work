@@ -800,6 +800,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     /**
      * low sound volume warning
+     * BUG: If comes from previous version it's showing sound level reduced by -0 percent, Note:
+     * As the previous version doesn't have some variables
+     * Note: Same for PRO Dialog showing
      */
 
     private fun showLowVolumeWarning(){
