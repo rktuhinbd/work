@@ -10,16 +10,13 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.provider.Settings
 import android.service.notification.NotificationListenerService.requestRebind
-import android.util.Log
 import android.view.animation.AnimationUtils
-import androidx.appcompat.app.AppCompatDelegate
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.BuildConfig
 import com.app.messagealarm.R
 import com.app.messagealarm.common.CommonPresenter
 import com.app.messagealarm.common.CommonView
-import com.app.messagealarm.model.response.UserInfoGlobal
 import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.service.app_reader_intent_service.AppsReaderIntentService
 import com.app.messagealarm.service.notification_service.NotificationListener
@@ -31,9 +28,6 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_splash.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.util.*
 
 
@@ -46,7 +40,11 @@ class SplashActivity : BaseActivity(), CommonView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
         val commonPresenter = CommonPresenter(this)
-        commonPresenter.knowUserFromWhichCountry()
+        if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_USER_INFO_SAVED)){
+            commonPresenter.knowUserFromWhichCountry()
+        }else{
+            updateTokenApiCall(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED))
+        }
         handleUpdate()
         if (BaseApplication.installedApps.isEmpty()) {
             val mIntent = Intent(this, AppsReaderIntentService::class.java)
@@ -177,26 +175,32 @@ class SplashActivity : BaseActivity(), CommonView {
 
     /**
      * 2.0.1 user to 2.0.2 sending token and status to server so we can know user status
-     * 2.0.2 users to 2.0.3
      */
     private fun updateUserToken(isPaid:Boolean){
         Thread{
             if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2)){
-                RetrofitClient.getApiService().updateCurrentToken(
-                    SharedPrefUtils.readString(Constants.PreferenceKeys.FIREBASE_TOKEN),
-                    SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY),
-                    if (isPaid) "1" else "0",
-                    Settings.Secure.getString(
-                        contentResolver,
-                        Settings.Secure.ANDROID_ID
-                    ),
-                    TimeZone.getDefault().id,
-                    SharedPrefUtils.readInt(
-                        Constants.PreferenceKeys.ALARM_COUNT
-                    )
-                ).execute()
+              updateTokenApiCall(isPaid)
             }
         }.start()
+    }
+
+    /**
+     * 2.0.2 users to 2.0.3
+     */
+    private fun updateTokenApiCall(isPaid: Boolean){
+        RetrofitClient.getApiService().updateCurrentToken(
+            SharedPrefUtils.readString(Constants.PreferenceKeys.FIREBASE_TOKEN),
+            SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY),
+            if (isPaid) "1" else "0",
+            Settings.Secure.getString(
+                contentResolver,
+                Settings.Secure.ANDROID_ID
+            ),
+            TimeZone.getDefault().id,
+            SharedPrefUtils.readInt(
+                Constants.PreferenceKeys.ALARM_COUNT
+            )
+        ).execute()
     }
 
     override fun onSuccess() {
