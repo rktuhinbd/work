@@ -17,6 +17,7 @@ import com.app.messagealarm.BuildConfig
 import com.app.messagealarm.R
 import com.app.messagealarm.common.CommonPresenter
 import com.app.messagealarm.common.CommonView
+import com.app.messagealarm.model.response.TokenResponse
 import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.service.app_reader_intent_service.AppsReaderIntentService
 import com.app.messagealarm.service.notification_service.NotificationListener
@@ -28,6 +29,9 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_splash.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.*
 
 
@@ -43,7 +47,9 @@ class SplashActivity : BaseActivity(), CommonView {
         if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_USER_INFO_SAVED)){
             commonPresenter.knowUserFromWhichCountry()
         }else{
-            updateTokenApiCall(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED))
+            if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_TOKEN_UPDATED)){
+                updateTokenApiCall(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED))
+            }
         }
         handleUpdate()
         if (BaseApplication.installedApps.isEmpty()) {
@@ -81,7 +87,7 @@ class SplashActivity : BaseActivity(), CommonView {
                 applicationContext,
                 NotificationListener::class.java
             )
-            //It say to Notification Manager RE-BIND your service to listen notifications again inmediatelly!
+            //It say to Notification Manager RE-BIND your service to listen notifications again immediately!
             requestRebind(componentName)
         }
     }
@@ -177,30 +183,41 @@ class SplashActivity : BaseActivity(), CommonView {
      * 2.0.1 user to 2.0.2 sending token and status to server so we can know user status
      */
     private fun updateUserToken(isPaid:Boolean){
-        Thread{
             if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2)){
               updateTokenApiCall(isPaid)
             }
-        }.start()
     }
 
     /**
      * 2.0.2 users to 2.0.3
      */
     private fun updateTokenApiCall(isPaid: Boolean){
-        RetrofitClient.getApiService().updateCurrentToken(
-            SharedPrefUtils.readString(Constants.PreferenceKeys.FIREBASE_TOKEN),
-            SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY),
-            if (isPaid) "1" else "0",
-            Settings.Secure.getString(
-                contentResolver,
-                Settings.Secure.ANDROID_ID
-            ),
-            TimeZone.getDefault().id,
-            SharedPrefUtils.readInt(
-                Constants.PreferenceKeys.ALARM_COUNT
-            )
-        ).execute()
+            RetrofitClient.getApiService().updateCurrentToken(
+                SharedPrefUtils.readString(Constants.PreferenceKeys.FIREBASE_TOKEN),
+                SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY),
+                if (isPaid) "1" else "0",
+                Settings.Secure.getString(
+                    contentResolver,
+                    Settings.Secure.ANDROID_ID
+                ),
+                TimeZone.getDefault().id,
+                SharedPrefUtils.readInt(
+                    Constants.PreferenceKeys.ALARM_COUNT
+                )
+            ).enqueue(object : Callback<TokenResponse> {
+                override fun onResponse(
+                    call: Call<TokenResponse>,
+                    response: Response<TokenResponse>
+                ) {
+                    if(response.isSuccessful){
+                            SharedPrefUtils.write(Constants.PreferenceKeys.IS_TOKEN_UPDATED, true)
+                    }
+                }
+
+                override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
+
+                }
+            })
     }
 
     override fun onSuccess() {
