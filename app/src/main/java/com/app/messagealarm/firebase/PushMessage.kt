@@ -123,6 +123,7 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
         SharedPrefUtils.write(Constants.PreferenceKeys.FIREBASE_TOKEN, p0)
         /**
          * Know user from which country for new user
+         * When first time app open
          */
          val commonPresenter = CommonPresenter(this)
         commonPresenter.knowUserFromWhichCountry(p0)
