@@ -270,7 +270,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
 
     private fun lookForTablesSize() {
-        alarmAppPresenter.getRequiredTableSize()
+       // alarmAppPresenter.getRequiredTableSize()
         alarmAppPresenter.getSyncedLowerLoaded(this)
     }
 

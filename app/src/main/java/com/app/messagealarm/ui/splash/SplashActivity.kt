@@ -183,7 +183,7 @@ class SplashActivity : BaseActivity(), CommonView {
      * 2.0.1 user to 2.0.2 sending token and status to server so we can know user status
      */
     private fun updateUserToken(isPaid:Boolean){
-            if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2)){
+            if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2)){
               updateTokenApiCall(isPaid)
             }
     }
