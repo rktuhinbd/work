@@ -1,6 +1,7 @@
 package com.app.messagealarm.networking;
 
 import com.app.messagealarm.model.response.LatestInfo;
+import com.app.messagealarm.model.response.RegisterResponse;
 import com.app.messagealarm.model.response.TokenResponse;
 import com.app.messagealarm.model.response.UnknownAppResponse;
 import com.app.messagealarm.model.response.UserInfoGlobal;
@@ -27,10 +28,10 @@ public interface ApiService {
     @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})
     @FormUrlEncoded
     @POST(Constants.API.REGISTER_TOKEN)
-    Call<TokenResponse> registerToken(@Field(Constants.API.Body.TOKEN) String token,
-                                      @Field(Constants.API.Body.COUNTRY) String country,
-                                      @Field(Constants.API.Body.UUID) String uuid,
-                                      @Field(Constants.API.Body.TIME_ZONE)String timeZone
+    Call<RegisterResponse> registerToken(@Field(Constants.API.Body.TOKEN) String token,
+                                         @Field(Constants.API.Body.COUNTRY) String country,
+                                         @Field(Constants.API.Body.UUID) String uuid,
+                                         @Field(Constants.API.Body.TIME_ZONE)String timeZone
                                       );
 
     @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})

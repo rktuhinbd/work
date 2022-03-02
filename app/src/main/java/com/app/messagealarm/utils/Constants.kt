@@ -196,6 +196,7 @@ class Constants {
             const val IS_USER_INFO_SAVED = "is_user_info_saved"
             const val IS_DB_ROLLED_BACK = "is_db_rollback"
             const val IS_TOKEN_UPDATED = "is_token_updated"
+            const val IS_FREELANCER = "is_user_freelancer"
 
         }
     }

@@ -22,6 +22,7 @@ import com.app.messagealarm.BuildConfig
 import com.app.messagealarm.R
 import com.app.messagealarm.common.CommonPresenter
 import com.app.messagealarm.common.CommonView
+import com.app.messagealarm.model.response.RegisterResponse
 import com.app.messagealarm.model.response.TokenResponse
 import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.service.notification_service.NotificationListener
@@ -141,20 +142,37 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
                 ),
                 TimeZone.getDefault().id
             ).also {
-                it.enqueue(object : Callback<TokenResponse> {
+                it.enqueue(object : Callback<RegisterResponse> {
                     override fun onResponse(
-                        call: Call<TokenResponse>,
-                        response: Response<TokenResponse>
+                        call: Call<RegisterResponse>,
+                        response: Response<RegisterResponse>
                     ) {
                         if (response.isSuccessful) {
-                            SharedPrefUtils.write(
-                                Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2,
-                                true
-                            )
+                            /**
+                             * Update the variables of current user with data
+                             */
+                            val registerResponse = response.body()
+                            if(registerResponse?.success!!){
+                                try {
+                                    SharedPrefUtils.write(Constants.PreferenceKeys.IS_FREELANCER,
+                                        registerResponse.data?.isFreelauncer!!
+                                    )
+                                    SharedPrefUtils.write(Constants.PreferenceKeys.IS_PURCHASED,
+                                        registerResponse.data.isPaid!!
+                                    )
+                                    //write others too
+                                    SharedPrefUtils.write(
+                                        Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2,
+                                        true
+                                    )
+                                }catch (e:java.lang.NullPointerException){
+
+                                }
+                            }
                         }
                     }
 
-                    override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
+                    override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
 
                     }
                 })
