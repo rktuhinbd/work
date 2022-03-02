@@ -622,7 +622,6 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
             }catch (e: NullPointerException){
                 //skip the crash
             }
-
         }
 
 
@@ -652,7 +651,6 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
             }
             handler.post(runnable)
         }
-
     }
 
 
