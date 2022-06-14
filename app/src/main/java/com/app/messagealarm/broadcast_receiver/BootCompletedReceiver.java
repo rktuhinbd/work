@@ -27,15 +27,13 @@ public class BootCompletedReceiver extends BroadcastReceiver {
 
 
     private void startMagicService(Context context) {
+        Intent intent = new Intent(context, NotificationListener.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Intent intent = new Intent(context, NotificationListener.class);
             context.startForegroundService(intent);
         } else {
-            Intent intent = new Intent(context, NotificationListener.class);
             context.startService(intent);
         }
     }
-
 
 
     public void tryReconnectService(Context context) {
@@ -43,7 +41,6 @@ public class BootCompletedReceiver extends BroadcastReceiver {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             ComponentName componentName =
                     new ComponentName(context, NotificationListener.class);
-
             //It say to Notification Manager RE-BIND your service to listen notifications again inmediatelly!
             requestRebind(componentName);
         }

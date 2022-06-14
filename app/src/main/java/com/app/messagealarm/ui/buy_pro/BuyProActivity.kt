@@ -47,7 +47,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
         mAdapter = ReviewAdapter(this, generateReviewList());
-        recyclerView.adapter = mAdapter;
+        recyclerView.adapter = mAdapter
 
 
         // Obtain the FirebaseAnalytics instance.

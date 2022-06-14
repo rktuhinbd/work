@@ -72,7 +72,7 @@ class MediaUtils {
                         mediaPlayer!!.setDataSource(mediaPath)
                     } else {
                         val afd =
-                            context.resources.openRawResourceFd(com.app.messagealarm.R.raw.tone)
+                            context.resources.openRawResourceFd(com.app.messagealarm.R.raw.soft_tone)
                         mediaPlayer!!.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
                         afd.close()
                     }
