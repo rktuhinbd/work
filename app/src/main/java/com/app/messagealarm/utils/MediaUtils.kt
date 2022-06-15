@@ -117,6 +117,13 @@ class MediaUtils {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+
+            //start flashing
+            Thread(Runnable {
+                //if(flashing = true)
+              FlashLightUtil.startBlinkingFlash(context)
+            }).start()
+
             //start vibration
             Thread(Runnable {
                 //vibrate
@@ -144,8 +151,9 @@ class MediaUtils {
            return String.format("%.1f", number).toFloat()
         }
 
-        private fun stopVibration() {
+        private fun stopVibrationAndFlash(context: Context) {
             Thread(Runnable {
+                FlashLightUtil.stopBlinkingFlash(context)
                 VibratorUtils.stopVibrate()
             }).start()
         }
@@ -181,10 +189,10 @@ class MediaUtils {
                                     packageName,
                                     appName
                                 )
-                                stopVibration()
+                                stopVibrationAndFlash(context)
                                 break
                             } else {
-                                stopVibration()
+                                stopVibrationAndFlash(context)
                                 mediaPlayer!!.stop()
                                 break
                             }
@@ -214,7 +222,7 @@ class MediaUtils {
                     isStopped = false
                     thread!!.interrupt()
                     thread = null
-                    stopVibration()
+                    stopVibrationAndFlash(context)
                     if(SharedPrefUtils.readString(Constants.PreferenceKeys.MUTE_TIME).trim()
                             .toLowerCase(Locale.getDefault()) != Constants.Default.NEVER.trim().toLowerCase(
                             Locale.getDefault()
