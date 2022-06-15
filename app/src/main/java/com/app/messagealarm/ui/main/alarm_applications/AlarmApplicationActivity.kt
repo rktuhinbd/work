@@ -640,8 +640,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 .create()
 
 
-            speedDial.addActionItem(itemTwo)
-            speedDial.addActionItem(itemOne)
+            try{
+                speedDial.addActionItem(itemTwo)
+                speedDial.addActionItem(itemOne)
+            }catch (e:NullPointerException){
+
+            }
 
             // Set option fabs clicklisteners.
             speedDial.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
