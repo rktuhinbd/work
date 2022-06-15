@@ -1,0 +1,38 @@
+<layer-list xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:top="17dp">
+
+        <shape android:shape="rectangle">
+
+            <solid android:color="@android:color/transparent" />
+
+            <!--  <corners android:radius="8dp" />-->
+
+            <padding android:top="17dp" />
+
+        </shape>
+
+    </item>
+
+    <item
+        android:width="16dp"
+        android:height="16dp"
+        android:start="16dp"
+        android:gravity="start"
+        android:top="-8dp"
+        tools:targetApi="m">
+
+        <rotate android:fromDegrees="45">
+
+            <shape android:shape="rectangle">
+
+                <solid  android:color="#1436F5" />
+
+            </shape>
+
+        </rotate>
+
+    </item>
+
+</layer-list>

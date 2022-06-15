@@ -22,6 +22,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources
@@ -47,6 +48,7 @@ import com.app.messagealarm.ui.setting.SettingsActivity
 import com.app.messagealarm.ui.widget.BottomSheetFragmentLang
 import com.app.messagealarm.ui.widget.TutorialBottomSheetDialog
 import com.app.messagealarm.utils.*
+import com.app.messagealarm.window.WindowManagerService
 import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -74,6 +76,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     val bottomSheetModel = AddApplicationOption()
     val REQUEST_CODE_PICK_AUDIO = 1
     var menu: Menu? = null
+    val CODE_DRAW_OVER_OTHER_APP_PERMISSION = 111
 
     private val alarmAppPresenter = AlarmApplicationPresenter(this)
 
@@ -102,22 +105,27 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         }
     }
 
-    private fun showFirstSavedAnimation(){
+    private fun showFirstSavedAnimation() {
         viewKonfetti.build()
             .setDirection(0.0, 359.0)
             .setSpeed(1f, 2f)
             .setFadeOutEnabled(true)
             .setTimeToLive(1000L)
-            .addColors(Color.parseColor("#FF3F62"),
+            .addColors(
+                Color.parseColor("#FF3F62"),
                 Color.parseColor("#307E45")
+            )
+            .addShapes(
+                Shape.DrawableShape(
+                    ResourcesCompat.getDrawable(
+                        resources, R.drawable.ic_leaf, null
+                    )!!
+                ), Shape.DrawableShape(
+                    ResourcesCompat.getDrawable(
+                        resources, R.drawable.ic_flower, null
+                    )!!
                 )
-            .addShapes(Shape.DrawableShape(ResourcesCompat.getDrawable(
-                resources, R.drawable.ic_leaf, null
-            )!!)
-                ,Shape.DrawableShape(ResourcesCompat.getDrawable(
-                resources, R.drawable.ic_flower, null
-            )!!
-            ))
+            )
             .addSizes(Size(18))
             .setPosition(-50f, viewKonfetti.width + 50f, -50f, -50f)
             .streamFor(100, 2500)
@@ -127,7 +135,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     /**
      * show congratulations dialog
      */
-    private fun showCongratulationDialog(){
+    private fun showCongratulationDialog() {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
@@ -138,15 +146,17 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         val appEntity = (rv_application_list?.adapter as AddedAppsListAdapter).getItem(
             0
         )
-        val html = String.format("<b>%s</b> is added successfully! You will get alarmed when " +
-                "there is a message from anyone!", appEntity.appName)
+        val html = String.format(
+            "<b>%s</b> is added successfully! You will get alarmed when " +
+                    "there is a message from anyone!", appEntity.appName
+        )
         textView.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)
         } else {
             Html.fromHtml(html)
         }
         materialButton.setOnClickListener {
-            if(dialog.isShowing){
+            if (dialog.isShowing) {
                 dialog.dismiss()
             }
         }
@@ -270,14 +280,15 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
 
     private fun lookForTablesSize() {
-       // alarmAppPresenter.getRequiredTableSize()
+        // alarmAppPresenter.getRequiredTableSize()
         alarmAppPresenter.getSyncedLowerLoaded(this)
     }
 
     private fun lookForAlarmApplication() {
-        if(!SharedPrefUtils.contains(Constants.PreferenceKeys.SOUND_LEVEL) && !SharedPrefUtils.contains(
+        if (!SharedPrefUtils.contains(Constants.PreferenceKeys.SOUND_LEVEL) && !SharedPrefUtils.contains(
                 Constants.PreferenceKeys.DEFAULT_SOUND_LEVEL
-        )){
+            )
+        ) {
             AndroidUtils.getDefaultSoundLevel()
         }
         alarmAppPresenter.getApplicationList()
@@ -415,14 +426,25 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     menu?.getItem(0)?.isVisible = false
                 }
             }
-        }else if(requestCode == Constants.ACTION.ACTION_SAVE_APPLICATION){
-            if(resultCode == Activity.RESULT_OK){
-                if(rv_application_list?.adapter?.itemCount!! == 0){
-                     showFirstSavedAnimation()
-                Handler(Looper.myLooper()!!).postDelayed({
-                    showCongratulationDialog()
-                },2500)
+        } else if (requestCode == Constants.ACTION.ACTION_SAVE_APPLICATION) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (rv_application_list?.adapter?.itemCount!! == 0) {
+                    showFirstSavedAnimation()
+                    Handler(Looper.myLooper()!!).postDelayed({
+                        showCongratulationDialog()
+                    }, 2500)
                 }
+            }
+        } else if (requestCode == CODE_DRAW_OVER_OTHER_APP_PERMISSION) {
+            //Check if the permission is granted or not.
+            if (resultCode == RESULT_OK) {
+                startWindowManager()
+            } else { //Permission is not available
+                Toast.makeText(
+                    this,
+                    "Draw over other app permission not available.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -557,9 +579,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         fab_button_add_application?.setOnClickListener {
             if (!isPurchased()) {
                 if (rv_application_list?.adapter?.itemCount!! < 3) {
-                    startActivityForResult(Intent(this, AddApplicationActivity::class.java),
+                    startActivityForResult(
+                        Intent(this, AddApplicationActivity::class.java),
                         Constants.ACTION.ACTION_SAVE_APPLICATION
-                        )
+                    )
                 } else {
                     Toasty.info(this, "Please buy pro version to add more apps!").show()
                     //one app added now take user to buy
@@ -570,9 +593,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     )
                 }
             } else {
-                startActivityForResult(Intent(this, AddApplicationActivity::class.java),
+                startActivityForResult(
+                    Intent(this, AddApplicationActivity::class.java),
                     Constants.ACTION.ACTION_SAVE_APPLICATION
-                    )
+                )
             }
         }
 
@@ -640,10 +664,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 .create()
 
 
-            try{
+            try {
                 speedDial.addActionItem(itemTwo)
                 speedDial.addActionItem(itemOne)
-            }catch (e:NullPointerException){
+            } catch (e: NullPointerException) {
 
             }
 
@@ -651,8 +675,25 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             speedDial.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
                 when (actionItem.id) {
                     R.id.fab_action1 -> {
-                        speedDial.close()
-                        showVideoTutorial()
+//                        speedDial.close()
+//                        showVideoTutorial()
+// TODO: Need to uncomment - Mortuza
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(
+                                this
+                            )
+                        ) {
+                            //If the draw over permission is not available open the settings screen
+                            //to grant the permission.
+                            val intent = Intent(
+                                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                                Uri.parse("package:$packageName")
+                            )
+                            startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION)
+                        } else {
+                            startWindowManager()
+                        }
+
+
                         return@OnActionSelectedListener true // false will close it without animation
                     }
                     R.id.fab_action2 -> {
@@ -765,6 +806,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                             )
                         }
                     }
+
                     override fun onNegative() {
 
                     }
@@ -810,14 +852,15 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
      * @Shutdown: By MK at 15th Jun 22
      */
 
-    private fun showLowVolumeWarning(){
-        if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED) &&
-            SharedPrefUtils.readInt(Constants.PreferenceKeys.SHOW_SOUND_WARNING_COUNT)  <
+    private fun showLowVolumeWarning() {
+        if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED) &&
+            SharedPrefUtils.readInt(Constants.PreferenceKeys.SHOW_SOUND_WARNING_COUNT) <
+            SharedPrefUtils.readInt(Constants.PreferenceKeys.SHOW_PRO_DIALOG_COUNT)
+        ) {
+            SharedPrefUtils.write(
+                Constants.PreferenceKeys.SHOW_SOUND_WARNING_COUNT,
                 SharedPrefUtils.readInt(Constants.PreferenceKeys.SHOW_PRO_DIALOG_COUNT)
-                ){
-                    SharedPrefUtils.write(Constants.PreferenceKeys.SHOW_SOUND_WARNING_COUNT,
-                            SharedPrefUtils.readInt(Constants.PreferenceKeys.SHOW_PRO_DIALOG_COUNT)
-                        )
+            )
             val dialog = Dialog(this)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
@@ -825,10 +868,11 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             dialog.setContentView(R.layout.layout_dialog_warning)
             val txtMsg = dialog.findViewById<TextView
                     >(R.id.text_warning_sub_title)
-            val html = String.format("Your alarm volume getting low by : <font color='red'><b>- %d%%</b></font>",
+            val html = String.format(
+                "Your alarm volume getting low by : <font color='red'><b>- %d%%</b></font>",
                 (SharedPrefUtils.readInt(Constants.PreferenceKeys.DEFAULT_SOUND_LEVEL) -
-                       SharedPrefUtils.readInt(Constants.PreferenceKeys.SOUND_LEVEL))
-                )
+                        SharedPrefUtils.readInt(Constants.PreferenceKeys.SOUND_LEVEL))
+            )
             txtMsg?.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)
             } else {
@@ -836,7 +880,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             }
             val closeButton = dialog.findViewById<FloatingActionButton>(R.id.fab_close_warning)
             closeButton.setOnClickListener {
-                if(dialog.isShowing){
+                if (dialog.isShowing) {
                     dialog.dismiss()
                 }
             }
@@ -850,8 +894,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             }
         }
     }
-
-
 
 
     @SuppressLint("SetTextI18n")
@@ -938,18 +980,19 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 }
                 if (!dialog.isShowing) {
                     dialog.show()
-                    SharedPrefUtils.write(Constants.PreferenceKeys.SHOW_PRO_DIALOG_COUNT,
-                            SharedPrefUtils.readInt(Constants.PreferenceKeys.SHOW_PRO_DIALOG_COUNT) + 1
-                        )
+                    SharedPrefUtils.write(
+                        Constants.PreferenceKeys.SHOW_PRO_DIALOG_COUNT,
+                        SharedPrefUtils.readInt(Constants.PreferenceKeys.SHOW_PRO_DIALOG_COUNT) + 1
+                    )
                 }
             }
         }
         /**
          * Turned off Sound warning by MK at 15th Jun 22
          */
-    /*else{
-            showLowVolumeWarning()
-        }*/
+        /*else{
+                showLowVolumeWarning()
+            }*/
     }
 
 
@@ -1195,6 +1238,30 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     override fun onPurchasesUpdated(p0: BillingResult, p1: MutableList<Purchase>?) {
 
+    }
+
+
+    /**
+     * FOR TESTING THE ALARM WINDOW
+     * */
+
+    private fun startWindowManager() {
+        val intent = Intent(this@AlarmApplicationActivity, WindowManagerService::class.java)
+//        intent.putExtra(Constants.IntentKeys.NUMBER_OF_PLAY, app.numberOfPlay)
+        intent.putExtra(Constants.IntentKeys.APP_NAME, "WhatsApp")
+//        intent.putExtra(Constants.IntentKeys.IS_VIBRATE, app.isVibrateOnAlarm)
+        intent.putExtra(Constants.IntentKeys.PACKAGE_NAME, "com.whatsapp")
+//        intent.putExtra(Constants.IntentKeys.TONE, tone)
+//        intent.putExtra(Constants.IntentKeys.IS_JUST_VIBRATE, app.isJustVibrate)
+//        intent.putExtra(Constants.IntentKeys.IMAGE_PATH, app.bitmapPath)
+        intent.putExtra(Constants.IntentKeys.TITLE, "Title")
+        intent.putExtra(Constants.IntentKeys.DESC, "Description")
+//        intent.putExtra(Constants.IntentKeys.SOUND_LEVEL, app.sound_level)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+        startService(intent)
+        finish()
     }
 
 
