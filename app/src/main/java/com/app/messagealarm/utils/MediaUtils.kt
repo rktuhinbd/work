@@ -16,6 +16,7 @@ import com.app.messagealarm.utils.AndroidUtils.Companion.isServiceRunning
 import com.app.messagealarm.utils.SharedPrefUtils.write
 import java.io.IOException
 import java.util.*
+import kotlin.math.ln
 
 
 class MediaUtils {
@@ -71,13 +72,13 @@ class MediaUtils {
                         mediaPlayer!!.setDataSource(mediaPath)
                     } else {
                         val afd =
-                            context.resources.openRawResourceFd(com.app.messagealarm.R.raw.alarm_tone)
+                            context.resources.openRawResourceFd(com.app.messagealarm.R.raw.soft_tone)
                         mediaPlayer!!.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
                         afd.close()
                     }
                     if (!isJustVibrate || (!isJustVibrate && !isVibrate)) {
                         val volume =
-                            (1 - Math.log((MAX_VOLUME - soundLevel).toDouble()) / Math.log(
+                            (1 - ln((MAX_VOLUME - soundLevel).toDouble()) / ln(
                                 MAX_VOLUME.toDouble()
                             )).toFloat()
                         mediaPlayer!!.setVolume(volume, volume)

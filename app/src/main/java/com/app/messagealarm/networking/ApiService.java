@@ -1,6 +1,7 @@
 package com.app.messagealarm.networking;
 
 import com.app.messagealarm.model.response.LatestInfo;
+import com.app.messagealarm.model.response.RegisterResponse;
 import com.app.messagealarm.model.response.TokenResponse;
 import com.app.messagealarm.model.response.UnknownAppResponse;
 import com.app.messagealarm.model.response.UserInfoGlobal;
@@ -27,10 +28,10 @@ public interface ApiService {
     @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})
     @FormUrlEncoded
     @POST(Constants.API.REGISTER_TOKEN)
-    Call<TokenResponse> registerToken(@Field(Constants.API.Body.TOKEN) String token,
-                                      @Field(Constants.API.Body.COUNTRY) String country
-                                      //UUID
-                                      //TIME_ZONE
+    Call<RegisterResponse> registerToken(@Field(Constants.API.Body.TOKEN) String token,
+                                         @Field(Constants.API.Body.COUNTRY) String country,
+                                         @Field(Constants.API.Body.UUID) String uuid,
+                                         @Field(Constants.API.Body.TIME_ZONE)String timeZone
                                       );
 
     @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})
@@ -48,7 +49,6 @@ public interface ApiService {
                                               @Field(Constants.API.Body.PACKAGE_NAME) String packageName,
                                               @Field(Constants.API.Body.TOKEN) String token
                                               );
-
     /**
      * For version 2.0.2 we are adding firebase token in the api
      * @param receipt
@@ -78,9 +78,10 @@ public interface ApiService {
     @Headers({Constants.API.ResponseFormat.JSON_RESPONSE})
     @GET(Constants.API.LATEST_VERSION)
     Call<LatestInfo> getLatestVersion(
+            //token
             //ALARM_COUNT
             //SOUND_LEVEL
-            //OFFER_CLAIMED
+            //DECLINED OFFER
             //PRO_DIALOG_SHOWN
             //IS_FREELANCER
             //UUID
@@ -95,10 +96,10 @@ public interface ApiService {
     Call<TokenResponse> updateCurrentToken(
             @Field(Constants.API.Body.USER_TOKEN) String userToken,
             @Field(Constants.API.Body.COUNTRY) String country,
-            @Field(Constants.API.Body.IS_PAID) String isPaid
-            //UUID
-            //ALARM_COUNT
-            //TIME_ZONE
+            @Field(Constants.API.Body.IS_PAID) String isPaid,
+            @Field(Constants.API.Body.UUID) String uuid,
+            @Field(Constants.API.Body.TIME_ZONE)String timeZone,
+            @Field(Constants.API.Body.ALARM_COUNT) Integer alarmCount
     );
 
     /**

@@ -97,7 +97,6 @@
                 android:visibility="invisible" />
 
             <!--Option area-->
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -106,7 +105,6 @@
                 android:text="Main Options"
                 android:textColor="@color/colorAccent"
                 android:textSize="14sp" />
-
 
             <!--Repeat options-->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -182,7 +180,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!--Ringtone option-->
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -257,6 +254,92 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!--Flash on alarm-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:id="@+id/view_flash"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?selectableItemBackground"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:targetApi="m" />
+
+                <ImageView
+                    android:id="@+id/img_flash"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:padding="3dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/flashlight"
+                    app:layout_constraintBottom_toBottomOf="@id/view_flash"
+                    app:layout_constraintEnd_toEndOf="@id/view_flash"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="@id/view_flash"
+                    app:layout_constraintTop_toTopOf="@id/view_flash" />
+
+
+                <TextView
+                    android:id="@+id/txt_flash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Beep flashlight with alarm"
+                    android:textColor="@color/colorTextRegular"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toEndOf="@id/img_flash"
+                    app:layout_constraintTop_toTopOf="@id/view_flash"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+
+                <pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/txt_pro_flash"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="8dp"
+                    android:padding="7dp"
+                    android:src="@drawable/ic_premium_gold"
+                    app:layout_constraintBottom_toBottomOf="@id/view_flash"
+                    app:layout_constraintEnd_toStartOf="@id/switch_flash"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toEndOf="@id/txt_flash"
+                    app:layout_constraintTop_toTopOf="@id/view_flash" />
+
+                <Switch
+                    android:id="@+id/switch_flash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:trackTint="@color/track_color"
+                    app:layout_constraintBottom_toBottomOf="@id/view_flash"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintStart_toEndOf="@id/txt_flash"
+                    app:layout_constraintTop_toTopOf="@id/view_flash"
+                    tools:ignore="UseSwitchCompatOrMaterialXml"
+                    tools:targetApi="m" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/view_flash" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!--Vibrate on alarm-->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -345,9 +428,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
             <!--just vibrate no sound-->
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -433,7 +514,6 @@
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
 
             <!--sound level-->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -853,7 +933,6 @@
                 android:textColor="@color/colorAccent"
                 android:textSize="14sp" />
 
-
             <!--Sender name-->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_sender_name"
@@ -945,7 +1024,6 @@
                     app:layout_constraintTop_toBottomOf="@id/view_sender_name" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
 
             <!--Exclude names-->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -1040,7 +1118,6 @@
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
 
             <!--Message body-->
 

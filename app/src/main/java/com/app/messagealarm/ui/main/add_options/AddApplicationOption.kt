@@ -1732,6 +1732,8 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         )
                         /**
                          * Check for latest version
+                         * @date 27th Feb 22
+                         * This call going on every single alarm to sync the data
                          */
                         addApplicationOptionPresenter?.checkForLatestUpdate()
 

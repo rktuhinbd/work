@@ -125,6 +125,42 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
 
     /**
+     * show congratulations dialog
+     */
+    private fun showCongratulationDialog(){
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_congrats_layout)
+        val materialButton = dialog.findViewById<MaterialButton>(R.id.text_done)
+        val textView = dialog.findViewById<TextView>(R.id.text_sub_message)
+        val appEntity = (rv_application_list?.adapter as AddedAppsListAdapter).getItem(
+            0
+        )
+        val html = String.format("<b>%s</b> is added successfully! You will get alarmed when " +
+                "there is a message from anyone!", appEntity.appName)
+        textView.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)
+        } else {
+            Html.fromHtml(html)
+        }
+        materialButton.setOnClickListener {
+            if(dialog.isShowing){
+                dialog.dismiss()
+            }
+        }
+        val window: Window = dialog.window!!
+        window.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        if (!dialog.isShowing) {
+            dialog.show()
+        }
+    }
+
+    /**
      * handle push notification
      */
     private fun handlePushNotificationData() {
@@ -234,7 +270,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
 
     private fun lookForTablesSize() {
-        alarmAppPresenter.getRequiredTableSize()
+       // alarmAppPresenter.getRequiredTableSize()
         alarmAppPresenter.getSyncedLowerLoaded(this)
     }
 
@@ -381,7 +417,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             }
         }else if(requestCode == Constants.ACTION.ACTION_SAVE_APPLICATION){
             if(resultCode == Activity.RESULT_OK){
-                showFirstSavedAnimation()
+                if(rv_application_list?.adapter?.itemCount!! == 0){
+                     showFirstSavedAnimation()
+                Handler(Looper.myLooper()!!).postDelayed({
+                    showCongratulationDialog()
+                },2500)
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -599,8 +640,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 .create()
 
 
-            speedDial.addActionItem(itemTwo)
-            speedDial.addActionItem(itemOne)
+            try{
+                speedDial.addActionItem(itemTwo)
+                speedDial.addActionItem(itemOne)
+            }catch (e:NullPointerException){
+
+            }
 
             // Set option fabs clicklisteners.
             speedDial.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
@@ -757,11 +802,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         }
     }
 
-
-
-
     /**
      * low sound volume warning
+     * BUG: If comes from previous version it's showing sound level reduced by -0 percent, Note:
+     * As the previous version doesn't have some variables
+     * Note: Same for PRO Dialog showing
+     * @Shutdown: By MK at 15th Jun 22
      */
 
     private fun showLowVolumeWarning(){
@@ -897,9 +943,13 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                         )
                 }
             }
-        }else{
-            showLowVolumeWarning()
         }
+        /**
+         * Turned off Sound warning by MK at 15th Jun 22
+         */
+    /*else{
+            showLowVolumeWarning()
+        }*/
     }
 
 

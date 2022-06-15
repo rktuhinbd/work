@@ -9,7 +9,7 @@ import java.lang.NullPointerException
 class FirstSplashPresenter(private val alarmApplicationView: FirstSplashView) {
     fun getRequiredTableSize() {
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
-        Thread(Runnable {
+        Thread {
             try {
                 val appSize = appDatabase.appDao().totalCountOfApp
                 val langSize = appDatabase.languageDao().totalCountOfLanguage
@@ -26,6 +26,6 @@ class FirstSplashPresenter(private val alarmApplicationView: FirstSplashView) {
             } catch (e: NullPointerException) {
 
             }
-        }).start()
+        }.start()
     }
 }

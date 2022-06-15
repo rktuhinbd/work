@@ -17,7 +17,6 @@ class Constants {
             const val APP_SIZE = "app_size"
             const val LANG_SIZE = "lang_size"
             const val CONSTRAIN_SIZE = "constrain_size"
-
         }
     }
 
@@ -195,6 +194,8 @@ class Constants {
             const val CURRENCY_SYMBOL = "currency_symbol"
             const val IS_USER_INFO_SAVED = "is_user_info_saved"
             const val IS_DB_ROLLED_BACK = "is_db_rollback"
+            const val IS_TOKEN_UPDATED = "is_token_updated"
+            const val IS_FREELANCER = "is_user_freelancer"
 
         }
     }
@@ -260,6 +261,9 @@ class Constants {
                 const val SIGNATURE = "signature"
                 const val COUNTRY = "country"
                 const val IS_PAID = "is_paid"
+                const val UUID = "uuid"
+                const val TIME_ZONE = "time_zone"
+                const val ALARM_COUNT = "alarm_count"
             }
         }
         class ResponseFormat{

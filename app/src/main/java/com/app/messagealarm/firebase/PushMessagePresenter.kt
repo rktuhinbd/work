@@ -8,16 +8,16 @@ class PushMessagePresenter(private val pushMessageView: PushMessageView)  {
 
     fun cleanDb(){
         val appdatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
-        Thread(Runnable {
+        Thread {
             try {
                 appdatabase.appConstrainDao().cleanAppConstrain()
                 appdatabase.appDao().cleanMessagingApp()
                 appdatabase.languageDao().cleanLanguage()
                 pushMessageView.onDbCleanSuccess()
-            }catch (e:SQLiteException){
+            } catch (e: SQLiteException) {
 
             }
-        }).start()
+        }.start()
     }
 
 }

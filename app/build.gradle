@@ -14,7 +14,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 13
-        versionName "debug"
+        versionName "2.0.3"
         vectorDrawables.useSupportLibrary = true // For srcCompat
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -67,8 +67,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     // Timber (Replacement of log)
     implementation 'com.jakewharton.timber:timber:4.7.1'
-    // App data storage
-    debugImplementation 'com.awesomedroidapps:inappstoragereader:1.0.2'
     // RecyclerView
     implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation "androidx.recyclerview:recyclerview-selection:1.0.0"
@@ -84,8 +82,8 @@ dependencies {
     implementation "androidx.transition:transition-ktx:1.4.0"
     implementation 'org.apache.commons:commons-lang3:3.4'
     //room
-    implementation "androidx.room:room-runtime:2.2.3"
-    annotationProcessor "androidx.room:room-compiler:2.2.3"
+    implementation "androidx.room:room-runtime:2.4.2"
+    annotationProcessor "androidx.room:room-compiler:2.4.2"
     implementation('dev.doubledot.doki:library:0.0.1@aar') {
         transitive = true
     }
@@ -128,7 +126,9 @@ dependencies {
     implementation 'net.frakbot:jumpingbeans:1.3.0'
     implementation "com.leinardi.android:speed-dial:3.2.0"
     implementation 'nl.dionsegijn:konfetti:1.3.2'
-
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    // App data storage
+    debugImplementation 'com.awesomedroidapps:inappstoragereader:1.0.2'
 
 }

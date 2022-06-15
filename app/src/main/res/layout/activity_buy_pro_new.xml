@@ -7,13 +7,13 @@
     android:layout_height="match_parent"
     android:layout_alignParentStart="true"
     android:layout_alignParentTop="true"
-    android:background="#55b9e3"
+    android:background="#F5C75D"
     android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="120dp">
+        android:layout_height="140dp">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsingToolbar"
@@ -58,8 +58,8 @@
 
                 <ImageView
                     android:id="@+id/image_king"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:padding="5dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/header_top"
@@ -309,6 +309,7 @@
                 android:layout_marginTop="16dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_no_ads"
+                android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@+id/txt_ads"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -320,6 +321,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
+                android:visibility="gone"
                 android:fontFamily="@font/roboto_light"
                 android:text="@string/better_exprience"
                 android:textAlignment="center"
