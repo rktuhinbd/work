@@ -803,6 +803,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
      * BUG: If comes from previous version it's showing sound level reduced by -0 percent, Note:
      * As the previous version doesn't have some variables
      * Note: Same for PRO Dialog showing
+     * @Shutdown: By MK at 15th Jun 22
      */
 
     private fun showLowVolumeWarning(){
@@ -938,9 +939,13 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                         )
                 }
             }
-        }else{
-            showLowVolumeWarning()
         }
+        /**
+         * Turned off Sound warning by MK at 15th Jun 22
+         */
+    /*else{
+            showLowVolumeWarning()
+        }*/
     }
 
 
