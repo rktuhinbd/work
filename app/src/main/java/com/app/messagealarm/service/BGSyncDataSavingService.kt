@@ -17,7 +17,7 @@ class BGSyncDataSavingService {
         fun saveData(syncResponse: SyncResponse){
             val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
             //save language
-            Thread(Runnable {
+            Thread {
                 try {
                     //init language entity
                     val languageList = syncResponse.allLanguage
@@ -35,10 +35,11 @@ class BGSyncDataSavingService {
 
                 } catch (e: NullPointerException) {
 
-                } catch (e: InterruptedException){
+                } catch (e: InterruptedException) {
 
                 }
-            }).start()
+
+            }.start()
 
             //save app
             Thread(Runnable {

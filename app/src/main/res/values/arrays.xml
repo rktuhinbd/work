@@ -1,4 +1,5 @@
 <resources>
+
     <!-- Reply Preference -->
     <string-array name="theme_entries">
         <item>Light</item>
