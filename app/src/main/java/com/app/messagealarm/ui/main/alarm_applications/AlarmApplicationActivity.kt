@@ -678,20 +678,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 //                        speedDial.close()
 //                        showVideoTutorial()
 // TODO: Need to uncomment - Mortuza
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(
-                                this
-                            )
-                        ) {
-                            //If the draw over permission is not available open the settings screen
-                            //to grant the permission.
-                            val intent = Intent(
-                                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                                Uri.parse("package:$packageName")
-                            )
-                            startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION)
-                        } else {
-                            startWindowManager()
-                        }
+                        testWindowManager()
 
 
                         return@OnActionSelectedListener true // false will close it without animation
@@ -1245,18 +1232,34 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
      * FOR TESTING THE ALARM WINDOW
      * */
 
+    private fun testWindowManager(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(
+                this
+            )
+        ) {
+            val intent = Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:$packageName")
+            )
+            startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION)
+        } else {
+            startWindowManager()
+        }
+    }
+
     private fun startWindowManager() {
         val intent = Intent(this@AlarmApplicationActivity, WindowManagerService::class.java)
-//        intent.putExtra(Constants.IntentKeys.NUMBER_OF_PLAY, app.numberOfPlay)
         intent.putExtra(Constants.IntentKeys.APP_NAME, "WhatsApp")
-//        intent.putExtra(Constants.IntentKeys.IS_VIBRATE, app.isVibrateOnAlarm)
         intent.putExtra(Constants.IntentKeys.PACKAGE_NAME, "com.whatsapp")
-//        intent.putExtra(Constants.IntentKeys.TONE, tone)
-//        intent.putExtra(Constants.IntentKeys.IS_JUST_VIBRATE, app.isJustVibrate)
-//        intent.putExtra(Constants.IntentKeys.IMAGE_PATH, app.bitmapPath)
-        intent.putExtra(Constants.IntentKeys.TITLE, "Title")
-        intent.putExtra(Constants.IntentKeys.DESC, "Description")
-//        intent.putExtra(Constants.IntentKeys.SOUND_LEVEL, app.sound_level)
+        intent.putExtra(Constants.IntentKeys.TITLE, "Sender name")
+        intent.putExtra(Constants.IntentKeys.DESC, "says hi")
+
+        intent.putExtra(Constants.IntentKeys.NUMBER_OF_PLAY, 1)
+        intent.putExtra(Constants.IntentKeys.IS_VIBRATE, true)
+//        intent.putExtra(Constants.IntentKeys.TONE, "")
+        intent.putExtra(Constants.IntentKeys.IS_JUST_VIBRATE, false)
+        intent.putExtra(Constants.IntentKeys.IMAGE_PATH, "/storage/emulated/0/Android/data/com.app.messagealarm/files/.message_alarm/com.whatsapp.png")
+        intent.putExtra(Constants.IntentKeys.SOUND_LEVEL,100)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
