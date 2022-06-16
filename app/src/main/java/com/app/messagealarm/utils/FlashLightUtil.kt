@@ -62,7 +62,7 @@ class FlashLightUtil {
                     turnOn(context)
                 }
                 try {
-                    Thread.sleep(200)
+                    Thread.sleep(150)
                 } catch (e: InterruptedException) {
 
                 }
