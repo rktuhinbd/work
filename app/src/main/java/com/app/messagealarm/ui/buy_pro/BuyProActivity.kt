@@ -86,7 +86,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
 
         billingClient!!.startConnection(object : BillingClientStateListener {
             override fun onBillingServiceDisconnected() {
-                Log.e("BILLING_", "DISCONNECTED")
+
             }
 
             override fun onBillingSetupFinished(billingResult: BillingResult) {

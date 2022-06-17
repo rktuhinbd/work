@@ -27,10 +27,10 @@ class ReviewAdapter(val context: Context, val reviewDataList: List<MyReviewView>
 
     override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
 
-        holder.circleImageView.setImageResource(reviewDataList.get(position).circleImage)
-        holder.reviewUserName.text = reviewDataList.get(position).name
-        holder.imageFlag.setImageResource(reviewDataList.get(position).imageFlag)
-        holder.reviewContentText.text = reviewDataList.get(position).reviewContent
+        holder.circleImageView.setImageResource(reviewDataList[position].circleImage)
+        holder.reviewUserName.text = reviewDataList[position].name
+        holder.imageFlag.setImageResource(reviewDataList[position].imageFlag)
+        holder.reviewContentText.text = reviewDataList[position].reviewContent
 
     }
 
