@@ -86,20 +86,21 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
 
         billingClient!!.startConnection(object : BillingClientStateListener {
             override fun onBillingServiceDisconnected() {
-
+                Log.e("BILLING_", "DISCONNECTED")
             }
 
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     initiatePurchase()
-                    val queryPurchase = billingClient!!.queryPurchases(SkuType.INAPP)
-                    val queryPurchases =
-                        queryPurchase.purchasesList
-                    if (queryPurchases != null && queryPurchases.size > 0) {
-                        handlePurchases(queryPurchases)
-                    } else {
-                        setIsPurchased(false)
-                    }
+                   billingClient!!.queryPurchasesAsync(SkuType.INAPP
+                   ) { p0, p1 ->
+                       if (p1.size > 0) {
+                           handlePurchases(p1)
+                       } else {
+                           setIsPurchased(false)
+                       }
+                   }
+
 
                 }
             }
@@ -126,60 +127,74 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                     flowParams = BillingFlowParams.newBuilder()
                         .setSkuDetails(skuDetailsList[0])
                         .build()
-                    //set price
-                    if (SharedPrefUtils.contains(Constants.PreferenceKeys.CURRENCY_CODE) &&
-                        SharedPrefUtils.contains(Constants.PreferenceKeys.CURRENCY_SYMBOL)
-                        && skuDetailsList[0].priceCurrencyCode ==
-                        SharedPrefUtils.readString(Constants.PreferenceKeys.CURRENCY_CODE)
-                    ) {
-                        try {
-                            btn_buy_pro_user?.text =
-                                "Buy for ${skuDetailsList[0].price} " + SharedPrefUtils.readString(
-                                    Constants.PreferenceKeys.CURRENCY_SYMBOL
-                                )
-                        } catch (e: Exception) {
+                    runOnUiThread {
+                        //set price
+                        if (SharedPrefUtils.contains(Constants.PreferenceKeys.CURRENCY_CODE) &&
+                            SharedPrefUtils.contains(Constants.PreferenceKeys.CURRENCY_SYMBOL)
+                            && skuDetailsList[0].priceCurrencyCode ==
+                            SharedPrefUtils.readString(Constants.PreferenceKeys.CURRENCY_CODE)
+                        ) {
+                            try {
+                                btn_buy_pro_user?.text =
+                                    "Buy for ${skuDetailsList[0].price} " + SharedPrefUtils.readString(
+                                        Constants.PreferenceKeys.CURRENCY_SYMBOL
+                                    )
+                            } catch (e: Exception) {
+                                btn_buy_pro_user?.text =
+                                    "Buy for ${skuDetailsList[0].price}"
+                            }
+                        } else {
                             btn_buy_pro_user?.text =
                                 "Buy for ${skuDetailsList[0].price}"
                         }
-                    } else {
-                        btn_buy_pro_user?.text =
-                            "Buy for ${skuDetailsList[0].price}"
+                        progress_purchase?.visibility = View.GONE
                     }
-                    progress_purchase?.visibility = View.GONE
                 } else {
                     //try to add item/product id "purchase" inside managed product in google play console
-                    Toast.makeText(
-                        applicationContext,
-                        "Purchase Item not Found",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                        runOnUiThread {
+                            Toast.makeText(
+                                applicationContext,
+                                "Purchase Item not Found",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                 }
             } else {
-                Toast.makeText(
-                    applicationContext,
-                    " Error " + billingResult.debugMessage, Toast.LENGTH_SHORT
-                ).show()
+                runOnUiThread {
+                    Toast.makeText(
+                        applicationContext,
+                        " Error " + billingResult.debugMessage, Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }
 
+
+    /**
+     * @Deprecated purchase.sku to purhchase.sku[0]
+     */
     fun handlePurchases(purchases: List<Purchase>) {
         for (purchase in purchases) {
             //if item is purchased
-            if (Constants.Purchase.PRODUCT_ID == purchase.sku && purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                 // buyProPresenter?.verifyPurchase(this,purchase.originalJson, purchase.signature, purchase)
-            } else if (Constants.Purchase.PRODUCT_ID == purchase.sku && purchase.purchaseState == Purchase.PurchaseState.PENDING) {
-                Toast.makeText(
-                    applicationContext,
-                    "Purchase is Pending. Please complete Transaction", Toast.LENGTH_SHORT
-                ).show()
-            } else if (Constants.Purchase.PRODUCT_ID == purchase.sku && purchase.purchaseState == Purchase.PurchaseState.UNSPECIFIED_STATE) {
+            if (Constants.Purchase.PRODUCT_ID == purchase.skus[0] && purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+                // buyProPresenter?.verifyPurchase(this,purchase.originalJson, purchase.signature, purchase)
+            } else if (Constants.Purchase.PRODUCT_ID == purchase.skus[0] && purchase.purchaseState == Purchase.PurchaseState.PENDING) {
+                runOnUiThread {
+                    Toast.makeText(
+                        applicationContext,
+                        "Purchase is Pending. Please complete Transaction", Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } else if (Constants.Purchase.PRODUCT_ID == purchase.skus[0] && purchase.purchaseState == Purchase.PurchaseState.UNSPECIFIED_STATE) {
                 setIsPurchased(false)
-                Toast.makeText(
-                    applicationContext,
-                    "Purchase Status Unknown",
-                    Toast.LENGTH_SHORT
-                ).show()
+                runOnUiThread {
+                    Toast.makeText(
+                        applicationContext,
+                        "Purchase Status Unknown",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }
@@ -298,11 +313,20 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
             handlePurchases(purchases)
         } else if (billingResult.responseCode == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
-            val queryAlreadyPurchasesResult =
-                billingClient!!.queryPurchases(SkuType.INAPP)
-            val alreadyPurchases =
-                queryAlreadyPurchasesResult.purchasesList
-            alreadyPurchases?.let { handlePurchases(it) }
+                    /**
+                     *  val queryAlreadyPurchasesResult =
+                    billingClient!!.queryPurchases(SkuType.INAPP)
+                    val alreadyPurchases =
+                    queryAlreadyPurchasesResult.purchasesList
+                    alreadyPurchases?.let { handlePurchases(it) }
+                     */
+                /**
+                 * The below code is replaced for Billing library 4
+                 */
+                billingClient!!.queryPurchasesAsync(
+                    SkuType.INAPP
+                ) { p0, p1 -> handlePurchases(p1) }
+
         } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
             Toast.makeText(applicationContext, "Purchase Canceled", Toast.LENGTH_SHORT).show()
         } else {
@@ -373,7 +397,6 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
      * uzzal create a function for recycler view..
      */
     private fun recyclerInIt() {
-
         val layoutManager = LinearLayoutManager(
             this,
             LinearLayoutManager.HORIZONTAL, false
