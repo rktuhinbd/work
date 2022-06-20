@@ -689,7 +689,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         /**
          * end of SpeedDialView
          */
-
         switch_alarm_status?.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 ic_alarm_status?.setImageResource(R.drawable.ic_on_button)

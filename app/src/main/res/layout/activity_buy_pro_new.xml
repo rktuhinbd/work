@@ -417,22 +417,21 @@
     <com.google.android.material.card.MaterialCardView
         style="@style/CustomCardViewStyle"
         android:layout_width="match_parent"
-        android:layout_height="110dp"
+        android:layout_height="175dp"
         android:layout_gravity="bottom"
         app:cardBackgroundColor="#F5C75D"
         app:cardElevation="8dp">
 
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-
-            <TextView
+            <!--Text-->
+            <!--<TextView
                 android:id="@+id/text_one_time_payment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                android:visibility="gone"
                 android:fontFamily="@font/roboto_light"
                 android:text="One time payment, Lifetime access"
                 android:textColor="@color/colorTextRegular"
@@ -440,49 +439,166 @@
                 app:layout_constraintBottom_toTopOf="@id/view_underline_one_time_payments"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <View
+                app:layout_constraintTop_toTopOf="parent" />-->
+            <!--Text underline view-->
+            <!--<View
                 android:id="@+id/view_underline_one_time_payments"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_marginBottom="32dp"
                 android:background="@color/colorTextRegular"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@id/text_one_time_payment"
                 app:layout_constraintStart_toStartOf="@id/text_one_time_payment"
-                app:layout_constraintTop_toBottomOf="@id/text_one_time_payment" />
+                app:layout_constraintTop_toBottomOf="@id/text_one_time_payment" />-->
 
+
+            <!--Selector section-->
+            <LinearLayout
+                android:id="@+id/layout_selection"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:orientation="horizontal"
+                >
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:padding="6dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:strokeWidth="3dp"
+                        app:strokeColor="#D32F2F"
+                        app:cardCornerRadius="16dp"
+                        app:cardBackgroundColor="#2C2C2C"
+                        >
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:textColor="@color/color_white"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                android:text="@string/subscribe_value_txt"
+                                android:maxLines="2"
+                                android:gravity="center"
+                                android:fontFamily="@font/roboto_bold"
+                                android:textAlignment="center"
+                                />
+
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:padding="6dp"
+                    android:layout_height="match_parent">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:cardCornerRadius="16dp"
+                        app:cardBackgroundColor="#2C2C2C"
+                        >
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:textColor="@color/color_white"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                android:text="@string/onetime_payment_txt"
+                                android:maxLines="2"
+                                android:gravity="center"
+                                android:fontFamily="@font/roboto_bold"
+                                android:textAlignment="center"
+                                />
+
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+
+            </LinearLayout>
+            <!--End of selection-->
+
+            <!--Network Loader-->
             <ProgressBar
                 android:id="@+id/progress_purchase"
                 style="?android:attr/progressBarStyleSmall"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:elevation="5dp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@id/btn_buy_pro_user"
                 app:layout_constraintEnd_toEndOf="@id/btn_buy_pro_user"
                 app:layout_constraintStart_toStartOf="@id/btn_buy_pro_user"
                 app:layout_constraintTop_toTopOf="@id/btn_buy_pro_user" />
-
+            <!--Buy button-->
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_buy_pro_user"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:layout_marginTop="2dp"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/button_gradient"
                 android:fontFamily="@font/roboto_bold"
                 android:foreground="?selectableItemBackground"
                 android:maxLines="1"
+                android:visibility="visible"
                 android:textAllCaps="true"
                  android:textColor="@color/color_white"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view_underline_one_time_payments"
-                tools:text="BUY FOR $4.99" />
+               app:layout_constraintTop_toBottomOf="@id/layout_selection"
+                tools:text="Subscribe Now" />
+
+            <!---->
+
+            <!--Package Description-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@id/btn_buy_pro_user"
+                app:layout_constraintEnd_toEndOf="@id/btn_buy_pro_user"
+                app:layout_constraintTop_toBottomOf="@id/btn_buy_pro_user"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:text="Recurring Billing. Cancel anytime you want."
+                android:textColor="#2C2C2C"
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
