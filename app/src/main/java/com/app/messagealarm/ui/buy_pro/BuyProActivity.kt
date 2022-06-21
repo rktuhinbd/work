@@ -75,6 +75,15 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     }
 
 
+    private fun initSubscription(){
+
+    }
+
+    private fun initInAppPurchase(){
+
+    }
+
+
     private fun buyingProcess() {
         if (AndroidUtils.isOnline(this)) {
             progress_purchase?.visibility = View.VISIBLE
