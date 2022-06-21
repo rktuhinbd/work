@@ -129,6 +129,7 @@ class AlarmService {
         ) {
             //get sender name
             val title = sbn?.notification?.extras!!["android.title"].toString()
+            val desc = sbn?.notification?.extras!!["android.text"].toString()
             /**
              * set alarm record
              */
@@ -153,7 +154,10 @@ class AlarmService {
                         app.numberOfPlay,
                         app.isVibrateOnAlarm,
                         service,
-                        app.tone_path
+                        app.tone_path,
+                        // Added this 2 extra param for window notification - Mortuza
+                        desc,
+                        app.bitmapPath
                     )
                 }
             } else {
@@ -170,7 +174,10 @@ class AlarmService {
                         app.numberOfPlay,
                         app.isVibrateOnAlarm,
                         service,
-                        null
+                        null,
+                        // Added this 2 extra param for window notification - Mortuza
+                        desc,
+                        app.bitmapPath
                     )
                 }
             }
@@ -351,6 +358,8 @@ class AlarmService {
                         val bundle = Bundle()
                         bundle.putString("alarm_by_thread", "true")
                         firebaseAnalytics.logEvent("alarm_type", bundle)
+
+                        val desc = sbn.notification!!.extras["android.text"].toString()
                         FloatingNotification.showFloatingNotification(
                             app.sound_level,
                             titleName.toString(),
@@ -360,7 +369,10 @@ class AlarmService {
                             app.numberOfPlay,
                             app.isVibrateOnAlarm,
                             service,
-                            app.tone_path
+                            app.tone_path,
+                            // Added this 2 extra param for window notification - Mortuza
+                            desc,
+                            app.bitmapPath
                         )
                     }
                 }).execute()

@@ -8,14 +8,18 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.PowerManager
+import android.provider.Settings
 import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.WorkManager
 import com.app.messagealarm.broadcast_receiver.*
+import com.app.messagealarm.service.AlarmService
+import com.app.messagealarm.ui.alarm.AlarmActivity
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.*
+import com.app.messagealarm.window.WindowManagerService
 import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
@@ -48,7 +52,7 @@ class FloatingNotification {
         private const val CHANNEL_NAME = "alarm app channel"
 
         private fun startPlaying(
-            soundLevel:Int,
+            soundLevel: Int,
             isJustVibrate: Boolean,
             appName: String,
             packageName: String,
@@ -63,42 +67,42 @@ class FloatingNotification {
              */
             turnOnScreen(context)
 
-            var thread:Thread? = null
-         thread =   Thread(Runnable {
-             //here i need run the loop of how much time need to play
-             for (x in 0 until numberOfPlay) {
-                 if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_STOPPED)) {
-                     break
-                 }
-                 val once = Once()
-                 once.run {
-                     MediaUtils.playAlarm(
-                         thread!!,
-                         soundLevel,
-                         isJustVibrate,
-                         isVibrate,
-                         context, tone, (x == (numberOfPlay - 1)),
-                         packageName,
-                         appName
-                     )
-                     if (x == numberOfPlay - 1) {
-                         //done playing dismiss the activity now
-                         //send a notification that you missed the alarm
-                         notificationManager.cancel(225)
-                         /**
-                          * The bottom two lines were making the app mute when the alarm was finished without touch
-                          * Now it's ignored by Mujahid By 1 June 2021
-                          */
-                         //SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
-                         //notifyMute(true)
-                     }
-                 }
-             }
-         })
+            var thread: Thread? = null
+            thread = Thread(Runnable {
+                //here i need run the loop of how much time need to play
+                for (x in 0 until numberOfPlay) {
+                    if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_STOPPED)) {
+                        break
+                    }
+                    val once = Once()
+                    once.run {
+                        MediaUtils.playAlarm(
+                            thread!!,
+                            soundLevel,
+                            isJustVibrate,
+                            isVibrate,
+                            context, tone, (x == (numberOfPlay - 1)),
+                            packageName,
+                            appName
+                        )
+                        if (x == numberOfPlay - 1) {
+                            //done playing dismiss the activity now
+                            //send a notification that you missed the alarm
+                            notificationManager.cancel(225)
+                            /**
+                             * The bottom two lines were making the app mute when the alarm was finished without touch
+                             * Now it's ignored by Mujahid By 1 June 2021
+                             */
+                            //SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
+                            //notifyMute(true)
+                        }
+                    }
+                }
+            })
             thread.start()
         }
 
-        private fun turnOnScreen(context: Service){
+        private fun turnOnScreen(context: Service) {
             /**
              * Turn phone screen on
              */
@@ -238,12 +242,16 @@ class FloatingNotification {
             notificationManager!!.notify(227, notificationBuilder.build())
         }
 
+
+        // Added description: String, imagePath:String, as extra peram for showing
+
         fun showFloatingNotification(
             soundLevel: Int,
             title: String,
             isJustVibrate: Boolean,
             appName: String, packageName: String, numberOfPlay: Int,
-            isVibrate: Boolean, context: Service, mediaPath: String?
+            isVibrate: Boolean, context: Service, mediaPath: String?,
+            description: String, imagePath: String,
         ) {
             val bundle = Bundle()
             bundle.putString("alarm_by_notification", "true")
@@ -287,8 +295,10 @@ class FloatingNotification {
                 com.app.messagealarm.R.layout.layout_incoming_notification_collapsed
             )
 
-            val vivoNotificationView = RemoteViews(context.packageName,
-                com.app.messagealarm.R.layout.layout_incoming_notification_vivo)
+            val vivoNotificationView = RemoteViews(
+                context.packageName,
+                com.app.messagealarm.R.layout.layout_incoming_notification_vivo
+            )
 
             val notificationViewFloatingNotification = RemoteViews(
                 context.packageName,
@@ -353,7 +363,7 @@ class FloatingNotification {
 
             var notificationBuilder: NotificationCompat.Builder? = null
 
-            if(!Build.MANUFACTURER.toLowerCase(Locale.getDefault()).contains("vivo")){
+            if (!Build.MANUFACTURER.toLowerCase(Locale.getDefault()).contains("vivo")) {
                 notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
                     .setCustomBigContentView(notificationViewFloatingNotification)
                     .setCustomHeadsUpContentView(notificationViewFloatingNotification)
@@ -364,7 +374,7 @@ class FloatingNotification {
                     .setPriority(Notification.PRIORITY_MAX)
                     .setCategory(NotificationCompat.CATEGORY_ALARM)
                     .setOngoing(true)
-            }else{
+            } else {
                 notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
                     .setCustomBigContentView(notificationViewFloatingNotification)
                     .setCustomHeadsUpContentView(notificationViewFloatingNotification)
@@ -377,8 +387,18 @@ class FloatingNotification {
                     .setOngoing(true)
             }
 
-            notificationManager = NotificationManagerCompat.from(context)
-            notificationManager!!.notify(225, notificationBuilder.build())
+//            notificationManager = NotificationManagerCompat.from(context)
+//            notificationManager!!.notify(225, notificationBuilder.build())
+
+//             Showing Notification
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(context)) {
+                // Window Notification new added by Mortuza 2022/06/21
+                startWindowManager(context, appName, packageName, title, description, imagePath)
+            } else {
+                notificationManager = NotificationManagerCompat.from(context)
+                notificationManager!!.notify(225, notificationBuilder.build())
+            }
+
             //start playing
             startPlaying(
                 soundLevel,
@@ -392,6 +412,26 @@ class FloatingNotification {
                 numberOfPlay
             )
 
+        }
+
+        private fun startWindowManager(
+            context: Service,
+            appName: String,
+            packageName: String,
+            title: String,
+            description: String,
+            iconPath: String
+        ) {
+            val intent = Intent(context, WindowManagerService::class.java)
+            intent.putExtra(Constants.IntentKeys.APP_NAME, appName)
+            intent.putExtra(Constants.IntentKeys.PACKAGE_NAME, packageName)
+            intent.putExtra(Constants.IntentKeys.TITLE, title)
+            intent.putExtra(Constants.IntentKeys.DESC, description)
+            intent.putExtra(Constants.IntentKeys.IMAGE_PATH, iconPath)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+            context.startService(intent)
         }
 
 
@@ -591,7 +631,7 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
 
         fun notifyMute(isMuted: Boolean) {
             if (notificationView == null || notificationBuilder == null) return
-            try{
+            try {
                 val iconID: Int =
                     if (isMuted) com.app.messagealarm.R.drawable.ic_silence else com.app.messagealarm.R.drawable.ic_snooze
                 val textString: String = if (!isMuted) {
@@ -615,11 +655,11 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
                     showToastToUser(service!!)
                     //start alarm to dismiss mute
                     WorkManagerUtils.scheduleWorks(service!!)
-                }else{
+                } else {
                     showUnMuteToastToUser(service!!)
                     WorkManager.getInstance(service!!).cancelAllWorkByTag("MUTE")
                 }
-            }catch (e: NullPointerException){
+            } catch (e: NullPointerException) {
                 //skip the crash
             }
         }

@@ -103,6 +103,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 switch_alarm_status?.isChecked = false
             }
         }
+
+        getWindowManagerPermission()
     }
 
     private fun showFirstSavedAnimation() {
@@ -435,10 +437,18 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     }, 2500)
                 }
             }
-        } else if (requestCode == CODE_DRAW_OVER_OTHER_APP_PERMISSION) {
+        }
+
+        // Use This callback if want to show notification after Draw over other app permission
+        /*else if (requestCode == CODE_DRAW_OVER_OTHER_APP_PERMISSION) {
+
             //Check if the permission is granted or not.
             if (resultCode == RESULT_OK) {
-                startWindowManager()
+                Toast.makeText(
+                    this,
+                    "Permission granted.",
+                    Toast.LENGTH_SHORT
+                ).show()
             } else { //Permission is not available
                 Toast.makeText(
                     this,
@@ -446,7 +456,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     Toast.LENGTH_SHORT
                 ).show()
             }
-        }
+        }*/
+
         super.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -675,12 +686,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             speedDial.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
                 when (actionItem.id) {
                     R.id.fab_action1 -> {
-//                        speedDial.close()
-//                        showVideoTutorial()
-// TODO: Need to uncomment - Mortuza
-                        testWindowManager()
-
-
+                        speedDial.close()
+                        showVideoTutorial()
                         return@OnActionSelectedListener true // false will close it without animation
                     }
                     R.id.fab_action2 -> {
@@ -1232,7 +1239,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
      * FOR TESTING THE ALARM WINDOW
      * */
 
-    private fun testWindowManager(){
+    private fun getWindowManagerPermission(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(
                 this
             )
@@ -1242,12 +1249,11 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 Uri.parse("package:$packageName")
             )
             startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION)
-        } else {
-            startWindowManager()
         }
     }
 
-    private fun startWindowManager() {
+    @Deprecated("Do not use this in production code")
+    private fun testWindowNotification() {
         val intent = Intent(this@AlarmApplicationActivity, WindowManagerService::class.java)
         intent.putExtra(Constants.IntentKeys.APP_NAME, "WhatsApp")
         intent.putExtra(Constants.IntentKeys.PACKAGE_NAME, "com.whatsapp")
