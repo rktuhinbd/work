@@ -2,6 +2,7 @@ package com.app.messagealarm.ui.buy_pro
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
@@ -48,6 +49,13 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         recyclerView.layoutManager = layoutManager
         mAdapter = ReviewAdapter(this, generateReviewList());
         recyclerView.adapter = mAdapter
+        /**
+         * init views
+         */
+        txt_terms_condition?.movementMethod = LinkMovementMethod.getInstance()
+        txt_privacy_policy?.movementMethod = LinkMovementMethod.getInstance()
+        txt_privacy_policy?.setLinkTextColor(ContextCompat.getColor(this, R.color.colorAccent))
+        txt_terms_condition?.setLinkTextColor(ContextCompat.getColor(this, R.color.colorAccent))
 
 
         // Obtain the FirebaseAnalytics instance.
@@ -92,14 +100,15 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     initiatePurchase()
-                   billingClient!!.queryPurchasesAsync(SkuType.INAPP
-                   ) { p0, p1 ->
-                       if (p1.size > 0) {
-                           handlePurchases(p1)
-                       } else {
-                           setIsPurchased(false)
-                       }
-                   }
+                    billingClient!!.queryPurchasesAsync(
+                        SkuType.INAPP
+                    ) { p0, p1 ->
+                        if (p1.size > 0) {
+                            handlePurchases(p1)
+                        } else {
+                            setIsPurchased(false)
+                        }
+                    }
 
 
                 }
@@ -151,13 +160,13 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                     }
                 } else {
                     //try to add item/product id "purchase" inside managed product in google play console
-                        runOnUiThread {
-                            Toast.makeText(
-                                applicationContext,
-                                "Purchase Item not Found",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                    runOnUiThread {
+                        Toast.makeText(
+                            applicationContext,
+                            "Purchase Item not Found",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             } else {
                 runOnUiThread {
@@ -313,19 +322,19 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
             handlePurchases(purchases)
         } else if (billingResult.responseCode == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
-                    /**
-                     *  val queryAlreadyPurchasesResult =
-                    billingClient!!.queryPurchases(SkuType.INAPP)
-                    val alreadyPurchases =
-                    queryAlreadyPurchasesResult.purchasesList
-                    alreadyPurchases?.let { handlePurchases(it) }
-                     */
-                /**
-                 * The below code is replaced for Billing library 4
-                 */
-                billingClient!!.queryPurchasesAsync(
-                    SkuType.INAPP
-                ) { p0, p1 -> handlePurchases(p1) }
+            /**
+             *  val queryAlreadyPurchasesResult =
+            billingClient!!.queryPurchases(SkuType.INAPP)
+            val alreadyPurchases =
+            queryAlreadyPurchasesResult.purchasesList
+            alreadyPurchases?.let { handlePurchases(it) }
+             */
+            /**
+             * The below code is replaced for Billing library 4
+             */
+            billingClient!!.queryPurchasesAsync(
+                SkuType.INAPP
+            ) { p0, p1 -> handlePurchases(p1) }
 
         } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
             Toast.makeText(applicationContext, "Purchase Canceled", Toast.LENGTH_SHORT).show()

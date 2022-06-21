@@ -106,7 +106,8 @@
     <string name="hint_sound_control">Get full volume for Alarm, You can control the volume!</string>
     <string name="hint_sound_subtitle">1 Alarm reduce 1% volume until 50%, <b>you reached 71%</b></string>
     <string name="vibration_and_sound_hint">Vibration and music together, powerful alarm. \n\n<b>Best use case, enough power to awake you up from sleep!</b></string>
-    <string name="subscribe_value_txt">Buy For\n Per $0.99/Mo</string>
+    <string name="subscribe_value_txt">Subscribe For\n $0.99/Mo</string>
     <string name="onetime_payment_txt">Onetime Payment\n For $9.99</string>
-
+    <string name="privacy_policy"><a  href="https://www.messagealarm.app/privacy_policy" style="color: red"><u>Privacy Policy</u></a></string>
+    <string name="terms_condition"><a href="https://www.messagealarm.app/privacy_policy" style="color: red"><u>Terms &amp; Condition</u></a></string>
 </resources>
