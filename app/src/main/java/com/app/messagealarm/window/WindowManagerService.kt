@@ -48,15 +48,10 @@ class WindowManagerService : Service() {
         return null
     }
 
-
     override fun onCreate() {
         super.onCreate()
         isIntractive = isScreenActive(this)
         mFloatingView = LayoutInflater.from(this).inflate(R.layout.layout_window_manager, null)
-
-
-
-
 
         val params = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             WindowManager.LayoutParams(
@@ -123,10 +118,9 @@ class WindowManagerService : Service() {
                         FloatingNotification.cancelPageDismissNotification()
                         isSwiped = true
                         MediaUtils.stopAlarm(this@WindowManagerService)
-                        openApp()
                         stopSelf()
+                        openApp()
                     }catch (e:NullPointerException){
-                        //skip the crash due to null
                     }
                 }
 
@@ -150,7 +144,7 @@ class WindowManagerService : Service() {
 
         val imagePath = intent?.extras!!.getString(Constants.IntentKeys.IMAGE_PATH)
         if (imagePath != null) {
-            mFloatingView?.findViewById<ImageView>(R.id.app_image)?.setImageBitmap(
+            mFloatingView?.findViewById<ImageView>(R.id.alarm_image)?.setImageBitmap(
                 BitmapFactory.decodeFile(
                     File(imagePath)
                         .absolutePath
@@ -158,82 +152,15 @@ class WindowManagerService : Service() {
             )
         }
 
-        mFloatingView?.findViewById<FrameLayout>(R.id.root_container)?.setOnClickListener {
-            stopSelf()
-        }
-
-        val runnable = Runnable(){
-            showPageDismissNotification()
-            playMedia()
-        }
-
-        once.run(runnable)
+//        mFloatingView?.findViewById<FrameLayout>(R.id.root_container)?.setOnClickListener {
+//            stopSelf()
+//        }
 
         LocalBroadcastManager.getInstance(this).registerReceiver(turnOffReceiver!!, IntentFilter("turn_off_activity"))
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver!!,  IntentFilter("turn_off_switch"))
 
 
         return super.onStartCommand(intent, flags, startId)
-    }
-
-
-    private fun showPageDismissNotification() {
-        FloatingNotification.showPageDismissNotification(
-            intent?.extras!!.getString(Constants.IntentKeys.TITLE)!!,
-            this,
-            intent?.extras!!.getString(Constants.IntentKeys.PACKAGE_NAME)!!,
-            intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!
-        )
-    }
-
-
-    private fun playMedia() {
-        SharedPrefUtils.write(Constants.PreferenceKeys.IS_NOTIFICATION_SWIPED, false)
-        SharedPrefUtils.write(Constants.PreferenceKeys.IS_ACTIVITY_STARTED, true)
-        if (intent?.extras!!.getString(Constants.IntentKeys.TONE) != null) {
-            startPlaying(intent?.extras!!.getString(Constants.IntentKeys.TONE))
-        } else {
-            startPlaying(null)
-        }
-    }
-
-
-    private fun startPlaying(tone: String?) {
-        var thread:Thread? = null
-        thread = Thread(Runnable {
-            //here i need run the loop of how much time need to play
-            val numberOfPLay = intent?.extras!!.getInt(Constants.IntentKeys.NUMBER_OF_PLAY)
-            for (x in 0 until numberOfPLay) {
-                if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_STOPPED)) {
-                    break
-                }
-                val once = Once()
-                once.run(Runnable {
-                    MediaUtils.playAlarm(
-                        thread!!,
-                        intent?.extras!!.getInt(Constants.IntentKeys.SOUND_LEVEL),
-                        intent?.extras!!.getBoolean(Constants.IntentKeys.IS_JUST_VIBRATE),
-                        intent?.extras!!.getBoolean(Constants.IntentKeys.IS_VIBRATE),
-                        this, tone,
-                        (x == (numberOfPLay - 1)),
-                        intent?.extras!!.getString(Constants.IntentKeys.PACKAGE_NAME)!!,
-                        intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!
-                    )
-                    if (x == numberOfPLay - 1) {
-                        stopSelf()
-                        FloatingNotification.cancelPageDismissNotification()
-                        /**
-                         * The bottom two lines were making the app mute when the alarm was finished without touch
-                         * Now it's ignored by Mujahid By 1 June 2021
-                         */
-                        // SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
-                        //FloatingNotification.notifyMute(true)
-
-                    }
-                })
-            }
-        })
-        thread.start()
     }
 
     private fun openApp() {
