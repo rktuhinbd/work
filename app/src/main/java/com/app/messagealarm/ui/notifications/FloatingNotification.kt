@@ -26,6 +26,7 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
 import org.jetbrains.anko.runOnUiThread
+import java.lang.Exception
 import java.util.*
 
 
@@ -388,45 +389,55 @@ class FloatingNotification {
                     .setOngoing(true)
             }
 
+            try {
+                notificationManager = NotificationManagerCompat.from(context)
+                notificationManager!!.notify(225, notificationBuilder.build())
+            }catch (e: Exception){
 
-
-//            notificationManager = NotificationManagerCompat.from(context)
-//            notificationManager!!.notify(225, notificationBuilder.build())
-
-
-//             Showing Notification
-
-            //start playing
-            startPlaying(
-                soundLevel,
-                isJustVibrate,
-                appName,
-                packageName,
-                mediaPath,
-                isVibrate,
-                context,
-                notificationManager!!,
-                numberOfPlay
-            )
-
-            notificationManager = NotificationManagerCompat.from(context)
-            notificationManager!!.notify(225, notificationBuilder.build())
-
-          /*  if (MediaUtils.isPlaying() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(context)) {
-                // Window Notification new added by Mortuza 2022/06/21
-                Thread {
-                    context.runOnUiThread {
-                        startWindowManager(
-                            context,
-                            appName,
-                            packageName,
-                            title,
-                            description,
-                            imagePath
-                        )
-                    }
+            }finally {
+                /**
+                 * @author Mujahid Khan 22 jun 22
+                 * @Notes For Mortuza: I have solved this issue, but i believe this is not the most
+                 * efficient way for solving this issue. By using Thread pool. The problem was
+                 * JVM can't guaranty which thread will start first, so from this three thread when the
+                 * Window Manager Thread was executing first, then it was creating the problem. I have solved
+                 * this with a hack, but I recommend you solve this with RxJava, for now. Just test it out if it's
+                 * 100% perfect or not. If it's 100% accurate then we can wait for the RxJava based implementation
+                 *
+                 */
+                Thread{
+                    //start playing
+                    startPlaying(
+                        soundLevel,
+                        isJustVibrate,
+                        appName,
+                        packageName,
+                        mediaPath,
+                        isVibrate,
+                        context,
+                        notificationManager!!,
+                        numberOfPlay
+                    )
                 }.start()
-            }*/
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(context)) {
+                    // Window Notification new added by Mortuza 2022/06/21
+                    Thread {
+                        context.runOnUiThread {
+                            startWindowManager(
+                                context,
+                                appName,
+                                packageName,
+                                title,
+                                description,
+                                imagePath
+                            )
+                        }
+                    }.start()
+                }
+            }
+
+
+
         }
 
         private fun startWindowManager(
