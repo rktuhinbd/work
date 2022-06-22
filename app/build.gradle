@@ -12,7 +12,7 @@ android {
     defaultConfig {
         applicationId "com.app.messagealarm"
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 30
         versionCode 13
         versionName "2.0.4"
         vectorDrawables.useSupportLibrary = true // For srcCompat
@@ -34,6 +34,7 @@ android {
         exclude 'META-INF/ASL2.0'
         exclude("META-INF/*.kotlin_module")
     }
+
 
     buildTypes {
         release {
