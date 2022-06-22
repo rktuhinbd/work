@@ -95,7 +95,7 @@ class WindowManagerService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         this.intent = intent
         mFloatingView?.findViewById<TextView>(R.id.txt_notification_title)?.text = intent?.extras!!.getString(Constants.IntentKeys.TITLE)
-        mFloatingView?.findViewById<TextView>(R.id.txt_notification_desc)?.text = intent?.extras!!.getString(Constants.IntentKeys.DESC)
+        mFloatingView?.findViewById<TextView>(R.id.txt_notification_desc)?.text = intent.extras!!.getString(Constants.IntentKeys.DESC)
         mFloatingView?.findViewById<SlideToActView>(R.id.side_to_active)?.text = String.format(
             "Open %s", intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)
         )
@@ -116,6 +116,7 @@ class WindowManagerService : Service() {
                             )
                         }
                         FloatingNotification.cancelPageDismissNotification()
+                        FloatingNotification.cancelAlarmNotification()
                         isSwiped = true
                         MediaUtils.stopAlarm(this@WindowManagerService)
                         stopSelf()
@@ -142,7 +143,7 @@ class WindowManagerService : Service() {
             }
 
 
-        val imagePath = intent?.extras!!.getString(Constants.IntentKeys.IMAGE_PATH)
+        val imagePath = intent.extras!!.getString(Constants.IntentKeys.IMAGE_PATH)
         if (imagePath != null) {
             mFloatingView?.findViewById<ImageView>(R.id.alarm_image)?.setImageBitmap(
                 BitmapFactory.decodeFile(

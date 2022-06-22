@@ -25,6 +25,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
+import org.jetbrains.anko.runOnUiThread
 import java.util.*
 
 
@@ -387,17 +388,13 @@ class FloatingNotification {
                     .setOngoing(true)
             }
 
+
+
 //            notificationManager = NotificationManagerCompat.from(context)
 //            notificationManager!!.notify(225, notificationBuilder.build())
 
+
 //             Showing Notification
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(context)) {
-                // Window Notification new added by Mortuza 2022/06/21
-                startWindowManager(context, appName, packageName, title, description, imagePath)
-            } else {
-                notificationManager = NotificationManagerCompat.from(context)
-                notificationManager!!.notify(225, notificationBuilder.build())
-            }
 
             //start playing
             startPlaying(
@@ -412,6 +409,24 @@ class FloatingNotification {
                 numberOfPlay
             )
 
+            notificationManager = NotificationManagerCompat.from(context)
+            notificationManager!!.notify(225, notificationBuilder.build())
+
+          /*  if (MediaUtils.isPlaying() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(context)) {
+                // Window Notification new added by Mortuza 2022/06/21
+                Thread {
+                    context.runOnUiThread {
+                        startWindowManager(
+                            context,
+                            appName,
+                            packageName,
+                            title,
+                            description,
+                            imagePath
+                        )
+                    }
+                }.start()
+            }*/
         }
 
         private fun startWindowManager(
