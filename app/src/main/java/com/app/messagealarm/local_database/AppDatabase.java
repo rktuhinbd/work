@@ -34,8 +34,14 @@ public abstract class AppDatabase extends RoomDatabase {
         Migration migration = new Migration(2, 3) {
             @Override
             public void migrate(@NonNull SupportSQLiteDatabase database) {
-                database.execSQL("ALTER TABLE applications ADD COLUMN ignored_names TEXT DEFAULT 'None'");
-                database.execSQL("ALTER TABLE applications ADD COLUMN sound_level INTEGER NOT NULL DEFAULT 100");
+                /**
+                 * @Notes for Mortuza, I need you to make sure this database migration will happen to our existing
+                 * users perfectly and no one will have a problem.
+                 */
+                //This below two migration are for version 2.0.2 currently live in Google play store
+               // database.execSQL("ALTER TABLE applications ADD COLUMN ignored_names TEXT DEFAULT 'None'");
+               // database.execSQL("ALTER TABLE applications ADD COLUMN sound_level INTEGER NOT NULL DEFAULT 100");
+                //This below migration is for version 2.0.4 our next version
                 database.execSQL("ALTER TABLE applications ADD COLUMN is_flash_on BOOLEAN NOT NULL DEFAULT 0");
             }
         };
