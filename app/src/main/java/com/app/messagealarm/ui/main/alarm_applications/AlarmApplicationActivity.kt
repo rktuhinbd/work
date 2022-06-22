@@ -686,8 +686,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             speedDial.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
                 when (actionItem.id) {
                     R.id.fab_action1 -> {
-                        speedDial.close()
-                        showVideoTutorial()
+//                        speedDial.close()
+//                        showVideoTutorial()
+                        testWindowNotification()
                         return@OnActionSelectedListener true // false will close it without animation
                     }
                     R.id.fab_action2 -> {

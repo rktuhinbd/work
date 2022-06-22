@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/alarm_image_circle.xml" value="0.3275" />
+        <entry key="app/src/main/res/drawable/white_circle_shape.xml" value="0.2365" />
         <entry key="app/src/main/res/drawable/window_background_radious.xml" value="0.3275" />
         <entry key="app/src/main/res/drawable/window_background_style.xml" value="0.3275" />
         <entry key="app/src/main/res/layout/activity_alarm.xml" value="0.3729166666666667" />
@@ -11,6 +12,7 @@
         <entry key="app/src/main/res/layout/layout_incoming_notification.xml" value="0.3729166666666667" />
         <entry key="app/src/main/res/layout/layout_incoming_notification_collapsed.xml" value="0.3729166666666667" />
         <entry key="app/src/main/res/layout/layout_window_manager.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/remove_floating_widget_layout.xml" value="0.28229166666666666" />
       </map>
     </option>
   </component>
