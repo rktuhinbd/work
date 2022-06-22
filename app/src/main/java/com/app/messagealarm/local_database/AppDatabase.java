@@ -23,7 +23,7 @@ import com.app.messagealarm.utils.SharedPrefUtils;
 
 @Database(entities = {ApplicationEntity.class, AppConstrainEntity.class,
         AppEntity.class, LanguageEntity.class
-}, exportSchema = false, version = 2)
+}, exportSchema = false, version = 3)
 
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -31,11 +31,12 @@ public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase appDatabase;
 
     public static synchronized AppDatabase getInstance(Context context) {
-        Migration migration = new Migration(1, 2) {
+        Migration migration = new Migration(2, 3) {
             @Override
             public void migrate(@NonNull SupportSQLiteDatabase database) {
                 database.execSQL("ALTER TABLE applications ADD COLUMN ignored_names TEXT DEFAULT 'None'");
                 database.execSQL("ALTER TABLE applications ADD COLUMN sound_level INTEGER NOT NULL DEFAULT 100");
+                database.execSQL("ALTER TABLE applications ADD COLUMN is_flash_on BOOLEAN NOT NULL DEFAULT 0");
             }
         };
         if (appDatabase == null) {
