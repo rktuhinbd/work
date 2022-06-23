@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -22,7 +21,6 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_buy_pro_new.*
-import java.io.IOException
 import java.lang.Exception
 import java.util.*
 import kotlin.math.abs
@@ -144,7 +142,8 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
 
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    initiatePurchase()
+                    initiateInAppSubscription()
+                    initiateInAppPurchase()
                     billingClient!!.queryPurchasesAsync(
                         SkuType.INAPP
                     ) { p0, p1 ->
@@ -166,8 +165,8 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun initiatePurchase() {
+
+    private fun initiateInAppPurchase() {
         val skuList: MutableList<String> =
             ArrayList()
         skuList.add(Constants.Purchase.PRODUCT_ID)
@@ -201,6 +200,64 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                         } else {
                             txt_in_app_price?.text =
                                 "Onetime Payment ${skuDetailsList[0].price}"
+                        }
+                        progress_purchase?.visibility = View.GONE
+                    }
+                } else {
+                    //try to add item/product id "purchase" inside managed product in google play console
+                    runOnUiThread {
+                        Toast.makeText(
+                            applicationContext,
+                            "Purchase Item not Found",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            } else {
+                runOnUiThread {
+                    Toast.makeText(
+                        applicationContext,
+                        " Error " + billingResult.debugMessage, Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
+
+
+    @SuppressLint("SetTextI18n")
+    private fun initiateInAppSubscription() {
+        val skuList: MutableList<String> =
+            ArrayList()
+        skuList.add(Constants.Purchase.SUBSCRIPTION_ID)
+        val params = SkuDetailsParams.newBuilder()
+        params.setSkusList(skuList).setType(SkuType.SUBS)
+        billingClient!!.querySkuDetailsAsync(
+            params.build()
+        ) { billingResult, skuDetailsList ->
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                if (skuDetailsList != null && skuDetailsList.size > 0) {
+                    //used for launching the payment flow
+                    flowParams = BillingFlowParams.newBuilder()
+                        .setSkuDetails(skuDetailsList[0])
+                        .build()
+                    runOnUiThread {
+                        //set price
+                        if (SharedPrefUtils.contains(Constants.PreferenceKeys.CURRENCY_CODE) &&
+                            SharedPrefUtils.contains(Constants.PreferenceKeys.CURRENCY_SYMBOL)
+                            && skuDetailsList[0].priceCurrencyCode ==
+                            SharedPrefUtils.readString(Constants.PreferenceKeys.CURRENCY_CODE)
+                        ) {
+                            try {
+                                txt_subscription_price?.text =
+                                    "Subscribe For \n${skuDetailsList[0].price}/Mo"
+                            } catch (e: Exception) {
+                                txt_subscription_price?.text =
+                                    "Subscribe For \n${skuDetailsList[0].price}/Mo"
+                            }
+                        } else {
+                            txt_subscription_price?.text =
+                                "Subscribe For \n${skuDetailsList[0].price}/Mo"
                         }
                         progress_purchase?.visibility = View.GONE
                     }
@@ -279,7 +336,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
             val bundle = Bundle()
             bundle.putString("click_on_learn_more", "yes")
             firebaseAnalytics.logEvent("click_on_learn_more", bundle)
-            VisitUrlUtils.visitWebsite(this, "https://www.mk7lab.com/Company/charity/")
+            VisitUrlUtils.visitWebsite(this, /*"https://www.mk7lab.com/Company/charity/"*/"https://onetakameal.org/")
         }
 
         card_in_app_purchase?.setOnClickListener {
@@ -333,7 +390,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                     billingClient!!.startConnection(object : BillingClientStateListener {
                         override fun onBillingSetupFinished(billingResult: BillingResult) {
                             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                                initiatePurchase()
+                                initiateInAppPurchase()
                             } else {
                                 Toast.makeText(
                                     applicationContext,
