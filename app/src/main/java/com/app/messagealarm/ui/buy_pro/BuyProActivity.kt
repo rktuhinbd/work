@@ -191,16 +191,16 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                         ) {
                             try {
                                 txt_in_app_price?.text =
-                                    "Onetime Payment ${skuDetailsList[0].price} " + SharedPrefUtils.readString(
+                                    "Onetime Payment \n${skuDetailsList[0].price} " + SharedPrefUtils.readString(
                                         Constants.PreferenceKeys.CURRENCY_SYMBOL
                                     )
                             } catch (e: Exception) {
                                 txt_in_app_price?.text =
-                                    "Onetime Payment ${skuDetailsList[0].price}"
+                                    "Onetime Payment \n${skuDetailsList[0].price}"
                             }
                         } else {
                             txt_in_app_price?.text =
-                                "Onetime Payment ${skuDetailsList[0].price}"
+                                "Onetime Payment \n${skuDetailsList[0].price}"
                         }
                         progress_purchase?.visibility = View.GONE
                     }
