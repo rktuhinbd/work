@@ -94,7 +94,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="126dp">
+            android:layout_marginBottom="155dp">
 
             <!--Main part-->
             <TextView
@@ -409,7 +409,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/text_user_review" />
 
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
@@ -591,7 +590,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                app:layout_constraintTop_toBottomOf="@id/layout_selection"
-                tools:text="Subscribe Now" />
+                android:text="@string/txt_subs_button" />
             <!---->
             <!--Package Description-->
             <TextView
