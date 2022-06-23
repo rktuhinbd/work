@@ -1,6 +1,7 @@
 package com.app.messagealarm.ui.buy_pro
 
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.util.Log
@@ -35,6 +36,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private lateinit var recyclerView: RecyclerView
     private lateinit var mAdapter: ReviewAdapter
+    var isSubscription = true
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,12 +77,46 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     }
 
 
-    private fun initSubscription(){
-
+    /**
+     * Initiate the state of In App Subscription for recurring payments
+     */
+    private fun initSubscription() {
+        isSubscription = true
+        //UI Changes
+        card_subscription?.strokeWidth = ViewUtils.dpToPx(3).toInt()
+        card_subscription?.setStrokeColor(
+            ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    this,
+                    R.color.purchase_stroke
+                )
+            )
+        )
+        card_in_app_purchase?.strokeWidth = 0
+        card_in_app_purchase.setStrokeColor(null)
+        btn_buy_pro_user?.text = getString(R.string.txt_subs_button)
+        txt_package_details?.text = getString(R.string.txt_details_subscribe)
     }
 
-    private fun initInAppPurchase(){
-
+    /**
+     * Initiate the state of In App Purchase for a flat price
+     */
+    private fun initInAppPurchase() {
+        isSubscription = false
+        //UI Changes
+        card_in_app_purchase?.strokeWidth = ViewUtils.dpToPx(3).toInt()
+        card_in_app_purchase?.setStrokeColor(
+            ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    this,
+                    R.color.purchase_stroke
+                )
+            )
+        )
+        card_subscription?.strokeWidth = 0
+        card_subscription?.setStrokeColor(null)
+        btn_buy_pro_user?.text = getString(R.string.txt_in_app_button)
+        txt_package_details?.text = getString(R.string.txt_details_in_app)
     }
 
 
@@ -142,6 +178,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         ) { billingResult, skuDetailsList ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 if (skuDetailsList != null && skuDetailsList.size > 0) {
+                    //used for launching the payment flow
                     flowParams = BillingFlowParams.newBuilder()
                         .setSkuDetails(skuDetailsList[0])
                         .build()
@@ -153,17 +190,17 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                             SharedPrefUtils.readString(Constants.PreferenceKeys.CURRENCY_CODE)
                         ) {
                             try {
-                                btn_buy_pro_user?.text =
-                                    "Buy for ${skuDetailsList[0].price} " + SharedPrefUtils.readString(
+                                txt_in_app_price?.text =
+                                    "Onetime Payment ${skuDetailsList[0].price} " + SharedPrefUtils.readString(
                                         Constants.PreferenceKeys.CURRENCY_SYMBOL
                                     )
                             } catch (e: Exception) {
-                                btn_buy_pro_user?.text =
-                                    "Buy for ${skuDetailsList[0].price}"
+                                txt_in_app_price?.text =
+                                    "Onetime Payment ${skuDetailsList[0].price}"
                             }
                         } else {
-                            btn_buy_pro_user?.text =
-                                "Buy for ${skuDetailsList[0].price}"
+                            txt_in_app_price?.text =
+                                "Onetime Payment ${skuDetailsList[0].price}"
                         }
                         progress_purchase?.visibility = View.GONE
                     }
@@ -243,6 +280,14 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
             bundle.putString("click_on_learn_more", "yes")
             firebaseAnalytics.logEvent("click_on_learn_more", bundle)
             VisitUrlUtils.visitWebsite(this, "https://www.mk7lab.com/Company/charity/")
+        }
+
+        card_in_app_purchase?.setOnClickListener {
+            initInAppPurchase()
+        }
+
+        card_subscription?.setOnClickListener {
+            initSubscription()
         }
 
         /**
