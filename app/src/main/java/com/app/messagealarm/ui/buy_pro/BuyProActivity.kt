@@ -31,6 +31,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     private var billingClient: BillingClient? = null
     var buyProPresenter: BuyProPresenter? = null
     var flowParams: BillingFlowParams? = null
+    var flowparamSubscription: BillingFlowParams? = null
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private lateinit var recyclerView: RecyclerView
     private lateinit var mAdapter: ReviewAdapter
@@ -238,7 +239,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 if (skuDetailsList != null && skuDetailsList.size > 0) {
                     //used for launching the payment flow
-                    flowParams = BillingFlowParams.newBuilder()
+                    flowparamSubscription = BillingFlowParams.newBuilder()
                         .setSkuDetails(skuDetailsList[0])
                         .build()
                     runOnUiThread {
@@ -336,7 +337,10 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
             val bundle = Bundle()
             bundle.putString("click_on_learn_more", "yes")
             firebaseAnalytics.logEvent("click_on_learn_more", bundle)
-            VisitUrlUtils.visitWebsite(this, /*"https://www.mk7lab.com/Company/charity/"*/"https://onetakameal.org/")
+            VisitUrlUtils.visitWebsite(
+                this, /*"https://www.mk7lab.com/Company/charity/"*/
+                "https://onetakameal.org/"
+            )
         }
 
         card_in_app_purchase?.setOnClickListener {
@@ -379,9 +383,16 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                 val bundle = Bundle()
                 bundle.putString("click_on_buy_button", "yes")
                 firebaseAnalytics.logEvent("click_on_buy_button", bundle)
+
                 if (billingClient?.isReady!!) {
-                    if (flowParams != null) {
-                        billingClient!!.launchBillingFlow(this, flowParams!!)
+                    if (!isSubscription) {
+                        if (flowParams != null) {
+                            billingClient!!.launchBillingFlow(this, flowParams!!)
+                        }
+                    } else {
+                        if (flowparamSubscription != null) {
+                            billingClient!!.launchBillingFlow(this, flowparamSubscription!!)
+                        }
                     }
                 } else {
                     billingClient =
@@ -390,7 +401,11 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                     billingClient!!.startConnection(object : BillingClientStateListener {
                         override fun onBillingSetupFinished(billingResult: BillingResult) {
                             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                                /**
+                                 * Have to test this part wisely
+                                 */
                                 initiateInAppPurchase()
+                                initiateInAppSubscription()
                             } else {
                                 Toast.makeText(
                                     applicationContext,
