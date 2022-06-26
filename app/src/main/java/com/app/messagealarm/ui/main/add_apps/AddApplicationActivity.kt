@@ -83,11 +83,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         darkModePre()
         setListener()
 
-        /**
-         * test by PRO Enable
-         */
-        SharedPrefUtils.write(Constants.PreferenceKeys.IS_PURCHASED, true)
-
     }
 
 
