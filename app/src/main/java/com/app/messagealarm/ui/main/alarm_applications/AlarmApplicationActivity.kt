@@ -731,7 +731,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     }
                     R.id.fab_action3 -> {
                         speedDial.close()
-                        // Have to show the dialog
+                        showWarningDialog()
                         return@OnActionSelectedListener true
                     }
                 }
@@ -846,6 +846,43 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 })
         }
     }
+
+
+    /**
+     * show warning dialog for battery and autostart
+     */
+    private fun showWarningDialog() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_warning_layout)
+        val materialButton = dialog.findViewById<MaterialButton>(R.id.text_done)
+        val textView = dialog.findViewById<TextView>(R.id.text_sub_message)
+        val html = String.format(
+            "Please fix this warnings for better"
+        )
+        textView.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)
+        } else {
+            Html.fromHtml(html)
+        }
+        materialButton.setOnClickListener {
+            if (dialog.isShowing) {
+                dialog.dismiss()
+                // Perform the task for warning
+            }
+        }
+        val window: Window = dialog.window!!
+        window.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        if (!dialog.isShowing) {
+            dialog.show()
+        }
+    }
+
 
 
     private fun showOfferDialog() {
