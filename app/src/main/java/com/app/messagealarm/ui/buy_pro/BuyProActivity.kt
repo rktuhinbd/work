@@ -149,7 +149,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                         SkuType.INAPP
                     ) { p0, p1 ->
                         if (p1.size > 0) {
-                            handlePurchases(p1)
+                            handleInAppPurchase(p1)
                         } else {
                             setIsPurchased(false)
                         }
@@ -167,6 +167,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     }
 
 
+    @SuppressLint("SetTextI18n")
     private fun initiateInAppPurchase() {
         val skuList: MutableList<String> =
             ArrayList()
@@ -287,7 +288,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     /**
      * @Deprecated purchase.sku to purhchase.sku[0]
      */
-    fun handlePurchases(purchases: List<Purchase>) {
+    fun handleInAppPurchase(purchases: List<Purchase>) {
         for (purchase in purchases) {
             //if item is purchased
             if (Constants.Purchase.PRODUCT_ID == purchase.skus[0] && purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
@@ -296,10 +297,13 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                 runOnUiThread {
                     Toast.makeText(
                         applicationContext,
-                        "Purchase is Pending. Please complete Transaction", Toast.LENGTH_SHORT
+                        "Your purchase is processing, Please wait a bit!", Toast.LENGTH_SHORT
                     ).show()
                 }
             } else if (Constants.Purchase.PRODUCT_ID == purchase.skus[0] && purchase.purchaseState == Purchase.PurchaseState.UNSPECIFIED_STATE) {
+                /**
+                 *refund request
+                 */
                 setIsPurchased(false)
                 runOnUiThread {
                     Toast.makeText(
@@ -311,6 +315,8 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
             }
         }
     }
+
+
 
     var ackPurchase =
         AcknowledgePurchaseResponseListener { billingResult ->
@@ -446,7 +452,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     ) {
         //if item newly purchased
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-            handlePurchases(purchases)
+            handleInAppPurchase(purchases)
         } else if (billingResult.responseCode == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
             /**
              *  val queryAlreadyPurchasesResult =
@@ -460,7 +466,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
              */
             billingClient!!.queryPurchasesAsync(
                 SkuType.INAPP
-            ) { p0, p1 -> handlePurchases(p1) }
+            ) { p0, p1 -> handleInAppPurchase(p1) }
 
         } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
             Toast.makeText(applicationContext, "Purchase Canceled", Toast.LENGTH_SHORT).show()
@@ -528,19 +534,5 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         }
     }
 
-    /**
-     * uzzal create a function for recycler view..
-     */
-    private fun recyclerInIt() {
-        val layoutManager = LinearLayoutManager(
-            this,
-            LinearLayoutManager.HORIZONTAL, false
-        )
-        recyclerView.layoutManager = layoutManager;
-        val adapter = ReviewAdapter(this, generateReviewList());
-        recyclerView.adapter = adapter;
-
-
-    }
 
 }
