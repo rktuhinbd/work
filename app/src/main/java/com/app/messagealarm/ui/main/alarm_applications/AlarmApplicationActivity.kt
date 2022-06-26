@@ -26,6 +26,7 @@ import android.widget.Toast
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -827,6 +828,59 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 dialog.dismiss()
             }
         }
+
+        val cardAutoStart = dialog.findViewById<CardView>(R.id.cardAutoStart)
+        cardAutoStart.setOnClickListener {
+            try {
+                val isOpened =
+                    AutoStartPermissionHelper.getInstance().getAutoStartPermission(
+                        this@AlarmApplicationActivity,
+                        open = true,
+                        newTask = true
+                    )
+                if (isOpened) {
+                    SharedPrefUtils.write(
+                        Constants.PreferenceKeys.IS_AUTO_STARTED,
+                        true
+                    )
+                }
+            } catch (e: Exception) {
+                //having exception hide it permanently
+                SharedPrefUtils.write(
+                    Constants.PreferenceKeys.IS_AUTO_STARTED,
+                    true
+                )
+            }
+
+        }
+
+        val cardBatteryOptimization = dialog.findViewById<CardView>(R.id.cardBatteryOptimization)
+        cardBatteryOptimization.setOnClickListener {
+            try {
+                //Open the specific App Info page:
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                intent.data = Uri.parse("package:$packageName")
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                SharedPrefUtils.write(
+                    Constants.PreferenceKeys.IS_BATTERY_RESTRICTED,
+                    true
+                )
+            } catch (e: ActivityNotFoundException) {
+                //e.printStackTrace();
+                //Open the generic Apps page:
+                val intent = Intent(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                SharedPrefUtils.write(
+                    Constants.PreferenceKeys.IS_BATTERY_RESTRICTED,
+                    true
+                )
+            }
+
+        }
+
+
         val window: Window = dialog.window!!
         window.setLayout(
             ViewGroup.LayoutParams.MATCH_PARENT,
