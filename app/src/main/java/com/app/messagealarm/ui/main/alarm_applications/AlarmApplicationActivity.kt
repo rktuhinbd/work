@@ -832,6 +832,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         val cardAutoStart = dialog.findViewById<CardView>(R.id.cardAutoStart)
         cardAutoStart.setOnClickListener {
             try {
+                if (dialog.isShowing) {
+                    dialog.dismiss()
+                }
                 val isOpened =
                     AutoStartPermissionHelper.getInstance().getAutoStartPermission(
                         this@AlarmApplicationActivity,
@@ -857,6 +860,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         val cardBatteryOptimization = dialog.findViewById<CardView>(R.id.cardBatteryOptimization)
         cardBatteryOptimization.setOnClickListener {
             try {
+                if (dialog.isShowing) {
+                    dialog.dismiss()
+                }
                 //Open the specific App Info page:
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                 intent.data = Uri.parse("package:$packageName")
