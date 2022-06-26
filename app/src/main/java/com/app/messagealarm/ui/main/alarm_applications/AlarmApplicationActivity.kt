@@ -357,6 +357,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         if (isPurchased()) {
             menu?.getItem(0)?.isVisible = false
         }
+        alarmAppPresenter.isAutoStartPermissionAvailable(this)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -1156,45 +1157,58 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     }
 
     override fun onAutoStartTextShow() {
+//        runOnUiThread {
+//            txt_auto_start_detail?.visibility = View.VISIBLE
+//            txt_auto_start_enable?.visibility = View.VISIBLE
+//        }
         runOnUiThread {
-            txt_auto_start_detail?.visibility = View.VISIBLE
-            txt_auto_start_enable?.visibility = View.VISIBLE
+            menu?.getItem(1)?.isVisible = true
         }
     }
 
     override fun onAutoStartTextHide() {
+//        runOnUiThread {
+//            txt_auto_start_detail?.visibility = View.GONE
+//            txt_auto_start_enable?.visibility = View.GONE
+//        }
         runOnUiThread {
-            txt_auto_start_detail?.visibility = View.GONE
-            txt_auto_start_enable?.visibility = View.GONE
+            menu?.getItem(1)?.isVisible = false
         }
     }
 
     override fun onBatteryTextShow() {
+//        runOnUiThread {
+//            try {
+//                if (txt_auto_start_detail.isVisibile()) {
+//                    //make txt battery detail top margin only 8 dp
+//                    (txt_battery_detail.layoutParams as ConstraintLayout.LayoutParams).apply {
+//                        topMargin = ViewUtils.dpToPx(6).toInt()
+//                    }
+//                } else {
+//                    //make txt battery detail top margin only 12 dp
+//                    (txt_battery_detail.layoutParams as ConstraintLayout.LayoutParams).apply {
+//                        topMargin = ViewUtils.dpToPx(12).toInt()
+//                    }
+//                }
+//            } catch (e: Exception) {
+//                //skip it to default
+//            }
+//            txt_battery_detail?.visibility = View.VISIBLE
+//            txt_battery_enable?.visibility = View.VISIBLE
+//        }
+//
         runOnUiThread {
-            try {
-                if (txt_auto_start_detail.isVisibile()) {
-                    //make txt battery detail top margin only 8 dp
-                    (txt_battery_detail.layoutParams as ConstraintLayout.LayoutParams).apply {
-                        topMargin = ViewUtils.dpToPx(6).toInt()
-                    }
-                } else {
-                    //make txt battery detail top margin only 12 dp
-                    (txt_battery_detail.layoutParams as ConstraintLayout.LayoutParams).apply {
-                        topMargin = ViewUtils.dpToPx(12).toInt()
-                    }
-                }
-            } catch (e: Exception) {
-                //skip it to default
-            }
-            txt_battery_detail?.visibility = View.VISIBLE
-            txt_battery_enable?.visibility = View.VISIBLE
+            menu?.getItem(1)?.isVisible = true
         }
     }
 
     override fun onBatteryTextHide() {
+//        runOnUiThread {
+//            txt_battery_detail?.visibility = View.GONE
+//            txt_battery_enable?.visibility = View.GONE
+//        }
         runOnUiThread {
-            txt_battery_detail?.visibility = View.GONE
-            txt_battery_enable?.visibility = View.GONE
+            menu?.getItem(1)?.isVisible = false
         }
     }
 
