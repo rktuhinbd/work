@@ -56,7 +56,8 @@ class FloatingNotification {
             isVibrate: Boolean,
             context: Service,
             notificationManager: NotificationManagerCompat,
-            numberOfPlay: Int
+            numberOfPlay: Int,
+            isFlashLight: Boolean
         ) {
             /**
              * Turn on screen for few seconds
@@ -79,7 +80,8 @@ class FloatingNotification {
                          isVibrate,
                          context, tone, (x == (numberOfPlay - 1)),
                          packageName,
-                         appName
+                         appName,
+                         isFlashLight
                      )
                      if (x == numberOfPlay - 1) {
                          //done playing dismiss the activity now
@@ -243,7 +245,7 @@ class FloatingNotification {
             title: String,
             isJustVibrate: Boolean,
             appName: String, packageName: String, numberOfPlay: Int,
-            isVibrate: Boolean, context: Service, mediaPath: String?
+            isVibrate: Boolean, context: Service, mediaPath: String?, isFlashLight: Boolean
         ) {
             val bundle = Bundle()
             bundle.putString("alarm_by_notification", "true")
@@ -389,7 +391,8 @@ class FloatingNotification {
                 isVibrate,
                 context,
                 notificationManager!!,
-                numberOfPlay
+                numberOfPlay,
+                isFlashLight
             )
 
         }

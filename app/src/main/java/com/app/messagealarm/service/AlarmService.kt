@@ -153,7 +153,8 @@ class AlarmService {
                         app.numberOfPlay,
                         app.isVibrateOnAlarm,
                         service,
-                        app.tone_path
+                        app.tone_path,
+                        app.isIs_flash_on
                     )
                 }
             } else {
@@ -170,7 +171,8 @@ class AlarmService {
                         app.numberOfPlay,
                         app.isVibrateOnAlarm,
                         service,
-                        null
+                        null,
+                        app.isIs_flash_on
                     )
                 }
             }
@@ -360,7 +362,8 @@ class AlarmService {
                             app.numberOfPlay,
                             app.isVibrateOnAlarm,
                             service,
-                            app.tone_path
+                            app.tone_path,
+                            app.isIs_flash_on
                         )
                     }
                 }).execute()
@@ -377,6 +380,7 @@ class AlarmService {
                 intent.putExtra(Constants.IntentKeys.PACKAGE_NAME, app.packageName)
                 intent.putExtra(Constants.IntentKeys.TONE, tone)
                 intent.putExtra(Constants.IntentKeys.IS_JUST_VIBRATE, app.isJustVibrate)
+                intent.putExtra(Constants.IntentKeys.IS_FLASH_LIGHT, app.isIs_flash_on)
                 intent.putExtra(Constants.IntentKeys.IMAGE_PATH, app.bitmapPath)
                 intent.putExtra(Constants.IntentKeys.TITLE, title)
                 intent.putExtra(Constants.IntentKeys.DESC, desc)
