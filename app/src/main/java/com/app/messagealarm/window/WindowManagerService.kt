@@ -1,12 +1,12 @@
 package com.app.messagealarm.window
 
 
-import android.R
 import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.graphics.PixelFormat
 import android.graphics.Point
@@ -22,6 +22,7 @@ import com.app.messagealarm.utils.MediaUtils
 import com.app.messagealarm.utils.Once
 import com.app.messagealarm.utils.SharedPrefUtils
 import com.ncorti.slidetoact.SlideToActView
+import de.hdodenhof.circleimageview.CircleImageView
 import java.io.File
 
 
@@ -63,7 +64,8 @@ class WindowManagerService : Service() {
         addRemoveView(inflater)
         addFloatingWidgetView(inflater)
         implementTouchListenerToFloatingWidgetView()
-        implementClickListeners()
+
+
 
 //        mFloatingView = LayoutInflater.from(this)
 //            .inflate(com.app.messagealarm.R.layout.layout_window_manager, null)
@@ -85,12 +87,6 @@ class WindowManagerService : Service() {
 
     }
 
-    private fun implementClickListeners() {
-        mFloatingWidgetView!!.findViewById<View>(com.app.messagealarm.R.id.close_floating_view)
-            .setOnClickListener {
-                stopSelf()
-            }
-    }
 
     private fun getWindowManagerDefaultDisplay() {
         mWindowManager!!.defaultDisplay.getSize(
@@ -100,14 +96,12 @@ class WindowManagerService : Service() {
 
     private fun addRemoveView(inflater: LayoutInflater): View? {
         //Inflate the removing view layout we created
-        removeFloatingWidgetView =
-            inflater.inflate(com.app.messagealarm.R.layout.remove_floating_widget_layout, null)
+        removeFloatingWidgetView = inflater.inflate(com.app.messagealarm.R.layout.remove_floating_widget_layout, null)
 
         //Add the view to the window.
-        val paramRemove: WindowManager.LayoutParams
-        paramRemove = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+        val paramRemove = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_PHONE,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
@@ -115,7 +109,7 @@ class WindowManagerService : Service() {
             )
         } else {
             WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
@@ -128,20 +122,17 @@ class WindowManagerService : Service() {
 
         //Initially the Removing widget view is not visible, so set visibility to GONE
         removeFloatingWidgetView!!.visibility = View.GONE
-        remove_image_view =
-            removeFloatingWidgetView!!.findViewById<View>(com.app.messagealarm.R.id.remove_img) as ImageView
+        remove_image_view =  removeFloatingWidgetView!!.findViewById<View>(com.app.messagealarm.R.id.remove_img) as ImageView
         mWindowManager!!.addView(removeFloatingWidgetView, paramRemove)
-        return remove_image_view
+        return removeFloatingWidgetView
     }
 
     private fun addFloatingWidgetView(inflater: LayoutInflater) {
         //Inflate the floating view layout we created
-        mFloatingWidgetView =
-            inflater.inflate(com.app.messagealarm.R.layout.layout_window_manager, null)
+        mFloatingWidgetView = inflater.inflate(com.app.messagealarm.R.layout.layout_window_manager, null)
 
         //Add the view to the window.
-        val params: WindowManager.LayoutParams
-        params = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+        val params = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -169,10 +160,12 @@ class WindowManagerService : Service() {
 
         //find id of collapsed view layout
         collapsedView = mFloatingWidgetView?.findViewById(com.app.messagealarm.R.id.collapse_view)
+        expandedView = mFloatingWidgetView?.findViewById(com.app.messagealarm.R.id.expanded_container)
 
-        //find id of the expanded view layout
-        expandedView =
-            mFloatingWidgetView?.findViewById(com.app.messagealarm.R.id.expanded_container)
+
+        mFloatingWidgetView!!.findViewById<CircleImageView>(com.app.messagealarm.R.id.app_image).setOnClickListener {
+            showCollapsedView()
+        }
     }
 
     private fun implementTouchListenerToFloatingWidgetView() {
@@ -190,16 +183,18 @@ class WindowManagerService : Service() {
                     //Set isLongClick as true
                     isLongClick = true
 
+
                     //Set remove widget view visibility to VISIBLE
                     removeFloatingWidgetView!!.visibility = View.VISIBLE
                     onFloatingWidgetLongClick()
+
+                    showCollapsedView()
                 }
 
                 override fun onTouch(v: View?, event: MotionEvent): Boolean {
 
                     //Get Floating widget view params
-                    val layoutParams =
-                        mFloatingWidgetView!!.layoutParams as WindowManager.LayoutParams
+                    val layoutParams = mFloatingWidgetView!!.layoutParams as WindowManager.LayoutParams
 
                     //get the touch location coordinates
                     val x_cord = event.rawX.toInt()
@@ -308,13 +303,14 @@ class WindowManagerService : Service() {
                                         mFloatingWidgetView,
                                         layoutParams
                                     )
+//                                    showCollapsedView()
                                     return true
                                 } else {
                                     //If Floating window gets out of the Remove view update Remove view again
                                     inBounded = false
                                     remove_image_view!!.layoutParams.height = remove_img_height
                                     remove_image_view!!.layoutParams.width = remove_img_width
-                                    onFloatingWidgetClick()
+//                                    onFloatingWidgetClick()
                                 }
                             }
                             layoutParams.x = x_cord_Destination
@@ -401,9 +397,18 @@ class WindowManagerService : Service() {
 
     private fun onFloatingWidgetClick() {
         if (isViewCollapsed()) {
-            collapsedView!!.visibility = View.GONE
-            expandedView!!.visibility = View.VISIBLE
+            showExpendedView()
         }
+    }
+
+    private fun showCollapsedView(){
+        collapsedView!!.visibility = View.VISIBLE
+        expandedView!!.visibility = View.GONE
+    }
+
+    private fun showExpendedView(){
+        collapsedView!!.visibility = View.GONE
+        expandedView!!.visibility = View.VISIBLE
     }
 
     private fun isViewCollapsed(): Boolean {
