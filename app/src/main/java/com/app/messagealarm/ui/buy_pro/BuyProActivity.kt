@@ -145,6 +145,23 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     initiateInAppSubscription()
                     initiateInAppPurchase()
+
+                    /**
+                     * Check for subscription
+                     */
+                    billingClient!!.queryPurchasesAsync(
+                        SkuType.SUBS
+                    ) { p0, p1 ->
+                        if (p1.size > 0) {
+                            handleInAppSubscription(p1)
+                        } else {
+                            setIsPurchased(false)
+                        }
+                    }
+
+                    /**
+                     * Check for In App Purchase
+                     */
                     billingClient!!.queryPurchasesAsync(
                         SkuType.INAPP
                     ) { p0, p1 ->
@@ -208,7 +225,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                 } else {
                     //try to add item/product id "purchase" inside managed product in google play console
                     runOnUiThread {
-                        Toast.makeText(
+                        Toasty.error(
                             applicationContext,
                             "Purchase Item not Found",
                             Toast.LENGTH_SHORT
@@ -217,7 +234,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                 }
             } else {
                 runOnUiThread {
-                    Toast.makeText(
+                    Toasty.error(
                         applicationContext,
                         " Error " + billingResult.debugMessage, Toast.LENGTH_SHORT
                     ).show()
@@ -266,7 +283,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                 } else {
                     //try to add item/product id "purchase" inside managed product in google play console
                     runOnUiThread {
-                        Toast.makeText(
+                        Toasty.error(
                             applicationContext,
                             "Purchase Item not Found",
                             Toast.LENGTH_SHORT
@@ -275,7 +292,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                 }
             } else {
                 runOnUiThread {
-                    Toast.makeText(
+                    Toasty.error(
                         applicationContext,
                         " Error " + billingResult.debugMessage, Toast.LENGTH_SHORT
                     ).show()
@@ -285,9 +302,6 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     }
 
 
-    /**
-     * @Deprecated purchase.sku to purhchase.sku[0]
-     */
     fun handleInAppPurchase(purchases: List<Purchase>) {
         for (purchase in purchases) {
             //if item is purchased
@@ -295,9 +309,9 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                 // buyProPresenter?.verifyPurchase(this,purchase.originalJson, purchase.signature, purchase)
             } else if (Constants.Purchase.PRODUCT_ID == purchase.skus[0] && purchase.purchaseState == Purchase.PurchaseState.PENDING) {
                 runOnUiThread {
-                    Toast.makeText(
+                    Toasty.success(
                         applicationContext,
-                        "Your purchase is processing, Please wait a bit!", Toast.LENGTH_SHORT
+                        "Your purchase is processing, Please wait a bit!", Toast.LENGTH_LONG
                     ).show()
                 }
             } else if (Constants.Purchase.PRODUCT_ID == purchase.skus[0] && purchase.purchaseState == Purchase.PurchaseState.UNSPECIFIED_STATE) {
@@ -306,7 +320,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                  */
                 setIsPurchased(false)
                 runOnUiThread {
-                    Toast.makeText(
+                    Toasty.error(
                         applicationContext,
                         "Purchase Status Unknown",
                         Toast.LENGTH_SHORT
@@ -316,6 +330,39 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         }
     }
 
+
+    fun handleInAppSubscription(purchases: List<Purchase>) {
+        for (purchase in purchases) {
+            //if item is purchased
+            if (Constants.Purchase.SUBSCRIPTION_ID == purchase.skus[0] && purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+                buyProPresenter?.verifyPurchase(
+                    this,
+                    purchase.originalJson,
+                    purchase.signature,
+                    purchase
+                )
+            } else if (Constants.Purchase.SUBSCRIPTION_ID == purchase.skus[0] && purchase.purchaseState == Purchase.PurchaseState.PENDING) {
+                runOnUiThread {
+                    Toasty.success(
+                        applicationContext,
+                        "Your purchase is processing, Please wait a bit!", Toast.LENGTH_LONG
+                    ).show()
+                }
+            } else if (Constants.Purchase.PRODUCT_ID == purchase.skus[0] && purchase.purchaseState == Purchase.PurchaseState.UNSPECIFIED_STATE) {
+                /**
+                 *refund request
+                 */
+                setIsPurchased(false)
+                runOnUiThread {
+                    Toasty.error(
+                        applicationContext,
+                        "Purchase Status Unknown",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
 
 
     var ackPurchase =
@@ -413,7 +460,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                                 initiateInAppPurchase()
                                 initiateInAppSubscription()
                             } else {
-                                Toast.makeText(
+                                Toasty.error(
                                     applicationContext,
                                     "Error " + billingResult.debugMessage,
                                     Toast.LENGTH_SHORT
@@ -427,7 +474,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                     })
                 }
             } else {
-                Toasty.info(this, "No Internet!").show()
+                Toasty.error(this, "No Internet!").show()
                 checkPurchaseStatus()
             }
 
@@ -452,7 +499,11 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     ) {
         //if item newly purchased
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-            handleInAppPurchase(purchases)
+            if (!isSubscription) {
+                handleInAppPurchase(purchases)
+            } else {
+                handleInAppSubscription(purchases)
+            }
         } else if (billingResult.responseCode == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
             /**
              *  val queryAlreadyPurchasesResult =
@@ -464,14 +515,26 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
             /**
              * The below code is replaced for Billing library 4
              */
+
+            /**
+             * Handle already owned subscription
+             */
+            billingClient!!.queryPurchasesAsync(
+                SkuType.SUBS
+            ) { p0, p1 -> handleInAppSubscription(p1) }
+
+            /**
+             * Handle already owned in app purchase
+             */
             billingClient!!.queryPurchasesAsync(
                 SkuType.INAPP
             ) { p0, p1 -> handleInAppPurchase(p1) }
 
+
         } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
-            Toast.makeText(applicationContext, "Purchase Canceled", Toast.LENGTH_SHORT).show()
+            Toasty.error(applicationContext, "Purchase Canceled", Toast.LENGTH_LONG).show()
         } else {
-            Toast.makeText(
+            Toasty.error(
                 applicationContext,
                 "Error " + billingResult.debugMessage,
                 Toast.LENGTH_SHORT
@@ -525,7 +588,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
             firebaseAnalytics.logEvent("invalid_purchase", bundle)
             // Invalid purchase
             // show error to user
-            Toast.makeText(
+            Toasty.error(
                 applicationContext,
                 "Error : Invalid Purchase",
                 Toast.LENGTH_SHORT
