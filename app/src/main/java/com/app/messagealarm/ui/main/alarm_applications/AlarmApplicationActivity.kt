@@ -675,9 +675,43 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 .create()
 
 
+            // For Warning in better way
+            val drawableThree = AppCompatResources.getDrawable(this, R.drawable.ic_warning_white_48dp)
+            val itemThree = SpeedDialActionItem.Builder(R.id.fab_action3, drawableThree)
+                .setFabImageTintColor(
+                    ResourcesCompat.getColor(
+                        resources, R.color.color_white,
+                        theme
+                    )
+                )
+                .setLabel("Warning")
+                .setFabSize(FloatingActionButton.SIZE_MINI)
+                .setContentDescription("Battery Restriction and Auto Start")
+                .setLabelColor(Color.WHITE)
+                .setFabBackgroundColor(
+                    ResourcesCompat.getColor(
+                        resources,
+                        R.color.floating,
+                        theme
+                    )
+                )
+                .setLabelBackgroundColor(
+                    ResourcesCompat.getColor(
+                        resources,
+                        R.color.floating,
+                        theme
+                    )
+                )
+                .setLabelClickable(true)
+                .create()
+
+
             try {
                 speedDial.addActionItem(itemTwo)
                 speedDial.addActionItem(itemOne)
+
+                // Need to add the logic if it should be added into the menu or not
+                speedDial.addActionItem(itemThree)
             } catch (e: NullPointerException) {
 
             }
@@ -693,6 +727,11 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     R.id.fab_action2 -> {
                         speedDial.close()
                         fab_button_add_application?.performClick()
+                        return@OnActionSelectedListener true
+                    }
+                    R.id.fab_action3 -> {
+                        speedDial.close()
+                        // Have to show the dialog
                         return@OnActionSelectedListener true
                     }
                 }
