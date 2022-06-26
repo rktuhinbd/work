@@ -9,6 +9,7 @@
         <entry key="app/src/main/res/layout/activity_alarm.xml" value="0.3729166666666667" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3729166666666667" />
         <entry key="app/src/main/res/layout/dialog_congrats_layout.xml" value="0.3729166666666667" />
+        <entry key="app/src/main/res/layout/dialog_exclude_sender_name.xml" value="0.3729166666666667" />
         <entry key="app/src/main/res/layout/dialog_warning_layout.xml" value="0.3729166666666667" />
         <entry key="app/src/main/res/layout/layout_incoming_notification.xml" value="0.3729166666666667" />
         <entry key="app/src/main/res/layout/layout_incoming_notification_collapsed.xml" value="0.3729166666666667" />

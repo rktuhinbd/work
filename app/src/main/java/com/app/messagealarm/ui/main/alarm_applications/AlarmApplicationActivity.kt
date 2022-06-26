@@ -857,20 +857,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.setCancelable(false)
         dialog.setContentView(R.layout.dialog_warning_layout)
-        val materialButton = dialog.findViewById<MaterialButton>(R.id.text_done)
-        val textView = dialog.findViewById<TextView>(R.id.text_sub_message)
-        val html = String.format(
-            "Please fix this warnings for better"
-        )
-        textView.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)
-        } else {
-            Html.fromHtml(html)
-        }
-        materialButton.setOnClickListener {
+        val fabClose = dialog.findViewById<FloatingActionButton>(R.id.fabClose)
+        fabClose.setOnClickListener {
             if (dialog.isShowing) {
                 dialog.dismiss()
-                // Perform the task for warning
             }
         }
         val window: Window = dialog.window!!
