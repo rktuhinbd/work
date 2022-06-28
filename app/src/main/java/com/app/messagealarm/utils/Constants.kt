@@ -23,6 +23,7 @@ class Constants {
     class Purchase{
         companion object{
             const val PRODUCT_ID = "pro_feature"
+            const val SUBSCRIPTION_ID = "pro_subs"
         }
     }
 
@@ -220,6 +221,7 @@ class Constants {
             const val TOTAL_APP = "total_app"
             const val NUMBER_OF_PLAY = "number_of_play"
             const val IS_VIBRATE = "is_vibrate"
+            const val IS_FLASH_LIGHT = "is_flash_light"
             const val IS_JUST_VIBRATE = "is_just_vibrate"
             const val IS_BUY_PRO = "is_buy_pro"
         }

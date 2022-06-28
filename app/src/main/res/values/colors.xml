@@ -22,4 +22,5 @@
     <color name="setting_icon">#000000</color>
     <color name="color_hint">#99000000</color>
     <color name="floating">#1436F5</color>
+    <color name="purchase_stroke">#D32F2F</color>
 </resources>
