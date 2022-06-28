@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -21,6 +22,7 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_buy_pro_new.*
+import timber.log.Timber
 import java.lang.Exception
 import java.util.*
 import kotlin.math.abs
@@ -122,7 +124,9 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     private fun buyingProcess() {
         if (AndroidUtils.isOnline(this)) {
             progress_purchase?.visibility = View.VISIBLE
-            checkPurchaseStatus()
+            Thread{
+                checkPurchaseStatus()
+            }.start()
         } else {
             btn_buy_pro_user.text = "No Internet!"
             progress_purchase?.visibility = View.GONE
@@ -143,9 +147,9 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
 
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    initiateInAppSubscription()
-                    initiateInAppPurchase()
 
+                        initiateInAppSubscription()
+                        initiateInAppPurchase()
                     /**
                      * Check for subscription
                      */
@@ -155,22 +159,21 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                         if (p1.size > 0) {
                             handleInAppSubscription(p1)
                         } else {
-                            setIsPurchased(false)
+                            /**
+                             * Check for in-app-purchase
+                             */
+                                billingClient!!.queryPurchasesAsync(
+                                    SkuType.INAPP
+                                ) { pp0, pp1 ->
+                                    if (pp1.size > 0) {
+                                        handleInAppPurchase(pp1)
+                                    } else {
+                                        setIsPurchased(false)
+                                    }
+                                }
                         }
                     }
 
-                    /**
-                     * Check for In App Purchase
-                     */
-                    billingClient!!.queryPurchasesAsync(
-                        SkuType.INAPP
-                    ) { p0, p1 ->
-                        if (p1.size > 0) {
-                            handleInAppPurchase(p1)
-                        } else {
-                            setIsPurchased(false)
-                        }
-                    }
 
 
                 }
@@ -306,7 +309,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         for (purchase in purchases) {
             //if item is purchased
             if (Constants.Purchase.PRODUCT_ID == purchase.skus[0] && purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                // buyProPresenter?.verifyPurchase(this,purchase.originalJson, purchase.signature, purchase)
+                 buyProPresenter?.verifyPurchase(this,purchase.originalJson, purchase.signature, purchase)
             } else if (Constants.Purchase.PRODUCT_ID == purchase.skus[0] && purchase.purchaseState == Purchase.PurchaseState.PENDING) {
                 runOnUiThread {
                     Toasty.success(
@@ -348,7 +351,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                         "Your purchase is processing, Please wait a bit!", Toast.LENGTH_LONG
                     ).show()
                 }
-            } else if (Constants.Purchase.PRODUCT_ID == purchase.skus[0] && purchase.purchaseState == Purchase.PurchaseState.UNSPECIFIED_STATE) {
+            } else if (Constants.Purchase.SUBSCRIPTION_ID == purchase.skus[0] && purchase.purchaseState == Purchase.PurchaseState.UNSPECIFIED_STATE) {
                 /**
                  *refund request
                  */
@@ -550,7 +553,9 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     }
 
     override fun verifyPurchaseStatus(boolean: Boolean, purchase: Purchase?) {
-        ProgressDialogUtils.on().hideProgressDialog()
+        runOnUiThread {
+            ProgressDialogUtils.on().hideProgressDialog()
+        }
         if (boolean) {
             //complete purchase
             //if item is purchased and not acknowledged

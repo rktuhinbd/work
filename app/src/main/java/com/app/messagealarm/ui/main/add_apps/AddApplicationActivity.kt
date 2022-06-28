@@ -82,9 +82,16 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         filterListener()
         darkModePre()
         setListener()
+        handleRefund()
 
     }
 
+    private fun handleRefund(){
+        //Check if user has opted for any refund
+        //if yes, then disable PRO feature option for that user
+        //if no, keep the access
+
+    }
 
     private fun deleteList(){
         (rv_apps_list?.adapter as AllAppsListAdapter).cleanList()

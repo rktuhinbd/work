@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.media.RingtoneManager
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -320,6 +321,9 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                             defaultTitle = "Default Ringtone"
                         ),
                         ringtoneTypes = listOf(
+                            RingtoneManager.TYPE_RINGTONE,
+                            RingtoneManager.TYPE_NOTIFICATION,
+                            RingtoneManager.TYPE_ALARM
                         )
                     ),
                     deviceRingtonePicker = UltimateRingtonePicker.DeviceRingtonePicker(
