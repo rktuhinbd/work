@@ -23,11 +23,12 @@ class MediaUtils {
 
     companion object {
 
-       var isStopped = false
-       // var isLoop = true
+        var isStopped = false
+
+        // var isLoop = true
         var count = 0
         var mediaPlayer: MediaPlayer? = null
-        var thread:Thread? = null
+        var thread: Thread? = null
 
 
         /**
@@ -87,7 +88,7 @@ class MediaUtils {
                     }
 
                     mediaPlayer!!.setOnErrorListener { mp, what, extra ->
-                        if(mediaPlayer != null){
+                        if (mediaPlayer != null) {
                             mediaPlayer!!.reset()
                         }
                         true
@@ -103,7 +104,7 @@ class MediaUtils {
                     /**
                      * stop the service
                      */
-                  //  stopService(context)
+                    //  stopService(context)
 
                 }
                 once.run(runnable)
@@ -121,7 +122,7 @@ class MediaUtils {
             //start flashing
             Thread(Runnable {
                 //if(flashing = true)
-              FlashLightUtil.startBlinkingFlash(context)
+                FlashLightUtil.startBlinkingFlash(context)
             }).start()
 
             //start vibration
@@ -147,8 +148,8 @@ class MediaUtils {
         }
 
 
-        private fun convertToOnePrecisionFloat(number: Float) : Float{
-           return String.format("%.1f", number).toFloat()
+        private fun convertToOnePrecisionFloat(number: Float): Float {
+            return String.format("%.1f", number).toFloat()
         }
 
         private fun stopVibrationAndFlash(context: Context) {
@@ -171,13 +172,22 @@ class MediaUtils {
                  *
                  */
                 //here 30 is not static it will be from setting page, the values will be 1, 2, 3, or Full song
+
+                var maxDuration = 0
+                if (mediaPlayer != null) {
+                    maxDuration = mediaPlayer!!.duration / 1000
+                    if (maxDuration >= 30) {
+                        maxDuration = 30
+                    }
+                }
+
                 while (true) {
-                    if(mediaPlayer != null){
+                    if (mediaPlayer != null) {
                         count++
-                    }else{
+                    } else {
                         break
                     }
-                    if (count == 30) {
+                    if (count == maxDuration) {
                         count = 0
                         if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
                             if (isLastIndex) {
@@ -198,9 +208,9 @@ class MediaUtils {
                             }
                         }
                     }
-                    try{
+                    try {
                         Thread.sleep(1000)
-                    }catch (e: InterruptedException){
+                    } catch (e: InterruptedException) {
 
                     }
                 }
@@ -212,7 +222,7 @@ class MediaUtils {
         }
 
         fun stopAlarm(context: Context) {
-            try{
+            try {
                 //first time alarm played and stopped, should ask user for review
                 if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
                     write(Constants.PreferenceKeys.IS_STOPPED, true)
@@ -223,10 +233,11 @@ class MediaUtils {
                     thread!!.interrupt()
                     thread = null
                     stopVibrationAndFlash(context)
-                    if(SharedPrefUtils.readString(Constants.PreferenceKeys.MUTE_TIME).trim()
-                            .toLowerCase(Locale.getDefault()) != Constants.Default.NEVER.trim().toLowerCase(
-                            Locale.getDefault()
-                        )
+                    if (SharedPrefUtils.readString(Constants.PreferenceKeys.MUTE_TIME).trim()
+                            .toLowerCase(Locale.getDefault()) != Constants.Default.NEVER.trim()
+                            .toLowerCase(
+                                Locale.getDefault()
+                            )
                     ) {
                         write(Constants.PreferenceKeys.IS_MUTED, true)
                         notifyMute(true)
@@ -236,11 +247,11 @@ class MediaUtils {
                  * start the service again
                  */
                 //startService(context)
-            }catch (e: java.lang.NullPointerException){
+            } catch (e: java.lang.NullPointerException) {
                 //skipped the crash of 2.0.1
                 //TOOD(Have to look at if any problem creates to any devices, during alarm dismiss)
                 //wants to try with recursive call of stop alarm
-            }catch (e: java.lang.IllegalStateException){
+            } catch (e: java.lang.IllegalStateException) {
                 //skipped with stopping media player
                 //wants to try with recursive call of stop alarm
             }
@@ -271,7 +282,7 @@ class MediaUtils {
                 } else {
                     false
                 }
-            }catch (e: java.lang.IllegalStateException){
+            } catch (e: java.lang.IllegalStateException) {
                 e.printStackTrace()
                 false
                 //wants to try with a recursive call of isPlaying
