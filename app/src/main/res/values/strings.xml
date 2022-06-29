@@ -89,7 +89,7 @@
     <string name="alarm_service">Alarm Service</string>
     <string name="not_supperted">Sorry your device doesn\'t support this app!</string>
     <string name="txt_lang_error">Sorry, Our application right now doesn\'t support your phone language! You may get unexpected alarms if you don\'t take this action, Please contact us by mentioning what language you want. We will start work on it real soon, and you will be notified when it’s ready! For now switch to English or hold on, until we get back to you. Thanks for understanding</string>
-    <string name="sell_notice">5% of every sales goes to poor children\'s for education and food!</string>
+    <string name="sell_notice">5% of total revenue goes to poor children\'s for education and food!</string>
     <string name="better_exprience">We know you hate ads, that\'s why \n we said goodbye to it!</string>
     <string name="txt_idea_desc">We can help you develop your dream project. Contact with us, we will have a meeting with you!</string>
     <string name="missing_file">File is missing!</string>
@@ -106,5 +106,12 @@
     <string name="hint_sound_control">Get full volume for Alarm, You can control the volume!</string>
     <string name="hint_sound_subtitle">1 Alarm reduce 1% volume until 50%, <b>you reached 71%</b></string>
     <string name="vibration_and_sound_hint">Vibration and music together, powerful alarm. \n\n<b>Best use case, enough power to awake you up from sleep!</b></string>
-
+    <string name="subscribe_value_txt">Subscribe For\n $0.99/Mo</string>
+    <string name="onetime_payment_txt">Onetime Payment\n For $99999999.99</string>
+    <string name="privacy_policy"><a  href="https://www.messagealarm.app/privacy_policy" style="color: red"><u>Privacy Policy</u></a></string>
+    <string name="terms_condition"><a href="https://www.messagealarm.app/privacy_policy" style="color: red"><u>Terms &amp; Condition</u></a></string>
+    <string name="txt_details_subscribe">Recurring Billing. Cancel anytime you want.</string>
+    <string name="txt_details_in_app">Onetime Payment. Buy today, enjoy lifetime.</string>
+    <string name="txt_subs_button">Subscribe Now</string>
+    <string name="txt_in_app_button">Buy Now - save 30%</string>
 </resources>

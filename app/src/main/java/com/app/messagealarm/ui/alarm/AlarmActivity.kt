@@ -129,7 +129,8 @@ class AlarmActivity : BaseActivity() {
                         this, tone,
                         (x == (numberOfPLay - 1)),
                         intent?.extras!!.getString(Constants.IntentKeys.PACKAGE_NAME)!!,
-                        intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!
+                        intent?.extras!!.getString(Constants.IntentKeys.APP_NAME)!!,
+                        intent?.extras!!.getBoolean(Constants.IntentKeys.IS_FLASH_LIGHT)
                     )
                     if (x == numberOfPLay - 1) {
                         //done playing dismiss the activity now

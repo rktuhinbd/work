@@ -62,13 +62,47 @@ class FloatingNotification {
             isVibrate: Boolean,
             context: Service,
             notificationManager: NotificationManagerCompat,
-            numberOfPlay: Int
+            numberOfPlay: Int,
+            isFlashLight: Boolean
         ) {
             /**
              * Turn on screen for few seconds
              */
             turnOnScreen(context)
 
+            var thread:Thread? = null
+         thread =   Thread(Runnable {
+             //here i need run the loop of how much time need to play
+             for (x in 0 until numberOfPlay) {
+                 if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_STOPPED)) {
+                     break
+                 }
+                 val once = Once()
+                 once.run {
+                     MediaUtils.playAlarm(
+                         thread!!,
+                         soundLevel,
+                         isJustVibrate,
+                         isVibrate,
+                         context, tone, (x == (numberOfPlay - 1)),
+                         packageName,
+                         appName,
+                         isFlashLight
+                     )
+                     if (x == numberOfPlay - 1) {
+                         //done playing dismiss the activity now
+                         //send a notification that you missed the alarm
+                         notificationManager.cancel(225)
+                         /**
+                          * The bottom two lines were making the app mute when the alarm was finished without touch
+                          * Now it's ignored by Mujahid By 1 June 2021
+                          */
+                         //SharedPrefUtils.write(Constants.PreferenceKeys.IS_MUTED, true)
+                         //notifyMute(true)
+                     }
+                 }
+             }
+         })
             var thread: Thread? = null
             thread = Thread(Runnable {
                 //here i need run the loop of how much time need to play
@@ -252,8 +286,7 @@ class FloatingNotification {
             title: String,
             isJustVibrate: Boolean,
             appName: String, packageName: String, numberOfPlay: Int,
-            isVibrate: Boolean, context: Service, mediaPath: String?,
-            description: String, imagePath: String,
+            isVibrate: Boolean, context: Service, mediaPath: String?, isFlashLight: Boolean
         ) {
             val bundle = Bundle()
             bundle.putString("alarm_by_notification", "true")
@@ -436,6 +469,21 @@ class FloatingNotification {
                 }
             }
 
+            notificationManager = NotificationManagerCompat.from(context)
+            notificationManager!!.notify(225, notificationBuilder.build())
+            //start playing
+            startPlaying(
+                soundLevel,
+                isJustVibrate,
+                appName,
+                packageName,
+                mediaPath,
+                isVibrate,
+                context,
+                notificationManager!!,
+                numberOfPlay,
+                isFlashLight
+            )
 
 
         }

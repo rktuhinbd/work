@@ -1,6 +1,5 @@
 package com.app.messagealarm.model.entity;
 
-import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Index;
@@ -54,30 +53,42 @@ public class ApplicationEntity implements Serializable {
     private String ignored_names;
     @ColumnInfo(name = "sound_level", defaultValue = "100")
     private int sound_level;
+    @ColumnInfo(name = "is_flash_on")
+    private boolean is_flash_on;
 
     /**
      * Getter methods
+     *
      * @return
      */
     public int getSound_level() {
         return sound_level;
     }
 
-    public String getIgnored_names(){
+    public boolean isIs_flash_on() {
+        return is_flash_on;
+    }
+
+    public String getIgnored_names() {
         return ignored_names;
     }
+
     public String getBitmapPath() {
         return bitmapPath;
     }
+
     public int getId() {
         return id;
     }
+
     public boolean isRunningStatus() {
         return runningStatus;
     }
+
     public String getAppName() {
         return appName;
     }
+
     public String getPackageName() {
         return packageName;
     }
@@ -135,12 +146,16 @@ public class ApplicationEntity implements Serializable {
      * Setter methods
      */
 
+    public void setIs_flash_on(boolean isFlashOn){
+        this.is_flash_on = isFlashOn;
+    }
+
     public void setSound_level(int sound_level) {
         this.sound_level = sound_level;
     }
 
 
-    public void setIgnored_names(String ignored_names){
+    public void setIgnored_names(String ignored_names) {
         this.ignored_names = ignored_names;
     }
 
@@ -222,6 +237,7 @@ public class ApplicationEntity implements Serializable {
                 ", alarmRepeat='" + alarmRepeat + '\'' +
                 ", ringTone='" + ringTone + '\'' +
                 ", vibrateOnAlarm=" + vibrateOnAlarm +
+                ", justVibrate=" + justVibrate +
                 ", customTime=" + customTime +
                 ", startTime='" + startTime + '\'' +
                 ", endTime='" + endTime + '\'' +
@@ -231,6 +247,9 @@ public class ApplicationEntity implements Serializable {
                 ", repeatDays='" + repeatDays + '\'' +
                 ", tone_path='" + tone_path + '\'' +
                 ", bitmapPath='" + bitmapPath + '\'' +
+                ", ignored_names='" + ignored_names + '\'' +
+                ", sound_level=" + sound_level +
+                ", isFlashOn=" + is_flash_on +
                 '}';
     }
 }

@@ -157,7 +157,9 @@ class AlarmService {
                         app.tone_path,
                         // Added this 2 extra param for window notification - Mortuza
                         desc,
-                        app.bitmapPath
+                        app.bitmapPath,
+                        app.tone_path,
+                        app.isIs_flash_on
                     )
                 }
             } else {
@@ -174,6 +176,8 @@ class AlarmService {
                         app.numberOfPlay,
                         app.isVibrateOnAlarm,
                         service,
+                        null,
+                        app.isIs_flash_on,
                         null,
                         // Added this 2 extra param for window notification - Mortuza
                         desc,
@@ -370,6 +374,8 @@ class AlarmService {
                             app.isVibrateOnAlarm,
                             service,
                             app.tone_path,
+                            app.isIs_flash_on,
+                            app.tone_path,
                             // Added this 2 extra param for window notification - Mortuza
                             desc,
                             app.bitmapPath
@@ -389,6 +395,7 @@ class AlarmService {
                 intent.putExtra(Constants.IntentKeys.PACKAGE_NAME, app.packageName)
                 intent.putExtra(Constants.IntentKeys.TONE, tone)
                 intent.putExtra(Constants.IntentKeys.IS_JUST_VIBRATE, app.isJustVibrate)
+                intent.putExtra(Constants.IntentKeys.IS_FLASH_LIGHT, app.isIs_flash_on)
                 intent.putExtra(Constants.IntentKeys.IMAGE_PATH, app.bitmapPath)
                 intent.putExtra(Constants.IntentKeys.TITLE, title)
                 intent.putExtra(Constants.IntentKeys.DESC, desc)
