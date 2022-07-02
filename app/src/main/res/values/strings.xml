@@ -57,7 +57,7 @@
         <item>Messaging</item>
     </string-array>
     <!--base url-->
-    <string name="base_url">https://messagealarmtest.herokuapp.com/api/</string>
+    <string name="base_url">http://www.messagealarm.app/api/</string>
     <string name="base_url_heroku">https://messagealarmpushservice.herokuapp.com/api/</string>
     <string name="txt_selected_music_duration">Music must need be at least 30 seconds!</string>
     <string name="txt_wrong_duration">Wrong Duration</string>

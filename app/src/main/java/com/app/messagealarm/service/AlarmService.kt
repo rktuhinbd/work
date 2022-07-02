@@ -156,10 +156,9 @@ class AlarmService {
                         service,
                         app.tone_path,
                         // Added this 2 extra param for window notification - Mortuza
+                        app.isIs_flash_on,
                         desc,
-                        app.bitmapPath,
-                        app.tone_path,
-                        app.isIs_flash_on
+                        app.bitmapPath
                     )
                 }
             } else {
@@ -178,8 +177,6 @@ class AlarmService {
                         service,
                         null,
                         app.isIs_flash_on,
-                        null,
-                        // Added this 2 extra param for window notification - Mortuza
                         desc,
                         app.bitmapPath
                     )
@@ -375,8 +372,6 @@ class AlarmService {
                             service,
                             app.tone_path,
                             app.isIs_flash_on,
-                            app.tone_path,
-                            // Added this 2 extra param for window notification - Mortuza
                             desc,
                             app.bitmapPath
                         )

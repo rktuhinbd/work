@@ -104,6 +104,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             }
         }
 
+        SharedPrefUtils.write(Constants.PreferenceKeys.IS_PURCHASED, true)
         getWindowManagerPermission()
     }
 
