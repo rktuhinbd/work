@@ -5,7 +5,6 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +15,7 @@ import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.AndroidUtils
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.SharedPrefUtils
+import com.app.messagealarm.utils.isVisibile
 import com.example.loadinganimation.LoadingAnimation
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -24,8 +24,8 @@ import com.google.android.material.button.MaterialButton
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.DefaultPlayerUiController
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.layout_dialog_onboarding.*
 import pl.droidsonroids.gif.GifImageView
@@ -108,22 +108,21 @@ class TutorialBottomSheetDialog(val activity: Activity) : BottomSheetDialogFragm
             }
 
             override fun onReady(youTubePlayer: YouTubePlayer) {
-
+                    DefaultPlayerUiController(youtubeView, youTubePlayer)
+                removeErrorViews(v)
             }
 
             override fun onStateChange(
                 youTubePlayer: YouTubePlayer,
                 state: PlayerConstants.PlayerState
             ) {
-                    if(state == PlayerConstants.PlayerState.PLAYING ||
-                            state == PlayerConstants.PlayerState.UNSTARTED){
-                        v.findViewById<LoadingAnimation>(R.id.progress_bar_video_loading)
-                            .visibility = View.GONE
-                    }
+
             }
 
             override fun onVideoDuration(youTubePlayer: YouTubePlayer, duration: Float) {
-
+                    if(v.findViewById<GifImageView>(R.id.gif_no_internet).isVisibile() && duration > 1){
+                        removeErrorViews(v)
+                    }
             }
 
             override fun onVideoId(youTubePlayer: YouTubePlayer, videoId: String) {
@@ -139,6 +138,17 @@ class TutorialBottomSheetDialog(val activity: Activity) : BottomSheetDialogFragm
 
         })
 
+    }
+
+    private fun removeErrorViews(v:View){
+        val youtubeView = v.findViewById<YouTubePlayerView>(R.id.youtube_player_view)
+        val gifView = v.findViewById<GifImageView>(R.id.gif_no_internet)
+        val retryButton = v.findViewById<MaterialButton>(R.id.button_retry)
+        v.findViewById<LoadingAnimation>(R.id.progress_bar_video_loading)
+            .visibility = View.GONE
+        gifView?.visibility = View.GONE
+        retryButton?.visibility = View.GONE
+        youtubeView?.visibility = View.VISIBLE
     }
 
     override fun onCreateView(
