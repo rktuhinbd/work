@@ -415,17 +415,24 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                 try {
                     val alarmTone = RingtonePickerActivity.getPickerResult(data!!)
                     val fileName = File(PathUtils.getPath(this, alarmTone[0].uri)!!).name
-                    if(MediaUtils.getDurationOfMediaFle(PathUtils.getPath(this, alarmTone[0].uri)!!) >= 30){
+
+                    /***
+                     * Remove the 30 second and more audio restriction
+                     * @author Mortuza Hossain
+                     * To go back to previous code uncomment the if..else condition
+                     */
+
+//                    if(MediaUtils.getDurationOfMediaFle(PathUtils.getPath(this, alarmTone[0].uri)!!) >= 30){
                         bottomSheetModel.txt_ringtone_value?.text = fileName
                         bottomSheetModel.setToneName(fileName)
                         bottomSheetModel.alarmTonePath = PathUtils.getPath(this, alarmTone[0].uri)!!
-                    }else{
-                        bottomSheetModel.txt_ringtone_value?.text = "Default"
-                        bottomSheetModel.setToneName("Default")
-                        bottomSheetModel.alarmTonePath = null
-                        DialogUtils.showSimpleDialog(this, getString(R.string.txt_wrong_duration),
-                            getString(R.string.txt_selected_music_duration))
-                    }
+//                    }else{
+//                        bottomSheetModel.txt_ringtone_value?.text = "Default"
+//                        bottomSheetModel.setToneName("Default")
+//                        bottomSheetModel.alarmTonePath = null
+//                        DialogUtils.showSimpleDialog(this, getString(R.string.txt_wrong_duration),
+//                            getString(R.string.txt_selected_music_duration))
+//                    }
                 }catch (e:IllegalArgumentException){
                     bottomSheetModel.txt_ringtone_value?.text = "Default"
                     bottomSheetModel.setToneName("Default")

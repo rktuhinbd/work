@@ -26,6 +26,7 @@ import android.widget.Toast
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -357,11 +358,15 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         if (isPurchased()) {
             menu?.getItem(0)?.isVisible = false
         }
+        alarmAppPresenter.isAutoStartPermissionAvailable(this)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.mnu_warning -> {
+                showWarningDialog()
+            }
             R.id.mnu_setting -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
             }
@@ -383,25 +388,32 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 try {
                     val alarmTone = RingtonePickerActivity.getPickerResult(data!!)
                     val fileName = File(PathUtils.getPath(this, alarmTone[0].uri)!!).name
-                    if (MediaUtils.getDurationOfMediaFle(
-                            PathUtils.getPath(
-                                this,
-                                alarmTone[0].uri
-                            )!!
-                        ) >= 30
-                    ) {
+
+                    /***
+                     * Remove the 30 second and more audio restriction
+                     * @author Mortuza Hossain
+                     * To go back to previous code uncomment the if..else condition
+                     */
+
+//                    if (MediaUtils.getDurationOfMediaFle(
+//                            PathUtils.getPath(
+//                                this,
+//                                alarmTone[0].uri
+//                            )!!
+//                        ) >= 30
+//                    ) {
                         bottomSheetModel.txt_ringtone_value?.text = fileName
                         bottomSheetModel.setToneName(fileName)
                         bottomSheetModel.alarmTonePath = PathUtils.getPath(this, alarmTone[0].uri)!!
-                    } else {
-                        bottomSheetModel.txt_ringtone_value?.text = "Default"
-                        bottomSheetModel.setToneName("Default")
-                        bottomSheetModel.alarmTonePath = null
-                        DialogUtils.showSimpleDialog(
-                            this, getString(R.string.txt_wrong_duration),
-                            getString(R.string.txt_selected_music_duration)
-                        )
-                    }
+//                    } else {
+//                        bottomSheetModel.txt_ringtone_value?.text = "Default"
+//                        bottomSheetModel.setToneName("Default")
+//                        bottomSheetModel.alarmTonePath = null
+//                        DialogUtils.showSimpleDialog(
+//                            this, getString(R.string.txt_wrong_duration),
+//                            getString(R.string.txt_selected_music_duration)
+//                        )
+//                    }
                 } catch (e: IllegalArgumentException) {
                     bottomSheetModel.txt_ringtone_value?.text = "Default"
                     bottomSheetModel.setToneName("Default")
@@ -674,7 +686,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 .setLabelClickable(true)
                 .create()
 
-
             try {
                 speedDial.addActionItem(itemTwo)
                 speedDial.addActionItem(itemOne)
@@ -806,6 +817,92 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 })
         }
     }
+
+
+    /**
+     * show warning dialog for battery and autostart
+     */
+    private fun showWarningDialog() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_warning_layout)
+        val fabClose = dialog.findViewById<FloatingActionButton>(R.id.fabClose)
+        fabClose.setOnClickListener {
+            if (dialog.isShowing) {
+                dialog.dismiss()
+            }
+        }
+
+        val cardAutoStart = dialog.findViewById<CardView>(R.id.cardAutoStart)
+        cardAutoStart.setOnClickListener {
+            try {
+                if (dialog.isShowing) {
+                    dialog.dismiss()
+                }
+                val isOpened =
+                    AutoStartPermissionHelper.getInstance().getAutoStartPermission(
+                        this@AlarmApplicationActivity,
+                        open = true,
+                        newTask = true
+                    )
+                if (isOpened) {
+                    SharedPrefUtils.write(
+                        Constants.PreferenceKeys.IS_AUTO_STARTED,
+                        true
+                    )
+                }
+            } catch (e: Exception) {
+                //having exception hide it permanently
+                SharedPrefUtils.write(
+                    Constants.PreferenceKeys.IS_AUTO_STARTED,
+                    true
+                )
+            }
+
+        }
+
+        val cardBatteryOptimization = dialog.findViewById<CardView>(R.id.cardBatteryOptimization)
+        cardBatteryOptimization.setOnClickListener {
+            try {
+                if (dialog.isShowing) {
+                    dialog.dismiss()
+                }
+                //Open the specific App Info page:
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                intent.data = Uri.parse("package:$packageName")
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                SharedPrefUtils.write(
+                    Constants.PreferenceKeys.IS_BATTERY_RESTRICTED,
+                    true
+                )
+            } catch (e: ActivityNotFoundException) {
+                //e.printStackTrace();
+                //Open the generic Apps page:
+                val intent = Intent(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                SharedPrefUtils.write(
+                    Constants.PreferenceKeys.IS_BATTERY_RESTRICTED,
+                    true
+                )
+            }
+
+        }
+
+
+        val window: Window = dialog.window!!
+        window.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        if (!dialog.isShowing) {
+            dialog.show()
+        }
+    }
+
 
 
     private fun showOfferDialog() {
@@ -1126,45 +1223,58 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     }
 
     override fun onAutoStartTextShow() {
+//        runOnUiThread {
+//            txt_auto_start_detail?.visibility = View.VISIBLE
+//            txt_auto_start_enable?.visibility = View.VISIBLE
+//        }
         runOnUiThread {
-            txt_auto_start_detail?.visibility = View.VISIBLE
-            txt_auto_start_enable?.visibility = View.VISIBLE
+            menu?.getItem(1)?.isVisible = true
         }
     }
 
     override fun onAutoStartTextHide() {
+//        runOnUiThread {
+//            txt_auto_start_detail?.visibility = View.GONE
+//            txt_auto_start_enable?.visibility = View.GONE
+//        }
         runOnUiThread {
-            txt_auto_start_detail?.visibility = View.GONE
-            txt_auto_start_enable?.visibility = View.GONE
+            menu?.getItem(1)?.isVisible = false
         }
     }
 
     override fun onBatteryTextShow() {
+//        runOnUiThread {
+//            try {
+//                if (txt_auto_start_detail.isVisibile()) {
+//                    //make txt battery detail top margin only 8 dp
+//                    (txt_battery_detail.layoutParams as ConstraintLayout.LayoutParams).apply {
+//                        topMargin = ViewUtils.dpToPx(6).toInt()
+//                    }
+//                } else {
+//                    //make txt battery detail top margin only 12 dp
+//                    (txt_battery_detail.layoutParams as ConstraintLayout.LayoutParams).apply {
+//                        topMargin = ViewUtils.dpToPx(12).toInt()
+//                    }
+//                }
+//            } catch (e: Exception) {
+//                //skip it to default
+//            }
+//            txt_battery_detail?.visibility = View.VISIBLE
+//            txt_battery_enable?.visibility = View.VISIBLE
+//        }
+//
         runOnUiThread {
-            try {
-                if (txt_auto_start_detail.isVisibile()) {
-                    //make txt battery detail top margin only 8 dp
-                    (txt_battery_detail.layoutParams as ConstraintLayout.LayoutParams).apply {
-                        topMargin = ViewUtils.dpToPx(6).toInt()
-                    }
-                } else {
-                    //make txt battery detail top margin only 12 dp
-                    (txt_battery_detail.layoutParams as ConstraintLayout.LayoutParams).apply {
-                        topMargin = ViewUtils.dpToPx(12).toInt()
-                    }
-                }
-            } catch (e: Exception) {
-                //skip it to default
-            }
-            txt_battery_detail?.visibility = View.VISIBLE
-            txt_battery_enable?.visibility = View.VISIBLE
+            menu?.getItem(1)?.isVisible = true
         }
     }
 
     override fun onBatteryTextHide() {
+//        runOnUiThread {
+//            txt_battery_detail?.visibility = View.GONE
+//            txt_battery_enable?.visibility = View.GONE
+//        }
         runOnUiThread {
-            txt_battery_detail?.visibility = View.GONE
-            txt_battery_enable?.visibility = View.GONE
+            menu?.getItem(1)?.isVisible = false
         }
     }
 

@@ -321,9 +321,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                             defaultTitle = "Default Ringtone"
                         ),
                         ringtoneTypes = listOf(
-                            RingtoneManager.TYPE_RINGTONE,
-                            RingtoneManager.TYPE_NOTIFICATION,
-                            RingtoneManager.TYPE_ALARM
+                            RingtoneManager.TYPE_RINGTONE
                         )
                     ),
                     deviceRingtonePicker = UltimateRingtonePicker.DeviceRingtonePicker(
@@ -333,14 +331,9 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                         false
                     )
                 )
-                /*   val intent =
-                       Intent(
-                           Intent.ACTION_PICK,
-                           MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-                       )
-                       requireActivity().startActivityForResult(intent, REQUEST_CODE_PICK_AUDIO)*/
                 requireActivity().startActivityForResult(
                     RingtonePickerActivity.getIntent(
+                        SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE),
                         context = requireActivity(),
                         settings = settings,
                         windowTitle = "Alarm Tone"

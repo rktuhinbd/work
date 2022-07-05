@@ -9,6 +9,12 @@
         app:showAsAction="ifRoom"
         />
 
+    <item android:id="@+id/mnu_warning"
+        android:title="Warning"
+        android:icon="@drawable/icon_warnings"
+        app:showAsAction="ifRoom"
+        />
+
     <item android:id="@+id/mnu_setting"
             android:title="Setting"
             android:icon="@drawable/ic_settings_black_24dp"
