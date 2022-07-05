@@ -72,6 +72,10 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         firebaseAnalytics = Firebase.analytics
     }
 
+
+    /**
+     * Flash light option added on version 2.0.4
+     */
     private fun darkMode() {
         if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)) {
             btn_close?.setImageResource(R.drawable.ic_close_white)
@@ -88,6 +92,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             img_end_time?.setImageResource(R.drawable.ic_end_time_white)
             img_exclude_sender_name?.setImageResource(R.drawable.ic_ignore_white)
             img_sound_level?.setImageResource(R.drawable.volume_white)
+            img_flash?.setImageResource(R.drawable.flashlight_white)
         } else {
             img_sound_level?.setImageResource(R.drawable.volume)
             btn_close?.setImageResource(R.drawable.ic_close)
@@ -103,6 +108,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             img_start_time?.setImageResource(R.drawable.ic_start_time)
             img_end_time?.setImageResource(R.drawable.ic_end_time)
             img_exclude_sender_name?.setImageResource(R.drawable.ic_ignore)
+            img_flash?.setImageResource(R.drawable.flashlight)
         }
     }
 
@@ -181,21 +187,28 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
      * Note: On 22 aug MK changed the just vibrate code,
      *as Mk planned to make just vibrate a free feature
      */
+    /**
+     * Flashlight added on 2.0.4
+     */
     private fun enableProMode() {
         if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
             // switch_just_vibrate?.isEnabled = true
             switch_vibrate?.isEnabled = true
+            switch_flash?.isEnabled = true
             progress_sound_level?.isEnabled = true
             //txt_pro_just_vibrate?.visibility = View.GONE
             txt_pro_vibrate?.visibility = View.GONE
+            txt_pro_flash?.visibility = View.GONE
             txt_pro_sound_level?.visibility = View.GONE
         } else {
             switch_vibrate?.isChecked = false
+            switch_flash?.isEnabled = false
             switch_vibrate?.isEnabled = false
             progress_sound_level?.isEnabled = false
             // switch_just_vibrate?.isChecked = false
             //switch_just_vibrate?.isEnabled = false
             txt_pro_sound_level?.visibility = View.VISIBLE
+            txt_pro_flash?.visibility = View.VISIBLE
             // txt_pro_just_vibrate?.visibility = View.VISIBLE
             txt_pro_vibrate?.visibility = View.VISIBLE
         }
@@ -410,6 +423,13 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             }
         }
 
+        switch_flash?.setOnCheckedChangeListener { buttonView, isChecked ->
+            /**
+             * Set flash option to the data model
+             */
+            addApplicationEntity.isIs_flash_on = isChecked
+        }
+
         switch_vibrate?.setOnCheckedChangeListener { buttonView, isChecked ->
             /**
              * set vibrate option to data model
@@ -444,6 +464,12 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         view_custom_time?.setOnClickListener {
             if (!BaseApplication.isHintShowing) {
                 switch_custom_time?.performClick()
+            }
+        }
+
+        view_flash?.setOnClickListener {
+            if(!BaseApplication.isHintShowing){
+                switch_flash?.performClick()
             }
         }
 
@@ -1776,17 +1802,19 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         if (txt_repeat_value?.text.toString().trim() == repeat) {
             if (txt_ringtone_value?.text.toString().trim() == holderEntity.ringTone) {
                 if (switch_vibrate?.isChecked == holderEntity.isVibrateOnAlarm) {
-                    if (switch_just_vibrate?.isChecked == holderEntity.isJustVibrate) {
-                        if (switch_custom_time?.isChecked == holderEntity.isCustomTime) {
-                            if (txt_number_of_play_value?.text.toString().split(" ")
-                                        [0].trim() ==
-                                holderEntity.numberOfPlay.toString()
-                            ) {
-                                if (txt_sender_name_value?.text.toString() == holderEntity.senderNames) {
-                                    if (txt_exclude_sender_name_value?.text.toString() == holderEntity.ignored_names) {
-                                        if (txt_message_body_value?.text.toString() == holderEntity.messageBody) {
-                                            if (progress_sound_level?.progress == holderEntity.sound_level) {
-                                                isDefault = true
+                    if(switch_flash?.isChecked == holderEntity.isIs_flash_on){
+                        if (switch_just_vibrate?.isChecked == holderEntity.isJustVibrate) {
+                            if (switch_custom_time?.isChecked == holderEntity.isCustomTime) {
+                                if (txt_number_of_play_value?.text.toString().split(" ")
+                                            [0].trim() ==
+                                    holderEntity.numberOfPlay.toString()
+                                ) {
+                                    if (txt_sender_name_value?.text.toString() == holderEntity.senderNames) {
+                                        if (txt_exclude_sender_name_value?.text.toString() == holderEntity.ignored_names) {
+                                            if (txt_message_body_value?.text.toString() == holderEntity.messageBody) {
+                                                if (progress_sound_level?.progress == holderEntity.sound_level) {
+                                                    isDefault = true
+                                                }
                                             }
                                         }
                                     }
@@ -1924,6 +1952,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         }
         txt_ringtone_value?.text = app.ringTone
         switch_vibrate?.isChecked = app.isVibrateOnAlarm
+        switch_flash?.isChecked = app.isIs_flash_on
         switch_custom_time?.isChecked = app.isCustomTime
         switch_just_vibrate?.isChecked = app.isJustVibrate
         txt_start_time_value?.text = app.startTime
@@ -1977,6 +2006,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
         holderEntity.alarmRepeat = app.alarmRepeat
         holderEntity.repeatDays = app.repeatDays
         holderEntity.sound_level = app.sound_level
+        holderEntity.isIs_flash_on = app.isIs_flash_on
     }
 
     override fun onApplicationGetError(message: String) {

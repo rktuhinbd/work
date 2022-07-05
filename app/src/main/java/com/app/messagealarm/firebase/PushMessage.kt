@@ -157,9 +157,11 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
                                     SharedPrefUtils.write(Constants.PreferenceKeys.IS_FREELANCER,
                                         registerResponse.data?.isFreelauncer!!
                                     )
-                                    SharedPrefUtils.write(Constants.PreferenceKeys.IS_PURCHASED,
+
+                                    //NOTE: We have to implement subscription cancellation update to server and local including refund and faurd protection
+                                    /*SharedPrefUtils.write(Constants.PreferenceKeys.IS_PURCHASED,
                                         registerResponse.data.isPaid!!
-                                    )
+                                    )*/
                                     //write others too
                                     SharedPrefUtils.write(
                                         Constants.PreferenceKeys.IS_FIREBASE_TOKEN_SYNCED_2_0_2,
@@ -364,6 +366,9 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
 
     override fun onSuccess(token: String) {
         //if app is build in debug mode don't call this function
+        /**
+         * Should save token if still have not got the IP information
+         */
             sendPushToken(token)
             //send push token for non debug mode
             if(!BuildConfig.DEBUG){

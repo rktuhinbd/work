@@ -61,17 +61,10 @@ class WindowManagerService : Service() {
         mWindowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
         getWindowManagerDefaultDisplay()
-        addRemoveView(inflater)
+        //addRemoveView(inflater)
         addFloatingWidgetView(inflater)
-        implementTouchListenerToFloatingWidgetView()
-
-
-
-//        mFloatingView = LayoutInflater.from(this)
-//            .inflate(com.app.messagealarm.R.layout.layout_window_manager, null)
-
-
-//        mWindowManager!!.addView(mFloatingView, params)
+        showExpendedView()
+        //implementTouchListenerToFloatingWidgetView()
 
         mMessageReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -150,10 +143,10 @@ class WindowManagerService : Service() {
             )
         }
 
-        params.gravity = Gravity.TOP or Gravity.LEFT
+        params.gravity = Gravity.CENTER or Gravity.CENTER
 
         params.x = 0
-        params.y = 100
+        params.y = 0
 
         //Add the view to the window
         mWindowManager!!.addView(mFloatingWidgetView, params)

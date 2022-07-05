@@ -51,7 +51,8 @@ class MediaUtils {
             mediaPath: String?,
             isLastIndex: Boolean,
             packageName: String,
-            appName: String
+            appName: String,
+            isFlashLightOn:Boolean
         ) {
             this.thread = thread
             count = 0
@@ -121,8 +122,9 @@ class MediaUtils {
 
             //start flashing
             Thread(Runnable {
-                //if(flashing = true)
-                FlashLightUtil.startBlinkingFlash(context)
+                if(isFlashLightOn){
+                    FlashLightUtil.startBlinkingFlash(context)
+                }
             }).start()
 
             //start vibration

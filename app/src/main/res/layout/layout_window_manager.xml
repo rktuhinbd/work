@@ -153,11 +153,12 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <View
+            <ImageView
                 android:layout_width="0dp"
                 android:layout_height="150dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/color_white"
+                android:src="@drawable/demo_ads"
+                android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="@+id/background_alarm"
                 app:layout_constraintStart_toStartOf="@+id/background_alarm"
                 app:layout_constraintTop_toBottomOf="@+id/background_alarm" />
