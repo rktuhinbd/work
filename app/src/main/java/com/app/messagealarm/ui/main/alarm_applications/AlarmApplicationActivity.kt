@@ -1169,6 +1169,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
 
     private fun showVideoTutorial() {
+        /**
+         * Updating the tutorial viewing experience at this branch
+         */
         try {
             val bottomSheet = TutorialBottomSheetDialog(this)
             bottomSheet.show(supportFragmentManager, bottomSheet.tag)
