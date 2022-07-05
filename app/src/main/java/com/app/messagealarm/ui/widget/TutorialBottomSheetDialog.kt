@@ -65,7 +65,7 @@ class TutorialBottomSheetDialog(val activity: Activity) : BottomSheetDialogFragm
     }
 
 
-    private fun showYoutubePlayer(v:View){
+    private fun showYoutubePlayer(v:View, isFromRetry:Boolean){
         val youtubeView = v.findViewById<YouTubePlayerView>(R.id.youtube_player_view)
         val gifView = v.findViewById<GifImageView>(R.id.gif_no_internet)
         val retryButton = v.findViewById<MaterialButton>(R.id.button_retry)
@@ -77,8 +77,7 @@ class TutorialBottomSheetDialog(val activity: Activity) : BottomSheetDialogFragm
         youtubeView?.visibility = View.VISIBLE
         youtubeView?.enterFullScreen()
 
-
-        youtubeView?.addYouTubePlayerListener(object : YouTubePlayerListener{
+        val playerListener = object : YouTubePlayerListener{
             override fun onApiChange(youTubePlayer: YouTubePlayer) {
 
             }
@@ -109,6 +108,7 @@ class TutorialBottomSheetDialog(val activity: Activity) : BottomSheetDialogFragm
 
             override fun onReady(youTubePlayer: YouTubePlayer) {
                     DefaultPlayerUiController(youtubeView, youTubePlayer)
+                    youTubePlayer.loadVideo("FmBsQGNBtE0", 0F)
                 removeErrorViews(v)
             }
 
@@ -120,9 +120,7 @@ class TutorialBottomSheetDialog(val activity: Activity) : BottomSheetDialogFragm
             }
 
             override fun onVideoDuration(youTubePlayer: YouTubePlayer, duration: Float) {
-                    if(v.findViewById<GifImageView>(R.id.gif_no_internet).isVisibile() && duration > 1){
-                        removeErrorViews(v)
-                    }
+
             }
 
             override fun onVideoId(youTubePlayer: YouTubePlayer, videoId: String) {
@@ -135,8 +133,10 @@ class TutorialBottomSheetDialog(val activity: Activity) : BottomSheetDialogFragm
             ) {
 
             }
+        }
 
-        })
+        youtubeView?.enableAutomaticInitialization = false
+        youtubeView?.initialize(playerListener, isFromRetry)
 
     }
 
@@ -159,7 +159,7 @@ class TutorialBottomSheetDialog(val activity: Activity) : BottomSheetDialogFragm
         // Inflate the layout for this fragment
         val v: View = inflater.inflate(R.layout.layout_bottom_sheet_tutorial, container, false)
         val skipButton = v.findViewById<TextView>(R.id.btn_skip)
-        handlePlayerWithInternet(v)
+        handlePlayerWithInternet(v, false)
         val youtubeView = v.findViewById<YouTubePlayerView>(R.id.youtube_player_view)
         lifecycle.addObserver(youtubeView)
         skipButton.setOnClickListener {
@@ -168,10 +168,10 @@ class TutorialBottomSheetDialog(val activity: Activity) : BottomSheetDialogFragm
         return v
     }
 
-    private fun handlePlayerWithInternet(v:View){
+    private fun handlePlayerWithInternet(v:View, isFromRetry: Boolean){
         if (AndroidUtils.isOnline(requireActivity())) {
             //show youtube player
-            showYoutubePlayer(v)
+            showYoutubePlayer(v, isFromRetry)
         }else{
             //show internet error
             internetError(v)
@@ -192,7 +192,7 @@ class TutorialBottomSheetDialog(val activity: Activity) : BottomSheetDialogFragm
         retryButton?.visibility = View.VISIBLE
 
         retryButton?.setOnClickListener {
-                handlePlayerWithInternet(v)
+                handlePlayerWithInternet(v, true)
         }
     }
 
