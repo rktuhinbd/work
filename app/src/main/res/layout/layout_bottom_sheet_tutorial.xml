@@ -49,16 +49,16 @@
 
     <!--repeat section-->
 
-    <VideoView
-        android:id="@+id/video_view_tutorial"
+    <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+        android:id="@+id/youtube_player_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:alpha="0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
-
-    </VideoView>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:videoId="FmBsQGNBtE0"
+        android:layout_marginTop="-20dp"
+        app:autoPlay="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
