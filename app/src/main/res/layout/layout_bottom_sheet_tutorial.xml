@@ -49,16 +49,66 @@
 
     <!--repeat section-->
 
-    <VideoView
-        android:id="@+id/video_view_tutorial"
+    <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+        android:id="@+id/youtube_player_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:alpha="0"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:videoId="FmBsQGNBtE0"
+        android:layout_marginTop="-20dp"
+        app:handleNetworkEvents="false"
+        app:autoPlay="true" />
+
+
+    <com.example.loadinganimation.LoadingAnimation
+        android:id="@+id/progress_bar_video_loading"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:elevation="10dp"
+        app:barType="@drawable/triad_ring"
+        app:enlarge="8"
+        app:textColor="@color/colorAccent"
+        app:textSize="15sp"
+        app:boldText="false"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 
-    </VideoView>
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gif_no_internet"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/no_internet_white"
+        android:visibility="gone"
+        app:layout_constraintVertical_bias="0.3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/button_retry"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintVertical_chainStyle="packed"
+    />
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Retry"
+        android:backgroundTint="@color/colorPrimary"
+        android:id="@+id/button_retry"
+        android:layout_marginTop="32dp"
+        android:visibility="gone"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintTop_toBottomOf="@id/gif_no_internet"
+        app:layout_constraintStart_toStartOf="@id/gif_no_internet"
+        app:layout_constraintEnd_toEndOf="@id/gif_no_internet"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

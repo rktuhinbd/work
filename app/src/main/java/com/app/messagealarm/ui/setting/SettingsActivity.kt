@@ -3,7 +3,6 @@ package com.app.messagealarm.ui.setting
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.*
@@ -11,7 +10,7 @@ import androidx.work.WorkManager
 import com.app.messagealarm.R
 import com.app.messagealarm.ui.about.AboutActivity
 import com.app.messagealarm.ui.buy_pro.BuyProActivity
-import com.app.messagealarm.ui.onboarding.OnboardingDialog
+import com.app.messagealarm.ui.widget.TutorialBottomSheetDialog
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -104,10 +103,14 @@ class SettingsActivity : AppCompatActivity() {
             firebaseAnalytics = Firebase.analytics
         }
 
-        private fun showQuickStartDialog() {
+
+        private fun showVideoTutorial() {
+            /**
+             * Updating the tutorial viewing experience at this branch
+             */
             try {
-                val quickStartDialog = OnboardingDialog()
-                quickStartDialog.show(requireActivity().supportFragmentManager, "quick_start")
+                val bottomSheet = TutorialBottomSheetDialog(requireActivity())
+                bottomSheet.show(requireActivity().supportFragmentManager, bottomSheet.tag)
             } catch (e: IllegalStateException) {
 
             }
@@ -149,7 +152,7 @@ class SettingsActivity : AppCompatActivity() {
                 bundle.putString("tutorial", "yes")
                 firebaseAnalytics.logEvent("tutorial", bundle)
                 //open browser or intent here
-                showQuickStartDialog()
+                showVideoTutorial()
                 true
             }
 
