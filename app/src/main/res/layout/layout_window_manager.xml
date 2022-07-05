@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--   Root container of Floating Widget View  -->
+    <RelativeLayout
+        android:id="@+id/root_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!--  View while view is collapsed  -->
+
+        <RelativeLayout
+            android:id="@+id/collapse_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <!--   ImageView of floating widget  -->
+            <ImageView
+                android:id="@+id/collapsed_iv"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="8dp"
+                android:src="@mipmap/ic_launcher_round"
+                tools:ignore="ContentDescription" />
+        </RelativeLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/expanded_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/app_image"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginStart="16dp"
+                android:src="@mipmap/ic_launcher_new"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/background_alarm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/window_background_style"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="@id/app_image"
+                app:layout_constraintTop_toBottomOf="@id/app_image"
+                app:layout_constraintVertical_bias="0">
+
+
+                <!--The compartment view holder-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/window_background_radious"
+                    android:elevation="5dp"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/txt_notification_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/roboto_bold"
+                                android:maxLines="1"
+                                android:textColor="@color/color_white"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                tools:text="You missed an alarm from Messenger" />
+
+                            <TextView
+                                android:id="@+id/txt_notification_desc"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/roboto_regular"
+                                android:maxLines="1"
+                                android:textColor="@color/color_white"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                tools:text="Swipe to dismiss" />
+
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/alarm_image"
+                            android:layout_width="64dp"
+                            android:layout_height="54dp"
+                            android:layout_marginEnd="8dp"
+                            android:padding="12dp"
+                            android:scaleType="fitCenter"
+                            android:src="@mipmap/ic_launcher_round" />
+
+                    </LinearLayout>
+
+                    <com.ncorti.slidetoact.SlideToActView
+                        android:id="@+id/side_to_active"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="10dp"
+                        android:elevation="8dp"
+                        app:animation_duration="250"
+                        app:area_margin="4dp"
+                        app:border_radius="16dp"
+                        app:inner_color="@android:color/darker_gray"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:outer_color="@color/colorAccent"
+                        app:slider_height="60dp"
+                        app:slider_locked="false"
+                        app:text=""
+                        app:text_color="@color/color_white"
+                        app:text_size="16sp"
+                        app:text_style="bold" />
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/demo_ads"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="@+id/background_alarm"
+                app:layout_constraintStart_toStartOf="@+id/background_alarm"
+                app:layout_constraintTop_toBottomOf="@+id/background_alarm" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </RelativeLayout>
+</FrameLayout>

@@ -8,19 +8,25 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.PowerManager
+import android.provider.Settings
 import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.WorkManager
 import com.app.messagealarm.broadcast_receiver.*
+import com.app.messagealarm.service.AlarmService
+import com.app.messagealarm.ui.alarm.AlarmActivity
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.utils.*
+import com.app.messagealarm.window.WindowManagerService
 import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
+import org.jetbrains.anko.runOnUiThread
+import java.lang.Exception
 import java.util.*
 
 
@@ -48,7 +54,7 @@ class FloatingNotification {
         private const val CHANNEL_NAME = "alarm app channel"
 
         private fun startPlaying(
-            soundLevel:Int,
+            soundLevel: Int,
             isJustVibrate: Boolean,
             appName: String,
             packageName: String,
@@ -98,9 +104,10 @@ class FloatingNotification {
              }
          })
             thread.start()
+
         }
 
-        private fun turnOnScreen(context: Service){
+        private fun turnOnScreen(context: Service) {
             /**
              * Turn phone screen on
              */
@@ -240,12 +247,17 @@ class FloatingNotification {
             notificationManager!!.notify(227, notificationBuilder.build())
         }
 
+
+        // Added description: String, imagePath:String, as extra peram for showing
+
         fun showFloatingNotification(
             soundLevel: Int,
             title: String,
             isJustVibrate: Boolean,
             appName: String, packageName: String, numberOfPlay: Int,
-            isVibrate: Boolean, context: Service, mediaPath: String?, isFlashLight: Boolean
+            isVibrate: Boolean, context: Service, mediaPath: String?, isFlashLight: Boolean,
+            description: String,
+            iconPath: String
         ) {
             val bundle = Bundle()
             bundle.putString("alarm_by_notification", "true")
@@ -289,8 +301,10 @@ class FloatingNotification {
                 com.app.messagealarm.R.layout.layout_incoming_notification_collapsed
             )
 
-            val vivoNotificationView = RemoteViews(context.packageName,
-                com.app.messagealarm.R.layout.layout_incoming_notification_vivo)
+            val vivoNotificationView = RemoteViews(
+                context.packageName,
+                com.app.messagealarm.R.layout.layout_incoming_notification_vivo
+            )
 
             val notificationViewFloatingNotification = RemoteViews(
                 context.packageName,
@@ -355,7 +369,7 @@ class FloatingNotification {
 
             var notificationBuilder: NotificationCompat.Builder? = null
 
-            if(!Build.MANUFACTURER.toLowerCase(Locale.getDefault()).contains("vivo")){
+            if (!Build.MANUFACTURER.toLowerCase(Locale.getDefault()).contains("vivo")) {
                 notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
                     .setCustomBigContentView(notificationViewFloatingNotification)
                     .setCustomHeadsUpContentView(notificationViewFloatingNotification)
@@ -366,7 +380,7 @@ class FloatingNotification {
                     .setPriority(Notification.PRIORITY_MAX)
                     .setCategory(NotificationCompat.CATEGORY_ALARM)
                     .setOngoing(true)
-            }else{
+            } else {
                 notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
                     .setCustomBigContentView(notificationViewFloatingNotification)
                     .setCustomHeadsUpContentView(notificationViewFloatingNotification)
@@ -379,22 +393,74 @@ class FloatingNotification {
                     .setOngoing(true)
             }
 
-            notificationManager = NotificationManagerCompat.from(context)
-            notificationManager!!.notify(225, notificationBuilder.build())
-            //start playing
-            startPlaying(
-                soundLevel,
-                isJustVibrate,
-                appName,
-                packageName,
-                mediaPath,
-                isVibrate,
-                context,
-                notificationManager!!,
-                numberOfPlay,
-                isFlashLight
-            )
+            try {
+                notificationManager = NotificationManagerCompat.from(context)
+                notificationManager!!.notify(225, notificationBuilder.build())
+            }catch (e: Exception){
 
+            }finally {
+                /**
+                 * @author Mujahid Khan 22 jun 22
+                 * @Notes For Mortuza: I have solved this issue, but i believe this is not the most
+                 * efficient way for solving this issue. By using Thread pool. The problem was
+                 * JVM can't guaranty which thread will start first, so from this three thread when the
+                 * Window Manager Thread was executing first, then it was creating the problem. I have solved
+                 * this with a hack, but I recommend you solve this with RxJava, for now. Just test it out if it's
+                 * 100% perfect or not. If it's 100% accurate then we can wait for the RxJava based implementation
+                 *
+                 */
+                Thread{
+                    //start playing
+                    startPlaying(
+                        soundLevel,
+                        isJustVibrate,
+                        appName,
+                        packageName,
+                        mediaPath,
+                        isVibrate,
+                        context,
+                        notificationManager!!,
+                        numberOfPlay,
+                        isFlashLight
+                    )
+                }.start()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.canDrawOverlays(context)) {
+                    // Window Notification new added by Mortuza 2022/06/21
+                    Thread {
+                        context.runOnUiThread {
+                            startWindowManager(
+                                context,
+                                appName,
+                                packageName,
+                                title,
+                                description,
+                                iconPath,
+                            )
+                        }
+                    }.start()
+                }
+            }
+
+        }
+
+        private fun startWindowManager(
+            context: Service,
+            appName: String,
+            packageName: String,
+            title: String,
+            description: String,
+            iconPath: String
+        ) {
+            val intent = Intent(context, WindowManagerService::class.java)
+            intent.putExtra(Constants.IntentKeys.APP_NAME, appName)
+            intent.putExtra(Constants.IntentKeys.PACKAGE_NAME, packageName)
+            intent.putExtra(Constants.IntentKeys.TITLE, title)
+            intent.putExtra(Constants.IntentKeys.DESC, description)
+            intent.putExtra(Constants.IntentKeys.IMAGE_PATH, iconPath)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+            context.startService(intent)
         }
 
 
@@ -594,7 +660,7 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
 
         fun notifyMute(isMuted: Boolean) {
             if (notificationView == null || notificationBuilder == null) return
-            try{
+            try {
                 val iconID: Int =
                     if (isMuted) com.app.messagealarm.R.drawable.ic_silence else com.app.messagealarm.R.drawable.ic_snooze
                 val textString: String = if (!isMuted) {
@@ -618,11 +684,11 @@ Create noticiation channel if OS version is greater than or eqaul to Oreo
                     showToastToUser(service!!)
                     //start alarm to dismiss mute
                     WorkManagerUtils.scheduleWorks(service!!)
-                }else{
+                } else {
                     showUnMuteToastToUser(service!!)
                     WorkManager.getInstance(service!!).cancelAllWorkByTag("MUTE")
                 }
-            }catch (e: NullPointerException){
+            } catch (e: NullPointerException) {
                 //skip the crash
             }
         }
