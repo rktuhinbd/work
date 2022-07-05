@@ -366,6 +366,9 @@ class PushMessage : FirebaseMessagingService(), PushMessageView, CommonView {
 
     override fun onSuccess(token: String) {
         //if app is build in debug mode don't call this function
+        /**
+         * Should save token if still have not got the IP information
+         */
             sendPushToken(token)
             //send push token for non debug mode
             if(!BuildConfig.DEBUG){
