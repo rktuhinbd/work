@@ -53,8 +53,6 @@ public class AlarmCheckerThread extends Thread {
                 AlarmCheckerThread.lock.unlock();
             }
         }
-
-
     }
 
     @Override
