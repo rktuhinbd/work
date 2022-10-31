@@ -3,16 +3,24 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="../../../layout/custom_preview.xml" value="0.17565947242206234" />
-        <entry key="app/src/main/res/layout/activity_add_application.xml" value="0.15953947368421054" />
-        <entry key="app/src/main/res/layout/activity_alarm.xml" value="0.165" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.15953947368421054" />
-        <entry key="app/src/main/res/layout/bottom_sheet_language.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_premium.xml" value="0.347" />
+        <entry key="app/src/main/res/drawable/window_background_radious.xml" value="0.347" />
+        <entry key="app/src/main/res/layout/activity_add_application.xml" value="0.2180921052631579" />
+        <entry key="app/src/main/res/layout/activity_add_website.xml" value="0.2180921052631579" />
+        <entry key="app/src/main/res/layout/activity_buy_pro_new.xml" value="0.1837431693989071" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.2180921052631579" />
         <entry key="app/src/main/res/layout/dialog_add_app_options.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/layout_bottom_sheet_tutorial.xml" value="0.15953947368421054" />
-        <entry key="app/src/main/res/layout/layout_dialog_onboarding.xml" value="0.15953947368421054" />
+        <entry key="app/src/main/res/layout/item_review_buy_pro.xml" value="0.2180921052631579" />
+        <entry key="app/src/main/res/layout/layout_foreground_notification.xml" value="0.2180921052631579" />
+        <entry key="app/src/main/res/layout/layout_foreground_notification_muted.xml" value="0.2180921052631579" />
+        <entry key="app/src/main/res/layout/layout_incoming_notification.xml" value="0.2180921052631579" />
+        <entry key="app/src/main/res/layout/layout_preference_chat.xml" value="0.2180921052631579" />
+        <entry key="app/src/main/res/layout/layout_vibrate_dialog.xml" value="0.2180921052631579" />
         <entry key="app/src/main/res/layout/layout_window_manager.xml" value="0.15953947368421054" />
         <entry key="app/src/main/res/layout/remove_floating_widget_layout.xml" value="0.15953947368421054" />
+        <entry key="app/src/main/res/layout/settings_activity.xml" value="0.2180921052631579" />
+        <entry key="app/src/main/res/menu/menu_add_app.xml" value="0.2180921052631579" />
+        <entry key="app/src/main/res/menu/menu_item_home.xml" value="0.2180921052631579" />
       </map>
     </option>
   </component>

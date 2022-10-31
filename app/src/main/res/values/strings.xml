@@ -2,13 +2,13 @@
     <string name="app_name">Message Alarm</string>
     <string name="txt_notification_permission">Notification Permission</string>
     <string name="txt_notification_permission_message"><b>Message Alarm</b> need notification permission, to parse the messages and play alarm when needed! \n\n <u>Security Note:</u> Please check our privacy &amp; policy section for your data protection! </string>
-    <string name="waiting_for_messages">Waiting for messages…</string>
+    <string name="waiting_for_messages">I am watching messages…</string>
     <string name="no_application_found">No Application Found!</string>
-    <string name="add_application">Add Application</string>
+    <string name="add_application">Hi, My Name Is Rio!</string>
     <string name="something_wrong">Something went wrong!</string>
     <string name="txt_add_app">Add Application</string>
     <string name="txt_search">Search</string>
-    <string name="txt_empty_state_desc">Click the + button and choose your application</string>
+    <string name="txt_empty_state_desc">Click the + button and add your app or website, I will keep my eyes on them. And I will alarm you when to look at phone!</string>
     <string name="txt_play_number_out_of_range">Out of range, Should be between 1 to 10!</string>
     <string name="application_save_success">Application saved successfully!</string>
     <string name="txt_application_exists">Application already added!</string>
@@ -51,7 +51,7 @@
     <string name="txt_remove_from_snooze">Remove from Snooze</string>
     <string name="txt_remove">Remove</string>
     <string name="txt_invalid_request">Invalid request!</string>
-    <string name="txt_application_muted">Application muted</string>
+    <string name="txt_application_muted">Rio is resting!</string>
     <string-array name="spinner_item">
         <item>All Apps</item>
         <item>Messaging</item>
