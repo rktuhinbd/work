@@ -26,7 +26,7 @@
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_marginTop="8dp"
-                android:src="@mipmap/ic_launcher_round"
+                android:src="@drawable/ic_robot"
                 tools:ignore="ContentDescription" />
         </RelativeLayout>
 
@@ -34,14 +34,14 @@
             android:id="@+id/expanded_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone">
+            android:visibility="visible">
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <ImageView
                 android:id="@+id/app_image"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:layout_marginStart="16dp"
-                android:src="@mipmap/ic_launcher_new"
+                android:layout_marginStart="5dp"
+                android:src="@drawable/ic_robot"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -146,7 +146,7 @@
                         app:slider_locked="false"
                         app:text=""
                         app:text_color="@color/color_white"
-                        app:text_size="16sp"
+                        app:text_size="14sp"
                         app:text_style="bold" />
 
                 </LinearLayout>
@@ -155,9 +155,9 @@
 
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="150dp"
+                android:layout_height="140dp"
                 android:layout_marginTop="16dp"
-                android:src="@drawable/demo_ads"
+                android:src="@drawable/ads"
                 android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="@+id/background_alarm"
                 app:layout_constraintStart_toStartOf="@+id/background_alarm"

@@ -148,6 +148,7 @@ dependencies {
 
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:11.0.1'
 
+    implementation 'com.github.mkhan9047:AwesomeTextInputLayout:1.0.1'
 
 
 

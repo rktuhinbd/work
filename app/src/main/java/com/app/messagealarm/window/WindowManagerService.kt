@@ -13,16 +13,17 @@ import android.graphics.Point
 import android.os.*
 import android.view.*
 import android.view.View.OnTouchListener
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.app.messagealarm.R
 import com.app.messagealarm.ui.notifications.FloatingNotification
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.MediaUtils
 import com.app.messagealarm.utils.Once
 import com.app.messagealarm.utils.SharedPrefUtils
 import com.ncorti.slidetoact.SlideToActView
-import de.hdodenhof.circleimageview.CircleImageView
 import java.io.File
 
 
@@ -61,10 +62,10 @@ class WindowManagerService : Service() {
         mWindowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
         getWindowManagerDefaultDisplay()
-        //addRemoveView(inflater)
+        addRemoveView(inflater)
         addFloatingWidgetView(inflater)
         showExpendedView()
-        //implementTouchListenerToFloatingWidgetView()
+        implementTouchListenerToFloatingWidgetView()
 
         mMessageReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -156,7 +157,7 @@ class WindowManagerService : Service() {
         expandedView = mFloatingWidgetView?.findViewById(com.app.messagealarm.R.id.expanded_container)
 
 
-        mFloatingWidgetView!!.findViewById<CircleImageView>(com.app.messagealarm.R.id.app_image).setOnClickListener {
+        mFloatingWidgetView!!.findViewById<ImageView>(com.app.messagealarm.R.id.app_image).setOnClickListener {
             showCollapsedView()
         }
     }
@@ -218,6 +219,10 @@ class WindowManagerService : Service() {
                             //If user drag and drop the floating widget view into remove view then stop the service
                             if (inBounded) {
                                 stopSelf()
+                                FloatingNotification.cancelPageDismissNotification()
+                                FloatingNotification.cancelAlarmNotification()
+                                isSwiped = true
+                                MediaUtils.stopAlarm(this@WindowManagerService)
                                 inBounded = false;
                                 return true
                             }
@@ -482,9 +487,9 @@ class WindowManagerService : Service() {
             )
         }
 
-        //        mFloatingView?.findViewById<FrameLayout>(R.id.root_container)?.setOnClickListener {
-        //            stopSelf()
-        //        }
+              /*  mFloatingWidgetView?.findViewById<FrameLayout>(R.id.root_container)?.setOnClickListener {
+                    stopSelf()
+                }*/
 
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(turnOffReceiver!!, IntentFilter("turn_off_activity"))

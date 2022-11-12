@@ -15,7 +15,6 @@
         android:layout_height="match_parent"
         >
 
-
         <com.leinardi.android.speeddial.SpeedDialOverlayLayout
             android:id="@+id/overlay"
             android:layout_width="match_parent"
@@ -254,19 +253,20 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/txt_empty_state_desc"
-            android:textColor="@color/colorTextRegular"
+            android:textColor="@color/default_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="164dp"
+            android:lineSpacingExtra="3dp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_empty_state_title"
             android:textAlignment="center"
             android:textSize="16sp"
-            android:layout_marginTop="4dp"
-            android:fontFamily="@font/roboto_light"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/roboto_regular"
             />
 
         <!--end of placeholder layouts-->

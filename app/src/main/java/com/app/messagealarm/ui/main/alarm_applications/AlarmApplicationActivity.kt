@@ -45,6 +45,7 @@ import com.app.messagealarm.ui.adapters.AddedAppsListAdapter
 import com.app.messagealarm.ui.buy_pro.BuyProActivity
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.add_options.AddApplicationOption
+import com.app.messagealarm.ui.main.add_website.AddWebsiteActivity
 import com.app.messagealarm.ui.setting.SettingsActivity
 import com.app.messagealarm.ui.widget.BottomSheetFragmentLang
 import com.app.messagealarm.ui.widget.TutorialBottomSheetDialog
@@ -628,6 +629,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
          */
 
         if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_VIDEO_SHOWED)) {
+            /**
+             * Tutorial Button
+             */
             val drawableOne = AppCompatResources.getDrawable(this, R.drawable.ic_youtube)
             val itemOne = SpeedDialActionItem.Builder(R.id.fab_action1, drawableOne)
                 .setFabImageTintColor(
@@ -656,8 +660,43 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 )
                 .setLabelClickable(true)
                 .create()
-            val drawable = AppCompatResources.getDrawable(this, R.drawable.ic_add)
 
+            /**
+             * Add Website Button
+             */
+            val drawableThree = AppCompatResources.getDrawable(this, R.drawable.web)
+            val itemThree = SpeedDialActionItem.Builder(R.id.fab_action3, drawableThree)
+                .setFabImageTintColor(
+                    ResourcesCompat.getColor(
+                        resources, R.color.color_white,
+                        theme
+                    )
+                )
+                .setLabel("Add Website")
+                .setContentDescription("Webhook alarm")
+                .setLabelColor(Color.WHITE)
+                .setFabSize(FloatingActionButton.SIZE_MINI)
+                .setFabBackgroundColor(
+                    ResourcesCompat.getColor(
+                        resources,
+                        R.color.colorOfNavigationBar,
+                        theme
+                    )
+                )
+                .setLabelBackgroundColor(
+                    ResourcesCompat.getColor(
+                        resources,
+                        R.color.colorOfNavigationBar,
+                        theme
+                    )
+                )
+                .setLabelClickable(true)
+                .create()
+
+            /**
+             * Add App Button
+             */
+            val drawable = AppCompatResources.getDrawable(this, R.drawable.apps)
             val itemTwo = SpeedDialActionItem.Builder(R.id.fab_action2, drawable)
                 .setFabImageTintColor(
                     ResourcesCompat.getColor(
@@ -688,6 +727,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
             try {
                 speedDial.addActionItem(itemTwo)
+                speedDial.addActionItem(itemThree)
                 speedDial.addActionItem(itemOne)
             } catch (e: NullPointerException) {
 
@@ -704,6 +744,13 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     R.id.fab_action2 -> {
                         speedDial.close()
                         fab_button_add_application?.performClick()
+                        return@OnActionSelectedListener true
+                    }
+                    R.id.fab_action3 -> {
+                        startActivity(
+                            Intent(this, AddWebsiteActivity::class.java),
+                        )
+                        speedDial.close()
                         return@OnActionSelectedListener true
                     }
                 }
