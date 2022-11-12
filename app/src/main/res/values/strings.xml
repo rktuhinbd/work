@@ -4,7 +4,7 @@
     <string name="txt_notification_permission_message"><b>Message Alarm</b> need notification permission, to parse the messages and play alarm when needed! \n\n <u>Security Note:</u> Please check our privacy &amp; policy section for your data protection! </string>
     <string name="waiting_for_messages">I am watching messages…</string>
     <string name="no_application_found">No Application Found!</string>
-    <string name="add_application">Hi, My Name Is Rio!</string>
+    <string name="add_application">Hey, I am Rio!</string>
     <string name="something_wrong">Something went wrong!</string>
     <string name="txt_add_app">Add Application</string>
     <string name="txt_search">Search</string>
@@ -51,7 +51,7 @@
     <string name="txt_remove_from_snooze">Remove from Snooze</string>
     <string name="txt_remove">Remove</string>
     <string name="txt_invalid_request">Invalid request!</string>
-    <string name="txt_application_muted">Rio is resting!</string>
+    <string name="txt_application_muted">I am resting!</string>
     <string-array name="spinner_item">
         <item>All Apps</item>
         <item>Messaging</item>
@@ -107,7 +107,7 @@
     <string name="hint_sound_subtitle">1 Alarm reduce 1% volume until 50%, <b>you reached 71%</b></string>
     <string name="vibration_and_sound_hint">Vibration and music together, powerful alarm. \n\n<b>Best use case, enough power to awake you up from sleep!</b></string>
     <string name="subscribe_value_txt">Subscribe For\n $0.99/Mo</string>
-    <string name="onetime_payment_txt">Onetime Payment\n For $99999999.99</string>
+    <string name="onetime_payment_txt">Onetime Payment\n For $149.99</string>
     <string name="privacy_policy"><a  href="https://www.messagealarm.app/privacy_policy" style="color: red"><u>Privacy Policy</u></a></string>
     <string name="terms_condition"><a href="https://www.messagealarm.app/privacy_policy" style="color: red"><u>Terms &amp; Condition</u></a></string>
     <string name="txt_details_subscribe">Recurring Billing. Cancel anytime you want.</string>

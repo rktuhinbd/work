@@ -4,7 +4,7 @@
     <string name="txt_notification_permission_message"><b>Message Alarm</b> need notification permission, to parse the messages and play alarm when needed! \n\n <u>Security Note:</u> Please check our privacy &amp; policy section for your data protection! </string>
     <string name="waiting_for_messages">I am watching messages…</string>
     <string name="no_application_found">No Application Found!</string>
-    <string name="add_application">Hi, My Name Is Rio!</string>
+    <string name="add_application">Hey, I am Rio!</string>
     <string name="something_wrong">Something went wrong!</string>
     <string name="txt_add_app">Add Application</string>
     <string name="txt_search">Search</string>
@@ -51,7 +51,7 @@
     <string name="txt_remove_from_snooze">Remove from Snooze</string>
     <string name="txt_remove">Remove</string>
     <string name="txt_invalid_request">Invalid request!</string>
-    <string name="txt_application_muted">Rio is resting!</string>
+    <string name="txt_application_muted">I am resting!</string>
     <string-array name="spinner_item">
         <item>All Apps</item>
         <item>Messaging</item>

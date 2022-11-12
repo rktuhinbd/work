@@ -34,7 +34,7 @@
             android:id="@+id/expanded_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <ImageView
                 android:id="@+id/app_image"
@@ -146,7 +146,7 @@
                         app:slider_locked="false"
                         app:text=""
                         app:text_color="@color/color_white"
-                        app:text_size="16sp"
+                        app:text_size="14sp"
                         app:text_style="bold" />
 
                 </LinearLayout>
@@ -155,9 +155,9 @@
 
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="150dp"
+                android:layout_height="140dp"
                 android:layout_marginTop="16dp"
-                android:src="@drawable/demo_ads"
+                android:src="@drawable/ads"
                 android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="@+id/background_alarm"
                 app:layout_constraintStart_toStartOf="@+id/background_alarm"

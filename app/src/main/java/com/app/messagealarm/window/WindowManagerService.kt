@@ -219,6 +219,10 @@ class WindowManagerService : Service() {
                             //If user drag and drop the floating widget view into remove view then stop the service
                             if (inBounded) {
                                 stopSelf()
+                                FloatingNotification.cancelPageDismissNotification()
+                                FloatingNotification.cancelAlarmNotification()
+                                isSwiped = true
+                                MediaUtils.stopAlarm(this@WindowManagerService)
                                 inBounded = false;
                                 return true
                             }
