@@ -613,6 +613,13 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                                 } else {
                                     askForPermission()
                                 }
+                            }else if(name.contains("Speak the message")){
+                                txt_ringtone_value?.text = name
+                                /**
+                                 * Set SPEAK as flag in the local database
+                                 */
+                                addApplicationEntity.ringTone = "SPEAK"
+                                alarmTonePath = "SPEAK"
                             } else {
                                 txt_ringtone_value?.text = name
                                 /**

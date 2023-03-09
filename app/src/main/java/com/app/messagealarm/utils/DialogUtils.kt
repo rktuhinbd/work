@@ -135,7 +135,7 @@ open class DialogUtils {
             // setup the alert builder
             val builder = MaterialAlertDialogBuilder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
             builder.setTitle("Select Alarm tone")
-            val animals = arrayOf("Default", "Select a song")
+            val animals = arrayOf("Default", "Select a song","Speak the message")
             builder.setItems(animals) { dialog, which ->
                 when (which) {
                     0 -> { /* Default */
@@ -144,6 +144,10 @@ open class DialogUtils {
                     }
                     1 -> { /* Select   */
                         callBack.onClick("Select a song")
+                        dialog.dismiss()
+                    }
+                    2 -> { /* Select   */
+                        callBack.onClick("Speak the message")
                         dialog.dismiss()
                     }
                 }

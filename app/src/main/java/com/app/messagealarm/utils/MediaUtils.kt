@@ -23,24 +23,13 @@ class MediaUtils {
 
     companion object {
 
+        var isTttsMode = false
         var isStopped = false
-
         // var isLoop = true
         var count = 0
         var mediaPlayer: MediaPlayer? = null
         var thread: Thread? = null
 
-
-        /**
-         *  @POSTPONED
-         */
-        private fun stopService(context: Context) {
-            if (isServiceRunning(context, NotificationListener::class.java)) {
-                val intent = Intent(context, NotificationListener::class.java)
-                intent.action = NotificationListener.ACTION_STOP_FOREGROUND_SERVICE
-                context.startService(intent)
-            }
-        }
 
         fun playAlarm(
             thread: Thread,
@@ -70,14 +59,32 @@ class MediaUtils {
                 val runnable = Runnable() {
                     mediaPlayer = MediaPlayer()
                     mediaPlayer!!.reset()
-                    if (mediaPath != null) {
+                    if (mediaPath != null && !mediaPlayer!!.equals("SPEAK")) {
+                        /**
+                         * When media player has a ring-tone to play
+                         * Not in speaking mode
+                         */
                         mediaPlayer!!.setDataSource(mediaPath)
+                    }else if(mediaPath == "SPEAK") {
+                        /**
+                         * Build the sentence
+                         * Speak the notification
+                         * make media player unworkable
+                         */
+                        isTttsMode = true
+                        TTSUtils.speak("Mujahid is saying, Hello how are you?")
                     } else {
+                        /**
+                         * When the tone path is null
+                         */
                         val afd =
                             context.resources.openRawResourceFd(com.app.messagealarm.R.raw.soft_tone)
                         mediaPlayer!!.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
                         afd.close()
                     }
+                    /**
+                     * Vibration handling
+                     */
                     if (!isJustVibrate || (!isJustVibrate && !isVibrate)) {
                         val volume =
                             (1 - ln((MAX_VOLUME - soundLevel).toDouble()) / ln(
@@ -101,11 +108,10 @@ class MediaUtils {
 
                     mediaPlayer!!.prepare()
 
-
                     /**
                      * stop the service
                      */
-                    //  stopService(context)
+                    // stopService(context)
 
                 }
                 once.run(runnable)
@@ -144,21 +150,18 @@ class MediaUtils {
             val onceAgain = Once()
             onceAgain.run(Runnable {
                 //stop playBack
-                stopPlayBackAfterDone(isLastIndex, context, packageName, appName)
+                if(!isTttsMode){
+                    stopPlayBackAfterDone(isLastIndex, context, packageName, appName)
+                }
             })
-
         }
 
-
-        private fun convertToOnePrecisionFloat(number: Float): Float {
-            return String.format("%.1f", number).toFloat()
-        }
 
         private fun stopVibrationAndFlash(context: Context) {
-            Thread(Runnable {
+            Thread {
                 FlashLightUtil.stopBlinkingFlash(context)
                 VibratorUtils.stopVibrate()
-            }).start()
+            }.start()
         }
 
         private fun stopPlayBackAfterDone(
@@ -174,7 +177,6 @@ class MediaUtils {
                  *
                  */
                 //here 30 is not static it will be from setting page, the values will be 1, 2, 3, or Full song
-
                 var maxDuration = 0
                 if (mediaPlayer != null) {
                     maxDuration = mediaPlayer!!.duration / 1000
@@ -182,7 +184,6 @@ class MediaUtils {
                         maxDuration = 30
                     }
                 }
-
                 while (true) {
                     if (mediaPlayer != null) {
                         count++
@@ -225,6 +226,8 @@ class MediaUtils {
 
         fun stopAlarm(context: Context) {
             try {
+                //stop speaking
+                TTSUtils.stopSpeak()
                 //first time alarm played and stopped, should ask user for review
                 if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
                     write(Constants.PreferenceKeys.IS_STOPPED, true)
@@ -236,8 +239,8 @@ class MediaUtils {
                     thread = null
                     stopVibrationAndFlash(context)
                     if (SharedPrefUtils.readString(Constants.PreferenceKeys.MUTE_TIME).trim()
-                            .toLowerCase(Locale.getDefault()) != Constants.Default.NEVER.trim()
-                            .toLowerCase(
+                            .lowercase(Locale.getDefault()) != Constants.Default.NEVER.trim()
+                            .lowercase(
                                 Locale.getDefault()
                             )
                     ) {
@@ -259,23 +262,6 @@ class MediaUtils {
             }
         }
 
-
-        /**
-         * @POSTPONED
-         * overloaded with activity
-         */
-        private fun startService(context: Context) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val intent = Intent(context, NotificationListener::class.java)
-                context.startForegroundService(intent)
-                SharedPrefUtils.write(Constants.PreferenceKeys.IS_SERVICE_STOPPED, false)
-            } else {
-                val intent = Intent(context, NotificationListener::class.java)
-                context.startService(intent)
-                SharedPrefUtils.write(Constants.PreferenceKeys.IS_SERVICE_STOPPED, false)
-            }
-        }
-
         fun isPlaying(): Boolean {
             return try {
                 if (mediaPlayer != null) {
@@ -290,7 +276,6 @@ class MediaUtils {
                 //wants to try with a recursive call of isPlaying
             }
         }
-
 
         fun getDurationOfMediaFle(path: String): Int {
             val uri: Uri = Uri.parse(path)

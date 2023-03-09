@@ -43,7 +43,6 @@ class AddWebsiteActivity : AppCompatActivity() {
     }
 
 
-
     @SuppressLint("ResourceType")
     private fun setupSpinner(){
         val spinnerList = ArrayList<String>()
