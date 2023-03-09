@@ -40,6 +40,7 @@ class FloatingNotification {
         /**
          * Custom appearance of the notification, also updated.
          */
+        //Fix this memory leaks
         private var firebaseAnalytics: FirebaseAnalytics = Firebase.analytics
         var service: Service? = null
         var notificationView: RemoteViews? = null
