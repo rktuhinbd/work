@@ -79,6 +79,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     val REQUEST_CODE_PICK_AUDIO = 1
     var menu: Menu? = null
     val CODE_DRAW_OVER_OTHER_APP_PERMISSION = 111
+    var isFromLauncher = false
 
     private val alarmAppPresenter = AlarmApplicationPresenter(this)
 
@@ -105,8 +106,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 switch_alarm_status?.isChecked = false
             }
         }
-
-        getWindowManagerPermission()
+        isFromLauncher = true
     }
 
     private fun showFirstSavedAnimation() {
@@ -114,7 +114,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             .setDirection(0.0, 359.0)
             .setSpeed(1f, 2f)
             .setFadeOutEnabled(true)
-            .setTimeToLive(1000L)
+            .setTimeToLive(500L)
             .addColors(
                 Color.parseColor("#FF3F62"),
                 Color.parseColor("#307E45")
@@ -132,7 +132,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             )
             .addSizes(Size(18))
             .setPosition(-50f, viewKonfetti.width + 50f, -50f, -50f)
-            .streamFor(100, 2500)
+            .streamFor(100, 1500)
     }
 
 
@@ -338,6 +338,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver!!)
     }
 
+    override fun onStop() {
+        super.onStop()
+        isFromLauncher = false
+    }
 
     private fun setToolBar() {
         setSupportActionBar(findViewById(R.id.toolbar))
@@ -1151,8 +1155,25 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 } else {
                     emptyState()
                 }
-            } catch (e: NullPointerException) {
+            } catch (_: NullPointerException) {
 
+            }
+            //check if any app is added, if added then ask
+            //only if app is opened, not from coming from different activity
+            if (isFromLauncher && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(
+                    this
+                ) && rv_application_list?.adapter?.itemCount!! > 0) {
+                //for better alarming please enable the permission to draw message alarm on top of other apps
+                DialogUtils.showDialogDrawOverApp(this, "Better Alarming", "Please enable draw over other app " +
+                        "permission for better alarming experience", object : DialogUtils.Callback {
+                    override fun onPositive() {
+                        getWindowManagerPermission()
+                    }
+
+                    override fun onNegative() {
+
+                    }
+                })
             }
         }
     }
@@ -1397,18 +1418,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     /**
      * FOR TESTING THE ALARM WINDOW
      * */
-
     private fun getWindowManagerPermission(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(
-                this
-            )
-        ) {
             val intent = Intent(
                 Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                 Uri.parse("package:$packageName")
             )
             startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION)
-        }
     }
 
     @Deprecated("Do not use this in production code")

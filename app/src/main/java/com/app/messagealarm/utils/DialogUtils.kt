@@ -71,9 +71,29 @@ open class DialogUtils {
                     callback.onNegative()
                 }
                 .setCancelable(false)
-            dialog?.show()
+            dialog.show()
         }
 
+        fun showDialogDrawOverApp(context: Context, title: String, message: String, callback: Callback) {
+            val dialog =  MaterialAlertDialogBuilder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(
+                    R.string.ok
+                ) { dialog, which ->
+                    dialog.dismiss()
+                    callback.onPositive()
+                }
+                .setIcon(com.app.messagealarm.R.drawable.ic_info)
+                .setNegativeButton(
+                    "Later"
+                ) { dialog, which ->
+                    dialog.cancel()
+                    callback.onNegative()
+                }
+                .setCancelable(false)
+            dialog.show()
+        }
 
         fun showUpdateDialog(context: Context, title: String, message: String, callback: Callback) {
             val dialog =  MaterialAlertDialogBuilder(context, com.app.messagealarm.R.style.MyAlertDialogTheme)
@@ -95,7 +115,7 @@ open class DialogUtils {
                 .setCancelable(false)
                 .create()
             if(!dialog.isShowing){
-                dialog?.show()
+                dialog.show()
             }
         }
 

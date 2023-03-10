@@ -11,11 +11,9 @@ class MuteDismissWorker(context: Context, workerParams: WorkerParameters) : Work
     context,
     workerParams
 ) {
-
     override fun doWork(): Result {
         write(Constants.PreferenceKeys.IS_MUTED, false)
         notifyMute(false)
        return Result.success()
     }
-
 }
