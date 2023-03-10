@@ -150,6 +150,7 @@
                         android:layout_marginTop="8dp"
                         android:fontFamily="@font/roboto_bold"
                         android:text="Got An Idea To Develop?"
+                        android:visibility="gone"
                         android:textColor="@color/colorAccent"
                         android:textSize="16sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -166,6 +167,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
+                        android:visibility="gone"
                         android:layout_marginTop="4dp"
                         android:textColor="@color/default_text"
                         android:text="@string/txt_idea_desc"
@@ -187,6 +189,7 @@
                         android:fontFamily="@font/roboto_regular"
                         android:text="Visit Website"
                         android:textSize="12sp"
+                        android:visibility="gone"
                         android:textAlignment="center"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -202,6 +205,7 @@
                         android:fontFamily="@font/roboto_regular"
                         android:text="Contact Us  "
                         android:textSize="12sp"
+                        android:visibility="gone"
                         app:layout_constraintVertical_bias="0"
                         app:layout_constraintBottom_toBottomOf="parent"
                         android:gravity="center"
@@ -224,7 +228,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/btn_contact_us"
+                        app:layout_constraintTop_toBottomOf="@id/txt_location"
                         app:layout_constraintVertical_bias="0" />
 
                     <com.google.android.material.button.MaterialButton

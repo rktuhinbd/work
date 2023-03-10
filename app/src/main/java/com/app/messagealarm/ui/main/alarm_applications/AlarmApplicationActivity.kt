@@ -151,8 +151,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             0
         )
         val html = String.format(
-            "<b>%s</b> is added successfully! You will get alarmed when " +
-                    "there is a message from anyone!", appEntity.appName
+            "<b>%s</b> has been successfully added! You will now receive alarm as needed.", appEntity.appName
         )
         textView.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)
