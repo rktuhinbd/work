@@ -32,7 +32,7 @@
             app:icon="@drawable/ic_color_lens_black_24dp"
             app:key="theme_pro"
             android:enabled="true"
-            app:summary="Buy PRO to enable"
+            app:summary="Buy PRO to enable dark mode"
             app:title="Theme" />
 
         <ListPreference

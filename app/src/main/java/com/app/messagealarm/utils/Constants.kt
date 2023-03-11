@@ -24,6 +24,7 @@ class Constants {
         companion object{
             const val PRODUCT_ID = "pro_feature"
             const val SUBSCRIPTION_ID = "pro_subs"
+            const val SUBSCRIPTION_YEARLY_ID = "pro_yearly"
         }
     }
 

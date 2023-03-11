@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#1436F5</color>
+    <color name="colorPrimary">#098173</color>
     <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#1436F5</color>
+    <color name="colorAccent">#098173</color>
+    <color name="colorAccentDeep">#0D695F</color>
     <color name="colorGolden">#F5C75D</color>
     <color name="colorAccentTransparent">#991436F5</color>
     <color name="dottedLine">#C8C9CB</color>

@@ -27,7 +27,7 @@
 
             <shape android:shape="rectangle">
 
-                <solid  android:color="#29ABE2" />
+                <solid  android:color="@color/colorAccentDeep" />
 
             </shape>
 

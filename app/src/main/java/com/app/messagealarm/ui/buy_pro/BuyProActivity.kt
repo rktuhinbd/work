@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -22,22 +21,25 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_buy_pro_new.*
-import timber.log.Timber
 import java.lang.Exception
 import java.util.*
 import kotlin.math.abs
+import kotlin.math.round
 
 
 class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView {
 
     private var billingClient: BillingClient? = null
     var buyProPresenter: BuyProPresenter? = null
-    var flowParams: BillingFlowParams? = null
+    //var flowParams: BillingFlowParams? = null
     var flowparamSubscription: BillingFlowParams? = null
+    var flowparamSubscriptionYearly: BillingFlowParams? = null
+    var offerString = "Subscribe Now"
+
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private lateinit var recyclerView: RecyclerView
     private lateinit var mAdapter: ReviewAdapter
-    var isSubscription = true
+    var isYearlySubscription = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,8 +83,8 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     /**
      * Initiate the state of In App Subscription for recurring payments
      */
-    private fun initSubscription() {
-        isSubscription = true
+    private fun initSubscriptionYearly() {
+        isYearlySubscription = true
         //UI Changes
         card_subscription?.strokeWidth = ViewUtils.dpToPx(3).toInt()
         card_subscription?.setStrokeColor(
@@ -95,15 +97,31 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         )
         card_in_app_purchase?.strokeWidth = 0
         card_in_app_purchase.setStrokeColor(null)
-        btn_buy_pro_user?.text = getString(R.string.txt_subs_button)
+        btn_buy_pro_user?.text = offerString
         txt_package_details?.text = getString(R.string.txt_details_subscribe)
+    }
+
+
+    /**
+     * Calculate the offer of yearly subscription
+     */
+
+    private fun calculateYearlyOffer(monthPrice: Double, yearPrice:Double) : Double {
+        val monthPackageYearTotal = monthPrice * 12
+        val offerAmount = monthPackageYearTotal - yearPrice
+        return if(offerAmount <= 0){
+            //no offer
+            0.0
+        }else{
+            round((offerAmount * 100)/ monthPackageYearTotal)
+        }
     }
 
     /**
      * Initiate the state of In App Purchase for a flat price
      */
-    private fun initInAppPurchase() {
-        isSubscription = false
+    private fun initSubscriptionMonthly() {
+        isYearlySubscription = false
         //UI Changes
         card_in_app_purchase?.strokeWidth = ViewUtils.dpToPx(3).toInt()
         card_in_app_purchase?.setStrokeColor(
@@ -116,9 +134,11 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         )
         card_subscription?.strokeWidth = 0
         card_subscription?.setStrokeColor(null)
-        btn_buy_pro_user?.text = getString(R.string.txt_in_app_button)
-        txt_package_details?.text = getString(R.string.txt_details_in_app)
+        btn_buy_pro_user?.text = getString(R.string.txt_subs_button)
+        txt_package_details?.text = getString(R.string.txt_details_subscribe)
     }
+
+
 
 
     private fun buyingProcess() {
@@ -149,7 +169,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
 
                         initiateInAppSubscription()
-                        initiateInAppPurchase()
+                      //  initiateInAppPurchase()
                     /**
                      * Check for subscription
                      */
@@ -158,10 +178,11 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                     ) { p0, p1 ->
                         if (p1.size > 0) {
                             handleInAppSubscription(p1)
-                        } else {
-                            /**
+                            handleInAppSubscriptionYearly(p1)
+                        }/* else {
+                            *//**
                              * Check for in-app-purchase
-                             */
+                             *//*
                                 billingClient!!.queryPurchasesAsync(
                                     SkuType.INAPP
                                 ) { pp0, pp1 ->
@@ -171,7 +192,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                                         setIsPurchased(false)
                                     }
                                 }
-                        }
+                        }*/
                     }
 
 
@@ -187,6 +208,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     }
 
 
+/*
     @SuppressLint("SetTextI18n")
     private fun initiateInAppPurchase() {
         val skuList: MutableList<String> =
@@ -246,12 +268,14 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         }
     }
 
+*/
 
     @SuppressLint("SetTextI18n")
     private fun initiateInAppSubscription() {
         val skuList: MutableList<String> =
             ArrayList()
         skuList.add(Constants.Purchase.SUBSCRIPTION_ID)
+        skuList.add(Constants.Purchase.SUBSCRIPTION_YEARLY_ID)
         val params = SkuDetailsParams.newBuilder()
         params.setSkusList(skuList).setType(SkuType.SUBS)
         billingClient!!.querySkuDetailsAsync(
@@ -263,7 +287,24 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                     flowparamSubscription = BillingFlowParams.newBuilder()
                         .setSkuDetails(skuDetailsList[0])
                         .build()
+                    flowparamSubscriptionYearly = BillingFlowParams.newBuilder()
+                        .setSkuDetails(skuDetailsList[1])
+                        .build()
                     runOnUiThread {
+                        //set offer percent
+                            val offer = calculateYearlyOffer(
+                                (skuDetailsList[0].priceAmountMicros / 1000000).toDouble(),
+                                (skuDetailsList[1].priceAmountMicros / 1000000).toDouble())
+                            if(offer > 0.0) {
+                                btn_buy_pro_user?.text = "Subscribe Now - Save ${offer.toInt()}%"
+                                offerString = "Subscribe Now - Save ${offer.toInt()}%"
+                            }else{
+                                btn_buy_pro_user?.text = "Subscribe Now"
+                                offerString = "Subscribe Now"
+                            }
+                        /**
+                         * Monthly
+                         */
                         //set price
                         if (SharedPrefUtils.contains(Constants.PreferenceKeys.CURRENCY_CODE) &&
                             SharedPrefUtils.contains(Constants.PreferenceKeys.CURRENCY_SYMBOL)
@@ -271,16 +312,38 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                             SharedPrefUtils.readString(Constants.PreferenceKeys.CURRENCY_CODE)
                         ) {
                             try {
-                                txt_subscription_price?.text =
+                                txt_in_app_price?.text =
                                     "Subscribe For \n${skuDetailsList[0].price}/Mo"
                             } catch (e: Exception) {
-                                txt_subscription_price?.text =
+                                txt_in_app_price?.text =
                                     "Subscribe For \n${skuDetailsList[0].price}/Mo"
                             }
                         } else {
-                            txt_subscription_price?.text =
+                            txt_in_app_price?.text =
                                 "Subscribe For \n${skuDetailsList[0].price}/Mo"
                         }
+
+                        /**
+                         * Yearly
+                         */
+                        //set price
+                        if (SharedPrefUtils.contains(Constants.PreferenceKeys.CURRENCY_CODE) &&
+                            SharedPrefUtils.contains(Constants.PreferenceKeys.CURRENCY_SYMBOL)
+                            && skuDetailsList[1].priceCurrencyCode ==
+                            SharedPrefUtils.readString(Constants.PreferenceKeys.CURRENCY_CODE)
+                        ) {
+                            try {
+                                txt_subscription_price?.text =
+                                    "Subscribe For \n${skuDetailsList[1].price}/Yr"
+                            } catch (e: Exception) {
+                                txt_subscription_price?.text =
+                                    "Subscribe For \n${skuDetailsList[1].price}/Yr"
+                            }
+                        } else {
+                            txt_subscription_price?.text =
+                                "Subscribe For \n${skuDetailsList[1].price}/Yr"
+                        }
+
                         progress_purchase?.visibility = View.GONE
                     }
                 } else {
@@ -305,7 +368,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     }
 
 
-    fun handleInAppPurchase(purchases: List<Purchase>) {
+ /*   fun handleInAppPurchase(purchases: List<Purchase>) {
         for (purchase in purchases) {
             //if item is purchased
             if (Constants.Purchase.PRODUCT_ID == purchase.skus[0] && purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
@@ -318,9 +381,9 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                     ).show()
                 }
             } else if (Constants.Purchase.PRODUCT_ID == purchase.skus[0] && purchase.purchaseState == Purchase.PurchaseState.UNSPECIFIED_STATE) {
-                /**
+                *//**
                  *refund request
-                 */
+                 *//*
                 setIsPurchased(false)
                 runOnUiThread {
                     Toasty.error(
@@ -331,7 +394,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                 }
             }
         }
-    }
+    }*/
 
 
     fun handleInAppSubscription(purchases: List<Purchase>) {
@@ -368,6 +431,41 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     }
 
 
+    fun handleInAppSubscriptionYearly(purchases: List<Purchase>) {
+        for (purchase in purchases) {
+            //if item is purchased
+            if (Constants.Purchase.SUBSCRIPTION_ID == purchase.skus[1] && purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+                buyProPresenter?.verifyPurchase(
+                    this,
+                    purchase.originalJson,
+                    purchase.signature,
+                    purchase
+                )
+            } else if (Constants.Purchase.SUBSCRIPTION_ID == purchase.skus[1] && purchase.purchaseState == Purchase.PurchaseState.PENDING) {
+                runOnUiThread {
+                    Toasty.success(
+                        applicationContext,
+                        "Your purchase is processing, Please wait a bit!", Toast.LENGTH_LONG
+                    ).show()
+                }
+            } else if (Constants.Purchase.SUBSCRIPTION_ID == purchase.skus[1] && purchase.purchaseState == Purchase.PurchaseState.UNSPECIFIED_STATE) {
+                /**
+                 *refund request
+                 */
+                setIsPurchased(false)
+                runOnUiThread {
+                    Toasty.error(
+                        applicationContext,
+                        "Purchase Status Unknown",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
+
+
+
     var ackPurchase =
         AcknowledgePurchaseResponseListener { billingResult ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
@@ -400,11 +498,11 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
         }
 
         card_in_app_purchase?.setOnClickListener {
-            initInAppPurchase()
+            initSubscriptionMonthly()
         }
 
         card_subscription?.setOnClickListener {
-            initSubscription()
+            initSubscriptionYearly()
         }
 
         /**
@@ -439,13 +537,12 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                 val bundle = Bundle()
                 bundle.putString("click_on_buy_button", "yes")
                 firebaseAnalytics.logEvent("click_on_buy_button", bundle)
-
                 if (billingClient?.isReady!!) {
-                    if (!isSubscription) {
-                        if (flowParams != null) {
-                            billingClient!!.launchBillingFlow(this, flowParams!!)
+                    if(isYearlySubscription){
+                        if (flowparamSubscriptionYearly != null) {
+                            billingClient!!.launchBillingFlow(this, flowparamSubscriptionYearly!!)
                         }
-                    } else {
+                    }else{
                         if (flowparamSubscription != null) {
                             billingClient!!.launchBillingFlow(this, flowparamSubscription!!)
                         }
@@ -460,7 +557,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                                 /**
                                  * Have to test this part wisely
                                  */
-                                initiateInAppPurchase()
+                              //  initiateInAppPurchase()
                                 initiateInAppSubscription()
                             } else {
                                 Toasty.error(
@@ -502,11 +599,8 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     ) {
         //if item newly purchased
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-            if (!isSubscription) {
-                handleInAppPurchase(purchases)
-            } else {
                 handleInAppSubscription(purchases)
-            }
+                handleInAppSubscriptionYearly(purchases)
         } else if (billingResult.responseCode == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
             /**
              *  val queryAlreadyPurchasesResult =
@@ -524,16 +618,10 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
              */
             billingClient!!.queryPurchasesAsync(
                 SkuType.SUBS
-            ) { p0, p1 -> handleInAppSubscription(p1) }
-
-            /**
-             * Handle already owned in app purchase
-             */
-            billingClient!!.queryPurchasesAsync(
-                SkuType.INAPP
-            ) { p0, p1 -> handleInAppPurchase(p1) }
-
-
+            ) { p0, p1 ->
+                handleInAppSubscription(p1)
+                handleInAppSubscriptionYearly(p1)
+            }
         } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
             Toasty.error(applicationContext, "Purchase Canceled", Toast.LENGTH_LONG).show()
         } else {
