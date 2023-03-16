@@ -27,6 +27,10 @@ import kotlin.math.abs
 import kotlin.math.round
 
 
+/**
+ * @author Al Mujahid Khan
+ * Note: This class codes are un-stable and not fully tested, need to test and make the architecture better
+ */
 class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView {
 
     private var billingClient: BillingClient? = null
@@ -39,7 +43,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private lateinit var recyclerView: RecyclerView
     private lateinit var mAdapter: ReviewAdapter
-    var isYearlySubscription = false
+    var isYearlySubscription = true
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -167,9 +171,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
 
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-
                         initiateInAppSubscription()
-                      //  initiateInAppPurchase()
                     /**
                      * Check for subscription
                      */
@@ -177,8 +179,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                         SkuType.SUBS
                     ) { p0, p1 ->
                         if (p1.size > 0) {
-                            handleInAppSubscription(p1)
-                            handleInAppSubscriptionYearly(p1)
+                            handleGenericPurchase(p1)
                         }/* else {
                             *//**
                              * Check for in-app-purchase
@@ -397,7 +398,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     }*/
 
 
-    fun handleInAppSubscription(purchases: List<Purchase>) {
+ /*   fun handleInAppSubscription(purchases: List<Purchase>) {
         for (purchase in purchases) {
             //if item is purchased
             if (Constants.Purchase.SUBSCRIPTION_ID == purchase.skus[0] && purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
@@ -415,9 +416,9 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                     ).show()
                 }
             } else if (Constants.Purchase.SUBSCRIPTION_ID == purchase.skus[0] && purchase.purchaseState == Purchase.PurchaseState.UNSPECIFIED_STATE) {
-                /**
+                *//**
                  *refund request
-                 */
+                 *//*
                 setIsPurchased(false)
                 runOnUiThread {
                     Toasty.error(
@@ -429,36 +430,46 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
             }
         }
     }
+*/
 
-
-    fun handleInAppSubscriptionYearly(purchases: List<Purchase>) {
+    fun handleGenericPurchase(purchases: List<Purchase>) {
         for (purchase in purchases) {
             //if item is purchased
-            if (Constants.Purchase.SUBSCRIPTION_ID == purchase.skus[1] && purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                buyProPresenter?.verifyPurchase(
-                    this,
-                    purchase.originalJson,
-                    purchase.signature,
-                    purchase
-                )
-            } else if (Constants.Purchase.SUBSCRIPTION_ID == purchase.skus[1] && purchase.purchaseState == Purchase.PurchaseState.PENDING) {
-                runOnUiThread {
-                    Toasty.success(
-                        applicationContext,
-                        "Your purchase is processing, Please wait a bit!", Toast.LENGTH_LONG
-                    ).show()
+            when (purchase.purchaseState) {
+                Purchase.PurchaseState.PURCHASED -> {
+                    buyProPresenter?.verifyPurchase(
+                        this,
+                        purchase.originalJson,
+                        purchase.signature,
+                        purchase
+                    )
                 }
-            } else if (Constants.Purchase.SUBSCRIPTION_ID == purchase.skus[1] && purchase.purchaseState == Purchase.PurchaseState.UNSPECIFIED_STATE) {
-                /**
-                 *refund request
-                 */
-                setIsPurchased(false)
-                runOnUiThread {
-                    Toasty.error(
-                        applicationContext,
-                        "Purchase Status Unknown",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                Purchase.PurchaseState.PENDING -> {
+                    runOnUiThread {
+                        Toasty.success(
+                            applicationContext,
+                            "Your purchase is processing, Please wait a bit!", Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+                Purchase.PurchaseState.UNSPECIFIED_STATE -> {
+                    /**
+                     *refund request
+                     */
+                    /**
+                     *refund request
+                     */
+                    /**
+                     *refund request
+                     */
+                    setIsPurchased(false)
+                    runOnUiThread {
+                        Toasty.error(
+                            applicationContext,
+                            "Purchase Status Unknown",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
         }
@@ -599,8 +610,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
     ) {
         //if item newly purchased
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-                handleInAppSubscription(purchases)
-                handleInAppSubscriptionYearly(purchases)
+            handleGenericPurchase(purchases)
         } else if (billingResult.responseCode == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
             /**
              *  val queryAlreadyPurchasesResult =
@@ -619,8 +629,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
             billingClient!!.queryPurchasesAsync(
                 SkuType.SUBS
             ) { p0, p1 ->
-                handleInAppSubscription(p1)
-                handleInAppSubscriptionYearly(p1)
+                handleGenericPurchase(p1)
             }
         } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
             Toasty.error(applicationContext, "Purchase Canceled", Toast.LENGTH_LONG).show()

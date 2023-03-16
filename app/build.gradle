@@ -151,6 +151,7 @@ dependencies {
     implementation 'com.github.mkhan9047:AwesomeTextInputLayout:1.0.1'
 
 
+    implementation "com.airbnb.android:lottie:6.0.0"
 
 
 }

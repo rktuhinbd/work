@@ -1,5 +1,6 @@
 package com.app.messagealarm.ui.main.alarm_applications
 
+import com.android.billingclient.api.Purchase
 import com.app.messagealarm.model.entity.ApplicationEntity
 
 interface AlarmApplicationView {
@@ -10,6 +11,7 @@ interface AlarmApplicationView {
     fun onAppStatusUpdateSuccess()
     fun onAppStatusUpdateError(message:String)
     fun onRemovedFromSnoozeSuccess()
+
     fun onTablesSizeRequestSuccess(appSize:Int, langSize:Int, appConstrainSize:Int)
 
     /**

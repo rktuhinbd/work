@@ -215,14 +215,16 @@
         <!--end of hint-->
         <!--start of placeholder layout-->
 
-        <pl.droidsonroids.gif.GifImageView
+        <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/img_empty_state"
             android:layout_width="180dp"
             android:layout_height="180dp"
             android:visibility="visible"
             android:padding="16dp"
+            app:lottie_rawRes="@raw/robot"
+            app:lottie_loop="true"
+            app:lottie_autoPlay="true"
             android:layout_marginStart="16dp"
-            android:src="@drawable/ic_robot"
             app:layout_constraintTop_toBottomOf="@id/card_view_alarm_status"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

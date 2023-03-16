@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <!--   ImageView of floating widget  -->
             <ImageView
@@ -27,6 +27,7 @@
                 android:layout_height="70dp"
                 android:layout_marginTop="8dp"
                 android:src="@drawable/ic_robot"
+
                 tools:ignore="ContentDescription" />
         </RelativeLayout>
 
@@ -36,12 +37,14 @@
             android:layout_height="wrap_content"
             android:visibility="visible">
 
-            <ImageView
+            <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/app_image"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_marginStart="5dp"
-                android:src="@drawable/ic_robot"
+                app:lottie_rawRes="@raw/test"
+                app:lottie_loop="true"
+                app:lottie_autoPlay="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="parent"

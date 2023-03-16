@@ -1,17 +1,22 @@
 package com.app.messagealarm.ui.main.alarm_applications
 
+import android.app.Activity
 import android.content.Context
 import android.database.sqlite.SQLiteException
 import android.os.Build
+import android.os.Bundle
 import android.os.PowerManager
+import com.android.billingclient.api.Purchase
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.BuildConfig
 import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.model.response.TokenResponse
+import com.app.messagealarm.model.response.VerifyPurchaseResponse
 import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.utils.AndroidUtils
 import com.app.messagealarm.utils.Constants
+import com.app.messagealarm.utils.ProgressDialogUtils
 import com.app.messagealarm.utils.SharedPrefUtils
 import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.judemanutd.autostarter.AutoStartPermissionHelper
@@ -38,7 +43,6 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
             }
         }).start()
     }
-
 
     fun dbRollBackForSoundLevelFromDefault() {
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())

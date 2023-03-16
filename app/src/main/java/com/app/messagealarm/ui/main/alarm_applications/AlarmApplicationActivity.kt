@@ -74,6 +74,7 @@ import java.io.File
 class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, PurchasesUpdatedListener,
     AddedAppsListAdapter.ItemClickListener {
 
+    private lateinit var billingClient: BillingClient
     var mMessageReceiver: BroadcastReceiver? = null
     val bottomSheetModel = AddApplicationOption()
     val REQUEST_CODE_PICK_AUDIO = 1
@@ -95,6 +96,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         showLanguageDoesNotSupported()
         triggerBuyProDialog()
         handlePushNotificationData()
+        Thread {
+            handlePurchaseState()
+        }.start()
         /**
          * check for review
          */
@@ -107,6 +111,36 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             }
         }
         isFromLauncher = true
+    }
+
+
+    private fun handlePurchaseState(){
+        billingClient = BillingClient.newBuilder(this)
+            .enablePendingPurchases()
+            .setListener(this)
+            .build()
+
+        billingClient.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(billingResult: BillingResult) {
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    // Billing client is ready
+                    /**
+                     * Check for subscription
+                     */
+                    billingClient.queryPurchasesAsync(
+                        BillingClient.SkuType.SUBS
+                    ) { p0, p1 ->
+                        if (p1.size > 0) {
+                            handlePurchase(p1)
+                        }
+                    }
+                }
+            }
+
+            override fun onBillingServiceDisconnected() {
+                // Try to restart the connection on the next request to the billing client
+            }
+        })
     }
 
     private fun showFirstSavedAnimation() {
@@ -953,25 +987,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         }
     }
 
-
-
-    private fun showOfferDialog() {
-        val dialog = Dialog(this)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog.setCancelable(false)
-        dialog.setContentView(R.layout.dialog_buy_pro_layout)
-        val videoView = dialog.findViewById<VideoView>(R.id.button_vibrate)
-        val window: Window = dialog.window!!
-        window.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        if (!dialog.isShowing) {
-            dialog.show()
-        }
-    }
-
     public fun changeStateOfSpeedDial() {
         try {
             if (speedDial != null) {
@@ -1409,8 +1424,65 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         }
     }
 
-    override fun onPurchasesUpdated(p0: BillingResult, p1: MutableList<Purchase>?) {
+    override fun onPurchasesUpdated(billingResult: BillingResult, purchases: MutableList<Purchase>?) {
+        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+                handlePurchase(purchases)
+        }
+    }
 
+    private fun handlePurchase(purchases: MutableList<Purchase>) {
+        for(purchase in purchases){
+            // Check if the purchase has been completed
+            if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+                // The purchase has been completed
+                if (purchase.isAcknowledged
+                ) {
+                    // The user has acknowledged the purchase, so it is not canceled
+                    // Handle the completed purchase
+                    setIsPurchased(true)
+                    runOnUiThread {
+                        Toasty.success(
+                            applicationContext,
+                            "Thanks for your subscription", Toast.LENGTH_LONG
+                        ).show()
+                    }
+                } else {
+                    //show a dialog that sorry to see you go and know why the user canceled the purchase
+                    // The user has not acknowledged the purchase, so assume it has been canceled
+                    // Handle the canceled purchase
+                    setIsPurchased(false)
+                    runOnUiThread {
+                        Toasty.success(
+                            applicationContext,
+                            "Sorry to see your go, What happened?", Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
+                // The purchase is still pending
+                // Handle the pending purchase
+                runOnUiThread {
+                    Toasty.success(
+                        applicationContext,
+                        "Your purchase is processing, Please wait a bit!", Toast.LENGTH_LONG
+                    ).show()
+                }
+            } else if (purchase.purchaseState == Purchase.PurchaseState.UNSPECIFIED_STATE) {
+                // The purchase state could not be determined
+                // Handle the unspecified state
+                setIsPurchased(false)
+                runOnUiThread {
+                    Toasty.success(
+                        applicationContext,
+                        "Something wrong with your subscription! Contact us. ", Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+    }
+
+    private fun setIsPurchased(boolean: Boolean) {
+        SharedPrefUtils.write(Constants.PreferenceKeys.IS_PURCHASED, boolean)
     }
 
 
