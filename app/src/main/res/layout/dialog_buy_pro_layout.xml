@@ -87,7 +87,7 @@
                     android:layout_marginTop="@dimen/margin_8"
                     android:fontFamily="@font/roboto_regular"
                     android:gravity="start"
-                    android:text="We are glad that Message Alarm helped you. "
+                    android:text="We are glad that RioBot helped you. "
                     android:textAllCaps="false"
                     android:textColor="@color/color_white"
                     android:textSize="@dimen/font_12"

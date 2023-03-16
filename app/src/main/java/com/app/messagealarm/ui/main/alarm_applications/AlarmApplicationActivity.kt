@@ -831,7 +831,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
         txt_auto_start_enable?.setOnClickListener {
             DialogUtils.showOnlyPositiveDialog(this, "AutoStart",
-                "If you enable AutoStart option, it will help Message Alarm to run more " +
+                "If you enable AutoStart option, it will help RioBot to run more " +
                         "smoothly in your phone. As it's help not to get killed by the OS",
                 object : DialogUtils.Callback {
                     override fun onPositive() {

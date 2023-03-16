@@ -207,7 +207,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/roboto_regular"
-                                android:text="If you enable AutoStart option, it will help Message Alarm to run more smoothly in your phone. As it's help not to get killed by the OS."
+                                android:text="If you enable AutoStart option, it will help RioBot to run more smoothly in your phone. As it's help not to get killed by the OS."
                                 android:textSize="10sp" />
                         </LinearLayout>
                     </LinearLayout>
