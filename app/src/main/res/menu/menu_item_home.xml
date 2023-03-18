@@ -12,7 +12,7 @@
     <item android:id="@+id/mnu_warning"
         android:title="Warning"
         android:icon="@drawable/ic_baseline_warning_24"
-        app:showAsAction="ifRoom"
+        app:showAsAction="never"
         />
 
     <item android:id="@+id/mnu_setting"

@@ -157,12 +157,14 @@
           app:layout_constraintEnd_toEndOf="parent"
           />-->
 
-    <pl.droidsonroids.gif.GifImageView
+    <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/gif_no_internet"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:src="@drawable/no_internet_white"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
         android:visibility="gone"
+        app:lottie_rawRes="@raw/network_error"
+        app:lottie_loop="true"
+        app:lottie_autoPlay="true"
         app:layout_constraintBottom_toTopOf="@id/txt_no_internet"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -177,7 +179,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
         android:fontFamily="@font/roboto_bold"
-        android:text="Synchronize unsuccessful, due to internet!"
+        android:text="Synchronization unsuccessful, due to internet!"
         android:textAlignment="center"
         android:textColor="@color/colorTextRegular"
         android:textSize="16sp"
@@ -203,16 +205,13 @@
         app:layout_constraintVertical_bias="0"
         tools:targetApi="m" />
 
-    <com.example.loadinganimation.LoadingAnimation
+    <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/progress_bar_add_app"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:elevation="10dp"
-        app:barType="@drawable/gear_duo"
-        app:enlarge="8"
-        app:textColor="@color/colorAccent"
-        app:textSize="15sp"
-        app:boldText="false"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:lottie_rawRes="@raw/loading"
+        app:lottie_loop="true"
+        app:lottie_autoPlay="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"

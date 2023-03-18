@@ -99,6 +99,11 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         Thread {
             handlePurchaseState()
         }.start()
+
+        /**
+         * Use this below function for battery and auto-launch enable
+         */
+        //showWarningDialog()
         /**
          * check for review
          */
@@ -132,6 +137,13 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     ) { p0, p1 ->
                         if (p1.size > 0) {
                             handlePurchase(p1)
+                        }else{
+                            runOnUiThread {
+                                //first time after subscription is cancelled
+                                Toasty.info(this@AlarmApplicationActivity,
+                                    "Sorry to see you go, Let us know why you canceled your subscription!", Toast.LENGTH_SHORT).show()
+                            }
+                            setIsPurchased(false)
                         }
                     }
                 }
@@ -402,9 +414,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.mnu_warning -> {
-                showWarningDialog()
-            }
             R.id.mnu_setting -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
             }
@@ -1058,7 +1067,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
          */
         if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED) &&
             (SharedPrefUtils.readInt(Constants.PreferenceKeys.ALARM_COUNT) -
-                    SharedPrefUtils.readInt(Constants.PreferenceKeys.MAIN_SCREEN_OPENED)) >= 2
+                    SharedPrefUtils.readInt(Constants.PreferenceKeys.MAIN_SCREEN_OPENED)) >= 5
         ) {
             SharedPrefUtils.write(
                 Constants.PreferenceKeys.MAIN_SCREEN_OPENED,
@@ -1439,11 +1448,13 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 ) {
                     // The user has acknowledged the purchase, so it is not canceled
                     // Handle the completed purchase
+                    //first time app open
                     setIsPurchased(true)
+                    Thread.sleep(2000)
                     runOnUiThread {
                         Toasty.success(
                             applicationContext,
-                            "Thanks for your subscription", Toast.LENGTH_LONG
+                            "Your subscription is restored!", Toast.LENGTH_LONG
                         ).show()
                     }
                 } else {
@@ -1452,9 +1463,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     // Handle the canceled purchase
                     setIsPurchased(false)
                     runOnUiThread {
-                        Toasty.success(
+                        Toasty.info(
                             applicationContext,
-                            "Sorry to see your go, What happened?", Toast.LENGTH_LONG
+                            "Your purchase was not acknowledged!", Toast.LENGTH_LONG
                         ).show()
                     }
                 }
@@ -1472,9 +1483,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 // Handle the unspecified state
                 setIsPurchased(false)
                 runOnUiThread {
-                    Toasty.success(
+                    Toasty.error(
                         applicationContext,
-                        "Something wrong with your subscription! Contact us. ", Toast.LENGTH_LONG
+                        "Something wrong with your subscription, Contact us!", Toast.LENGTH_LONG
                     ).show()
                 }
             }
@@ -1483,6 +1494,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     private fun setIsPurchased(boolean: Boolean) {
         SharedPrefUtils.write(Constants.PreferenceKeys.IS_PURCHASED, boolean)
+        //re-create the menu
+        invalidateOptionsMenu()
     }
 
 
