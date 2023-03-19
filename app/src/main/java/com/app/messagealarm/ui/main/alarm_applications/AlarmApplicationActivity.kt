@@ -201,16 +201,23 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         dialog.setContentView(R.layout.dialog_congrats_layout)
         val materialButton = dialog.findViewById<MaterialButton>(R.id.text_done)
         val textView = dialog.findViewById<TextView>(R.id.text_sub_message)
-        val appEntity = (rv_application_list?.adapter as AddedAppsListAdapter).getItem(
-            0
-        )
-        val html = String.format(
-            "<b>%s</b> has been successfully added! You will now receive alarm as needed.", appEntity.appName
-        )
-        textView.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)
-        } else {
-            Html.fromHtml(html)
+        try{
+            val appEntity = (rv_application_list?.adapter as AddedAppsListAdapter).getItem(
+                0
+            )
+            val html = String.format(
+                "<b>%s</b> has been successfully added! You will now receive alarm as needed.", appEntity.appName
+            )
+            textView.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)
+            } else {
+                Html.fromHtml(html)
+            }
+        }catch (e: IndexOutOfBoundsException){
+            /**
+             * Here is a bug, handle it by reactive programming. Note by MK
+             */
+            textView.text = "Your app has been successfully added, You will receive alarm as needed!"
         }
         materialButton.setOnClickListener {
             if (dialog.isShowing) {

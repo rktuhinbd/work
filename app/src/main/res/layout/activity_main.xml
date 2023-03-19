@@ -63,7 +63,7 @@
                 android:layout_height="150dp"
                 app:lottie_rawRes="@raw/top_bar_test"
                 app:lottie_loop="true"
-                android:scaleType="fitXY"
+                android:scaleType="centerCrop"
                 app:lottie_autoPlay="true"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
