@@ -4,11 +4,11 @@
     <string name="txt_notification_permission_message"><b>RioBot</b> needs notification permission to function properly and play an alarm when you need it! \n\n <u>Security Note:</u> Please refer to our privacy and policy section to learn about how we protect your data.</string>
     <string name="waiting_for_messages">I am watching messages…</string>
     <string name="no_application_found">No Application Found!</string>
-    <string name="add_application">Hey, I am Rio Robot!</string>
+    <string name="add_application">Hello, I am RIO Robot!</string>
     <string name="something_wrong">Something went wrong!</string>
     <string name="txt_add_app">Add Application</string>
     <string name="txt_search">Search</string>
-    <string name="txt_empty_state_desc">Simply click the + button to add your app or website, and I will keep a lookout for any important updates. You\'ll receive alarm from me when it\'s time to check your phone!</string>
+    <string name="txt_empty_state_desc">Click the + button to add your app or website, and I will keep a lookout for any important updates. You\'ll receive alarm from me!</string>
     <string name="txt_play_number_out_of_range">Out of range, Should be between 1 to 10!</string>
     <string name="application_save_success">Application saved successfully!</string>
     <string name="txt_application_exists">Application already added!</string>

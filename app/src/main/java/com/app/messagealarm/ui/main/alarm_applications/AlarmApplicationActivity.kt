@@ -1242,6 +1242,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         txt_hint_home?.visibility = View.GONE
         rv_application_list?.visibility = View.GONE
         img_empty_state?.visibility = View.VISIBLE
+        txt_applications?.visibility = View.GONE
         txt_empty_state_title?.visibility = View.VISIBLE
         txt_empty_state_desc?.visibility = View.VISIBLE
     }
@@ -1250,6 +1251,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         rv_application_list?.visibility = View.VISIBLE
         txt_hint_home?.visibility = View.VISIBLE
         img_empty_state?.visibility = View.GONE
+        txt_applications?.visibility = View.VISIBLE
         txt_empty_state_title?.visibility = View.GONE
         txt_empty_state_desc?.visibility = View.GONE
     }
