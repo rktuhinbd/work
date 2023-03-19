@@ -132,6 +132,7 @@
             android:excludeFromRecents="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.GradientStatusBar"
             tools:ignore="LockedOrientationActivity" />
 
         <activity

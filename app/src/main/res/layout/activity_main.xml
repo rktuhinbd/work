@@ -10,6 +10,14 @@
     tools:context=".ui.main.alarm_applications.AlarmApplicationActivity"
     >
 
+    <com.app.messagealarm.ui.widget.CustomStatusBarView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/transparent_status_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,6 +36,7 @@
             android:id="@+id/toolbar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:visibility="visible"
             android:background="@color/toolbar_color"
             android:elevation="@dimen/elevation_4"
             app:layout_constraintEnd_toEndOf="parent"
@@ -37,6 +46,88 @@
             app:layout_constraintVertical_chainStyle="packed"
             app:title="@string/app_name"
             app:titleTextColor="@color/colorTextRegular" />
+
+        <!--top part-->
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/layout_top_part"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            >
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/img_robo_top_part"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                app:lottie_rawRes="@raw/robot_three"
+                app:lottie_loop="true"
+                app:lottie_autoPlay="true"
+                android:background="@color/colorAccentDeep"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintVertical_bias="0"
+                />
+
+            <TextView
+                android:id="@+id/txt_rio_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rio Status:"
+                app:layout_constraintTop_toBottomOf="@id/img_robo_top_part"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="8dp"
+                android:textSize="20sp"
+                android:fontFamily="@font/roboto_bold"
+                android:textColor="@color/colorTextRegular"
+                />
+
+            <TextView
+                android:id="@+id/txt_rio_status_details"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Please make sure your battery optimization is off, otherwise I may get killed by your phone!"
+                app:layout_constraintTop_toBottomOf="@id/txt_rio_status"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:textSize="14sp"
+                android:visibility="visible"
+                android:fontFamily="@font/roboto_regular"
+                android:textColor="@color/default_text"
+                />
+
+
+            <com.github.angads25.toggle.widget.LabeledSwitch
+                android:id="@+id/switch_rio_status"
+                android:layout_width="wrap_content"
+                android:layout_height="26dp"
+                android:textSize="14sp"
+                app:on="true"
+                app:layout_constraintTop_toTopOf="@id/txt_rio_status"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/txt_rio_status"
+                app:layout_constraintHorizontal_bias="0"
+                android:layout_marginStart="8dp"
+                app:layout_constraintStart_toEndOf="@id/txt_rio_status"
+                app:colorBorder="@color/colorAccent"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <!--End of top part-->
 
         <!--start of main views-->
         <com.google.android.material.card.MaterialCardView
@@ -179,7 +270,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_battery_detail" />
+            app:layout_constraintTop_toBottomOf="@id/layout_top_part" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_application_list"
@@ -298,7 +389,6 @@
             android:focusable="true" />
 
 
-
         <com.leinardi.android.speeddial.SpeedDialView
             android:id="@+id/speedDial"
             android:layout_width="wrap_content"
@@ -321,10 +411,5 @@
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <nl.dionsegijn.konfetti.KonfettiView
-        android:id="@+id/viewKonfetti"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -52,6 +52,7 @@ import com.app.messagealarm.ui.widget.TutorialBottomSheetDialog
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.window.WindowManagerService
 import com.app.messagealarm.work_manager.WorkManagerUtils
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.play.core.review.ReviewManagerFactory
@@ -155,8 +156,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         })
     }
 
+
+    /**
+     * Removed by MK
+     */
     private fun showFirstSavedAnimation() {
-        viewKonfetti.build()
+      /*  viewKonfetti.build()
             .setDirection(0.0, 359.0)
             .setSpeed(1f, 2f)
             .setFadeOutEnabled(true)
@@ -178,7 +183,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             )
             .addSizes(Size(18))
             .setPosition(-50f, viewKonfetti.width + 50f, -50f, -50f)
-            .streamFor(100, 1500)
+            .streamFor(100, 1500)*/
     }
 
 
@@ -490,7 +495,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         } else if (requestCode == Constants.ACTION.ACTION_SAVE_APPLICATION) {
             if (resultCode == Activity.RESULT_OK) {
                 if (rv_application_list?.adapter?.itemCount!! == 0) {
-                    showFirstSavedAnimation()
+                 //   showFirstSavedAnimation()
                     Handler(Looper.myLooper()!!).postDelayed({
                         showCongratulationDialog()
                     }, 2500)
@@ -1242,7 +1247,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         txt_hint_home?.visibility = View.GONE
         rv_application_list?.visibility = View.GONE
         img_empty_state?.visibility = View.VISIBLE
+        transparent_status_bar?.visibility = View.GONE
+        findViewById<MaterialToolbar>(R.id.toolbar).visibility = View.VISIBLE
         txt_applications?.visibility = View.GONE
+        layout_top_part?.visibility = View.GONE
         txt_empty_state_title?.visibility = View.VISIBLE
         txt_empty_state_desc?.visibility = View.VISIBLE
     }
@@ -1251,6 +1259,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         rv_application_list?.visibility = View.VISIBLE
         txt_hint_home?.visibility = View.VISIBLE
         img_empty_state?.visibility = View.GONE
+        layout_top_part?.visibility = View.VISIBLE
+        transparent_status_bar?.visibility = View.VISIBLE
+        findViewById<MaterialToolbar>(R.id.toolbar).visibility = View.GONE
         txt_applications?.visibility = View.VISIBLE
         txt_empty_state_title?.visibility = View.GONE
         txt_empty_state_desc?.visibility = View.GONE
