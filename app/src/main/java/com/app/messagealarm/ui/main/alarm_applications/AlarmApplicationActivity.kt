@@ -91,9 +91,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         setContentView(R.layout.activity_main)
         setToolBar()
         setListener()
+        lookForTablesSize()
         handleService()
         setupAppsRecyclerView()
-        lookForTablesSize()
         showLanguageDoesNotSupported()
         triggerBuyProDialog()
         handlePushNotificationData()
@@ -139,10 +139,13 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                         if (p1.size > 0) {
                             handlePurchase(p1)
                         }else{
-                            runOnUiThread {
-                                //first time after subscription is cancelled
-                                Toasty.info(this@AlarmApplicationActivity,
-                                    "Sorry to see you go, Let us know why you canceled your subscription!", Toast.LENGTH_SHORT).show()
+                            if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.WAS_SUBSCRIBED)){
+                                runOnUiThread {
+                                    //first time after subscription is cancelled
+                                    Toasty.info(this@AlarmApplicationActivity,
+                                        "Sorry to see you go, Let us know why you canceled your subscription!", Toast.LENGTH_LONG).show()
+                                }
+                                SharedPrefUtils.write(Constants.PreferenceKeys.WAS_SUBSCRIBED, false)
                             }
                             setIsPurchased(false)
                         }
@@ -278,14 +281,14 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             val btnBuyPro = dialog.findViewById<MaterialButton>(R.id.button_pro)
             val btnExplore = dialog.findViewById<MaterialButton>(R.id.button_web)
             if (isWebUrl && !isBuyPRO) {
-                btnBuyPro.visibility = View.GONE
-                btnExplore.visibility = View.VISIBLE
+                btnBuyPro.gone(false)
+                btnExplore.visible(false)
             } else if (isBuyPRO && !isWebUrl) {
-                btnBuyPro.visibility = View.VISIBLE
-                btnExplore.visibility = View.GONE
+                btnBuyPro.visible(false)
+                btnExplore.gone(false)
             } else {
-                btnBuyPro.visibility = View.GONE
-                btnExplore.visibility = View.GONE
+                btnBuyPro.gone(false)
+                btnExplore.gone(false)
             }
             btnExplore.setOnClickListener {
                 if (dialog.isShowing) {
@@ -1177,9 +1180,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         runOnUiThread {
             try {
                 if (appsList.isNotEmpty()) {
+                    dataState()
                     (rv_application_list?.adapter as AddedAppsListAdapter).addItems(appsList)
                     recyclerViewSwipeHandler()
-                    dataState()
                 } else {
                     emptyState()
                 }
@@ -1244,27 +1247,27 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     }
 
     private fun emptyState() {
-        txt_hint_home?.visibility = View.GONE
-        rv_application_list?.visibility = View.GONE
-        img_empty_state?.visibility = View.VISIBLE
-        transparent_status_bar?.visibility = View.GONE
-        findViewById<MaterialToolbar>(R.id.toolbar).visibility = View.VISIBLE
-        txt_applications?.visibility = View.GONE
-        layout_top_part?.visibility = View.GONE
-        txt_empty_state_title?.visibility = View.VISIBLE
-        txt_empty_state_desc?.visibility = View.VISIBLE
+        txt_hint_home?.gone(false)
+        rv_application_list?.gone(false)
+        img_empty_state?.visible(false)
+        transparent_status_bar?.gone(false)
+        findViewById<MaterialToolbar>(R.id.toolbar).visible(false)
+        txt_applications?.gone(false)
+        layout_top_part?.gone(false)
+        txt_empty_state_title?.visible(false)
+        txt_empty_state_desc?.visible(false)
     }
 
     private fun dataState() {
-        rv_application_list?.visibility = View.VISIBLE
-        txt_hint_home?.visibility = View.VISIBLE
-        img_empty_state?.visibility = View.GONE
-        layout_top_part?.visibility = View.VISIBLE
-        transparent_status_bar?.visibility = View.VISIBLE
-        findViewById<MaterialToolbar>(R.id.toolbar).visibility = View.GONE
-        txt_applications?.visibility = View.VISIBLE
-        txt_empty_state_title?.visibility = View.GONE
-        txt_empty_state_desc?.visibility = View.GONE
+        rv_application_list?.visible(false)
+        txt_hint_home?.visible(false)
+        img_empty_state?.gone(false)
+        layout_top_part?.visible(true)
+        transparent_status_bar?.visible(false)
+        findViewById<MaterialToolbar>(R.id.toolbar).gone(false)
+        txt_applications?.visible(false)
+        txt_empty_state_title?.gone(false)
+        txt_empty_state_desc?.gone(false)
     }
 
     override fun onGetAlarmApplicationError() {
@@ -1331,8 +1334,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     override fun onAutoStartTextShow() {
 //        runOnUiThread {
-//            txt_auto_start_detail?.visibility = View.VISIBLE
-//            txt_auto_start_enable?.visibility = View.VISIBLE
+//            txt_auto_start_detail?.visible(false)
+//            txt_auto_start_enable?.visible(false)
 //        }
         runOnUiThread {
             menu?.getItem(1)?.isVisible = true
@@ -1341,8 +1344,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     override fun onAutoStartTextHide() {
 //        runOnUiThread {
-//            txt_auto_start_detail?.visibility = View.GONE
-//            txt_auto_start_enable?.visibility = View.GONE
+//            txt_auto_start_detail?.gone(false)
+//            txt_auto_start_enable?.gone(false)
 //        }
         runOnUiThread {
             menu?.getItem(1)?.isVisible = false
@@ -1366,8 +1369,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 //            } catch (e: Exception) {
 //                //skip it to default
 //            }
-//            txt_battery_detail?.visibility = View.VISIBLE
-//            txt_battery_enable?.visibility = View.VISIBLE
+//            txt_battery_detail?.visible(false)
+//            txt_battery_enable?.visible(false)
 //        }
 //
         runOnUiThread {
@@ -1377,8 +1380,8 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     override fun onBatteryTextHide() {
 //        runOnUiThread {
-//            txt_battery_detail?.visibility = View.GONE
-//            txt_battery_enable?.visibility = View.GONE
+//            txt_battery_detail?.gone(false)
+//            txt_battery_enable?.gone(false)
 //        }
         runOnUiThread {
             menu?.getItem(1)?.isVisible = false
@@ -1463,12 +1466,16 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     // Handle the completed purchase
                     //first time app open
                     setIsPurchased(true)
-                    Thread.sleep(2000)
-                    runOnUiThread {
-                        Toasty.success(
-                            applicationContext,
-                            "Your subscription is restored!", Toast.LENGTH_LONG
-                        ).show()
+                    SharedPrefUtils.write(Constants.PreferenceKeys.WAS_SUBSCRIBED, true)
+                    if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_RESTORED_SHOWED)){
+                        Thread.sleep(2000)
+                        runOnUiThread {
+                            Toasty.success(
+                                applicationContext,
+                                "Your subscription is restored!", Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        SharedPrefUtils.write(Constants.PreferenceKeys.IS_RESTORED_SHOWED, true)
                     }
                 } else {
                     //show a dialog that sorry to see you go and know why the user canceled the purchase

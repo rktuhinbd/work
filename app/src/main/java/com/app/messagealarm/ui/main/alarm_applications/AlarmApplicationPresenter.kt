@@ -30,7 +30,7 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
 
     fun getApplicationList() {
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
-        Thread(Runnable {
+        Thread {
             try {
                 alarmApplicationView.onGetAlarmApplicationSuccess(
                     appDatabase.applicationDao().allApplicationList
@@ -41,7 +41,7 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
             } catch (e: SQLiteException) {
                 alarmApplicationView.onGetAlarmApplicationError()
             }
-        }).start()
+        }.start()
     }
 
     fun dbRollBackForSoundLevelFromDefault() {

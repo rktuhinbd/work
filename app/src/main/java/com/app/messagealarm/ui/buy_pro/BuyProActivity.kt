@@ -671,6 +671,7 @@ class BuyProActivity : AppCompatActivity(), PurchasesUpdatedListener, BuyProView
                         bundle.putString("item_sold", "yes")
                         firebaseAnalytics.logEvent("item_sold", bundle)
                         setIsPurchased(true)
+                        SharedPrefUtils.write(Constants.PreferenceKeys.WAS_SUBSCRIBED, true)
                         finish()
                     }
                 }
