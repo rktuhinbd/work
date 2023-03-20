@@ -67,7 +67,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="visible"
         android:id="@+id/layout_expand_section"
         app:layout_constraintTop_toBottomOf="@id/card_view_all_app"
         >
@@ -97,6 +97,7 @@
                     app:strokeColor="@color/colorAccent"
                     app:cardCornerRadius="12dp"
                     android:id="@+id/card_alarm"
+                    app:cardBackgroundColor="@color/card_view_color"
                     app:cardElevation="2dp"
                     android:layout_margin="4dp"
                     >
@@ -136,6 +137,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:cardCornerRadius="12dp"
+                    app:cardBackgroundColor="@color/card_view_color"
                     android:id="@+id/card_speak"
                     android:clickable="true"
                     android:layout_margin="4dp"
@@ -181,6 +183,7 @@
                     android:id="@+id/card_custom"
                     android:clickable="true"
                     android:focusable="true"
+                    app:cardBackgroundColor="@color/card_view_color"
                     app:cardElevation="2dp"
                     android:layout_margin="4dp"
                     >

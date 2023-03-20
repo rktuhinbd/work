@@ -15,7 +15,7 @@
     <color name="background_screen">#e6FFFFFF</color>
     <color name="default_text">#808080</color>
     <color name="toolbar_color">#ffffffff</color>
-    <color name="card_view_color">#ffffffff</color>
+    <color name="card_view_color">#F2F2F2</color>
     <color name="quick_start">#212121</color>
     <color name="track_color">#696969</color>
     <color name="delete_item">#D11A2A</color>
