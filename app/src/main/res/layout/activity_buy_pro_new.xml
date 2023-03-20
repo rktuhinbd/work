@@ -424,33 +424,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <!--Text-->
-            <!--<TextView
-                android:id="@+id/text_one_time_payment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:visibility="gone"
-                android:fontFamily="@font/roboto_light"
-                android:text="One time payment, Lifetime access"
-                android:textColor="@color/colorTextRegular"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@id/view_underline_one_time_payments"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />-->
-            <!--Text underline view-->
-            <!--<View
-                android:id="@+id/view_underline_one_time_payments"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_marginBottom="32dp"
-                android:background="@color/colorTextRegular"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="@id/text_one_time_payment"
-                app:layout_constraintStart_toStartOf="@id/text_one_time_payment"
-                app:layout_constraintTop_toBottomOf="@id/text_one_time_payment" />-->
-            <!--Selector section-->
+
             <LinearLayout
                 android:id="@+id/layout_selection"
                 android:layout_width="match_parent"

@@ -7,9 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import kotlinx.android.synthetic.main.item_all_apps.view.*
-import java.lang.IndexOutOfBoundsException
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
@@ -18,7 +16,7 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
     RecyclerView.Adapter<AllAppsListAdapter.AllAppsViewHolder>(){
 
     private var itemsCopy: ArrayList<InstalledApps> = ArrayList()
-
+    var mExpandedPosition = -1
 
     interface ItemClickListener{
         fun onItemClick(app: InstalledApps)
@@ -78,13 +76,17 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
     }
 
    inner class AllAppsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
             fun bindItems(installedApps: InstalledApps){
                 try{
+                    var isExpanded = position == mExpandedPosition
                     itemView.tv_app_name?.text = installedApps.appName
                     itemView.iv_app_icon?.setImageDrawable(installedApps.drawableIcon)
+                    itemView.layout_expand_section.visibility =
+                        if (isExpanded) View.VISIBLE else View.GONE
                     itemView.card_view_all_app.setOnClickListener {
-                        mItemClickListener.onItemClick(appsList[adapterPosition])
+                        //mItemClickListener.onItemClick(appsList[adapterPosition])
+                        mExpandedPosition = if (isExpanded) -1 else position
+                        notifyDataSetChanged()
                     }
                 }catch (e:IndexOutOfBoundsException){
                    //skip the crash
