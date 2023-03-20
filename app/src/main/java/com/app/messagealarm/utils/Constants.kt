@@ -198,7 +198,8 @@ class Constants {
             const val IS_DB_ROLLED_BACK = "is_db_rollback"
             const val IS_TOKEN_UPDATED = "is_token_updated"
             const val IS_FREELANCER = "is_user_freelancer"
-
+            const val WAS_SUBSCRIBED = "was_subscribed"
+            const val IS_RESTORED_SHOWED = "is_subs_restored"
         }
     }
 

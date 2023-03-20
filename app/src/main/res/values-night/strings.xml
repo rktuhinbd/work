@@ -1,14 +1,14 @@
 <resources>
-    <string name="app_name">RioBot</string>
+    <string name="app_name">Riobot</string>
     <string name="txt_notification_permission">Notification Permission</string>
-    <string name="txt_notification_permission_message"><b>RioBot</b> needs notification permission to function properly and play an alarm when you need it! \n\n <u>Security Note:</u> Please refer to our privacy and policy section to learn about how we protect your data.</string>
+    <string name="txt_notification_permission_message"><b>Riobot</b> needs notification permission to function properly and play an alarm when you need it! \n\n <u>Security Note:</u> Please refer to our privacy and policy section to learn about how we protect your data.</string>
     <string name="waiting_for_messages">I am watching messages…</string>
     <string name="no_application_found">No Application Found!</string>
-    <string name="add_application">Hey, I am Rio Robot!</string>
+    <string name="add_application">Hello, I am RIO Robot!</string>
     <string name="something_wrong">Something went wrong!</string>
     <string name="txt_add_app">Add Application</string>
     <string name="txt_search">Search</string>
-    <string name="txt_empty_state_desc">Simply click the + button to add your app or website, and I will keep a lookout for any important updates. You\'ll receive alarm from me when it\'s time to check your phone!</string>
+    <string name="txt_empty_state_desc">Click the + button to add your app or website, and I will keep a lookout for any important updates. You\'ll receive alarm from me!</string>
     <string name="txt_play_number_out_of_range">Out of range, Should be between 1 to 10!</string>
     <string name="application_save_success">Application saved successfully!</string>
     <string name="txt_application_exists">Application already added!</string>
@@ -57,7 +57,7 @@
         <item>Messaging</item>
     </string-array>
     <!--base url-->
-    <string name="base_url">https://messagealarmtest.herokuapp.con/api/</string>
+    <string name="base_url">http://www.messagealarm.app/api/</string>
     <string name="base_url_heroku">https://messagealarmpushservice.herokuapp.con/api/</string>
     <string name="txt_selected_music_duration">Music must need be at least 30 seconds!</string>
     <string name="txt_wrong_duration">Wrong Duration</string>

@@ -110,11 +110,9 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     private fun darkModePre(){
         if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
             spinner_drop_down?.setImageResource(R.drawable.ic_arrow_drop_down_white)
-            gif_no_internet?.setImageResource(R.drawable.no_internet_dark)
             search_not_found?.setImageResource(R.drawable.ic_search_no_found_dark)
         }else{
             spinner_drop_down?.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp)
-            gif_no_internet?.setImageResource(R.drawable.no_internet_white)
             search_not_found?.setImageResource(R.drawable.ic_search_no_found_white)
         }
     }
