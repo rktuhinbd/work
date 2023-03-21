@@ -2,6 +2,7 @@ package com.app.messagealarm.ui.adapters
 
 
 import android.content.res.ColorStateList
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
+import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -104,7 +106,7 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
                         Animation.RELATIVE_TO_SELF,
                         0.5f
                     )
-                    rotate.duration = 500
+                    rotate.duration = 400
                     rotate.interpolator = LinearInterpolator()
 
                     val isExpanded = position == mExpandedPosition
@@ -131,18 +133,24 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
                     }
 
                     itemView.card_alarm?.setOnClickListener {
-                        showHideCardView(itemView.card_alarm, itemView.card_speak, itemView.card_custom)
+                        showHideCardView( listOf(itemView.txt_alarm, itemView.txt_speak, itemView.txt_custom),
+                            itemView.card_alarm, itemView.card_speak, itemView.card_custom)
                         selectedNotifyOption = Constants.NotifyOptions.ALARM
+                        itemView.btn_confirm_app_option?.text = "Configure Alarm"
                     }
 
                     itemView.card_custom?.setOnClickListener {
-                        showHideCardView(itemView.card_custom, itemView.card_speak, itemView.card_alarm)
+                        showHideCardView(listOf(itemView.txt_custom, itemView.txt_speak, itemView.txt_alarm),
+                            itemView.card_custom, itemView.card_speak, itemView.card_alarm)
                         selectedNotifyOption = Constants.NotifyOptions.CUSTOM
+                        itemView.btn_confirm_app_option?.text = "Setup Custom Actions"
                     }
 
                     itemView.card_speak?.setOnClickListener {
-                        showHideCardView(itemView.card_speak, itemView.card_alarm, itemView.card_custom)
+                        showHideCardView(listOf(itemView.txt_speak, itemView.txt_alarm, itemView.txt_custom),
+                            itemView.card_speak, itemView.card_alarm, itemView.card_custom)
                         selectedNotifyOption = Constants.NotifyOptions.SPEAK
+                        itemView.btn_confirm_app_option?.text = "Edit Speaking Options"
                     }
 
                     itemView.btn_confirm_app_option?.setOnClickListener {
@@ -169,7 +177,7 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
        /**
         * First one will be selected, others one will be unselected
         */
-       private fun showHideCardView(vararg cardAlarms: MaterialCardView){
+       private fun showHideCardView(texts: List<TextView>, vararg cardAlarms: MaterialCardView){
            for (i in cardAlarms.indices){
                if(i == 0){
                    cardAlarms[i].strokeWidth = ViewUtils.dpToPx(3).toInt()
@@ -181,9 +189,13 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
                            )
                        )
                    )
+                   texts[i].setTextColor(ContextCompat.getColor(BaseApplication.getBaseApplicationContext(),R.color.colorTextRegular))
+                   texts[i].setTypeface(null, Typeface.BOLD)
                }else{
                    cardAlarms[i].strokeWidth = 0
                    cardAlarms[i].setStrokeColor(null)
+                   texts[i].setTextColor(ContextCompat.getColor(BaseApplication.getBaseApplicationContext(),R.color.default_text))
+                   texts[i].setTypeface(null, Typeface.NORMAL)
                }
            }
        }
