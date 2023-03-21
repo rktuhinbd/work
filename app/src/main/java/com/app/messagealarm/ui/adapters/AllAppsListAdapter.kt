@@ -3,6 +3,9 @@ package com.app.messagealarm.ui.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
+import android.view.animation.RotateAnimation
 import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
@@ -10,6 +13,9 @@ import kotlinx.android.synthetic.main.item_all_apps.view.*
 import java.util.*
 
 
+/**
+ * @author Mujahid Khan
+ */
 class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
                           val mItemClickListener: ItemClickListener
 ):
@@ -76,14 +82,34 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
     }
 
    inner class AllAppsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
             fun bindItems(installedApps: InstalledApps){
                 try{
-                    var isExpanded = position == mExpandedPosition
+                    val rotate = RotateAnimation(
+                        270f,
+                        360f,
+                        Animation.RELATIVE_TO_SELF,
+                        0.5f,
+                        Animation.RELATIVE_TO_SELF,
+                        0.5f
+                    )
+                    rotate.duration = 500
+                    rotate.interpolator = LinearInterpolator()
+
+                    val isExpanded = position == mExpandedPosition
                     itemView.tv_app_name?.text = installedApps.appName
                     itemView.iv_app_icon?.setImageDrawable(installedApps.drawableIcon)
-                    itemView.layout_expand_section.visibility =
-                        if (isExpanded) View.VISIBLE else View.GONE
-                    itemView.card_view_all_app.setOnClickListener {
+                        if (isExpanded) {
+                            itemView.indicator_item?.startAnimation(rotate)
+                            itemView.layout_expand_section.visibility = View.VISIBLE
+                            itemView.indicator_item?.rotation = 360F
+                            itemView.dotted_condom.visibility = View.VISIBLE
+                        } else{
+                            itemView.indicator_item?.rotation = 270F
+                            itemView.layout_expand_section.visibility = View.GONE
+                            itemView.dotted_condom.visibility = View.GONE
+                        }
+                    itemView.base_part_of_item.setOnClickListener {
                         //mItemClickListener.onItemClick(appsList[adapterPosition])
                         mExpandedPosition = if (isExpanded) -1 else position
                         notifyDataSetChanged()

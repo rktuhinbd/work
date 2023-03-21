@@ -12,7 +12,7 @@
     <color name="colorTextRegular">#111111</color>
     <color name="colorBackground">#EFEFEF</color>
     <color name="colorOfNavigationBar">#3497fd</color>
-    <color name="background_screen">#e6FFFFFF</color>
+    <color name="background_screen">#E6FFFFFF</color>
     <color name="default_text">#808080</color>
     <color name="toolbar_color">#ffffffff</color>
     <color name="card_view_color">#F2F2F2</color>
