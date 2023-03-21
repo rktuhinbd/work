@@ -113,16 +113,13 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
                     itemView.tv_app_name?.text = installedApps.appName
                     itemView.iv_app_icon?.setImageDrawable(installedApps.drawableIcon)
                         if (isExpanded) {
-                            itemView.layout_expand_section.animate()
-                                .setDuration(150).translationY(itemView.layout_expand_section.height
-                                .toFloat())
+                            itemView.layout_expand_section.animate().alpha(1.0f).duration = 150
                             itemView.indicator_item?.startAnimation(rotate)
                             itemView.layout_expand_section.visibility = View.VISIBLE
                             itemView.indicator_item?.rotation = 360F
                             itemView.dotted_condom.visibility = View.VISIBLE
                         } else{
-                            itemView.layout_expand_section.animate().translationY(-itemView.layout_expand_section.height
-                                .toFloat())
+                            itemView.layout_expand_section.animate().alpha(0.0f).duration = 150
                             itemView.indicator_item?.rotation = 270F
                             itemView.layout_expand_section.visibility = View.GONE
                             itemView.dotted_condom.visibility = View.GONE
