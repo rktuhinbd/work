@@ -1,6 +1,7 @@
 package com.app.messagealarm.ui.adapters
 
 
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,10 +9,16 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
+import com.app.messagealarm.utils.Constants
+import com.app.messagealarm.utils.ViewUtils
+import com.google.android.material.card.MaterialCardView
+import kotlinx.android.synthetic.main.activity_buy_pro_new.*
 import kotlinx.android.synthetic.main.item_all_apps.view.*
 import java.util.*
 
@@ -25,7 +32,8 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
     RecyclerView.Adapter<AllAppsListAdapter.AllAppsViewHolder>(){
 
     private var itemsCopy: ArrayList<InstalledApps> = ArrayList()
-    var mExpandedPosition = -1
+    private var mExpandedPosition = -1
+    private var selectedNotifyOption = Constants.NotifyOptions.ALARM
 
     interface ItemClickListener{
         fun onItemClick(app: InstalledApps)
@@ -103,7 +111,8 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
                     itemView.tv_app_name?.text = installedApps.appName
                     itemView.iv_app_icon?.setImageDrawable(installedApps.drawableIcon)
                         if (isExpanded) {
-                            itemView.layout_expand_section.animate().translationY(itemView.layout_expand_section.height
+                            itemView.layout_expand_section.animate()
+                                .setDuration(150).translationY(itemView.layout_expand_section.height
                                 .toFloat())
                             itemView.indicator_item?.startAnimation(rotate)
                             itemView.layout_expand_section.visibility = View.VISIBLE
@@ -117,14 +126,68 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
                             itemView.dotted_condom.visibility = View.GONE
                         }
                     itemView.base_part_of_item.setOnClickListener {
-                        //mItemClickListener.onItemClick(appsList[adapterPosition])
                         mExpandedPosition = if (isExpanded) -1 else position
                         notifyDataSetChanged()
                     }
+
+                    itemView.card_alarm?.setOnClickListener {
+                        showHideCardView(itemView.card_alarm, itemView.card_speak, itemView.card_custom)
+                        selectedNotifyOption = Constants.NotifyOptions.ALARM
+                    }
+
+                    itemView.card_custom?.setOnClickListener {
+                        showHideCardView(itemView.card_custom, itemView.card_speak, itemView.card_alarm)
+                        selectedNotifyOption = Constants.NotifyOptions.CUSTOM
+                    }
+
+                    itemView.card_speak?.setOnClickListener {
+                        showHideCardView(itemView.card_speak, itemView.card_alarm, itemView.card_custom)
+                        selectedNotifyOption = Constants.NotifyOptions.SPEAK
+                    }
+
+                    itemView.btn_confirm_app_option?.setOnClickListener {
+                        when(selectedNotifyOption){
+                            Constants.NotifyOptions.ALARM -> {
+                                mItemClickListener.onItemClick(appsList[adapterPosition])
+                            }
+
+                            Constants.NotifyOptions.SPEAK -> {
+
+                            }
+
+                            Constants.NotifyOptions.CUSTOM -> {
+
+                            }
+                        }
+                    }
+
                 }catch (e:IndexOutOfBoundsException){
                    //skip the crash
                 }
             }
+
+       /**
+        * First one will be selected, others one will be unselected
+        */
+       private fun showHideCardView(vararg cardAlarms: MaterialCardView){
+           for (i in cardAlarms.indices){
+               if(i == 0){
+                   cardAlarms[i].strokeWidth = ViewUtils.dpToPx(3).toInt()
+                   cardAlarms[i].setStrokeColor(
+                       ColorStateList.valueOf(
+                           ContextCompat.getColor(
+                               BaseApplication.getBaseApplicationContext(),
+                               R.color.colorAccent
+                           )
+                       )
+                   )
+               }else{
+                   cardAlarms[i].strokeWidth = 0
+                   cardAlarms[i].setStrokeColor(null)
+               }
+           }
+       }
+
     }
 
 }

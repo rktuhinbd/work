@@ -294,4 +294,12 @@ class Constants {
         }
     }
 
+    class NotifyOptions{
+        companion object{
+            const val ALARM = "alarm"
+            const val SPEAK = "speak"
+            const val CUSTOM = "custom"
+        }
+    }
+
 }
