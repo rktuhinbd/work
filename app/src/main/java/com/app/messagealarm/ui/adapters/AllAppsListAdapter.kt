@@ -1,12 +1,15 @@
 package com.app.messagealarm.ui.adapters
 
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
 import androidx.recyclerview.widget.RecyclerView
+import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import kotlinx.android.synthetic.main.item_all_apps.view.*
@@ -100,11 +103,15 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
                     itemView.tv_app_name?.text = installedApps.appName
                     itemView.iv_app_icon?.setImageDrawable(installedApps.drawableIcon)
                         if (isExpanded) {
+                            itemView.layout_expand_section.animate().translationY(itemView.layout_expand_section.height
+                                .toFloat())
                             itemView.indicator_item?.startAnimation(rotate)
                             itemView.layout_expand_section.visibility = View.VISIBLE
                             itemView.indicator_item?.rotation = 360F
                             itemView.dotted_condom.visibility = View.VISIBLE
                         } else{
+                            itemView.layout_expand_section.animate().translationY(-itemView.layout_expand_section.height
+                                .toFloat())
                             itemView.indicator_item?.rotation = 270F
                             itemView.layout_expand_section.visibility = View.GONE
                             itemView.dotted_condom.visibility = View.GONE
