@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#098173</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#098173</color>
-    <color name="colorAccentDeep">#0D695F</color>
+    <color name="colorPrimary">#0077C9</color>
+    <color name="colorPrimaryDark">#1C2331</color>
+    <color name="colorAccent">#FF9900</color>
+    <color name="colorAccentDeep">#E65100</color>
     <color name="colorGolden">#F5C75D</color>
     <color name="colorAccentTransparent">#991436F5</color>
     <color name="dottedLine">#C8C9CB</color>
@@ -22,7 +22,7 @@
     <color name="success_color">#4BB543</color>
     <color name="setting_icon">#000000</color>
     <color name="color_hint">#99000000</color>
-    <color name="floating">#1436F5</color>
+    <color name="floating">#E65100</color>
     <color name="transparent_black">#50000000</color>
     <color name="purchase_stroke">#D32F2F</color>
 </resources>
