@@ -7,11 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.BaseApplication
@@ -20,7 +18,6 @@ import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.ViewUtils
 import com.google.android.material.card.MaterialCardView
-import kotlinx.android.synthetic.main.activity_buy_pro_new.*
 import kotlinx.android.synthetic.main.item_all_apps.view.*
 import java.util.*
 
@@ -55,7 +52,9 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
         return appsList.size
     }
 
-    public fun updateData(list:ArrayList<InstalledApps>){
+    fun updateData(list:ArrayList<InstalledApps>){
+        //On any update disable any expanded view
+        mExpandedPosition = -1
         appsList.clear()
         appsList = list
         itemsCopy.clear()
@@ -69,6 +68,8 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
     }
 
     fun filter(text: String) {
+        //disable expanded view in search option
+        mExpandedPosition = -1
         var text = text
         appsList.clear()
         if (text.isEmpty()) {
@@ -125,26 +126,32 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
                             itemView.dotted_condom.visibility = View.GONE
                         }
                     itemView.base_part_of_item.setOnClickListener {
-                        mExpandedPosition = if (isExpanded) -1 else position
+                         if (isExpanded){
+                             mExpandedPosition =  -1
+                             //If collapsed, reset the selected item to Alarm again
+                            selectedNotifyOption = Constants.NotifyOptions.ALARM
+                        } else{
+                             mExpandedPosition =  position
+                        }
                         notifyDataSetChanged()
                     }
 
                     itemView.card_alarm?.setOnClickListener {
-                        showHideCardView( listOf(itemView.txt_alarm, itemView.txt_speak, itemView.txt_custom),
+                        setSelectedOption( listOf(itemView.txt_alarm, itemView.txt_speak, itemView.txt_custom),
                             itemView.card_alarm, itemView.card_speak, itemView.card_custom)
                         selectedNotifyOption = Constants.NotifyOptions.ALARM
                         itemView.btn_confirm_app_option?.text = "Configure Alarm"
                     }
 
                     itemView.card_custom?.setOnClickListener {
-                        showHideCardView(listOf(itemView.txt_custom, itemView.txt_speak, itemView.txt_alarm),
+                        setSelectedOption(listOf(itemView.txt_custom, itemView.txt_speak, itemView.txt_alarm),
                             itemView.card_custom, itemView.card_speak, itemView.card_alarm)
                         selectedNotifyOption = Constants.NotifyOptions.CUSTOM
                         itemView.btn_confirm_app_option?.text = "Setup Custom Actions"
                     }
 
                     itemView.card_speak?.setOnClickListener {
-                        showHideCardView(listOf(itemView.txt_speak, itemView.txt_alarm, itemView.txt_custom),
+                        setSelectedOption(listOf(itemView.txt_speak, itemView.txt_alarm, itemView.txt_custom),
                             itemView.card_speak, itemView.card_alarm, itemView.card_custom)
                         selectedNotifyOption = Constants.NotifyOptions.SPEAK
                         itemView.btn_confirm_app_option?.text = "Edit Speaking Options"
@@ -174,7 +181,7 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
        /**
         * First one will be selected, others one will be unselected
         */
-       private fun showHideCardView(texts: List<TextView>, vararg cardAlarms: MaterialCardView){
+       private fun setSelectedOption(texts: List<TextView>, vararg cardAlarms: MaterialCardView){
            for (i in cardAlarms.indices){
                if(i == 0){
                    cardAlarms[i].strokeWidth = ViewUtils.dpToPx(3).toInt()

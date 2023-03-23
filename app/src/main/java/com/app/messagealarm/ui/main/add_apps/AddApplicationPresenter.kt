@@ -76,36 +76,30 @@ class AddApplicationPresenter(
         }).start()
     }
 
-    fun filterByMessaging(
-    ) {
+    fun filterByMessaging() {
         Thread(Runnable {
-            var installedAppsList = emptyList<InstalledApps>()
-            installedAppsList = if(BaseApplication.installedApps.isEmpty()){
+            val installedAppsList = if (BaseApplication.installedApps.isEmpty()) {
                 AppsReader.getInstalledApps(false, activity)!!
-            }else{
+            } else {
                 BaseApplication.installedApps
             }
             try {
                 val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
-                val appList = appDatabase.appDao().appsList
-                val holder = ArrayList<InstalledApps>()
+                val appList = appDatabase.appDao().appsList.associateBy { it.appPackageName }
+                val holder = HashSet<InstalledApps>()
                 for (x in installedAppsList) {
-                    for (y in appList) {
-                        if (x.packageName == y.appPackageName) {
-                                holder.add(x)
-                        }
-                    }
-                    if(x.packageName != "com.android.mms"){
-                        if(x.packageName == Telephony.Sms.getDefaultSmsPackage(activity)){
-                            holder.add(x)
-                        }
+                    if (appList.containsKey(x.packageName)) {
+                        holder.add(x)
+                    } else if (x.packageName == Telephony.Sms.getDefaultSmsPackage(activity)) {
+                        holder.add(x)
                     }
                 }
-                addApplicationView.onApplicationFiltered(holder.distinct())
-            }catch (e:ConcurrentModificationException){
+                holder.removeIf { it.packageName == "com.android.mms" }
+                addApplicationView.onApplicationFiltered(holder.toList())
+            } catch (e: ConcurrentModificationException) {
                 //skip the crash
             }
         }).start()
-
     }
+
 }
