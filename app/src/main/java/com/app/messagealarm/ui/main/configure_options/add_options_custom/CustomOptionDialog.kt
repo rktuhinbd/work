@@ -18,6 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.dialog_custom_options.*
 
 class CustomOptionDialog : BottomSheetDialogFragment(), OptionView {
 
@@ -36,6 +37,16 @@ class CustomOptionDialog : BottomSheetDialogFragment(), OptionView {
         return inflater.inflate(R.layout.dialog_custom_options, container, false)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        setListener()
+    }
+
+    private fun setListener(){
+        btn_close?.setOnClickListener {
+            dismiss()
+        }
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
@@ -64,6 +75,8 @@ class CustomOptionDialog : BottomSheetDialogFragment(), OptionView {
 
         }
     }
+
+
 
     private fun getWindowHeight(): Int { // Calculate window height for fullscreen use
         val displayMetrics = DisplayMetrics()

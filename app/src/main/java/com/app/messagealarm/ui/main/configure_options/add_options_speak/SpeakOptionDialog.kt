@@ -14,6 +14,7 @@ import com.app.messagealarm.ui.main.configure_options.view.OptionView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.android.synthetic.main.dialog_speak_options.*
 
 class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
 
@@ -28,6 +29,17 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.dialog_speak_options, container, false)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        setListener()
+    }
+
+    private fun setListener(){
+        btn_close?.setOnClickListener {
+            dismiss()
+        }
     }
 
 
