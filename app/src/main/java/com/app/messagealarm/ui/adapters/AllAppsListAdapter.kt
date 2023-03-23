@@ -163,19 +163,7 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
                     }
 
                     itemView.btn_confirm_app_option?.setOnClickListener {
-                        when(selectedNotifyOption){
-                            Constants.NotifyOptions.ALARM -> {
-                                mItemClickListener.onItemClick(appsList[adapterPosition], selectedNotifyOption)
-                            }
-
-                            Constants.NotifyOptions.SPEAK -> {
-
-                            }
-
-                            Constants.NotifyOptions.CUSTOM -> {
-
-                            }
-                        }
+                        mItemClickListener.onItemClick(appsList[adapterPosition], selectedNotifyOption)
                     }
 
                 }catch (e:IndexOutOfBoundsException){

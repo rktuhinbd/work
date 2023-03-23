@@ -5,7 +5,6 @@ import android.app.Activity
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
@@ -24,12 +23,11 @@ import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.ui.adapters.AllAppsListAdapter
 import com.app.messagealarm.ui.main.configure_options.add_options_alarm.AlarmOptionDialog
+import com.app.messagealarm.ui.main.configure_options.add_options_custom.CustomOptionDialog
+import com.app.messagealarm.ui.main.configure_options.add_options_speak.SpeakOptionDialog
 import com.app.messagealarm.utils.*
 import com.google.android.material.appbar.MaterialToolbar
-import com.greentoad.turtlebody.mediapicker.MediaPicker
-import com.greentoad.turtlebody.mediapicker.core.MediaPickerConfig
 import es.dmoral.toasty.Toasty
-import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_add_application.*
 import kotlinx.android.synthetic.main.dialog_alarm_options.*
 import net.frakbot.jumpingbeans.JumpingBeans
@@ -49,7 +47,9 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
     var textSync = "Searching apps"
     var addApplicationPresenter:AddApplicationPresenter? = null
-    val bottomSheetModel = AlarmOptionDialog()
+    val alarmModal = AlarmOptionDialog()
+    val speakModal = SpeakOptionDialog()
+    val customModal = CustomOptionDialog()
     val REQUEST_CODE_PICK_AUDIO = 1
     var searchView: SearchView? = null
 
@@ -412,9 +412,9 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                      */
 
 //                    if(MediaUtils.getDurationOfMediaFle(PathUtils.getPath(this, alarmTone[0].uri)!!) >= 30){
-                        bottomSheetModel.txt_ringtone_value?.text = fileName
-                        bottomSheetModel.setToneName(fileName)
-                        bottomSheetModel.alarmTonePath = PathUtils.getPath(this, alarmTone[0].uri)!!
+                        alarmModal.txt_ringtone_value?.text = fileName
+                        alarmModal.setToneName(fileName)
+                        alarmModal.alarmTonePath = PathUtils.getPath(this, alarmTone[0].uri)!!
 //                    }else{
 //                        bottomSheetModel.txt_ringtone_value?.text = "Default"
 //                        bottomSheetModel.setToneName("Default")
@@ -423,16 +423,16 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 //                            getString(R.string.txt_selected_music_duration))
 //                    }
                 }catch (e:IllegalArgumentException){
-                    bottomSheetModel.txt_ringtone_value?.text = "Default"
-                    bottomSheetModel.setToneName("Default")
-                    bottomSheetModel.alarmTonePath = null
+                    alarmModal.txt_ringtone_value?.text = "Default"
+                    alarmModal.setToneName("Default")
+                    alarmModal.alarmTonePath = null
                     DialogUtils.showSimpleDialog(this, getString(R.string.txt_music),
                         getString(R.string.txt_try_again))
                 }catch (e:IndexOutOfBoundsException){
-                    bottomSheetModel.txt_ringtone_value?.text = "Default"
-                    bottomSheetModel.setToneName("Default")
-                    bottomSheetModel.alarmTonePath = null
-                    bottomSheetModel.askForPermission()
+                    alarmModal.txt_ringtone_value?.text = "Default"
+                    alarmModal.setToneName("Default")
+                    alarmModal.alarmTonePath = null
+                    alarmModal.askForPermission()
                 }
             }
         }else if(requestCode == Constants.ACTION.ACTION_PURCHASE_FROM_ADD){
@@ -446,50 +446,53 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
 
     @SuppressLint("CheckResult")
-    fun pickAudioFromStorage(){
-        val pickerConfig = MediaPickerConfig()
-            .setAllowMultiSelection(false)
-            .setUriPermanentAccess(false)
-            .setShowConfirmationDialog(true)
-            .setScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-        MediaPicker.with(this, MediaPicker.MediaTypes.AUDIO)
-            .setConfig(pickerConfig)
-            .setFileMissingListener(object : MediaPicker.MediaPickerImpl.OnMediaListener{
-                override fun onMissingFileWarning() {
-                    bottomSheetModel.txt_ringtone_value?.text = "Default"
-                    bottomSheetModel.setToneName("Default")
-                    bottomSheetModel.alarmTonePath = null
-                    DialogUtils.showSimpleDialog(this@AddApplicationActivity, getString(R.string.missing_file),
-                        getString(R.string.txt_try_again))
-                }
-            })
-            .onResult()
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                val fileName = File(PathUtils.getPath(this, it[0])!!).name
-                if(MediaUtils.getDurationOfMediaFle(PathUtils.getPath(this, it[0])!!) >= 30){
-                    bottomSheetModel.txt_ringtone_value?.text = fileName
-                    bottomSheetModel.setToneName(fileName)
-                    bottomSheetModel.alarmTonePath = PathUtils.getPath(this, it[0])!!
-                }else{
-                    bottomSheetModel.txt_ringtone_value?.text = "Default"
-                    bottomSheetModel.setToneName("Default")
-                    bottomSheetModel.alarmTonePath = null
-                    DialogUtils.showSimpleDialog(this, getString(R.string.txt_wrong_duration),
-                        getString(R.string.txt_selected_music_duration))
-                }
-            },{
-                bottomSheetModel.txt_ringtone_value?.text = "Default"
-                bottomSheetModel.setToneName("Default")
-                bottomSheetModel.alarmTonePath = null
-                DialogUtils.showSimpleDialog(this, it.message!!,
-                    getString(R.string.txt_try_again))
-            },{
-
-            },{
-
-            })
-    }
+    /**
+     * Removed by Mk
+     */
+//    fun pickAudioFromStorage(){
+//        val pickerConfig = MediaPickerConfig()
+//            .setAllowMultiSelection(false)
+//            .setUriPermanentAccess(false)
+//            .setShowConfirmationDialog(true)
+//            .setScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+//        MediaPicker.with(this, MediaPicker.MediaTypes.AUDIO)
+//            .setConfig(pickerConfig)
+//            .setFileMissingListener(object : MediaPicker.MediaPickerImpl.OnMediaListener{
+//                override fun onMissingFileWarning() {
+//                    bottomSheetModel.txt_ringtone_value?.text = "Default"
+//                    bottomSheetModel.setToneName("Default")
+//                    bottomSheetModel.alarmTonePath = null
+//                    DialogUtils.showSimpleDialog(this@AddApplicationActivity, getString(R.string.missing_file),
+//                        getString(R.string.txt_try_again))
+//                }
+//            })
+//            .onResult()
+//            .subscribeOn(AndroidSchedulers.mainThread())
+//            .subscribe({
+//                val fileName = File(PathUtils.getPath(this, it[0])!!).name
+//                if(MediaUtils.getDurationOfMediaFle(PathUtils.getPath(this, it[0])!!) >= 30){
+//                    bottomSheetModel.txt_ringtone_value?.text = fileName
+//                    bottomSheetModel.setToneName(fileName)
+//                    bottomSheetModel.alarmTonePath = PathUtils.getPath(this, it[0])!!
+//                }else{
+//                    bottomSheetModel.txt_ringtone_value?.text = "Default"
+//                    bottomSheetModel.setToneName("Default")
+//                    bottomSheetModel.alarmTonePath = null
+//                    DialogUtils.showSimpleDialog(this, getString(R.string.txt_wrong_duration),
+//                        getString(R.string.txt_selected_music_duration))
+//                }
+//            },{
+//                bottomSheetModel.txt_ringtone_value?.text = "Default"
+//                bottomSheetModel.setToneName("Default")
+//                bottomSheetModel.alarmTonePath = null
+//                DialogUtils.showSimpleDialog(this, it.message!!,
+//                    getString(R.string.txt_try_again))
+//            },{
+//
+//            },{
+//
+//            })
+//    }
 
    private fun isPurchased() : Boolean{
        return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
@@ -509,20 +512,34 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     override fun onItemClick(app: InstalledApps, type:String) {
         when(type){
             Constants.NotifyOptions.ALARM -> {
-                if (!bottomSheetModel.isAdded) {
+                if (!alarmModal.isAdded) {
                     val bundle = Bundle()
                     bundle.putBoolean(Constants.BundleKeys.IS_EDIT_MODE, false)
                     bundle.putSerializable(Constants.BundleKeys.APP, app as Serializable)
-                    bottomSheetModel.arguments = bundle
-                    bottomSheetModel.isCancelable = false
-                    bottomSheetModel.show(supportFragmentManager, "OPTIONS")
+                    alarmModal.arguments = bundle
+                    alarmModal.isCancelable = false
+                    alarmModal.show(supportFragmentManager, "OPTIONS")
                 }
             }
             Constants.NotifyOptions.SPEAK -> {
-
+                if (!speakModal.isAdded) {
+                    val bundle = Bundle()
+                    bundle.putBoolean(Constants.BundleKeys.IS_EDIT_MODE, false)
+                    bundle.putSerializable(Constants.BundleKeys.APP, app as Serializable)
+                    speakModal.arguments = bundle
+                    speakModal.isCancelable = false
+                    speakModal.show(supportFragmentManager, "SPEAK_OPTIONS")
+                }
             }
             Constants.NotifyOptions.CUSTOM -> {
-
+                if (!customModal.isAdded) {
+                    val bundle = Bundle()
+                    bundle.putBoolean(Constants.BundleKeys.IS_EDIT_MODE, false)
+                    bundle.putSerializable(Constants.BundleKeys.APP, app as Serializable)
+                    customModal.arguments = bundle
+                    customModal.isCancelable = false
+                    customModal.show(supportFragmentManager, "CUSTOM_OPTIONS")
+                }
             }
         }
 
@@ -547,7 +564,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                 }
             }
             if (isGranted) {
-                bottomSheetModel.pickAudioFromStorage()
+                alarmModal.pickAudioFromStorage()
             }
         }
     }
