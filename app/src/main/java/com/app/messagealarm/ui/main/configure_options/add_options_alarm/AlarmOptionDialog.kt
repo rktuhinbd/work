@@ -44,7 +44,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.dialog_add_app_options.*
+import kotlinx.android.synthetic.main.dialog_alarm_options.*
 import xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity
 import xyz.aprildown.ultimateringtonepicker.UltimateRingtonePicker
 import java.text.ParseException
@@ -120,7 +120,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.dialog_add_app_options, container, false)
+        return inflater.inflate(R.layout.dialog_alarm_options, container, false)
     }
 
     @SuppressLint("SetTextI18n")

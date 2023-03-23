@@ -31,7 +31,7 @@ import com.greentoad.turtlebody.mediapicker.core.MediaPickerConfig
 import es.dmoral.toasty.Toasty
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_add_application.*
-import kotlinx.android.synthetic.main.dialog_add_app_options.*
+import kotlinx.android.synthetic.main.dialog_alarm_options.*
 import net.frakbot.jumpingbeans.JumpingBeans
 import xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity
 import java.io.File

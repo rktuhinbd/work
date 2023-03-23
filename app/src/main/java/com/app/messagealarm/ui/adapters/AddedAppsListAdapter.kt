@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
-import kotlinx.android.synthetic.main.dialog_add_app_options.*
+import kotlinx.android.synthetic.main.dialog_alarm_options.*
 import kotlinx.android.synthetic.main.item_added_applications.view.*
 import java.io.File
 

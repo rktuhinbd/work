@@ -62,7 +62,7 @@ import com.leinardi.android.speeddial.SpeedDialView
 import es.dmoral.toasty.Toasty
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.dialog_add_app_options.*
+import kotlinx.android.synthetic.main.dialog_alarm_options.*
 import kotlinx.android.synthetic.main.item_added_applications.view.*
 import xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity
 import java.io.File
