@@ -288,7 +288,7 @@
                     android:id="@+id/txt_option_notice"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Configure alarm for this app, when there will be a message. You will get an Alarm"
+                    android:text="Set an alarm to notify you when you receive an important message"
                     app:layout_constraintTop_toBottomOf="@id/layout_selection"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

@@ -23,11 +23,9 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import android.widget.VideoView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -44,7 +42,7 @@ import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.ui.adapters.AddedAppsListAdapter
 import com.app.messagealarm.ui.buy_pro.BuyProActivity
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
-import com.app.messagealarm.ui.main.add_options.AddApplicationOption
+import com.app.messagealarm.ui.main.configure_options.add_options_alarm.AlarmOptionDialog
 import com.app.messagealarm.ui.main.add_website.AddWebsiteActivity
 import com.app.messagealarm.ui.setting.SettingsActivity
 import com.app.messagealarm.ui.widget.BottomSheetFragmentLang
@@ -66,8 +64,6 @@ import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_add_app_options.*
 import kotlinx.android.synthetic.main.item_added_applications.view.*
-import nl.dionsegijn.konfetti.models.Shape
-import nl.dionsegijn.konfetti.models.Size
 import xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity
 import java.io.File
 
@@ -77,7 +73,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     private lateinit var billingClient: BillingClient
     var mMessageReceiver: BroadcastReceiver? = null
-    val bottomSheetModel = AddApplicationOption()
+    val bottomSheetModel = AlarmOptionDialog()
     val REQUEST_CODE_PICK_AUDIO = 1
     var menu: Menu? = null
     val CODE_DRAW_OVER_OTHER_APP_PERMISSION = 111

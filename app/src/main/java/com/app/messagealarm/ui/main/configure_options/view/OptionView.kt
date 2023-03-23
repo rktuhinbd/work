@@ -1,8 +1,8 @@
-package com.app.messagealarm.ui.main.add_options
+package com.app.messagealarm.ui.main.configure_options.view
 
 import com.app.messagealarm.model.entity.ApplicationEntity
 
-interface AddApplicationOptionView{
+interface OptionView{
     fun onApplicationSaveSuccess()
     fun onApplicationSaveError(message:String)
     fun onApplicationUpdateSuccess()

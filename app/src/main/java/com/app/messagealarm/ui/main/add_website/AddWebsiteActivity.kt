@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
-import com.app.messagealarm.ui.main.add_options.AddApplicationOption
+import com.app.messagealarm.ui.main.configure_options.add_options_alarm.AlarmOptionDialog
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.SharedPrefUtils
 import com.google.android.material.appbar.MaterialToolbar
@@ -17,11 +17,10 @@ import kotlinx.android.synthetic.main.activity_add_application.*
 import kotlinx.android.synthetic.main.activity_add_application.spinner_filter
 import kotlinx.android.synthetic.main.activity_add_website.*
 import java.io.Serializable
-import java.lang.NullPointerException
 
 class AddWebsiteActivity : AppCompatActivity() {
 
-    val bottomSheetModel = AddApplicationOption()
+    val bottomSheetModel = AlarmOptionDialog()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

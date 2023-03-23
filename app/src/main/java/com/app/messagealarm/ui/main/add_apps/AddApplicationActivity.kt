@@ -11,7 +11,6 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Parcelable
 import android.provider.Telephony
 import android.view.Menu
 import android.view.MenuItem
@@ -24,7 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.ui.adapters.AllAppsListAdapter
-import com.app.messagealarm.ui.main.add_options.AddApplicationOption
+import com.app.messagealarm.ui.main.configure_options.add_options_alarm.AlarmOptionDialog
 import com.app.messagealarm.utils.*
 import com.google.android.material.appbar.MaterialToolbar
 import com.greentoad.turtlebody.mediapicker.MediaPicker
@@ -50,7 +49,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
     var textSync = "Searching apps"
     var addApplicationPresenter:AddApplicationPresenter? = null
-    val bottomSheetModel = AddApplicationOption()
+    val bottomSheetModel = AlarmOptionDialog()
     val REQUEST_CODE_PICK_AUDIO = 1
     var searchView: SearchView? = null
 
@@ -507,15 +506,26 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         viewGroup.setBackgroundColor(Color.TRANSPARENT)
     }
 
-    override fun onItemClick(app: InstalledApps) {
-        if (!bottomSheetModel.isAdded) {
-            val bundle = Bundle()
-            bundle.putBoolean(Constants.BundleKeys.IS_EDIT_MODE, false)
-            bundle.putSerializable(Constants.BundleKeys.APP, app as Serializable)
-            bottomSheetModel.arguments = bundle
-            bottomSheetModel.isCancelable = false
-            bottomSheetModel.show(supportFragmentManager, "OPTIONS")
+    override fun onItemClick(app: InstalledApps, type:String) {
+        when(type){
+            Constants.NotifyOptions.ALARM -> {
+                if (!bottomSheetModel.isAdded) {
+                    val bundle = Bundle()
+                    bundle.putBoolean(Constants.BundleKeys.IS_EDIT_MODE, false)
+                    bundle.putSerializable(Constants.BundleKeys.APP, app as Serializable)
+                    bottomSheetModel.arguments = bundle
+                    bottomSheetModel.isCancelable = false
+                    bottomSheetModel.show(supportFragmentManager, "OPTIONS")
+                }
+            }
+            Constants.NotifyOptions.SPEAK -> {
+
+            }
+            Constants.NotifyOptions.CUSTOM -> {
+
+            }
         }
+
     }
 
     override fun onLongClick(app: InstalledApps) {

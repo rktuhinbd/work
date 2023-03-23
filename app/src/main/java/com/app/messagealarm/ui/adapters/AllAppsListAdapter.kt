@@ -35,7 +35,7 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
     private var selectedNotifyOption = Constants.NotifyOptions.ALARM
 
     interface ItemClickListener{
-        fun onItemClick(app: InstalledApps)
+        fun onItemClick(app: InstalledApps, type:String)
         fun onLongClick(app: InstalledApps)
     }
 
@@ -139,28 +139,33 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
                     itemView.card_alarm?.setOnClickListener {
                         setSelectedOption( listOf(itemView.txt_alarm, itemView.txt_speak, itemView.txt_custom),
                             itemView.card_alarm, itemView.card_speak, itemView.card_custom)
+                        itemView.txt_option_notice.text = "Set an alarm to notify you when you receive an important message"
                         selectedNotifyOption = Constants.NotifyOptions.ALARM
-                        itemView.btn_confirm_app_option?.text = "Configure Alarm"
+                        itemView.btn_confirm_app_option?.text = "Configure Alarm Options"
                     }
 
                     itemView.card_custom?.setOnClickListener {
                         setSelectedOption(listOf(itemView.txt_custom, itemView.txt_speak, itemView.txt_alarm),
                             itemView.card_custom, itemView.card_speak, itemView.card_alarm)
                         selectedNotifyOption = Constants.NotifyOptions.CUSTOM
-                        itemView.btn_confirm_app_option?.text = "Setup Custom Actions"
+                        itemView.btn_confirm_app_option?.text = "Configure Custom Actions"
+                        itemView.txt_option_notice.text = "Enhance functionality by," +
+                                " triggering actions based on message content, integrating custom APIs," +
+                                " providing a visual editor, and a marketplace for pre-made workflows."
                     }
 
                     itemView.card_speak?.setOnClickListener {
                         setSelectedOption(listOf(itemView.txt_speak, itemView.txt_alarm, itemView.txt_custom),
                             itemView.card_speak, itemView.card_alarm, itemView.card_custom)
                         selectedNotifyOption = Constants.NotifyOptions.SPEAK
-                        itemView.btn_confirm_app_option?.text = "Edit Speaking Options"
+                        itemView.txt_option_notice.text = "Have the app speak the contents of the message out loud when your headphones are connected"
+                        itemView.btn_confirm_app_option?.text = "Configure Speaking Options"
                     }
 
                     itemView.btn_confirm_app_option?.setOnClickListener {
                         when(selectedNotifyOption){
                             Constants.NotifyOptions.ALARM -> {
-                                mItemClickListener.onItemClick(appsList[adapterPosition])
+                                mItemClickListener.onItemClick(appsList[adapterPosition], selectedNotifyOption)
                             }
 
                             Constants.NotifyOptions.SPEAK -> {

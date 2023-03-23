@@ -1,4 +1,4 @@
-package com.app.messagealarm.ui.main.add_options
+package com.app.messagealarm.ui.main.configure_options.add_options_alarm
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -27,6 +27,9 @@ import com.app.messagealarm.service.AlarmServicePresenter
 import com.app.messagealarm.ui.buy_pro.BuyProActivity
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
+import com.app.messagealarm.ui.main.configure_options.adapter.SenderNameAdapter
+import com.app.messagealarm.ui.main.configure_options.presenter.OptionPresenter
+import com.app.messagealarm.ui.main.configure_options.view.OptionView
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.utils.TimeUtils.Companion.isTimeConstrained
 import com.google.android.flexbox.FlexDirection
@@ -50,7 +53,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionView {
+class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
 
     var shouldOnStatus = false
     private lateinit var firebaseAnalytics: FirebaseAnalytics
@@ -60,13 +63,13 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
     var ringtoneName: String? = null
     private var addApplicationEntity = ApplicationEntity()
     private var holderEntity = ApplicationEntity()
-    private var addApplicationOptionPresenter: AddApplicationOptionPresenter? = null
+    private var optionPresenter: OptionPresenter? = null
     val REQUEST_CODE_PICK_AUDIO = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.BottomSheetDialog)
-        addApplicationOptionPresenter = AddApplicationOptionPresenter(this)
+        optionPresenter = OptionPresenter(this)
         once = Once()
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
@@ -221,7 +224,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 if (arguments?.getSerializable(Constants.BundleKeys.APP) != null) {
                     val app =
                         (arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps)
-                    addApplicationOptionPresenter?.getAppByPackageName(
+                    optionPresenter?.getAppByPackageName(
                         app.packageName
                     )
                     this.appName = app.appName
@@ -229,7 +232,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
             } else {
                 //edit mode from home
                 if (arguments?.getString(Constants.BundleKeys.PACKAGE_NAME) != null) {
-                    addApplicationOptionPresenter?.getAppByPackageName(
+                    optionPresenter?.getAppByPackageName(
                         arguments?.getString(
                             Constants.BundleKeys.PACKAGE_NAME
                         )!!
@@ -1755,7 +1758,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 Thread(Runnable {
                     try {
                         val bitmap = app.drawableIcon
-                        addApplicationOptionPresenter?.saveBitmapToFile(
+                        optionPresenter?.saveBitmapToFile(
                             requireActivity(),
                             app.packageName,
                             bitmap.toBitmap()
@@ -1765,12 +1768,12 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                          * @date 27th Feb 22
                          * This call going on every single alarm to sync the data
                          */
-                        addApplicationOptionPresenter?.checkForLatestUpdate()
+                        optionPresenter?.checkForLatestUpdate()
 
                         /**
                          * Check for unknown app
                          */
-                        addApplicationOptionPresenter?.checkForUnknownApp(
+                        optionPresenter?.checkForUnknownApp(
                             requireActivity(),
                             addApplicationEntity.appName,
                             addApplicationEntity.packageName
@@ -1925,7 +1928,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                     txt_end_time_value?.text.toString()
                 )
             ) {
-                addApplicationOptionPresenter?.saveApplication(
+                optionPresenter?.saveApplication(
                     addApplicationEntity,
                     firebaseAnalytics
                 )
@@ -1936,7 +1939,7 @@ class AddApplicationOption : BottomSheetDialogFragment(), AddApplicationOptionVi
                 }
             }
         } else {
-            addApplicationOptionPresenter?.saveApplication(addApplicationEntity, firebaseAnalytics)
+            optionPresenter?.saveApplication(addApplicationEntity, firebaseAnalytics)
         }
     }
 

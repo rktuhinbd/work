@@ -1,4 +1,4 @@
-package com.app.messagealarm.ui.main.add_options
+package com.app.messagealarm.ui.main.configure_options.presenter
 
 import android.app.Activity
 import android.content.Context
@@ -6,20 +6,17 @@ import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteException
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.Environment
-import android.os.Handler
 import android.provider.Telephony
-import android.util.Log
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.model.response.LatestInfo
 import com.app.messagealarm.networking.RetrofitClient
+import com.app.messagealarm.ui.main.configure_options.view.OptionView
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.DataUtils
 import com.app.messagealarm.utils.SharedPrefUtils
-import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.JsonParseException
 import org.json.JSONException
@@ -35,7 +32,7 @@ import java.lang.IllegalStateException
 import java.lang.NullPointerException
 import java.net.SocketTimeoutException
 
-class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApplicationOptionView) {
+class OptionPresenter(private val optionView: OptionView) {
 
     fun saveApplication(
         addApplicationEntity: ApplicationEntity,
@@ -63,16 +60,16 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
             Runnable {
                 try {
                     appDatabase.applicationDao().insertApplication(addApplicationEntity)
-                    addApplicationOptionView.onApplicationSaveSuccess()
+                    optionView.onApplicationSaveSuccess()
                 } catch (e: NullPointerException) {
-                    addApplicationOptionView.onApplicationSaveError(DataUtils.getString(R.string.something_wrong))
+                    optionView.onApplicationSaveError(DataUtils.getString(R.string.something_wrong))
                 } catch (e: SQLiteConstraintException) {
                     /**
                      * If the app is already in database then just update it
                      */
                     updateApplication(addApplicationEntity)
                 } catch (e: SQLiteException) {
-                    addApplicationOptionView.onApplicationSaveError(DataUtils.getString(R.string.something_wrong))
+                    optionView.onApplicationSaveError(DataUtils.getString(R.string.something_wrong))
                 }
             }
         ).start()
@@ -84,16 +81,16 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
         Thread(Runnable {
             try {
                 if (packageName != null) {
-                    addApplicationOptionView.onApplicationGetSuccess(
+                    optionView.onApplicationGetSuccess(
                         appDatabase.applicationDao().getAppByPackageName(packageName)
                     )
                 }
             } catch (ex: NullPointerException) {
-                addApplicationOptionView.onApplicationGetError(DataUtils.getString(R.string.something_wrong))
+                optionView.onApplicationGetError(DataUtils.getString(R.string.something_wrong))
             } catch (ex: SQLiteException) {
-                addApplicationOptionView.onApplicationGetError(DataUtils.getString(R.string.something_wrong))
+                optionView.onApplicationGetError(DataUtils.getString(R.string.something_wrong))
             } catch (ex: IllegalStateException) {
-                addApplicationOptionView.onIllegalState()
+                optionView.onIllegalState()
             }
         }).start()
     }
@@ -103,11 +100,11 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
         Thread(Runnable {
             try {
                 appDatabase.applicationDao().updateApplication(app)
-                addApplicationOptionView.onApplicationUpdateSuccess()
+                optionView.onApplicationUpdateSuccess()
             } catch (ex: NullPointerException) {
-                addApplicationOptionView.onApplicationUpdateError(DataUtils.getString(R.string.update_error))
+                optionView.onApplicationUpdateError(DataUtils.getString(R.string.update_error))
             } catch (ex: SQLiteException) {
-                addApplicationOptionView.onApplicationUpdateError(DataUtils.getString(R.string.update_error))
+                optionView.onApplicationUpdateError(DataUtils.getString(R.string.update_error))
             }
         }).start()
     }
@@ -205,18 +202,18 @@ class AddApplicationOptionPresenter(private val addApplicationOptionView: AddApp
                 fOut.flush()
                 fOut.close()
             } else {
-                addApplicationOptionView.onBitmapSaveSuccess("$file_path/$imageName")
+                optionView.onBitmapSaveSuccess("$file_path/$imageName")
             }
         } catch (e: IOException) {
             Timber.e(e)
             e.printStackTrace()
-            addApplicationOptionView.onBitmapSaveError()
+            optionView.onBitmapSaveError()
         } catch (ex: NullPointerException) {
-            addApplicationOptionView.onBitmapSaveError()
+            optionView.onBitmapSaveError()
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        addApplicationOptionView.onBitmapSaveSuccess("$file_path/$imageName")
+        optionView.onBitmapSaveSuccess("$file_path/$imageName")
     }
 
 }

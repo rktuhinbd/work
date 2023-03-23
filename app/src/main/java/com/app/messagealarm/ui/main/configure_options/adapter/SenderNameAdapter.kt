@@ -1,4 +1,4 @@
-package com.app.messagealarm.ui.main.add_options
+package com.app.messagealarm.ui.main.configure_options.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,15 +6,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
-import com.app.messagealarm.model.InstalledApps
-import com.app.messagealarm.ui.adapters.AllAppsListAdapter
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.item_all_apps.view.*
 import kotlinx.android.synthetic.main.item_sender_name.view.*
 import java.lang.StringBuilder
 
 class SenderNameAdapter(list:ArrayList<String>,
-                        val mItemClickListener: ItemClickListener) : RecyclerView.Adapter<SenderNameAdapter.SenderNameHolder>(){
+                        val mItemClickListener: ItemClickListener
+) : RecyclerView.Adapter<SenderNameAdapter.SenderNameHolder>(){
 
     val nameList = ArrayList<String>()
 
