@@ -1,13 +1,17 @@
 package com.app.messagealarm.utils
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.app.messagealarm.BaseApplication
 import es.dmoral.toasty.Toasty
 
 import timber.log.Timber
 import java.text.*
+import java.time.Instant
+import java.time.LocalDateTime
 import java.util.*
 
 
@@ -368,6 +372,25 @@ class TimeUtils private constructor() {
             }
         }
 
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun isTimeRangeValid(startHour: Int, endHour: Int): Boolean {
+            // Convert the selected start and end hour to UTC time zone
+            val calendar = Calendar.getInstance()
+            calendar.set(Calendar.HOUR_OF_DAY, startHour)
+            val startTimeUTC = calendar.timeInMillis
+            calendar.set(Calendar.HOUR_OF_DAY, endHour)
+            val endTimeUTC = calendar.timeInMillis
+
+            // Convert the UTC time range to the user's time zone
+            val userTimeZone = TimeZone.getDefault()
+            val startTimeUser = startTimeUTC + userTimeZone.getOffset(startTimeUTC)
+            val endTimeUser = endTimeUTC + userTimeZone.getOffset(endTimeUTC)
+
+            // Check if the time range falls between 4 to 12
+            val startHourUser = LocalDateTime.ofInstant(Instant.ofEpochMilli(startTimeUser), userTimeZone.toZoneId()).hour
+            val endHourUser = LocalDateTime.ofInstant(Instant.ofEpochMilli(endTimeUser), userTimeZone.toZoneId()).hour
+            return startHourUser >= 4 && endHourUser <= 12
+        }
 
         @SuppressLint("SimpleDateFormat")
         fun isConstrainedByTime(startTime: String, endTime: String):Boolean{

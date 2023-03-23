@@ -1,10 +1,12 @@
 package com.app.messagealarm.utils
 
 import android.content.Context
+import android.media.AudioManager
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.speech.tts.Voice
 import android.util.Log
+import androidx.core.content.ContextCompat.getSystemService
 import com.app.messagealarm.BaseApplication
 import java.util.*
 
@@ -14,6 +16,41 @@ class TTSUtils {
 
         var sentence = ""
         private var textToSpeech: TextToSpeech? = null
+        private lateinit var audioManager: AudioManager
+        private lateinit var audioFocusChangeListener: AudioManager.OnAudioFocusChangeListener
+
+        // Call this function to request audio focus and pause any other audio being played
+        private fun pauseMusic() {
+            audioManager = BaseApplication.getBaseApplicationContext()
+                .getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            audioFocusChangeListener = AudioManager.OnAudioFocusChangeListener { focusChange ->
+                // Handle audio focus changes if needed
+            }
+            val result = audioManager.requestAudioFocus(
+                audioFocusChangeListener,
+                AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN_TRANSIENT
+            )
+            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                // Pause the music
+                // For example, if using Spotify, you can call:
+                // SpotifyAppRemote.getInstance().playerApi.pause()
+                // Or if using YouTube, you can call:
+                // mediaPlayer.pause()
+            }
+        }
+
+        // Call this function to release audio focus and resume playing any other audio that was paused
+        private fun resumeMusic() {
+            audioManager.abandonAudioFocus(audioFocusChangeListener)
+
+            // Resume the music
+            // For example, if using Spotify, you can call:
+            // SpotifyAppRemote.getInstance().playerApi.resume()
+            // Or if using YouTube, you can call:
+            // mediaPlayer.start()
+        }
+
 
         private val textToSpeechListener = TextToSpeech.OnInitListener {
             if(it == TextToSpeech.SUCCESS){
