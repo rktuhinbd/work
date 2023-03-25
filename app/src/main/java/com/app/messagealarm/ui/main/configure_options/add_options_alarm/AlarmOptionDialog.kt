@@ -360,6 +360,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
             }
         }
 
+
         btn_save?.setOnClickListener {
             if (!BaseApplication.isHintShowing) {
                 try {
@@ -445,6 +446,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                 }
             }
         }
+
 
         switch_just_vibrate?.setOnCheckedChangeListener { buttonView, isChecked ->
             if (!BaseApplication.isHintShowing) {
@@ -2024,6 +2026,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
     override fun onIllegalState() {
         defaultValuesToDataModel()
     }
+
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)

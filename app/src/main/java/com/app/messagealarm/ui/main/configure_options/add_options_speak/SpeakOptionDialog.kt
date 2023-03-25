@@ -1,33 +1,70 @@
 package com.app.messagealarm.ui.main.configure_options.add_options_speak
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.method.LinkMovementMethod
+import android.text.style.ForegroundColorSpan
 import android.util.DisplayMetrics
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import android.widget.FrameLayout
+import android.view.*
+import android.widget.*
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
+import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.app.messagealarm.model.entity.ApplicationEntity
+import com.app.messagealarm.ui.buy_pro.BuyProActivity
+import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
+import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
+import com.app.messagealarm.ui.main.configure_options.adapter.SenderNameAdapter
 import com.app.messagealarm.ui.main.configure_options.view.OptionView
+import com.app.messagealarm.utils.Constants
+import com.app.messagealarm.utils.DialogUtils
+import com.app.messagealarm.utils.SharedPrefUtils
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.slider.RangeSlider
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import es.dmoral.toasty.Toasty
+import kotlinx.android.synthetic.main.dialog_alarm_options.*
 import kotlinx.android.synthetic.main.dialog_speak_options.*
+import kotlinx.android.synthetic.main.dialog_speak_options.btn_close
+import kotlinx.android.synthetic.main.dialog_speak_options.btn_exclude_sender_name_clear
+import kotlinx.android.synthetic.main.dialog_speak_options.btn_message_body_clear
+import kotlinx.android.synthetic.main.dialog_speak_options.btn_sender_name_clear
+import kotlinx.android.synthetic.main.dialog_speak_options.progress_sound_level
+import kotlinx.android.synthetic.main.dialog_speak_options.switch_custom_time
+import kotlinx.android.synthetic.main.dialog_speak_options.switch_vibrate
+import kotlinx.android.synthetic.main.dialog_speak_options.txt_exclude_sender_name_value
+import kotlinx.android.synthetic.main.dialog_speak_options.txt_message_body_value
+import kotlinx.android.synthetic.main.dialog_speak_options.txt_number_of_play_value
+import kotlinx.android.synthetic.main.dialog_speak_options.txt_percent_sound_level
+import kotlinx.android.synthetic.main.dialog_speak_options.txt_pro_vibrate
+import kotlinx.android.synthetic.main.dialog_speak_options.txt_sender_name_value
+import kotlinx.android.synthetic.main.dialog_speak_options.view_custom_time
+import kotlinx.android.synthetic.main.dialog_speak_options.view_exclude_sender_name
+import kotlinx.android.synthetic.main.dialog_speak_options.view_message_body
+import kotlinx.android.synthetic.main.dialog_speak_options.view_number_of_play
+import kotlinx.android.synthetic.main.dialog_speak_options.view_sender_name
+import kotlinx.android.synthetic.main.dialog_speak_options.view_vibrate
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
 class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
-
+    var appName: String? = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.BottomSheetDialog)
     }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,11 +72,23 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
     ): View? {
         return inflater.inflate(R.layout.dialog_speak_options, container, false)
     }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        setListener()
         init()
+        setListener()
+        enableProMode()
+    }
+
+
+    private fun enableProMode() {
+        if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
+            switch_vibrate?.isEnabled = true
+            txt_pro_vibrate?.visibility = View.GONE
+        } else {
+            switch_vibrate?.isChecked = false
+            switch_vibrate?.isEnabled = false
+            txt_pro_vibrate?.visibility = View.VISIBLE
+        }
     }
 
     private fun setListener(){
@@ -49,13 +98,904 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         range_slider?.setLabelFormatter {
             (it.toInt() + 1).toString()
         }
+        switch_vibrate?.setOnCheckedChangeListener { buttonView, isChecked ->
+            /**
+             * set vibrate option to data model
+             */
+        //addApplicationEntity.isVibrateOnAlarm = isChecked
+        }
+        view_vibrate?.setOnClickListener {
+            if (!BaseApplication.isHintShowing) {
+                if (isProModeEnabled()) {
+                    switch_vibrate?.performClick()
+                } else {
+                    showVibrateDialog()
+                }
+            }
+        }
+        /**
+         * Sound level seekbar
+         */
+        progress_sound_level?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            @SuppressLint("SetTextI18n")
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+               // addApplicationEntity.sound_level = progress
+                txt_percent_sound_level?.text = "${progress}%"
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+
+            }
+
+        })
+
+        view_number_of_play?.setOnClickListener {
+            if (!BaseApplication.isHintShowing) {
+                DialogUtils.showInputDialog(requireActivity(),
+                    txt_number_of_play_value.text.toString().replace(" times", ""),
+                    "Select number of play",
+                    object : DialogUtils.RepeatCallBack {
+                        @SuppressLint("SetTextI18n")
+                        override fun onClick(name: String) {
+                            /**
+                             * set number of play to data model
+                             */
+                         //   addApplicationEntity.numberOfPlay = name.trim().toInt()
+                            txt_number_of_play_value?.text = """$name times"""
+                        }
+                    })
+            }
+        }
+
+        switch_custom_time?.setOnCheckedChangeListener { buttonView, isChecked ->
+            /**
+             * set is custom time to data model
+             */
+            if (!BaseApplication.isHintShowing) {
+                //addApplicationEntity.isCustomTime = isChecked
+                range_slider?.isEnabled = isChecked
+            }
+        }
+
+        view_custom_time?.setOnClickListener {
+            if (!BaseApplication.isHintShowing) {
+                switch_custom_time?.performClick()
+            }
+        }
+
+
+        btn_message_body_clear?.setOnClickListener {
+            DialogUtils.showDialog(requireActivity(), getString(R.string.txt_clear_message_body),
+                getString(R.string.txt_desc_clear_message), object : DialogUtils.Callback {
+                    override fun onPositive() {
+                       // addApplicationEntity.messageBody = "None"
+                        txt_message_body_value?.text = "None"
+                        btn_message_body_clear?.visibility = View.GONE
+                    }
+
+                    override fun onNegative() {
+
+                    }
+
+                })
+        }
+
+
+        btn_sender_name_clear?.setOnClickListener {
+            DialogUtils.showDialog(requireActivity(), getString(R.string.txt_clear_sender_name),
+                getString(R.string.txt_desc_clear_sender_namne), object : DialogUtils.Callback {
+                    override fun onPositive() {
+                        if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                           // holderEntity.senderNames = "None"
+
+                        }
+                      //  addApplicationEntity.senderNames = "None"
+                        txt_sender_name_value?.text = "None"
+                        btn_sender_name_clear?.visibility = View.GONE
+                    }
+
+                    override fun onNegative() {
+
+                    }
+
+                })
+        }
+
+        btn_exclude_sender_name_clear?.setOnClickListener {
+            DialogUtils.showDialog(requireActivity(), getString(R.string.txt_clear_ignore_name),
+                getString(R.string.txt_desc_clear_ignored_namne), object : DialogUtils.Callback {
+                    override fun onPositive() {
+                        if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                          //  holderEntity.ignored_names = "None"
+                        }
+                      //  addApplicationEntity.ignored_names = "None"
+                        txt_exclude_sender_name_value?.text = "None"
+                        btn_exclude_sender_name_clear?.visibility = View.GONE
+                    }
+
+                    override fun onNegative() {
+
+                    }
+                })
+        }
+
+        view_sender_name?.setOnClickListener {
+            if (!BaseApplication.isHintShowing) {
+                if (txt_exclude_sender_name_value?.text == "None") {
+                    if (txt_sender_name_value?.text != "None") {
+                        val nameList = txt_sender_name_value?.text.toString().split(", ")
+                        senderNameDialog(nameList.toMutableList() as ArrayList<String>)
+                    } else {
+                        val list = ArrayList<String>()
+                        senderNameDialog(list)
+                    }
+                } else {
+                    Toasty.info(
+                        requireActivity(),
+                        "Please clear the Ignored sender name first!"
+                    ).show()
+                }
+            }
+        }
+
+        /**
+         * exclude sender name function
+         */
+
+        view_exclude_sender_name?.setOnClickListener {
+            if (!BaseApplication.isHintShowing) {
+                if (txt_sender_name_value?.text == "None") {
+                    if (txt_exclude_sender_name_value?.text != "None") {
+                        val nameList = txt_exclude_sender_name_value?.text.toString().split(", ")
+                        excludeSenderNameDialog(nameList.toMutableList() as ArrayList<String>)
+                    } else {
+                        val list = ArrayList<String>()
+                        excludeSenderNameDialog(list)
+                    }
+                } else {
+                    Toasty.info(
+                        requireActivity(),
+                        "Please clear the Sender name first!"
+                    ).show()
+                }
+
+            }
+        }
+
+
+
+        view_message_body?.setOnClickListener {
+            if (!BaseApplication.isHintShowing) {
+                /*  DialogUtils.showMessageBodyDialog(
+                      requireActivity(),
+                      txt_message_body_value?.text.toString(),
+                      object : DialogUtils.RepeatCallBack {
+                          override fun onClick(name: String) {
+                              if (name.isNotEmpty()) {
+                                  txt_message_body_value?.text = name
+                                  btn_message_body_clear?.visibility = View.VISIBLE
+                                  *//**
+                 * set message body to data model
+                 *//*
+                                addApplicationEntity.messageBody = name
+                            } else {
+                                btn_message_body_clear?.visibility = View.GONE
+                                txt_message_body_value?.text = "None"
+                                *//**
+                 * set none to message body data model
+                 *//*
+                                addApplicationEntity.messageBody = "None"
+                            }
+                        }
+
+                    })*/
+                if (txt_message_body_value?.text != "None") {
+                    val nameList = txt_message_body_value?.text.toString().split(", ")
+                    showMessageKeywordsDialog(nameList.toMutableList() as ArrayList<String>)
+                } else {
+                    val list = ArrayList<String>()
+                    showMessageKeywordsDialog(list)
+                }
+            }
+        }
+
+    }
+
+
+    /**
+     * @param List of String
+     * This function shows the sender name dialog
+     */
+    private fun senderNameDialog(list: ArrayList<String>) {
+        /* val dialog = Dialog(requireActivity())
+
+         *//**
+         * show app name at end of hint and make app name green color
+         *//*
+        try {
+            if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                val text =
+                    String.format(
+                        "Hint: Only messages from this users will play alarm, add username from %s",
+                        holderEntity.appName
+                    )
+                val spannable: Spannable = SpannableString(text)
+                spannable.setSpan(
+                    ForegroundColorSpan(
+                        ContextCompat.getColor(
+                            requireActivity(),
+                            R.color.success_color
+                        )
+                    ),
+                    70,
+                    text.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                txtHint.setText(spannable, TextView.BufferType.SPANNABLE)
+            } else {
+                val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
+                val text =
+                    String.format(
+                        "Hint: Only messages from this users will play alarm, add username from %s",
+                        app.appName
+                    )
+                val spannable: Spannable = SpannableString(text)
+                spannable.setSpan(
+                    ForegroundColorSpan(
+                        ContextCompat.getColor(
+                            requireActivity(),
+                            R.color.success_color
+                        )
+                    ),
+                    70,
+                    text.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                txtHint.setText(spannable, TextView.BufferType.SPANNABLE)
+            }
+        } catch (e: java.lang.NullPointerException) {
+
+        }
+        val imageButton = dialog.findViewById<TextView>(R.id.btn_add)
+        val recyclerView = dialog.findViewById<RecyclerView>(R.id.recycler_view_sender_name)
+        val layoutManager = FlexboxLayoutManager(requireActivity())
+        val adapter = SenderNameAdapter(list, object : SenderNameAdapter.ItemClickListener {
+            override fun onAllItemRemoved() {
+                saveButton.isEnabled = false
+                placeHolder.visibility = View.VISIBLE
+                recyclerView.visibility = View.INVISIBLE
+            }
+
+            override fun onSingleItemRemove(list: ArrayList<String>) {
+
+            }
+        })
+        //list not empty
+        if (list.size != 0) {
+            recyclerView.visibility = View.VISIBLE
+            placeHolder.visibility = View.INVISIBLE
+            saveButton.isEnabled = true
+        }
+        layoutManager.flexDirection = FlexDirection.COLUMN
+        layoutManager.justifyContent = JustifyContent.FLEX_START
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = adapter
+
+        imageButton.setOnClickListener {
+            if (etName.text.toString().isNotEmpty()) {
+                adapter.addName(
+                    etName.text.toString().trim()
+                )
+                etName.setText("")
+                saveButton.isEnabled = true
+                placeHolder.visibility = View.INVISIBLE
+                recyclerView.visibility = View.VISIBLE
+                if (adapter.itemCount > 0) {
+                    recyclerView.post { recyclerView.smoothScrollToPosition(adapter.itemCount - 1) }
+                }
+            } else {
+                Toasty.info(requireActivity(), "Name can't be empty!").show()
+            }
+        }
+
+        saveButton.setOnClickListener {
+            val name = adapter.convertList()
+            if (name.isNotEmpty()) {
+                txt_sender_name_value?.text = name
+                btn_sender_name_clear?.visibility = View.VISIBLE
+                addApplicationEntity.senderNames = name
+                if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                    holderEntity.senderNames = name
+                }
+                dialog.dismiss()
+            } else {
+                btn_sender_name_clear?.visibility = View.GONE
+                txt_sender_name_value?.text = "None"
+                addApplicationEntity.senderNames = "None"
+                dialog.dismiss()
+            }
+        }
+
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
+        val window: Window = dialog.window!!
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        //
+        if (!dialog.isShowing) {
+            dialog.show()
+        }*/
+
+        val dialog = Dialog(requireActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_sender_name_new)
+        //init views
+        val placeHolder = dialog.findViewById<ImageView>(R.id.img_placeholder)
+        val etName = dialog.findViewById<EditText>(R.id.et_sender_name)
+        val imageButton = dialog.findViewById<ImageView>(R.id.btn_add)
+        val recyclerView = dialog.findViewById<RecyclerView>(R.id.recycler_view_sender_name)
+        val layoutManager = FlexboxLayoutManager(requireActivity())
+        val txtHint = dialog.findViewById<TextView>(R.id.txt_hint_sender_name)
+        val cancelFloatingButton = dialog.findViewById<FloatingActionButton>(R.id.fabClose)
+        val fabSave = dialog.findViewById<FloatingActionButton>(R.id.fabSave)
+        val btnPro = dialog.findViewById<MaterialButton>(R.id.btn_pro)
+        val txtInfoHint = dialog.findViewById<TextView>(R.id.txt_hint)
+
+        /**
+         * show app name at end of hint and make app name green color
+         */
+        try {
+            val text =
+                String.format(
+                    "Only messages from this users will play alarm, add username from %s",
+                    appName
+                )
+            val spannable: Spannable = SpannableString(text)
+            spannable.setSpan(
+                ForegroundColorSpan(
+                    ContextCompat.getColor(
+                        requireActivity(),
+                        R.color.success_color
+                    )
+                ),
+                64,
+                text.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            txtHint.setText(spannable, TextView.BufferType.SPANNABLE)
+            txtHint.movementMethod = LinkMovementMethod.getInstance()
+        } catch (e: java.lang.NullPointerException) {
+
+        }
+        val adapter = SenderNameAdapter(list, object : SenderNameAdapter.ItemClickListener {
+            override fun onAllItemRemoved() {
+                fabSave.visibility = View.GONE
+                placeHolder.visibility = View.VISIBLE
+                recyclerView.visibility = View.INVISIBLE
+                btnPro.visibility = View.GONE
+                txtInfoHint.visibility = View.GONE
+                etName.isEnabled = true
+                imageButton.isEnabled = true
+                imageButton.setBackgroundResource(R.drawable.add_button_background)
+            }
+
+            override fun onSingleItemRemove(list: ArrayList<String>) {
+
+            }
+        })
+
+        /**
+         * buy pro status
+         */
+        if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
+            //free user
+            if (list.size > 0) {
+                btnPro.visibility = View.VISIBLE
+                txtInfoHint.visibility = View.VISIBLE
+                etName.isEnabled = false
+                imageButton.setBackgroundResource(R.drawable.disabled_add_button)
+                imageButton.isEnabled = false
+            } else {
+                btnPro.visibility = View.GONE
+                txtInfoHint.visibility = View.GONE
+                etName.isEnabled = true
+                imageButton.isEnabled = true
+                imageButton.setBackgroundResource(R.drawable.add_button_background)
+            }
+        } else {
+            btnPro.visibility = View.GONE
+            txtInfoHint.visibility = View.GONE
+            etName.isEnabled = true
+            imageButton.isEnabled = true
+            imageButton.setBackgroundResource(R.drawable.add_button_background)
+        }
+
+        //list not empty
+        if (list.size != 0) {
+            recyclerView.visibility = View.VISIBLE
+            placeHolder.visibility = View.INVISIBLE
+            fabSave.visibility = View.VISIBLE
+
+        }
+        layoutManager.flexDirection = FlexDirection.COLUMN
+        layoutManager.justifyContent = JustifyContent.FLEX_START
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = adapter
+
+        imageButton.setOnClickListener {
+            if (etName.text.toString().isNotEmpty()) {
+                adapter.addName(etName.text.toString().trim())
+                etName.setText("")
+                fabSave.visibility = View.VISIBLE
+                placeHolder.visibility = View.INVISIBLE
+                recyclerView.visibility = View.VISIBLE
+                if (adapter.itemCount > 0) {
+                    recyclerView.post { recyclerView.smoothScrollToPosition(adapter.itemCount - 1) }
+                }
+                /**
+                 * buy pro status
+                 */
+                if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
+                    //free user
+                    if ((recyclerView.adapter as SenderNameAdapter).itemCount > 0) {
+                        btnPro.visibility = View.VISIBLE
+                        txtInfoHint.visibility = View.VISIBLE
+                        etName.isEnabled = false
+                        imageButton.setBackgroundResource(R.drawable.disabled_add_button)
+                        imageButton.isEnabled = false
+                    } else {
+                        btnPro.visibility = View.GONE
+                        txtInfoHint.visibility = View.GONE
+                        etName.isEnabled = true
+                        imageButton.isEnabled = true
+                        imageButton.setBackgroundResource(R.drawable.add_button_background)
+                    }
+                } else {
+                    btnPro.visibility = View.GONE
+                    txtInfoHint.visibility = View.GONE
+                    etName.isEnabled = true
+                    imageButton.isEnabled = true
+                    imageButton.setBackgroundResource(R.drawable.add_button_background)
+                }
+
+            } else {
+                Toasty.info(requireActivity(), "Name can't be empty!").show()
+            }
+        }
+
+        fabSave.setOnClickListener {
+            /**
+             * save to list
+             */
+            val name = adapter.convertList()
+            if (name.isNotEmpty()) {
+                txt_sender_name_value?.text = name
+                btn_sender_name_clear?.visibility = View.VISIBLE
+               // addApplicationEntity.senderNames = name
+                if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                  //  holderEntity.senderNames = name
+                }
+                dialog.dismiss()
+            } else {
+                btn_sender_name_clear?.visibility = View.GONE
+                txt_sender_name_value?.text = "None"
+                //addApplicationEntity.senderNames = "None"
+                dialog.dismiss()
+            }
+            /**
+             * end of save to list
+             */
+        }
+
+        btnPro.setOnClickListener {
+            if (dialog.isShowing) {
+                dialog.dismiss()
+            }
+            visitProScreen()
+        }
+
+        cancelFloatingButton.setOnClickListener {
+            if (dialog.isShowing) {
+                dialog.dismiss()
+            }
+        }
+
+        val window: Window = dialog.window!!
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        //
+        if (!dialog.isShowing) {
+            dialog.show()
+        }
+
+    }
+
+    private fun excludeSenderNameDialog(list: ArrayList<String>) {
+        val dialog = Dialog(requireActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_exclude_sender_name)
+        //init views
+        val placeHolder = dialog.findViewById<ImageView>(R.id.img_placeholder)
+        val etName = dialog.findViewById<EditText>(R.id.et_sender_name)
+        val imageButton = dialog.findViewById<ImageView>(R.id.btn_add)
+        val recyclerView = dialog.findViewById<RecyclerView>(R.id.recycler_view_sender_name)
+        val layoutManager = FlexboxLayoutManager(requireActivity())
+        val txtHint = dialog.findViewById<TextView>(R.id.txt_hint_sender_name)
+        val cancelFloatingButton = dialog.findViewById<FloatingActionButton>(R.id.fabClose)
+        val fabSave = dialog.findViewById<FloatingActionButton>(R.id.fabSave)
+        val btnPro = dialog.findViewById<MaterialButton>(R.id.btn_pro)
+        val txtInfoHint = dialog.findViewById<TextView>(R.id.txt_hint)
+
+        /**
+         * show app name at end of hint and make app name green color
+         */
+        try {
+            val text =
+                String.format(
+                    "Messages from this users will not play alarm, add username from %s",
+                    appName
+                )
+            val spannable: Spannable = SpannableString(text)
+            spannable.setSpan(
+                ForegroundColorSpan(
+                    ContextCompat.getColor(
+                        requireActivity(),
+                        R.color.success_color
+                    )
+                ),
+                64,
+                text.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            txtHint.setText(spannable, TextView.BufferType.SPANNABLE)
+            txtHint.movementMethod = LinkMovementMethod.getInstance()
+        } catch (e: java.lang.NullPointerException) {
+
+        }
+        val adapter = SenderNameAdapter(list, object : SenderNameAdapter.ItemClickListener {
+            override fun onAllItemRemoved() {
+                fabSave.visibility = View.GONE
+                placeHolder.visibility = View.VISIBLE
+                recyclerView.visibility = View.INVISIBLE
+                btnPro.visibility = View.GONE
+                txtInfoHint.visibility = View.GONE
+                etName.isEnabled = true
+                imageButton.isEnabled = true
+                imageButton.setBackgroundResource(R.drawable.add_button_background)
+            }
+
+            override fun onSingleItemRemove(list: ArrayList<String>) {
+
+            }
+        })
+
+        /**
+         * buy pro status
+         */
+        if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
+            //free user
+            if (list.size > 0) {
+                btnPro.visibility = View.VISIBLE
+                txtInfoHint.visibility = View.VISIBLE
+                etName.isEnabled = false
+                imageButton.setBackgroundResource(R.drawable.disabled_add_button)
+                imageButton.isEnabled = false
+            } else {
+                btnPro.visibility = View.GONE
+                txtInfoHint.visibility = View.GONE
+                etName.isEnabled = true
+                imageButton.isEnabled = true
+                imageButton.setBackgroundResource(R.drawable.add_button_background)
+            }
+        } else {
+            btnPro.visibility = View.GONE
+            txtInfoHint.visibility = View.GONE
+            etName.isEnabled = true
+            imageButton.isEnabled = true
+            imageButton.setBackgroundResource(R.drawable.add_button_background)
+        }
+
+        //list not empty
+        if (list.size != 0) {
+            recyclerView.visibility = View.VISIBLE
+            placeHolder.visibility = View.INVISIBLE
+            fabSave.visibility = View.VISIBLE
+
+        }
+        layoutManager.flexDirection = FlexDirection.COLUMN
+        layoutManager.justifyContent = JustifyContent.FLEX_START
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = adapter
+
+        imageButton.setOnClickListener {
+            if (etName.text.toString().isNotEmpty()) {
+                adapter.addName(etName.text.toString().trim())
+                etName.setText("")
+                fabSave.visibility = View.VISIBLE
+                placeHolder.visibility = View.INVISIBLE
+                recyclerView.visibility = View.VISIBLE
+                if (adapter.itemCount > 0) {
+                    recyclerView.post { recyclerView.smoothScrollToPosition(adapter.itemCount - 1) }
+                }
+                /**
+                 * buy pro status
+                 */
+                if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
+                    //free user
+                    if ((recyclerView.adapter as SenderNameAdapter).itemCount > 0) {
+                        btnPro.visibility = View.VISIBLE
+                        txtInfoHint.visibility = View.VISIBLE
+                        etName.isEnabled = false
+                        imageButton.setBackgroundResource(R.drawable.disabled_add_button)
+                        imageButton.isEnabled = false
+                    } else {
+                        btnPro.visibility = View.GONE
+                        txtInfoHint.visibility = View.GONE
+                        etName.isEnabled = true
+                        imageButton.isEnabled = true
+                        imageButton.setBackgroundResource(R.drawable.add_button_background)
+                    }
+                } else {
+                    btnPro.visibility = View.GONE
+                    txtInfoHint.visibility = View.GONE
+                    etName.isEnabled = true
+                    imageButton.isEnabled = true
+                    imageButton.setBackgroundResource(R.drawable.add_button_background)
+                }
+
+            } else {
+                Toasty.info(requireActivity(), "Name can't be empty!").show()
+            }
+        }
+
+        fabSave.setOnClickListener {
+            /**
+             * save to list
+             */
+            val name = adapter.convertList()
+            if (name.isNotEmpty()) {
+                txt_exclude_sender_name_value?.text = name
+                btn_exclude_sender_name_clear?.visibility = View.VISIBLE
+               // addApplicationEntity.ignored_names = name
+                if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                    //holderEntity.ignored_names = name
+                }
+                dialog.dismiss()
+            } else {
+                btn_exclude_sender_name_clear?.visibility = View.GONE
+                txt_exclude_sender_name_value?.text = "None"
+               // addApplicationEntity.ignored_names = "None"
+                dialog.dismiss()
+            }
+            /**
+             * end of save to list
+             */
+        }
+
+        btnPro.setOnClickListener {
+            if (dialog.isShowing) {
+                dialog.dismiss()
+            }
+            visitProScreen()
+        }
+
+        cancelFloatingButton.setOnClickListener {
+            if (dialog.isShowing) {
+                dialog.dismiss()
+            }
+        }
+
+        val window: Window = dialog.window!!
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        //
+        if (!dialog.isShowing) {
+            dialog.show()
+        }
+    }
+
+
+    private fun showMessageKeywordsDialog(list: ArrayList<String>){
+        val dialog = Dialog(requireActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_message_keywords)
+        //init views
+        val placeHolder = dialog.findViewById<ImageView>(R.id.img_placeholder)
+        val etName = dialog.findViewById<EditText>(R.id.et_message_keywords)
+        val imageButton = dialog.findViewById<ImageView>(R.id.btn_add)
+        val recyclerView = dialog.findViewById<RecyclerView>(R.id.recycler_view_sender_name)
+        val layoutManager = FlexboxLayoutManager(requireActivity())
+        val txtHint = dialog.findViewById<TextView>(R.id.txt_hint_sender_name)
+        val cancelFloatingButton = dialog.findViewById<FloatingActionButton>(R.id.fabClose)
+        val fabSave = dialog.findViewById<FloatingActionButton>(R.id.fabSave)
+        val btnPro = dialog.findViewById<MaterialButton>(R.id.btn_pro)
+        val txtInfoHint = dialog.findViewById<TextView>(R.id.txt_hint)
+
+        /**
+         * show app name at end of hint and make app name green color
+         */
+        try {
+            val text =
+                String.format(
+                    "If this keywords are in message, alarm will play. Add keywords for %s",
+                    appName
+                )
+            val spannable: Spannable = SpannableString(text)
+            spannable.setSpan(
+                ForegroundColorSpan(
+                    ContextCompat.getColor(
+                        requireActivity(),
+                        R.color.success_color
+                    )
+                ),
+                66,
+                text.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            txtHint.setText(spannable, TextView.BufferType.SPANNABLE)
+            txtHint.movementMethod = LinkMovementMethod.getInstance()
+        } catch (e: java.lang.NullPointerException) {
+
+        }
+        val adapter = SenderNameAdapter(list, object : SenderNameAdapter.ItemClickListener {
+            override fun onAllItemRemoved() {
+                fabSave.visibility = View.GONE
+                placeHolder.visibility = View.VISIBLE
+                recyclerView.visibility = View.INVISIBLE
+                btnPro.visibility = View.GONE
+                txtInfoHint.visibility = View.GONE
+                etName.isEnabled = true
+                imageButton.isEnabled = true
+                imageButton.setBackgroundResource(R.drawable.add_button_background)
+            }
+
+            override fun onSingleItemRemove(list: ArrayList<String>) {
+
+            }
+        })
+
+        /**
+         * buy pro status
+         */
+        if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
+            //free user
+            if (list.size > 0) {
+                btnPro.visibility = View.VISIBLE
+                txtInfoHint.visibility = View.VISIBLE
+                etName.isEnabled = false
+                imageButton.setBackgroundResource(R.drawable.disabled_add_button)
+                imageButton.isEnabled = false
+            } else {
+                btnPro.visibility = View.GONE
+                txtInfoHint.visibility = View.GONE
+                etName.isEnabled = true
+                imageButton.isEnabled = true
+                imageButton.setBackgroundResource(R.drawable.add_button_background)
+            }
+        } else {
+            btnPro.visibility = View.GONE
+            txtInfoHint.visibility = View.GONE
+            etName.isEnabled = true
+            imageButton.isEnabled = true
+            imageButton.setBackgroundResource(R.drawable.add_button_background)
+        }
+
+        //list not empty
+        if (list.size != 0) {
+            recyclerView.visibility = View.VISIBLE
+            placeHolder.visibility = View.INVISIBLE
+            fabSave.visibility = View.VISIBLE
+
+        }
+        layoutManager.flexDirection = FlexDirection.COLUMN
+        layoutManager.justifyContent = JustifyContent.FLEX_START
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = adapter
+
+        imageButton.setOnClickListener {
+            if (etName.text.toString().isNotEmpty()) {
+                adapter.addName(etName.text.toString().trim())
+                etName.setText("")
+                fabSave.visibility = View.VISIBLE
+                placeHolder.visibility = View.INVISIBLE
+                recyclerView.visibility = View.VISIBLE
+                if (adapter.itemCount > 0) {
+                    recyclerView.post { recyclerView.smoothScrollToPosition(adapter.itemCount - 1) }
+                }
+                /**
+                 * buy pro status
+                 */
+                if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
+                    //free user
+                    if ((recyclerView.adapter as SenderNameAdapter).itemCount > 0) {
+                        btnPro.visibility = View.VISIBLE
+                        txtInfoHint.visibility = View.VISIBLE
+                        etName.isEnabled = false
+                        imageButton.setBackgroundResource(R.drawable.disabled_add_button)
+                        imageButton.isEnabled = false
+                    } else {
+                        btnPro.visibility = View.GONE
+                        txtInfoHint.visibility = View.GONE
+                        etName.isEnabled = true
+                        imageButton.isEnabled = true
+                        imageButton.setBackgroundResource(R.drawable.add_button_background)
+                    }
+                } else {
+                    btnPro.visibility = View.GONE
+                    txtInfoHint.visibility = View.GONE
+                    etName.isEnabled = true
+                    imageButton.isEnabled = true
+                    imageButton.setBackgroundResource(R.drawable.add_button_background)
+                }
+
+            } else {
+                Toasty.info(requireActivity(), "Name can't be empty!").show()
+            }
+        }
+
+        fabSave.setOnClickListener {
+            /**
+             * save to list
+             */
+            val name = adapter.convertList()
+            if (name.isNotEmpty()) {
+                txt_message_body_value?.text = name
+                btn_message_body_clear?.visibility = View.VISIBLE
+                //addApplicationEntity.messageBody = name
+                if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                   // holderEntity.messageBody = name
+                }
+                dialog.dismiss()
+            } else {
+                btn_message_body_clear?.visibility = View.GONE
+                txt_message_body_value?.text = "None"
+              //  addApplicationEntity.messageBody = "None"
+                dialog.dismiss()
+            }
+            /**
+             * end of save to list
+             */
+        }
+
+        btnPro.setOnClickListener {
+            if (dialog.isShowing) {
+                dialog.dismiss()
+            }
+            visitProScreen()
+        }
+
+        cancelFloatingButton.setOnClickListener {
+            if (dialog.isShowing) {
+                dialog.dismiss()
+            }
+        }
+
+        val window: Window = dialog.window!!
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        //
+        if (!dialog.isShowing) {
+            dialog.show()
+        }
+    }
+
+    private fun isProModeEnabled(): Boolean {
+        return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
     }
 
     fun init(){
         var updateTimer: Timer? = null
         val timeZone = TimeZone.getDefault()
         // Create a SimpleDateFormat with the desired output format
-        range_slider?.stepSize = 1F
+        range_slider?.isEnabled = false
+            range_slider?.stepSize = 1F
         val dateFormat = SimpleDateFormat("h a", Locale.getDefault())
         range_slider.addOnChangeListener { slider, value, fromUser ->
             // Cancel any previously scheduled updates
@@ -90,6 +1030,54 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
     }
 
 
+    private fun showVibrateDialog() {
+        val dialog = Dialog(requireActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.layout_vibrate_dialog)
+        val btnClose = dialog.findViewById<FloatingActionButton>(R.id.fab_close_vibrate)
+        val btnBuyProVibrate = dialog.findViewById<MaterialButton>(R.id.button_vibrate)
+        btnBuyProVibrate.setOnClickListener {
+            if (dialog.isShowing) {
+                dialog.dismiss()
+            }
+            visitProScreen()
+        }
+        btnClose?.setOnClickListener {
+            if (dialog.isShowing) {
+                dialog.dismiss()
+            }
+        }
+        val window: Window = dialog.window!!
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        //
+        if (!dialog.isShowing) {
+            dialog.show()
+        }
+    }
+
+    private fun visitProScreen() {
+        if (activity is AlarmApplicationActivity) {
+            dismissAllowingStateLoss()
+            val intent = Intent(activity, BuyProActivity::class.java)
+            requireActivity().startActivityForResult(
+                intent,
+                Constants.ACTION.ACTION_PURCHASE_FROM_MAIN
+            )
+        } else if (activity is AddApplicationActivity) {
+            dismissAllowingStateLoss()
+            requireActivity().startActivityForResult(
+                Intent(
+                    requireActivity(),
+                    BuyProActivity::class.java
+                ),
+                Constants.ACTION.ACTION_PURCHASE_FROM_ADD
+            )
+        }
+    }
+
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog.setOnShowListener { dialogInterface ->
@@ -98,7 +1086,6 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         }
         return dialog
     }
-
     private fun setupFullHeight(bottomSheetDialog: BottomSheetDialog) {
         try {
             val bottomSheet =
@@ -117,47 +1104,36 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
 
         }
     }
-
     private fun getWindowHeight(): Int { // Calculate window height for fullscreen use
         val displayMetrics = DisplayMetrics()
         (context as Activity?)!!.windowManager.defaultDisplay
             .getMetrics(displayMetrics)
         return displayMetrics.heightPixels
     }
-
-
     override fun onApplicationSaveSuccess() {
         TODO("Not yet implemented")
     }
-
     override fun onApplicationSaveError(message: String) {
         TODO("Not yet implemented")
     }
-
     override fun onApplicationUpdateSuccess() {
         TODO("Not yet implemented")
     }
-
     override fun onApplicationUpdateError(message: String) {
         TODO("Not yet implemented")
     }
-
     override fun onBitmapSaveSuccess(path: String) {
         TODO("Not yet implemented")
     }
-
     override fun onBitmapSaveError() {
         TODO("Not yet implemented")
     }
-
     override fun onApplicationGetSuccess(app: ApplicationEntity) {
         TODO("Not yet implemented")
     }
-
     override fun onApplicationGetError(message: String) {
         TODO("Not yet implemented")
     }
-
     override fun onIllegalState() {
         TODO("Not yet implemented")
     }
