@@ -224,18 +224,19 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                 if (arguments?.getSerializable(Constants.BundleKeys.APP) != null) {
                     val app =
                         (arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps)
-                    optionPresenter?.getAppByPackageName(
-                        app.packageName
+                    optionPresenter?.getAppByPackageNameAndType(
+                        app.packageName,
+                        Constants.NotifyOptions.ALARM
                     )
                     this.appName = app.appName
                 }
             } else {
                 //edit mode from home
                 if (arguments?.getString(Constants.BundleKeys.PACKAGE_NAME) != null) {
-                    optionPresenter?.getAppByPackageName(
+                    optionPresenter?.getAppByPackageNameAndType(
                         arguments?.getString(
                             Constants.BundleKeys.PACKAGE_NAME
-                        )!!
+                        )!!, Constants.NotifyOptions.ALARM
                     )
                 }
             }
@@ -364,6 +365,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         btn_save?.setOnClickListener {
             if (!BaseApplication.isHintShowing) {
                 try {
+                    addApplicationEntity.alertType = Constants.NotifyOptions.ALARM
                     if (checkForDefault()) {
                         shouldOnStatus = false
                     } else {

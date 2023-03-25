@@ -13,18 +13,19 @@ import android.util.DisplayMetrics
 import android.view.*
 import android.widget.*
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
+import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.ui.buy_pro.BuyProActivity
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.ui.main.configure_options.adapter.SenderNameAdapter
+import com.app.messagealarm.ui.main.configure_options.presenter.OptionPresenter
 import com.app.messagealarm.ui.main.configure_options.view.OptionView
-import com.app.messagealarm.utils.Constants
-import com.app.messagealarm.utils.DialogUtils
-import com.app.messagealarm.utils.SharedPrefUtils
+import com.app.messagealarm.utils.*
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -33,13 +34,16 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.analytics.FirebaseAnalytics
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_alarm_options.*
 import kotlinx.android.synthetic.main.dialog_speak_options.*
 import kotlinx.android.synthetic.main.dialog_speak_options.btn_close
 import kotlinx.android.synthetic.main.dialog_speak_options.btn_exclude_sender_name_clear
 import kotlinx.android.synthetic.main.dialog_speak_options.btn_message_body_clear
+import kotlinx.android.synthetic.main.dialog_speak_options.btn_save
 import kotlinx.android.synthetic.main.dialog_speak_options.btn_sender_name_clear
+import kotlinx.android.synthetic.main.dialog_speak_options.progress_bar_option
 import kotlinx.android.synthetic.main.dialog_speak_options.progress_sound_level
 import kotlinx.android.synthetic.main.dialog_speak_options.switch_custom_time
 import kotlinx.android.synthetic.main.dialog_speak_options.switch_vibrate
@@ -60,10 +64,18 @@ import java.util.*
 import kotlin.math.roundToInt
 
 class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
+
+    var shouldOnStatus = false
+    var once: Once? = null
     var appName: String? = ""
+    private var addApplicationEntity = ApplicationEntity()
+    private var holderEntity = ApplicationEntity()
+    private var optionPresenter: OptionPresenter? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.BottomSheetDialog)
+        optionPresenter = OptionPresenter(this)
     }
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -95,15 +107,18 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         btn_close?.setOnClickListener {
             dismiss()
         }
+
         range_slider?.setLabelFormatter {
             (it.toInt() + 1).toString()
         }
+
         switch_vibrate?.setOnCheckedChangeListener { buttonView, isChecked ->
             /**
              * set vibrate option to data model
              */
-        //addApplicationEntity.isVibrateOnAlarm = isChecked
+        addApplicationEntity.isVibrateOnAlarm = isChecked
         }
+
         view_vibrate?.setOnClickListener {
             if (!BaseApplication.isHintShowing) {
                 if (isProModeEnabled()) {
@@ -119,7 +134,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         progress_sound_level?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             @SuppressLint("SetTextI18n")
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-               // addApplicationEntity.sound_level = progress
+                addApplicationEntity.sound_level = progress
                 txt_percent_sound_level?.text = "${progress}%"
             }
 
@@ -144,7 +159,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
                             /**
                              * set number of play to data model
                              */
-                         //   addApplicationEntity.numberOfPlay = name.trim().toInt()
+                             addApplicationEntity.numberOfPlay = name.trim().toInt()
                             txt_number_of_play_value?.text = """$name times"""
                         }
                     })
@@ -156,7 +171,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
              * set is custom time to data model
              */
             if (!BaseApplication.isHintShowing) {
-                //addApplicationEntity.isCustomTime = isChecked
+                addApplicationEntity.isCustomTime = isChecked
                 range_slider?.isEnabled = isChecked
             }
         }
@@ -167,12 +182,11 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
             }
         }
 
-
         btn_message_body_clear?.setOnClickListener {
             DialogUtils.showDialog(requireActivity(), getString(R.string.txt_clear_message_body),
                 getString(R.string.txt_desc_clear_message), object : DialogUtils.Callback {
                     override fun onPositive() {
-                       // addApplicationEntity.messageBody = "None"
+                        addApplicationEntity.messageBody = "None"
                         txt_message_body_value?.text = "None"
                         btn_message_body_clear?.visibility = View.GONE
                     }
@@ -184,7 +198,6 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
                 })
         }
 
-
         btn_sender_name_clear?.setOnClickListener {
             DialogUtils.showDialog(requireActivity(), getString(R.string.txt_clear_sender_name),
                 getString(R.string.txt_desc_clear_sender_namne), object : DialogUtils.Callback {
@@ -193,7 +206,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
                            // holderEntity.senderNames = "None"
 
                         }
-                      //  addApplicationEntity.senderNames = "None"
+                        addApplicationEntity.senderNames = "None"
                         txt_sender_name_value?.text = "None"
                         btn_sender_name_clear?.visibility = View.GONE
                     }
@@ -212,7 +225,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
                         if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
                           //  holderEntity.ignored_names = "None"
                         }
-                      //  addApplicationEntity.ignored_names = "None"
+                         addApplicationEntity.ignored_names = "None"
                         txt_exclude_sender_name_value?.text = "None"
                         btn_exclude_sender_name_clear?.visibility = View.GONE
                     }
@@ -266,33 +279,8 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
             }
         }
 
-
-
         view_message_body?.setOnClickListener {
             if (!BaseApplication.isHintShowing) {
-                /*  DialogUtils.showMessageBodyDialog(
-                      requireActivity(),
-                      txt_message_body_value?.text.toString(),
-                      object : DialogUtils.RepeatCallBack {
-                          override fun onClick(name: String) {
-                              if (name.isNotEmpty()) {
-                                  txt_message_body_value?.text = name
-                                  btn_message_body_clear?.visibility = View.VISIBLE
-                                  *//**
-                 * set message body to data model
-                 *//*
-                                addApplicationEntity.messageBody = name
-                            } else {
-                                btn_message_body_clear?.visibility = View.GONE
-                                txt_message_body_value?.text = "None"
-                                *//**
-                 * set none to message body data model
-                 *//*
-                                addApplicationEntity.messageBody = "None"
-                            }
-                        }
-
-                    })*/
                 if (txt_message_body_value?.text != "None") {
                     val nameList = txt_message_body_value?.text.toString().split(", ")
                     showMessageKeywordsDialog(nameList.toMutableList() as ArrayList<String>)
@@ -303,6 +291,54 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
             }
         }
 
+        btn_save?.setOnClickListener {
+            //save the app
+            try {
+                addApplicationEntity.alertType = Constants.NotifyOptions.SPEAK
+                saveApplication()
+            }catch (e: java.lang.NullPointerException){
+            }
+        }
+    }
+
+    private fun showProgressBar() {
+        progress_bar_option?.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressBar() {
+        progress_bar_option?.visibility = View.INVISIBLE
+    }
+
+
+    private fun saveApplication() {
+        /**
+         * Populate Application entity from UI controller data
+         * with start of other values
+         */
+        //start progress bar
+        showProgressBar()
+        try {
+            if (!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
+                addApplicationEntity.appName = app.appName
+                addApplicationEntity.packageName = app.packageName
+                Thread(Runnable {
+                    try {
+                        val bitmap = app.drawableIcon
+                        optionPresenter?.saveBitmapToFile(
+                            requireActivity(),
+                            app.packageName,
+                            bitmap.toBitmap()
+                        )
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }).start()
+            }
+        } catch (e: NullPointerException) {
+            //skip the crash
+        }
+
     }
 
 
@@ -311,125 +347,6 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
      * This function shows the sender name dialog
      */
     private fun senderNameDialog(list: ArrayList<String>) {
-        /* val dialog = Dialog(requireActivity())
-
-         *//**
-         * show app name at end of hint and make app name green color
-         *//*
-        try {
-            if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
-                val text =
-                    String.format(
-                        "Hint: Only messages from this users will play alarm, add username from %s",
-                        holderEntity.appName
-                    )
-                val spannable: Spannable = SpannableString(text)
-                spannable.setSpan(
-                    ForegroundColorSpan(
-                        ContextCompat.getColor(
-                            requireActivity(),
-                            R.color.success_color
-                        )
-                    ),
-                    70,
-                    text.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                txtHint.setText(spannable, TextView.BufferType.SPANNABLE)
-            } else {
-                val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
-                val text =
-                    String.format(
-                        "Hint: Only messages from this users will play alarm, add username from %s",
-                        app.appName
-                    )
-                val spannable: Spannable = SpannableString(text)
-                spannable.setSpan(
-                    ForegroundColorSpan(
-                        ContextCompat.getColor(
-                            requireActivity(),
-                            R.color.success_color
-                        )
-                    ),
-                    70,
-                    text.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                txtHint.setText(spannable, TextView.BufferType.SPANNABLE)
-            }
-        } catch (e: java.lang.NullPointerException) {
-
-        }
-        val imageButton = dialog.findViewById<TextView>(R.id.btn_add)
-        val recyclerView = dialog.findViewById<RecyclerView>(R.id.recycler_view_sender_name)
-        val layoutManager = FlexboxLayoutManager(requireActivity())
-        val adapter = SenderNameAdapter(list, object : SenderNameAdapter.ItemClickListener {
-            override fun onAllItemRemoved() {
-                saveButton.isEnabled = false
-                placeHolder.visibility = View.VISIBLE
-                recyclerView.visibility = View.INVISIBLE
-            }
-
-            override fun onSingleItemRemove(list: ArrayList<String>) {
-
-            }
-        })
-        //list not empty
-        if (list.size != 0) {
-            recyclerView.visibility = View.VISIBLE
-            placeHolder.visibility = View.INVISIBLE
-            saveButton.isEnabled = true
-        }
-        layoutManager.flexDirection = FlexDirection.COLUMN
-        layoutManager.justifyContent = JustifyContent.FLEX_START
-        recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = adapter
-
-        imageButton.setOnClickListener {
-            if (etName.text.toString().isNotEmpty()) {
-                adapter.addName(
-                    etName.text.toString().trim()
-                )
-                etName.setText("")
-                saveButton.isEnabled = true
-                placeHolder.visibility = View.INVISIBLE
-                recyclerView.visibility = View.VISIBLE
-                if (adapter.itemCount > 0) {
-                    recyclerView.post { recyclerView.smoothScrollToPosition(adapter.itemCount - 1) }
-                }
-            } else {
-                Toasty.info(requireActivity(), "Name can't be empty!").show()
-            }
-        }
-
-        saveButton.setOnClickListener {
-            val name = adapter.convertList()
-            if (name.isNotEmpty()) {
-                txt_sender_name_value?.text = name
-                btn_sender_name_clear?.visibility = View.VISIBLE
-                addApplicationEntity.senderNames = name
-                if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
-                    holderEntity.senderNames = name
-                }
-                dialog.dismiss()
-            } else {
-                btn_sender_name_clear?.visibility = View.GONE
-                txt_sender_name_value?.text = "None"
-                addApplicationEntity.senderNames = "None"
-                dialog.dismiss()
-            }
-        }
-
-        cancelButton.setOnClickListener {
-            dialog.dismiss()
-        }
-        val window: Window = dialog.window!!
-        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        //
-        if (!dialog.isShowing) {
-            dialog.show()
-        }*/
-
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
@@ -577,7 +494,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
             if (name.isNotEmpty()) {
                 txt_sender_name_value?.text = name
                 btn_sender_name_clear?.visibility = View.VISIBLE
-               // addApplicationEntity.senderNames = name
+                addApplicationEntity.senderNames = name
                 if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
                   //  holderEntity.senderNames = name
                 }
@@ -585,7 +502,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
             } else {
                 btn_sender_name_clear?.visibility = View.GONE
                 txt_sender_name_value?.text = "None"
-                //addApplicationEntity.senderNames = "None"
+                addApplicationEntity.senderNames = "None"
                 dialog.dismiss()
             }
             /**
@@ -763,7 +680,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
             if (name.isNotEmpty()) {
                 txt_exclude_sender_name_value?.text = name
                 btn_exclude_sender_name_clear?.visibility = View.VISIBLE
-               // addApplicationEntity.ignored_names = name
+                addApplicationEntity.ignored_names = name
                 if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
                     //holderEntity.ignored_names = name
                 }
@@ -771,7 +688,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
             } else {
                 btn_exclude_sender_name_clear?.visibility = View.GONE
                 txt_exclude_sender_name_value?.text = "None"
-               // addApplicationEntity.ignored_names = "None"
+                addApplicationEntity.ignored_names = "None"
                 dialog.dismiss()
             }
             /**
@@ -949,7 +866,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
             if (name.isNotEmpty()) {
                 txt_message_body_value?.text = name
                 btn_message_body_clear?.visibility = View.VISIBLE
-                //addApplicationEntity.messageBody = name
+                addApplicationEntity.messageBody = name
                 if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
                    // holderEntity.messageBody = name
                 }
@@ -957,7 +874,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
             } else {
                 btn_message_body_clear?.visibility = View.GONE
                 txt_message_body_value?.text = "None"
-              //  addApplicationEntity.messageBody = "None"
+                 addApplicationEntity.messageBody = "None"
                 dialog.dismiss()
             }
             /**
@@ -1111,7 +1028,15 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         return displayMetrics.heightPixels
     }
     override fun onApplicationSaveSuccess() {
-        TODO("Not yet implemented")
+        if (isAdded) {
+            requireActivity().runOnUiThread {
+                Toasty.success(requireActivity(), getString(R.string.application_save_success))
+                    .show()
+                dismissAllowingStateLoss()
+                requireActivity().setResult(Activity.RESULT_OK)
+                requireActivity().finish()
+            }
+        }
     }
     override fun onApplicationSaveError(message: String) {
         TODO("Not yet implemented")
@@ -1123,10 +1048,25 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         TODO("Not yet implemented")
     }
     override fun onBitmapSaveSuccess(path: String) {
-        TODO("Not yet implemented")
+        addApplicationEntity.bitmapPath = path
+        /**
+         * End of other values
+         */
+        optionPresenter?.saveApplication(addApplicationEntity, null)
+        if (isAdded) {
+            requireActivity().runOnUiThread {
+                hideProgressBar()
+            }
+        }
     }
     override fun onBitmapSaveError() {
-        TODO("Not yet implemented")
+        if (isAdded) {
+            requireActivity().runOnUiThread {
+                Toasty.error(requireActivity(), DataUtils.getString(R.string.something_wrong))
+                    .show()
+                hideProgressBar()
+            }
+        }
     }
     override fun onApplicationGetSuccess(app: ApplicationEntity) {
         TODO("Not yet implemented")

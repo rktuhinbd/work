@@ -15,11 +15,11 @@ class VibratorUtils {
         fun startVibrate(context: Context, duration:Int){
                 vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             if (Build.VERSION.SDK_INT >= 26) {
-                vibrator!!.vibrate(VibrationEffect.createWaveform(ConverterUtils.genVibratorPattern(1.0f,
+                vibrator!!.vibrate(VibrationEffect.createWaveform(ConverterUtils.genVibratorPatternNew(1.0f,
                     duration.toLong()
                 ), 0))
             } else {
-                vibrator!!.vibrate(ConverterUtils.genVibratorPattern(1.0f,
+                vibrator!!.vibrate(ConverterUtils.genVibratorPatternNew(1.0f,
                     duration.toLong()
                 ), 0)
             }

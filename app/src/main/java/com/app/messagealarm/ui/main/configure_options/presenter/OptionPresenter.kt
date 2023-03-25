@@ -36,24 +36,26 @@ class OptionPresenter(private val optionView: OptionView) {
 
     fun saveApplication(
         addApplicationEntity: ApplicationEntity,
-        firebaseAnalytics: FirebaseAnalytics
+        firebaseAnalytics: FirebaseAnalytics?
     ) {
         //send data to analytics
-        val bundle = Bundle()
-        bundle.putString("app_name", addApplicationEntity.appName)
-        bundle.putString("package_name", addApplicationEntity.packageName)
-        bundle.putString("alarm_repeat", addApplicationEntity.alarmRepeat)
-        bundle.putString("repeat_days", addApplicationEntity.repeatDays)
-        bundle.putString("sender_names", addApplicationEntity.senderNames)
-        bundle.putString("message_body", addApplicationEntity.messageBody)
-        bundle.putString("is_custom_time", addApplicationEntity.isCustomTime.toString())
-        bundle.putString("is_just_vibrate", addApplicationEntity.isJustVibrate.toString())
-        bundle.putString("is_vibrate", addApplicationEntity.isVibrateOnAlarm.toString())
-        bundle.putString("start_time", addApplicationEntity.startTime.toString())
-        bundle.putString("end_time", addApplicationEntity.endTime.toString())
-        bundle.putString("number_of_play", addApplicationEntity.numberOfPlay.toString())
-        bundle.putString("sound_level", addApplicationEntity.sound_level.toString())
-        firebaseAnalytics.logEvent("save_application", bundle)
+        if(firebaseAnalytics != null){
+            val bundle = Bundle()
+            bundle.putString("app_name", addApplicationEntity.appName)
+            bundle.putString("package_name", addApplicationEntity.packageName)
+            bundle.putString("alarm_repeat", addApplicationEntity.alarmRepeat)
+            bundle.putString("repeat_days", addApplicationEntity.repeatDays)
+            bundle.putString("sender_names", addApplicationEntity.senderNames)
+            bundle.putString("message_body", addApplicationEntity.messageBody)
+            bundle.putString("is_custom_time", addApplicationEntity.isCustomTime.toString())
+            bundle.putString("is_just_vibrate", addApplicationEntity.isJustVibrate.toString())
+            bundle.putString("is_vibrate", addApplicationEntity.isVibrateOnAlarm.toString())
+            bundle.putString("start_time", addApplicationEntity.startTime.toString())
+            bundle.putString("end_time", addApplicationEntity.endTime.toString())
+            bundle.putString("number_of_play", addApplicationEntity.numberOfPlay.toString())
+            bundle.putString("sound_level", addApplicationEntity.sound_level.toString())
+            firebaseAnalytics.logEvent("save_application", bundle)
+        }
         //save application
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread(
@@ -76,13 +78,13 @@ class OptionPresenter(private val optionView: OptionView) {
     }
 
 
-    fun getAppByPackageName(packageName: String?) {
+    fun getAppByPackageNameAndType(packageName: String?, type:String) {
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread(Runnable {
             try {
                 if (packageName != null) {
                     optionView.onApplicationGetSuccess(
-                        appDatabase.applicationDao().getAppByPackageName(packageName)
+                        appDatabase.applicationDao().getAppByPackageNameAndType(packageName, type)
                     )
                 }
             } catch (ex: NullPointerException) {
