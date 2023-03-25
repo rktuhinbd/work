@@ -27,7 +27,7 @@ class FirstTimeSplashScreen : AppCompatActivity(), FirstSplashView {
     private fun startAction(){
         if(PermissionUtils.isNotificationAllowed()){
             if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_TERMS_ACCEPTED)){
-                    takeTheUserToTermsAndPrivacy()
+                takeTheUserToTermsAndPrivacy()
             }else{
                 openSplashActivity()
             }

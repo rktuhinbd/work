@@ -79,7 +79,7 @@
                     android:layout_marginEnd="8dp"
                     />
 
-                <com.app.messagealarm.ui.widget.DottedLineView
+                <View
                     android:id="@+id/dotted_condom"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
@@ -94,7 +94,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:layout_marginTop="8dp"
                 android:id="@+id/layout_expand_section"
                 app:layout_constraintTop_toBottomOf="@id/base_part_of_item"
@@ -283,14 +283,31 @@
 
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/txt_option_first_notice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="All options can work together"
+                    app:layout_constraintTop_toBottomOf="@id/layout_selection"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:fontFamily="@font/roboto_light"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:gravity="start"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@color/colorAccent"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp"
+                    />
+
 
                 <TextView
                     android:id="@+id/txt_option_notice"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Set an alarm to notify you when you receive an important message"
-                    app:layout_constraintTop_toBottomOf="@id/layout_selection"
+                    app:layout_constraintTop_toBottomOf="@id/txt_option_first_notice"
                     app:layout_constraintStart_toStartOf="parent"
+                    android:fontFamily="@font/roboto_regular"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
@@ -301,12 +318,45 @@
                     android:id="@+id/btn_confirm_app_option"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/txt_option_notice"
+                    app:layout_constraintTop_toBottomOf="@id/txt_option_three_notice"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_margin="8dp"
                     android:text="Configure Alarm"
+                    />
+
+
+                <ImageView
+                    android:id="@+id/img_info"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/info_item"
+                    android:visibility="gone"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintTop_toBottomOf="@id/txt_option_notice"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    />
+
+                <TextView
+                    android:id="@+id/txt_option_three_notice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="While headphone is connected"
+                    app:layout_constraintTop_toTopOf="@id/img_info"
+                    app:layout_constraintBottom_toBottomOf="@id/img_info"
+                    app:layout_constraintStart_toEndOf="@id/img_info"
+                    android:fontFamily="@font/roboto_regular"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:textColor="@color/delete_item"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="8dp"
+
                     />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

@@ -142,6 +142,8 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
                         itemView.txt_option_notice.text = "Set an alarm to notify you when you receive an important message"
                         selectedNotifyOption = Constants.NotifyOptions.ALARM
                         itemView.btn_confirm_app_option?.text = "Configure Alarm Options"
+                        itemView.img_info?.visibility = View.GONE
+                        itemView.txt_option_three_notice.visibility = View.GONE
                     }
 
                     itemView.card_custom?.setOnClickListener {
@@ -152,14 +154,18 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
                         itemView.txt_option_notice.text = "Enhance functionality by," +
                                 " triggering actions based on message content, integrating custom APIs," +
                                 " providing a visual editor, and a marketplace for pre-made workflows."
+                        itemView.img_info?.visibility = View.GONE
+                        itemView.txt_option_three_notice.visibility = View.GONE
                     }
 
                     itemView.card_speak?.setOnClickListener {
                         setSelectedOption(listOf(itemView.txt_speak, itemView.txt_alarm, itemView.txt_custom),
                             itemView.card_speak, itemView.card_alarm, itemView.card_custom)
                         selectedNotifyOption = Constants.NotifyOptions.SPEAK
-                        itemView.txt_option_notice.text = "Have the app speak the contents of the message out loud when your headphones are connected"
+                        itemView.txt_option_notice.text = "Have the app speak the contents of the message out loud"
                         itemView.btn_confirm_app_option?.text = "Configure Speaking Options"
+                        itemView.img_info?.visibility = View.VISIBLE
+                        itemView.txt_option_three_notice.visibility = View.VISIBLE
                     }
 
                     itemView.btn_confirm_app_option?.setOnClickListener {
