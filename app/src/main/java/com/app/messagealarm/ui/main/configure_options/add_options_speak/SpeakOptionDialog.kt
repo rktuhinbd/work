@@ -53,6 +53,10 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
 
     fun init(){
         var updateTimer: Timer? = null
+        val timeZone = TimeZone.getDefault()
+        // Create a SimpleDateFormat with the desired output format
+        range_slider?.stepSize = 1F
+        val dateFormat = SimpleDateFormat("h a", Locale.getDefault())
         range_slider.addOnChangeListener { slider, value, fromUser ->
             // Cancel any previously scheduled updates
             updateTimer?.cancel()
@@ -63,16 +67,12 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
                     // Get the slider values
                     val values = slider.values
                     // Get the user's timezone
-                    val timeZone = TimeZone.getDefault()
-                    // Create a SimpleDateFormat with the desired output format
-                    val dateFormat = SimpleDateFormat("h a", Locale.getDefault())
                     dateFormat.timeZone = timeZone
                     // Convert the slider values to user time and format as AM/PM time
                     val startTime = Calendar.getInstance()
                     startTime.set(Calendar.HOUR_OF_DAY, values[0].toInt())
                     startTime.set(Calendar.MINUTE, 0)
                     val formattedStartTime = dateFormat.format(startTime.time)
-
                     val endTime = Calendar.getInstance()
                     endTime.set(Calendar.HOUR_OF_DAY, values[1].toInt())
                     endTime.set(Calendar.MINUTE, 0)
@@ -84,7 +84,6 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
                         }
                         txt_end_hour?.text = formattedEndTime
                     }
-
                 }
             }, 200)
         }
