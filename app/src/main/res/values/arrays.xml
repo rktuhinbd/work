@@ -27,4 +27,9 @@
         <item>Until I unmute it</item>
     </string-array>
 
+    <string-array name="custom_time_values">
+        <item>0</item>
+        <item>23</item>
+    </string-array>
+
 </resources>

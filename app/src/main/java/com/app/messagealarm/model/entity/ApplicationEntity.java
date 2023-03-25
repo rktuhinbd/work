@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 
-@Entity(tableName = "applications", indices = {@Index(value = {"package_name", "app_name"}, unique = true)})
+@Entity(tableName = "applications", indices = {@Index(value = {"package_name", "app_name", "alert_type"}, unique = true)})
 public class ApplicationEntity implements Serializable {
 
     /**
@@ -19,6 +19,11 @@ public class ApplicationEntity implements Serializable {
     private int id;
     @ColumnInfo(name = "running_status")
     private boolean runningStatus;
+    /**
+     * New Addition By MK
+     */
+    @ColumnInfo(name = "alert_type")
+    private String alertType;
     @ColumnInfo(name = "app_name")
     private String appName;
     @ColumnInfo(name = "package_name")
@@ -55,6 +60,16 @@ public class ApplicationEntity implements Serializable {
     private int sound_level;
     @ColumnInfo(name = "is_flash_on")
     private boolean is_flash_on;
+
+    /**
+     * Speak options
+     */
+
+
+    /**
+     * Custom options
+     */
+
 
     /**
      * Getter methods
@@ -171,6 +186,10 @@ public class ApplicationEntity implements Serializable {
         this.id = id;
     }
 
+    public void setAlertType(String alertType) {
+        this.alertType = alertType;
+    }
+
     public void setRunningStatus(boolean runningStatus) {
         this.runningStatus = runningStatus;
     }
@@ -227,11 +246,16 @@ public class ApplicationEntity implements Serializable {
         this.tone_path = tone_path;
     }
 
+    public String getAlertType() {
+        return alertType;
+    }
+
     @Override
     public String toString() {
         return "ApplicationEntity{" +
                 "id=" + id +
                 ", runningStatus=" + runningStatus +
+                ", alertType='" + alertType + '\'' +
                 ", appName='" + appName + '\'' +
                 ", packageName='" + packageName + '\'' +
                 ", alarmRepeat='" + alarmRepeat + '\'' +
@@ -249,7 +273,7 @@ public class ApplicationEntity implements Serializable {
                 ", bitmapPath='" + bitmapPath + '\'' +
                 ", ignored_names='" + ignored_names + '\'' +
                 ", sound_level=" + sound_level +
-                ", isFlashOn=" + is_flash_on +
+                ", is_flash_on=" + is_flash_on +
                 '}';
     }
 }

@@ -347,6 +347,60 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+            <!--Vibrate on alarm-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:id="@+id/view_tts"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?selectableItemBackground"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:targetApi="m" />
+
+                <ImageView
+                    android:id="@+id/img_tts"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:padding="7dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_vibration"
+                    app:layout_constraintBottom_toBottomOf="@id/view_tts"
+                    app:layout_constraintEnd_toEndOf="@id/view_tts"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="@id/view_tts"
+                    app:layout_constraintTop_toTopOf="@id/view_tts" />
+
+
+                <TextView
+                    android:id="@+id/txt_tts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Speaking Control"
+                    android:textColor="@color/colorTextRegular"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toEndOf="@id/img_tts"
+                    app:layout_constraintTop_toTopOf="@id/view_tts"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <!--Vibrate on alarm-->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -385,7 +439,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:fontFamily="@font/roboto_regular"
-                    android:text="Vibrate with sound"
+                    android:text="Vibrate with voice"
                     android:textColor="@color/colorTextRegular"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -423,103 +477,9 @@
                     tools:ignore="UseSwitchCompatOrMaterialXml"
                     tools:targetApi="m" />
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/view_vibrate" />
-
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!--just vibrate no sound-->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <View
-                    android:id="@+id/view_just_vibrate"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?selectableItemBackground"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:targetApi="m" />
-
-                <ImageView
-                    android:id="@+id/img_just_vibrate"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginStart="8dp"
-                    android:padding="7dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_vibration"
-                    app:layout_constraintBottom_toBottomOf="@id/view_just_vibrate"
-                    app:layout_constraintEnd_toEndOf="@id/view_just_vibrate"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toStartOf="@id/view_just_vibrate"
-                    app:layout_constraintTop_toTopOf="@id/view_just_vibrate" />
-
-
-                <TextView
-                    android:id="@+id/txt_just_vibrate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="Just vibrate no sound"
-                    android:textColor="@color/colorTextRegular"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toEndOf="@id/img_just_vibrate"
-                    app:layout_constraintTop_toTopOf="@id/view_just_vibrate"
-                    app:layout_constraintVertical_chainStyle="packed" />
-
-                <pl.droidsonroids.gif.GifImageView
-                    android:id="@+id/txt_pro_just_vibrate"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="8dp"
-                    android:padding="7dp"
-                    android:visibility="gone"
-                    android:src="@drawable/ic_premium_gold"
-                    app:layout_constraintBottom_toBottomOf="@id/view_just_vibrate"
-                    app:layout_constraintEnd_toStartOf="@id/switch_just_vibrate"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toEndOf="@id/txt_just_vibrate"
-                    app:layout_constraintTop_toTopOf="@id/view_just_vibrate" />
-
-                <Switch
-                    android:id="@+id/switch_just_vibrate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:trackTint="@color/track_color"
-                    app:layout_constraintBottom_toBottomOf="@id/view_just_vibrate"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1"
-                    app:layout_constraintStart_toEndOf="@id/txt_just_vibrate"
-                    app:layout_constraintTop_toTopOf="@id/view_just_vibrate"
-                    tools:targetApi="m"
-                    tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/view_just_vibrate" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!--sound level-->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -558,7 +518,7 @@
                     android:layout_marginStart="14dp"
                     android:layout_marginTop="6dp"
                     android:fontFamily="@font/roboto_regular"
-                    android:text="Speak Volume"
+                    android:text="Voice Volume"
                     android:textColor="@color/colorTextRegular"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toTopOf="@id/txt_sound_level"
@@ -613,252 +573,9 @@
                     app:layout_constraintTop_toTopOf="@+id/progress_sound_level"
                     app:layout_constraintVertical_chainStyle="packed" />
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/view_sound_level" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!--Custom time-->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <View
-                    android:id="@+id/view_custom_time"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?selectableItemBackground"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:targetApi="m" />
-
-                <ImageView
-                    android:id="@+id/img_custom_time"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginStart="8dp"
-                    android:padding="7dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_clock"
-                    app:layout_constraintBottom_toBottomOf="@id/view_custom_time"
-                    app:layout_constraintEnd_toEndOf="@id/view_custom_time"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toStartOf="@id/view_custom_time"
-                    app:layout_constraintTop_toTopOf="@id/view_custom_time" />
-
-
-                <TextView
-                    android:id="@+id/txt_custom_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="Custom time"
-                    android:textColor="@color/colorTextRegular"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toTopOf="@id/txt_custom_time_value"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toEndOf="@id/img_custom_time"
-                    app:layout_constraintTop_toTopOf="@id/view_custom_time"
-                    app:layout_constraintVertical_chainStyle="packed" />
-
-
-                <TextView
-                    android:id="@+id/txt_custom_time_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Within a single day"
-                    android:fontFamily="@font/roboto_regular"
-                    android:textColor="@color/default_text"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="@id/view_custom_time"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toStartOf="@id/txt_custom_time"
-                    app:layout_constraintTop_toBottomOf="@id/txt_custom_time" />
-
-
-                <Switch
-                    android:id="@+id/switch_custom_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:trackTint="@color/track_color"
-                    app:layout_constraintBottom_toBottomOf="@id/view_custom_time"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1"
-                    app:layout_constraintStart_toEndOf="@id/txt_custom_time"
-                    app:layout_constraintTop_toTopOf="@id/view_custom_time"
-                    tools:targetApi="m" />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/view_custom_time" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!--Start time-->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_start_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone">
-
-                <View
-                    android:id="@+id/view_start_time"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?selectableItemBackground"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:targetApi="m" />
-
-                <ImageView
-                    android:id="@+id/img_start_time"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginStart="8dp"
-                    android:padding="7dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_start_time"
-                    app:layout_constraintBottom_toBottomOf="@id/view_start_time"
-                    app:layout_constraintEnd_toEndOf="@id/view_start_time"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toStartOf="@id/view_start_time"
-                    app:layout_constraintTop_toTopOf="@id/view_start_time" />
-
-
-                <TextView
-                    android:id="@+id/txt_start_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="Start time"
-                    android:textColor="@color/colorTextRegular"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toTopOf="@id/txt_start_time_value"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toEndOf="@id/img_start_time"
-                    app:layout_constraintTop_toTopOf="@id/view_start_time"
-                    app:layout_constraintVertical_chainStyle="packed" />
-
-                <TextView
-                    android:id="@+id/txt_start_time_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="6:00 AM"
-                    android:fontFamily="@font/roboto_regular"
-                    android:textColor="@color/default_text"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="@id/view_start_time"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toStartOf="@id/txt_start_time"
-                    app:layout_constraintTop_toBottomOf="@id/txt_start_time" />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/view_start_time" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!--End time-->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_end_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone">
-
-                <View
-                    android:id="@+id/view_end_time"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?selectableItemBackground"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:targetApi="m" />
-
-                <ImageView
-                    android:id="@+id/img_end_time"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginStart="8dp"
-                    android:padding="7dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_end_time"
-                    app:layout_constraintBottom_toBottomOf="@id/view_end_time"
-                    app:layout_constraintEnd_toEndOf="@id/view_end_time"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toStartOf="@id/view_end_time"
-                    app:layout_constraintTop_toTopOf="@id/view_end_time" />
-
-
-                <TextView
-                    android:id="@+id/txt_end_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="End time"
-                    android:textColor="@color/colorTextRegular"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toTopOf="@id/txt_end_time_value"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toEndOf="@id/img_end_time"
-                    app:layout_constraintTop_toTopOf="@id/view_end_time"
-                    app:layout_constraintVertical_chainStyle="packed" />
-
-                <TextView
-                    android:id="@+id/txt_end_time_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="12:00 PM"
-                    android:fontFamily="@font/roboto_regular"
-                    android:textColor="@color/default_text"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="@id/view_end_time"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toStartOf="@id/txt_end_time"
-                    app:layout_constraintTop_toBottomOf="@id/txt_end_time" />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/view_end_time" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!--Number of play-->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -927,8 +644,159 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!--Filter area-->
+            <!--Custom time-->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:cardBackgroundColor="@color/card_view_color"
+                app:cardCornerRadius="12dp"
+                app:cardUseCompatPadding="true"
+                >
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <View
+                            android:id="@+id/view_custom_time"
+                            android:layout_width="0dp"
+                            android:layout_height="60dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?selectableItemBackground"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:targetApi="m" />
+
+                        <ImageView
+                            android:id="@+id/img_custom_time"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginStart="8dp"
+                            android:padding="7dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_clock"
+                            app:layout_constraintBottom_toBottomOf="@id/view_custom_time"
+                            app:layout_constraintEnd_toEndOf="@id/view_custom_time"
+                            app:layout_constraintHorizontal_bias="0"
+                            app:layout_constraintStart_toStartOf="@id/view_custom_time"
+                            app:layout_constraintTop_toTopOf="@id/view_custom_time" />
+
+
+                        <TextView
+                            android:id="@+id/txt_custom_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:fontFamily="@font/roboto_regular"
+                            android:text="Custom time"
+                            android:textColor="@color/colorTextRegular"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toTopOf="@id/txt_custom_time_value"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0"
+                            app:layout_constraintStart_toEndOf="@id/img_custom_time"
+                            app:layout_constraintTop_toTopOf="@id/view_custom_time"
+                            app:layout_constraintVertical_chainStyle="packed" />
+
+
+                        <TextView
+                            android:id="@+id/txt_custom_time_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Within this time range"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/default_text"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="@id/view_custom_time"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0"
+                            app:layout_constraintStart_toStartOf="@id/txt_custom_time"
+                            app:layout_constraintTop_toBottomOf="@id/txt_custom_time" />
+
+
+                        <Switch
+                            android:id="@+id/switch_custom_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:trackTint="@color/track_color"
+                            app:layout_constraintBottom_toBottomOf="@id/view_custom_time"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="1"
+                            app:layout_constraintStart_toEndOf="@id/txt_custom_time"
+                            app:layout_constraintTop_toTopOf="@id/view_custom_time"
+                            tools:targetApi="m" />
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        >
+
+                        <TextView
+                            android:id="@+id/txt_hour"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="12 AM"
+                            android:layout_weight="0"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:textSize="14sp"
+                            android:layout_marginStart="8dp"
+                            android:padding="8dp"
+                            android:textStyle="normal"
+                            android:textColor="@color/default_text"
+                            />
+
+                        <com.google.android.material.slider.RangeSlider
+                            android:id="@+id/range_slider"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:valueFrom="0"
+                            android:valueTo="23"
+                            app:values="@array/custom_time_values"
+                            app:thumbRadius="8dp"
+                            app:thumbElevation="8dp"
+                            app:trackHeight="4dp"
+                            app:minSeparation="1dp"
+                            android:layout_weight="1"
+                            />
+
+                        <TextView
+                            android:id="@+id/txt_end_hour"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="11 PM"
+                            android:layout_weight="0"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:textSize="14sp"
+                            android:padding="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:textStyle="normal"
+                            android:textColor="@color/default_text"
+                            />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!--Filter area-->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -939,276 +807,287 @@
                 android:textColor="@color/colorAccent"
                 android:textSize="14sp" />
 
-            <!--Sender name-->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_sender_name"
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible">
+                app:cardCornerRadius="12dp"
+                app:cardUseCompatPadding="true"
+                android:layout_margin="4dp"
+                android:elevation="4dp"
+                app:cardBackgroundColor="@color/card_view_color"
+                >
 
-                <View
-                    android:id="@+id/view_sender_name"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?selectableItemBackground"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:targetApi="m" />
-
-                <ImageView
-                    android:id="@+id/img_sender_name"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginStart="8dp"
-                    android:padding="7dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_name"
-                    app:layout_constraintBottom_toBottomOf="@id/view_sender_name"
-                    app:layout_constraintEnd_toEndOf="@id/view_sender_name"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toStartOf="@id/view_sender_name"
-                    app:layout_constraintTop_toTopOf="@id/view_sender_name" />
-
-
-                <TextView
-                    android:id="@+id/txt_sender_name"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="By Sendernames"
-                    android:textColor="@color/colorTextRegular"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toTopOf="@id/txt_sender_name_value"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toEndOf="@id/img_sender_name"
-                    app:layout_constraintTop_toTopOf="@id/view_sender_name"
-                    app:layout_constraintVertical_chainStyle="packed" />
+                    android:orientation="vertical"
+                    >
 
-                <TextView
-                    android:id="@+id/txt_sender_name_value"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="None"
-                    android:textColor="@color/default_text"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="@id/view_sender_name"
-                    app:layout_constraintEnd_toStartOf="@id/btn_sender_name_clear"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toStartOf="@id/txt_sender_name"
-                    app:layout_constraintTop_toBottomOf="@id/txt_sender_name" />
+                    <!--Sender name-->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/layout_sender_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
 
+                        <View
+                            android:id="@+id/view_sender_name"
+                            android:layout_width="0dp"
+                            android:layout_height="60dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?selectableItemBackground"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:targetApi="m" />
 
-                <ImageButton
-                    android:id="@+id/btn_sender_name_clear"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@android:color/transparent"
-                    android:padding="8dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_clear"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/view_sender_name" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!--Exclude names-->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_exclude_sender_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="visible">
-
-                <View
-                    android:id="@+id/view_exclude_sender_name"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?selectableItemBackground"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:targetApi="m" />
-
-                <ImageView
-                    android:id="@+id/img_exclude_sender_name"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginStart="8dp"
-                    android:padding="8dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_ignore"
-                    app:layout_constraintBottom_toBottomOf="@id/view_exclude_sender_name"
-                    app:layout_constraintEnd_toEndOf="@id/view_exclude_sender_name"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toStartOf="@id/view_exclude_sender_name"
-                    app:layout_constraintTop_toTopOf="@id/view_exclude_sender_name" />
+                        <ImageView
+                            android:id="@+id/img_sender_name"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginStart="8dp"
+                            android:padding="7dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_name"
+                            app:layout_constraintBottom_toBottomOf="@id/view_sender_name"
+                            app:layout_constraintEnd_toEndOf="@id/view_sender_name"
+                            app:layout_constraintHorizontal_bias="0"
+                            app:layout_constraintStart_toStartOf="@id/view_sender_name"
+                            app:layout_constraintTop_toTopOf="@id/view_sender_name" />
 
 
-                <TextView
-                    android:id="@+id/txt_exclude_sender_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="Without this names"
-                    android:textColor="@color/colorTextRegular"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toTopOf="@id/txt_exclude_sender_name_value"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toEndOf="@id/img_exclude_sender_name"
-                    app:layout_constraintTop_toTopOf="@id/view_exclude_sender_name"
-                    app:layout_constraintVertical_chainStyle="packed" />
+                        <TextView
+                            android:id="@+id/txt_sender_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:fontFamily="@font/roboto_regular"
+                            android:text="By Sendernames"
+                            android:textColor="@color/colorTextRegular"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toTopOf="@id/txt_sender_name_value"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0"
+                            app:layout_constraintStart_toEndOf="@id/img_sender_name"
+                            app:layout_constraintTop_toTopOf="@id/view_sender_name"
+                            app:layout_constraintVertical_chainStyle="packed" />
+
+                        <TextView
+                            android:id="@+id/txt_sender_name_value"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:ellipsize="end"
+                            android:maxLines="2"
+                            android:fontFamily="@font/roboto_regular"
+                            android:text="None"
+                            android:textColor="@color/default_text"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="@id/view_sender_name"
+                            app:layout_constraintEnd_toStartOf="@id/btn_sender_name_clear"
+                            app:layout_constraintHorizontal_bias="0"
+                            app:layout_constraintStart_toStartOf="@id/txt_sender_name"
+                            app:layout_constraintTop_toBottomOf="@id/txt_sender_name" />
 
 
-                <TextView
-                    android:id="@+id/txt_exclude_sender_name_value"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="None"
-                    android:textColor="@color/default_text"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="@id/view_exclude_sender_name"
-                    app:layout_constraintEnd_toStartOf="@id/btn_exclude_sender_name_clear"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toStartOf="@id/txt_exclude_sender_name"
-                    app:layout_constraintTop_toBottomOf="@id/txt_exclude_sender_name" />
+                        <ImageButton
+                            android:id="@+id/btn_sender_name_clear"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="@android:color/transparent"
+                            android:padding="8dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_clear"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
 
-                <ImageButton
-                    android:id="@+id/btn_exclude_sender_name_clear"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@android:color/transparent"
-                    android:padding="8dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_clear"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/view_exclude_sender_name" />
+                    <!--Exclude names-->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/layout_exclude_sender_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
 
+                        <View
+                            android:id="@+id/view_exclude_sender_name"
+                            android:layout_width="0dp"
+                            android:layout_height="60dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?selectableItemBackground"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:targetApi="m" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!--Message body-->
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_message_body"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="visible">
-
-                <View
-                    android:id="@+id/view_message_body"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?selectableItemBackground"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:targetApi="m" />
-
-                <ImageView
-                    android:id="@+id/img_message_body"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginStart="8dp"
-                    android:padding="8dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_message"
-                    app:layout_constraintBottom_toBottomOf="@id/view_message_body"
-                    app:layout_constraintEnd_toEndOf="@id/view_message_body"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toStartOf="@id/view_message_body"
-                    app:layout_constraintTop_toTopOf="@id/view_message_body" />
+                        <ImageView
+                            android:id="@+id/img_exclude_sender_name"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginStart="8dp"
+                            android:padding="8dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_ignore"
+                            app:layout_constraintBottom_toBottomOf="@id/view_exclude_sender_name"
+                            app:layout_constraintEnd_toEndOf="@id/view_exclude_sender_name"
+                            app:layout_constraintHorizontal_bias="0"
+                            app:layout_constraintStart_toStartOf="@id/view_exclude_sender_name"
+                            app:layout_constraintTop_toTopOf="@id/view_exclude_sender_name" />
 
 
-                <TextView
-                    android:id="@+id/txt_message_body"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="By Keywords"
-                    android:textColor="@color/colorTextRegular"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toTopOf="@id/txt_message_body_value"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toEndOf="@id/img_message_body"
-                    app:layout_constraintTop_toTopOf="@id/view_message_body"
-                    app:layout_constraintVertical_chainStyle="packed" />
-
-                <TextView
-                    android:id="@+id/txt_message_body_value"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    android:text="None"
-                    android:fontFamily="@font/roboto_regular"
-                    android:textColor="@color/default_text"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="@id/view_message_body"
-                    app:layout_constraintEnd_toStartOf="@id/btn_message_body_clear"
-                    app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toStartOf="@id/txt_message_body"
-                    app:layout_constraintTop_toBottomOf="@id/txt_message_body" />
+                        <TextView
+                            android:id="@+id/txt_exclude_sender_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:fontFamily="@font/roboto_regular"
+                            android:text="Without this names"
+                            android:textColor="@color/colorTextRegular"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toTopOf="@id/txt_exclude_sender_name_value"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0"
+                            app:layout_constraintStart_toEndOf="@id/img_exclude_sender_name"
+                            app:layout_constraintTop_toTopOf="@id/view_exclude_sender_name"
+                            app:layout_constraintVertical_chainStyle="packed" />
 
 
-                <ImageButton
-                    android:id="@+id/btn_message_body_clear"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@android:color/transparent"
-                    android:padding="8dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_clear"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                        <TextView
+                            android:id="@+id/txt_exclude_sender_name_value"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:ellipsize="end"
+                            android:maxLines="2"
+                            android:fontFamily="@font/roboto_regular"
+                            android:text="None"
+                            android:textColor="@color/default_text"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="@id/view_exclude_sender_name"
+                            app:layout_constraintEnd_toStartOf="@id/btn_exclude_sender_name_clear"
+                            app:layout_constraintHorizontal_bias="0"
+                            app:layout_constraintStart_toStartOf="@id/txt_exclude_sender_name"
+                            app:layout_constraintTop_toBottomOf="@id/txt_exclude_sender_name" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <ImageButton
+                            android:id="@+id/btn_exclude_sender_name_clear"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="@android:color/transparent"
+                            android:padding="8dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_clear"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!--Message body-->
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/layout_message_body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+
+                        <View
+                            android:id="@+id/view_message_body"
+                            android:layout_width="0dp"
+                            android:layout_height="60dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?selectableItemBackground"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:targetApi="m" />
+
+                        <ImageView
+                            android:id="@+id/img_message_body"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginStart="8dp"
+                            android:padding="8dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_message"
+                            app:layout_constraintBottom_toBottomOf="@id/view_message_body"
+                            app:layout_constraintEnd_toEndOf="@id/view_message_body"
+                            app:layout_constraintHorizontal_bias="0"
+                            app:layout_constraintStart_toStartOf="@id/view_message_body"
+                            app:layout_constraintTop_toTopOf="@id/view_message_body" />
+
+
+                        <TextView
+                            android:id="@+id/txt_message_body"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:fontFamily="@font/roboto_regular"
+                            android:text="By Keywords"
+                            android:textColor="@color/colorTextRegular"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toTopOf="@id/txt_message_body_value"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0"
+                            app:layout_constraintStart_toEndOf="@id/img_message_body"
+                            app:layout_constraintTop_toTopOf="@id/view_message_body"
+                            app:layout_constraintVertical_chainStyle="packed" />
+
+                        <TextView
+                            android:id="@+id/txt_message_body_value"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:ellipsize="end"
+                            android:maxLines="2"
+                            android:text="None"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/default_text"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="@id/view_message_body"
+                            app:layout_constraintEnd_toStartOf="@id/btn_message_body_clear"
+                            app:layout_constraintHorizontal_bias="0"
+                            app:layout_constraintStart_toStartOf="@id/txt_message_body"
+                            app:layout_constraintTop_toBottomOf="@id/txt_message_body" />
+
+
+                        <ImageButton
+                            android:id="@+id/btn_message_body_clear"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="@android:color/transparent"
+                            android:padding="8dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_clear"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+                </LinearLayout>
+
+
+
+            </com.google.android.material.card.MaterialCardView>
 
             <View
                 android:layout_width="match_parent"

@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -14,7 +15,11 @@ import com.app.messagealarm.ui.main.configure_options.view.OptionView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.slider.RangeSlider
 import kotlinx.android.synthetic.main.dialog_speak_options.*
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.math.roundToInt
 
 class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
 
@@ -34,11 +39,54 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setListener()
+        init()
     }
 
     private fun setListener(){
         btn_close?.setOnClickListener {
             dismiss()
+        }
+        range_slider?.setLabelFormatter {
+            (it.toInt() + 1).toString()
+        }
+    }
+
+    fun init(){
+        var updateTimer: Timer? = null
+        range_slider.addOnChangeListener { slider, value, fromUser ->
+            // Cancel any previously scheduled updates
+            updateTimer?.cancel()
+            // Schedule an update in 250 milliseconds
+            updateTimer = Timer()
+            updateTimer?.schedule(object : TimerTask() {
+                override fun run() {
+                    // Get the slider values
+                    val values = slider.values
+                    // Get the user's timezone
+                    val timeZone = TimeZone.getDefault()
+                    // Create a SimpleDateFormat with the desired output format
+                    val dateFormat = SimpleDateFormat("h a", Locale.getDefault())
+                    dateFormat.timeZone = timeZone
+                    // Convert the slider values to user time and format as AM/PM time
+                    val startTime = Calendar.getInstance()
+                    startTime.set(Calendar.HOUR_OF_DAY, values[0].toInt())
+                    startTime.set(Calendar.MINUTE, 0)
+                    val formattedStartTime = dateFormat.format(startTime.time)
+
+                    val endTime = Calendar.getInstance()
+                    endTime.set(Calendar.HOUR_OF_DAY, values[1].toInt())
+                    endTime.set(Calendar.MINUTE, 0)
+                    val formattedEndTime = dateFormat.format(endTime.time)
+                    activity?.runOnUiThread {
+                        // Update the TextViews
+                        txt_hour?.let {
+                            it.text = formattedStartTime
+                        }
+                        txt_end_hour?.text = formattedEndTime
+                    }
+
+                }
+            }, 200)
         }
     }
 
