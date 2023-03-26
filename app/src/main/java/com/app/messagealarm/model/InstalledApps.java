@@ -11,11 +11,40 @@ public class InstalledApps implements Serializable {
     private String versionName;
     private transient Drawable drawableIcon;
 
+    private boolean isAlarmConfigured;
+    private boolean isSpeakConfigured;
+    private boolean isCustomConfigured;
+
     public InstalledApps(String appName, String packageName, String versionName, Drawable drawableIcon) {
         this.appName = appName;
         this.packageName = packageName;
         this.versionName = versionName;
         this.drawableIcon = drawableIcon;
+    }
+
+
+    public void setAlarmConfigured(boolean alarmConfigured) {
+        isAlarmConfigured = alarmConfigured;
+    }
+
+    public void setSpeakConfigured(boolean speakConfigured) {
+        isSpeakConfigured = speakConfigured;
+    }
+
+    public void setCustomConfigured(boolean customConfigured) {
+        isCustomConfigured = customConfigured;
+    }
+
+    public boolean isAlarmConfigured() {
+        return isAlarmConfigured;
+    }
+
+    public boolean isSpeakConfigured() {
+        return isSpeakConfigured;
+    }
+
+    public boolean isCustomConfigured() {
+        return isCustomConfigured;
     }
 
     public String getAppName() {

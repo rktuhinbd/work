@@ -298,6 +298,12 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         handleSyncedNotSuccess()
     }
 
+    override fun onAdapterRequestedDataReturn(app: InstalledApps, position: Int) {
+        runOnUiThread {
+            (rv_apps_list?.adapter as AllAppsListAdapter).onRequestedDataReturn(app, position)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         //clear search view
@@ -410,18 +416,10 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                      * @author Mortuza Hossain
                      * To go back to previous code uncomment the if..else condition
                      */
-
-//                    if(MediaUtils.getDurationOfMediaFle(PathUtils.getPath(this, alarmTone[0].uri)!!) >= 30){
                         alarmModal.txt_ringtone_value?.text = fileName
                         alarmModal.setToneName(fileName)
                         alarmModal.alarmTonePath = PathUtils.getPath(this, alarmTone[0].uri)!!
-//                    }else{
-//                        bottomSheetModel.txt_ringtone_value?.text = "Default"
-//                        bottomSheetModel.setToneName("Default")
-//                        bottomSheetModel.alarmTonePath = null
-//                        DialogUtils.showSimpleDialog(this, getString(R.string.txt_wrong_duration),
-//                            getString(R.string.txt_selected_music_duration))
-//                    }
+
                 }catch (e:IllegalArgumentException){
                     alarmModal.txt_ringtone_value?.text = "Default"
                     alarmModal.setToneName("Default")
@@ -444,55 +442,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-
-    @SuppressLint("CheckResult")
-    /**
-     * Removed by Mk
-     */
-//    fun pickAudioFromStorage(){
-//        val pickerConfig = MediaPickerConfig()
-//            .setAllowMultiSelection(false)
-//            .setUriPermanentAccess(false)
-//            .setShowConfirmationDialog(true)
-//            .setScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-//        MediaPicker.with(this, MediaPicker.MediaTypes.AUDIO)
-//            .setConfig(pickerConfig)
-//            .setFileMissingListener(object : MediaPicker.MediaPickerImpl.OnMediaListener{
-//                override fun onMissingFileWarning() {
-//                    bottomSheetModel.txt_ringtone_value?.text = "Default"
-//                    bottomSheetModel.setToneName("Default")
-//                    bottomSheetModel.alarmTonePath = null
-//                    DialogUtils.showSimpleDialog(this@AddApplicationActivity, getString(R.string.missing_file),
-//                        getString(R.string.txt_try_again))
-//                }
-//            })
-//            .onResult()
-//            .subscribeOn(AndroidSchedulers.mainThread())
-//            .subscribe({
-//                val fileName = File(PathUtils.getPath(this, it[0])!!).name
-//                if(MediaUtils.getDurationOfMediaFle(PathUtils.getPath(this, it[0])!!) >= 30){
-//                    bottomSheetModel.txt_ringtone_value?.text = fileName
-//                    bottomSheetModel.setToneName(fileName)
-//                    bottomSheetModel.alarmTonePath = PathUtils.getPath(this, it[0])!!
-//                }else{
-//                    bottomSheetModel.txt_ringtone_value?.text = "Default"
-//                    bottomSheetModel.setToneName("Default")
-//                    bottomSheetModel.alarmTonePath = null
-//                    DialogUtils.showSimpleDialog(this, getString(R.string.txt_wrong_duration),
-//                        getString(R.string.txt_selected_music_duration))
-//                }
-//            },{
-//                bottomSheetModel.txt_ringtone_value?.text = "Default"
-//                bottomSheetModel.setToneName("Default")
-//                bottomSheetModel.alarmTonePath = null
-//                DialogUtils.showSimpleDialog(this, it.message!!,
-//                    getString(R.string.txt_try_again))
-//            },{
-//
-//            },{
-//
-//            })
-//    }
 
    private fun isPurchased() : Boolean{
        return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
@@ -548,6 +497,13 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     override fun onLongClick(app: InstalledApps) {
         Toasty.info(this, app.appName).show()
     }
+
+    override fun onDataRequest(app:InstalledApps, position:Int) {
+        //query data and know if $app has alarm, speak, custom configured
+        //and pass to adapter for that position
+        addApplicationPresenter?.getRequestAppFlagAdded(app, position)
+    }
+
 
 
     override fun onRequestPermissionsResult(

@@ -150,6 +150,7 @@
                                     />
 
                                 <ImageView
+                                    android:id="@+id/img_save_flag"
                                     android:layout_width="15dp"
                                     android:layout_height="15dp"
                                     android:src="@drawable/save_success"
@@ -205,6 +206,7 @@
                                     />
 
                                 <ImageView
+                                    android:id="@+id/img_save_flag_speak"
                                     android:layout_width="15dp"
                                     android:layout_height="15dp"
                                     android:src="@drawable/save_success"
@@ -261,6 +263,7 @@
                                     />
 
                                 <ImageView
+                                    android:id="@+id/img_save_flag_custom"
                                     android:layout_width="15dp"
                                     android:layout_height="15dp"
                                     android:src="@drawable/save_success"
@@ -323,7 +326,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_margin="8dp"
-                    android:text="Configure Alarm"
+                    android:text="Setup Alarm"
                     />
 
 

@@ -37,7 +37,9 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
     interface ItemClickListener{
         fun onItemClick(app: InstalledApps, type:String)
         fun onLongClick(app: InstalledApps)
+        fun onDataRequest(app: InstalledApps, position: Int)
     }
+
 
     init {
        itemsCopy.addAll(appsList)
@@ -50,6 +52,13 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
 
     override fun getItemCount(): Int {
         return appsList.size
+    }
+
+
+    fun onRequestedDataReturn(app:InstalledApps, position: Int){
+        appsList[position].isAlarmConfigured = app.isAlarmConfigured
+        appsList[position].isSpeakConfigured = app.isSpeakConfigured
+        appsList[position].isCustomConfigured = app.isCustomConfigured
     }
 
     fun updateData(list:ArrayList<InstalledApps>){
@@ -114,17 +123,29 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
                     itemView.tv_app_name?.text = installedApps.appName
                     itemView.iv_app_icon?.setImageDrawable(installedApps.drawableIcon)
                         if (isExpanded) {
-                            itemView.layout_expand_section.animate().alpha(1.0f).duration = 150
+                            itemView.layout_expand_section.animate().alpha(1.0f).duration = 220
                             itemView.indicator_item?.startAnimation(rotate)
                             itemView.layout_expand_section.visibility = View.VISIBLE
                             itemView.indicator_item?.rotation = 360F
                             itemView.dotted_condom.visibility = View.VISIBLE
                         } else{
-                            itemView.layout_expand_section.animate().alpha(0.0f).duration = 150
+                            itemView.layout_expand_section.animate().alpha(0.0f).duration = 220
                             itemView.indicator_item?.rotation = 270F
                             itemView.layout_expand_section.visibility = View.GONE
                             itemView.dotted_condom.visibility = View.GONE
                         }
+
+                    if(installedApps.isAlarmConfigured){
+                        itemView.img_save_flag.visibility = View.VISIBLE
+                        itemView.btn_confirm_app_option?.text = "Edit Alarm Options"
+                    }
+                    if(installedApps.isSpeakConfigured){
+                        itemView.img_save_flag_speak.visibility = View.VISIBLE
+                    }
+                    if(installedApps.isCustomConfigured){
+                        itemView.img_save_flag_custom.visibility = View.VISIBLE
+                    }
+
                     itemView.base_part_of_item.setOnClickListener {
                          if (isExpanded){
                              mExpandedPosition =  -1
@@ -132,6 +153,8 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
                             selectedNotifyOption = Constants.NotifyOptions.ALARM
                         } else{
                              mExpandedPosition =  position
+                             //should show a loader
+                             mItemClickListener.onDataRequest(appsList[position],position)
                         }
                         notifyDataSetChanged()
                     }
@@ -141,7 +164,7 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
                             itemView.card_alarm, itemView.card_speak, itemView.card_custom)
                         itemView.txt_option_notice.text = "Set an alarm to notify you when you receive an important message"
                         selectedNotifyOption = Constants.NotifyOptions.ALARM
-                        itemView.btn_confirm_app_option?.text = "Configure Alarm Options"
+                        itemView.btn_confirm_app_option?.text = if (installedApps.isAlarmConfigured) "Edit Alarm Options" else "Setup Alarm"
                         itemView.img_info?.visibility = View.GONE
                         itemView.txt_option_three_notice.visibility = View.GONE
                     }
@@ -150,7 +173,7 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
                         setSelectedOption(listOf(itemView.txt_custom, itemView.txt_speak, itemView.txt_alarm),
                             itemView.card_custom, itemView.card_speak, itemView.card_alarm)
                         selectedNotifyOption = Constants.NotifyOptions.CUSTOM
-                        itemView.btn_confirm_app_option?.text = "Configure Custom Actions"
+                        itemView.btn_confirm_app_option?.text = if (installedApps.isCustomConfigured) "Edit Custom Options" else "Setup Custom Options"
                         itemView.txt_option_notice.text = "Enhance functionality by," +
                                 " triggering actions based on message content, integrating custom APIs," +
                                 " providing a visual editor, and a marketplace for pre-made workflows."
@@ -163,7 +186,7 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
                             itemView.card_speak, itemView.card_alarm, itemView.card_custom)
                         selectedNotifyOption = Constants.NotifyOptions.SPEAK
                         itemView.txt_option_notice.text = "Have the app speak the contents of the message out loud"
-                        itemView.btn_confirm_app_option?.text = "Configure Speaking Options"
+                        itemView.btn_confirm_app_option?.text = if (installedApps.isSpeakConfigured) "Edit Speaking Options" else "Setup Speaking Options"
                         itemView.img_info?.visibility = View.VISIBLE
                         itemView.txt_option_three_notice.visibility = View.VISIBLE
                     }

@@ -1,10 +1,8 @@
 package com.app.messagealarm.ui.main.add_apps
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Looper
 import android.provider.Telephony
-import android.util.Log
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
 import com.app.messagealarm.local_database.AppDatabase
@@ -13,14 +11,11 @@ import com.app.messagealarm.model.response.sync.SyncResponse
 import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.service.AppsReader
 import com.app.messagealarm.service.BGSyncDataSavingService
-import com.app.messagealarm.service.app_reader_intent_service.AppsReaderIntentService
 import com.app.messagealarm.utils.AndroidUtils
 import com.app.messagealarm.utils.DataUtils
-import com.app.messagealarm.work_manager.WorkManagerUtils
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.logging.Handler
 
 class AddApplicationPresenter(
 
@@ -43,6 +38,23 @@ class AddApplicationPresenter(
             } catch (e: Exception) {
                 addApplicationView.onAllApplicationGetError(DataUtils.getString(R.string.something_wrong))
             }
+        }).start()
+    }
+
+    fun getRequestAppFlagAdded(installedApps: InstalledApps, position:Int){
+        val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
+        Thread(Runnable {
+            try {
+                val appTypes =
+                    appDatabase.applicationDao().getAppTypesByPackage(installedApps.packageName)
+                installedApps.isAlarmConfigured = appTypes.isAlarmConfigured
+                installedApps.isCustomConfigured = appTypes.isCustomConfigured
+                installedApps.isSpeakConfigured = appTypes.isSpeakConfigured
+                addApplicationView.onAdapterRequestedDataReturn(installedApps, position)
+            }catch (e: java.lang.Exception){
+                e.printStackTrace()
+            }
+
         }).start()
     }
 

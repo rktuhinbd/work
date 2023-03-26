@@ -7,6 +7,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.app.messagealarm.model.entity.ApplicationEntity;
+import com.app.messagealarm.model.response.AppTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,11 @@ public interface ApplicationDao {
 
     @Query("SELECT * FROM applications WHERE package_name = :packageName AND alert_type = :type")
     ApplicationEntity getAppByPackageNameAndType(String packageName, String type);
+
+    @Query("SELECT package_name, MAX(alert_type = 'alarm') as isAlarmConfigured, " +
+            "MAX(alert_type = 'speak') as isSpeakConfigured, MAX(alert_type = 'custom') as " +
+            "isCustomConfigured FROM applications WHERE package_name = :packageName GROUP BY package_name")
+    AppTypes getAppTypesByPackage(String packageName);
 
     @Query("SELECT COUNT(*) FROM applications")
     int getAddedAppCount();
