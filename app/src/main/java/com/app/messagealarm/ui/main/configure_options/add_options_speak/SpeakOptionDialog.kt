@@ -295,6 +295,8 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
             //save the app
             try {
                 addApplicationEntity.alertType = Constants.NotifyOptions.SPEAK
+                //save application and turn switch on
+                addApplicationEntity.isRunningStatus = true
                 saveApplication()
             }catch (e: java.lang.NullPointerException){
             }
@@ -1039,13 +1041,13 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         }
     }
     override fun onApplicationSaveError(message: String) {
-        TODO("Not yet implemented")
+
     }
     override fun onApplicationUpdateSuccess() {
-        TODO("Not yet implemented")
+
     }
     override fun onApplicationUpdateError(message: String) {
-        TODO("Not yet implemented")
+
     }
     override fun onBitmapSaveSuccess(path: String) {
         addApplicationEntity.bitmapPath = path
@@ -1069,13 +1071,13 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         }
     }
     override fun onApplicationGetSuccess(app: ApplicationEntity) {
-        TODO("Not yet implemented")
+
     }
     override fun onApplicationGetError(message: String) {
-        TODO("Not yet implemented")
+
     }
     override fun onIllegalState() {
-        TODO("Not yet implemented")
+
     }
 
 }

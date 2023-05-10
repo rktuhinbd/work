@@ -18,7 +18,7 @@
         app:cardBackgroundColor="@color/card_view_color"
         app:cardElevation="2dp"
         app:cardUseCompatPadding="true"
-      >
+        >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -59,25 +59,24 @@
                     android:maxLines="1"
                     android:textColor="@color/colorTextRegular"
                     app:layout_constraintBottom_toBottomOf="@id/iv_app_icon"
-                    app:layout_constraintEnd_toStartOf="@id/indicator_item"
+                    app:layout_constraintEnd_toStartOf="@id/switch_app_status"
                     app:layout_constraintStart_toEndOf="@id/iv_app_icon"
                     app:layout_constraintTop_toTopOf="@id/iv_app_icon"
                     app:layout_constraintHorizontal_bias="0"
                     tool:text="Mi Remote" />
 
-                <ImageView
-                    android:id="@+id/indicator_item"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:scaleType="fitCenter"
-                    android:rotation="270"
-                    android:src="@drawable/item_indicate"
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_app_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:trackTint="@color/track_color"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_app_name"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginEnd="8dp"
-                    />
+                    tool:targetApi="m" />
 
                 <View
                     android:id="@+id/dotted_condom"
@@ -143,8 +142,8 @@
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     android:text="Alarm"
-                                    android:textAllCaps="true"
                                     android:maxLines="2"
+                                    android:textAllCaps="true"
                                     android:gravity="center"
                                     android:fontFamily="@font/roboto_bold"
                                     android:textAlignment="center"
@@ -202,8 +201,8 @@
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     android:text="Speak"
                                     android:maxLines="2"
-                                    android:textAllCaps="true"
                                     android:gravity="center"
+                                    android:textAllCaps="true"
                                     android:fontFamily="@font/roboto_regular"
                                     android:textAlignment="center"
                                     />
@@ -248,7 +247,6 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent">
 
-
                                 <TextView
                                     android:id="@+id/txt_custom"
                                     android:layout_width="0dp"
@@ -260,8 +258,8 @@
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     android:text="Custom"
                                     android:maxLines="2"
-                                    android:textAllCaps="true"
                                     android:gravity="center"
+                                    android:textAllCaps="true"
                                     android:fontFamily="@font/roboto_regular"
                                     android:textAlignment="center"
                                     />
@@ -323,16 +321,37 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_confirm_app_option"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toBottomOf="@id/txt_option_three_notice"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/btn_confirm_delete"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_margin="8dp"
-                    android:text="Setup Alarm"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="4dp"
+                    android:text="Edit Alarm"
                     android:textAllCaps="false"
                     />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_confirm_delete"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="@id/btn_confirm_app_option"
+                    app:layout_constraintStart_toEndOf="@id/btn_confirm_app_option"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/btn_confirm_app_option"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="4dp"
+                    android:text="Delete Alarm"
+                    android:textAllCaps="false"
+                    android:backgroundTint="@color/delete_item"
+                    />
+
 
 
                 <ImageView

@@ -30,7 +30,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/txt_title"
         android:layout_width="170dp"
-        android:layout_height="30dp"
+        android:layout_height="56dp"
         android:visibility="visible"
         android:src="@drawable/text_icon"
         app:layout_constraintTop_toTopOf="parent"

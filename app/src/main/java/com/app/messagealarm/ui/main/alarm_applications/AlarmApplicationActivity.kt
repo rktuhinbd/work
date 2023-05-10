@@ -39,7 +39,7 @@ import com.app.messagealarm.R
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.service.app_reader_intent_service.AppsReaderIntentService
 import com.app.messagealarm.service.notification_service.NotificationListener
-import com.app.messagealarm.ui.adapters.AddedAppsListAdapter
+import com.app.messagealarm.ui.adapters.AddedAppsListAdapterNew
 import com.app.messagealarm.ui.buy_pro.BuyProActivity
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.configure_options.add_options_alarm.AlarmOptionDialog
@@ -69,7 +69,7 @@ import java.io.File
 
 
 class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, PurchasesUpdatedListener,
-    AddedAppsListAdapter.ItemClickListener {
+    AddedAppsListAdapterNew.ItemClickListener {
 
     private lateinit var billingClient: BillingClient
     var mMessageReceiver: BroadcastReceiver? = null
@@ -198,7 +198,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         val materialButton = dialog.findViewById<MaterialButton>(R.id.text_done)
         val textView = dialog.findViewById<TextView>(R.id.text_sub_message)
         try{
-            val appEntity = (rv_application_list?.adapter as AddedAppsListAdapter).getItem(
+            val appEntity = (rv_application_list?.adapter as AddedAppsListAdapterNew).getItem(
                 0
             )
             val html = String.format(
@@ -619,7 +619,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     object : DialogUtils.Callback {
                         override fun onPositive() {
                             alarmAppPresenter.deleteApplication(
-                                (rv_application_list?.adapter as AddedAppsListAdapter).getItem(
+                                (rv_application_list?.adapter as AddedAppsListAdapterNew).getItem(
                                     viewHolder.adapterPosition
                                 ),
                                 viewHolder.adapterPosition
@@ -851,7 +851,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
         txt_auto_start_enable?.setOnClickListener {
             DialogUtils.showOnlyPositiveDialog(this, "AutoStart",
-                "If you enable AutoStart option, it will help RioBot to run more " +
+                "If you enable AutoStart option, it will help Zaxroid to run more " +
                         "smoothly in your phone. As it's help not to get killed by the OS",
                 object : DialogUtils.Callback {
                     override fun onPositive() {
@@ -1175,7 +1175,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         rv_application_list?.layoutManager = LinearLayoutManager(this)
         rv_application_list?.isVerticalScrollBarEnabled = true
         val arraylist = ArrayList<ApplicationEntity>()
-        rv_application_list?.adapter = AddedAppsListAdapter(arraylist, this)
+        rv_application_list?.adapter = AddedAppsListAdapterNew(arraylist, this)
     }
 
 
@@ -1184,7 +1184,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             try {
                 if (appsList.isNotEmpty()) {
                     dataState()
-                    (rv_application_list?.adapter as AddedAppsListAdapter).addItems(appsList)
+                    (rv_application_list?.adapter as AddedAppsListAdapterNew).addItems(appsList)
                     recyclerViewSwipeHandler()
                 } else {
                     emptyState()
@@ -1293,9 +1293,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     override fun onApplicationDeleteSuccess(position: Int) {
         runOnUiThread {
-            (rv_application_list?.adapter as AddedAppsListAdapter).deleteItem(position)
+            (rv_application_list?.adapter as AddedAppsListAdapterNew).deleteItem(position)
             Toasty.success(this, getString(R.string.app_delete_success)).show()
-            if ((rv_application_list?.adapter as AddedAppsListAdapter).itemCount == 0) {
+            if ((rv_application_list?.adapter as AddedAppsListAdapterNew).itemCount == 0) {
                 emptyState()
             }
         }

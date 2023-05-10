@@ -340,7 +340,6 @@ class AlarmService {
             }
             return isToday
         }
-
         private fun startAlarmActivity(
             service: Service,
             tone: String?,

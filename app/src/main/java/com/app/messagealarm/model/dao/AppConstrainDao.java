@@ -17,10 +17,8 @@ public interface AppConstrainDao {
     @Query("SELECT COUNT(*) FROM app_constrain")
     int getTotalCountOfAppConstrain();
 
-
     @Query("SELECT * FROM app_constrain WHERE app_package_name = :packageName AND lang_code = :langCode")
     List<AppConstrainEntity> getAppConstrains(String packageName, String langCode);
-
 
     @Query("DELETE FROM app_constrain")
     void cleanAppConstrain();
