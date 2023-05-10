@@ -132,12 +132,10 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                 Toasty.success(this, "Sync started, please hold on!").show()
             }
             hideNotSyncedSuccess()
-            progress_bar_add_app?.visibility = View.VISIBLE
-            animated_dots?.visibility = View.VISIBLE
+            showProgress()
             addApplicationPresenter?.sync()
         }
     }
-
 
 
     private fun initAllAppsRecyclerView(list: ArrayList<InstalledApps>) {
@@ -147,12 +145,10 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     }
 
     override fun onAllApplicationGetSuccess(list: ArrayList<InstalledApps>) {
-        try{
+        try {
             list.sortWith { lhs, rhs -> lhs.appName.compareTo(rhs.appName) }
             runOnUiThread {
-                progress_bar_add_app?.visibility = View.GONE
-                animated_dots?.visibility = View.GONE
-                rv_apps_list?.visibility = View.VISIBLE
+                hideProgress()
                 initAllAppsRecyclerView(list)
                 spinner_filter?.visibility = View.VISIBLE
                 txt_filter_by?.visibility = View.VISIBLE
@@ -183,33 +179,44 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             override fun onNothingSelected(p0: AdapterView<*>?) {
 
             }
+
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                try{
-                    if(p2 == 0){
+                try {
+                    if (p2 == 0) {
                         hideNotSyncedSuccess()
                         //clear search view
                         searchView?.setQuery("", false)
                         searchView?.isIconified = true
-                        rv_apps_list?.visibility = View.GONE
-                        progress_bar_add_app?.visibility = View.VISIBLE
-                        animated_dots?.visibility = View.VISIBLE
+                        showProgress()
                         addApplicationPresenter!!.getAllApplicationList()
-                    }else{
+                    } else {
                         //clear search view
                         spinner_filter?.isEnabled = false
                         spinner_filter?.isClickable = false
                         searchView?.setQuery("", false)
                         searchView?.isIconified = true
-                        rv_apps_list?.visibility = View.GONE
-                        progress_bar_add_app?.visibility = View.VISIBLE
-                        animated_dots?.visibility = View.VISIBLE
+                        showProgress()
                         addApplicationPresenter!!.filterByMessaging()
                     }
-                }catch (e:NullPointerException){
+                } catch (e: NullPointerException) {
                     //skip the crash
                 }
             }
         }
+    }
+
+    private fun showProgress() {
+        rv_apps_list?.visibility = View.GONE
+        animated_dots?.visibility = View.VISIBLE
+        shimmer_layout?.startShimmer()
+        shimmer_layout?.visibility = View.VISIBLE
+    }
+
+    private fun hideProgress() {
+        animated_dots?.visibility = View.GONE
+        rv_apps_list?.visibility = View.VISIBLE
+        shimmer_layout?.visibility = View.GONE
+        shimmer_layout?.stopShimmer()
     }
 
     private fun toolBarSetup() {
@@ -227,7 +234,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             }
         }
     }
-
 
 
     override fun onAllApplicationGetError(message: String) {
@@ -263,21 +269,20 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         }
         try{
             mainList.sortWith(Comparator { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
-                runOnUiThread {
-                    (rv_apps_list?.adapter as AllAppsListAdapter).updateData(mainList)
-                    if(holderList.size == 1 &&
-                            holderList[0].packageName ==
-                            Telephony.Sms.getDefaultSmsPackage(this@AddApplicationActivity)){
-                            handleSyncedNotSuccess()
-                        }else if(holderList.size > 1){
-                        progress_bar_add_app?.visibility = View.GONE
-                        animated_dots?.visibility = View.GONE
-                        rv_apps_list?.visibility = View.VISIBLE
-                    }
-                    spinner_filter?.isEnabled = true
-                    spinner_filter?.isClickable = true
+            runOnUiThread {
+                (rv_apps_list?.adapter as AllAppsListAdapter).updateData(mainList)
+                if (holderList.size == 1 &&
+                    holderList[0].packageName ==
+                    Telephony.Sms.getDefaultSmsPackage(this@AddApplicationActivity)
+                ) {
+                    handleSyncedNotSuccess()
+                } else if (holderList.size > 1) {
+                    hideProgress()
                 }
-        }catch (e:NullPointerException){
+                spinner_filter?.isEnabled = true
+                spinner_filter?.isClickable = true
+            }
+        } catch (e: NullPointerException) {
             e.printStackTrace()
         }catch (e:TypeCastException){
             e.printStackTrace()
@@ -291,8 +296,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             JumpingBeans.with(animated_dots)
                 .appendJumpingDots()
                 .build()
-            progress_bar_add_app?.visibility = View.GONE
-            animated_dots?.visibility = View.GONE
+            hideProgress()
             Toasty.error(this, message).show()
         }
         handleSyncedNotSuccess()
@@ -309,6 +313,12 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         //clear search view
         searchView?.setQuery("", false)
         searchView?.isIconified = true
+        shimmer_layout?.startShimmer()
+    }
+
+    override fun onPause() {
+        shimmer_layout?.stopShimmer()
+        super.onPause()
     }
 
     private fun hideNotSyncedSuccess(){
@@ -331,9 +341,8 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
     private fun handleSyncedNotSuccess(){
         runOnUiThread {
+            hideProgress()
             rv_apps_list?.visibility = View.GONE
-            progress_bar_add_app?.visibility = View.GONE
-            animated_dots?.visibility = View.GONE
             gif_no_internet?.visibility = View.VISIBLE
             txt_no_internet?.visibility = View.VISIBLE
             btn_sync_now?.visibility = View.VISIBLE
@@ -358,7 +367,8 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                     (rv_apps_list?.adapter as AllAppsListAdapter).filter(query!!)
                     if((rv_apps_list?.adapter as AllAppsListAdapter).adapterSize() == 0 &&
                         !gif_no_internet?.isVisibile()!! &&
-                        !progress_bar_add_app?.isVisibile()!!){
+                        !shimmer_layout?.isVisibile()!!
+                    ) {
                         showSearchNotFound()
                     }else{
                         hideSearchNotFound()
@@ -375,7 +385,8 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                     (rv_apps_list?.adapter as AllAppsListAdapter).filter(newText!!)
                     if((rv_apps_list?.adapter as AllAppsListAdapter).adapterSize() == 0 &&
                         !gif_no_internet?.isVisibile()!! &&
-                            !progress_bar_add_app?.isVisibile()!!){
+                        !shimmer_layout?.isVisibile()!!
+                    ) {
                         showSearchNotFound()
                     }else{
                         hideSearchNotFound()

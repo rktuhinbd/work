@@ -25,4 +25,6 @@
     <color name="floating">#E65100</color>
     <color name="transparent_black">#50000000</color>
     <color name="purchase_stroke">#D32F2F</color>
+
+    <color name="shimmer_placeholder">#979595</color>
 </resources>

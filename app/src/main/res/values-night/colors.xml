@@ -18,4 +18,7 @@
     <color name="color_hint">#40FFFFFF</color>
     <color name="floating">#1436F5</color>
     <color name="success_color">#4BB543</color>
+
+
+    <color name="shimmer_placeholder">#EDEDED</color>
 </resources>
