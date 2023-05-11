@@ -45,7 +45,6 @@ import kotlin.collections.ArrayList
 class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     AllAppsListAdapter.ItemClickListener {
 
-    var textSync = "Searching apps"
     var addApplicationPresenter:AddApplicationPresenter? = null
     val alarmModal = AlarmOptionDialog()
     val speakModal = SpeakOptionDialog()
@@ -65,9 +64,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         txt_filter_by?.visibility = View.INVISIBLE
         spinner_filter?.visibility = View.INVISIBLE
         spinner_drop_down?.visibility = View.INVISIBLE
-        JumpingBeans.with(animated_dots)
-            .appendJumpingDots()
-            .build()
         //setup presenter
         addApplicationPresenter = AddApplicationPresenter(this, this)
         filterListener()
@@ -124,11 +120,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     private fun setListener(){
         btn_sync_now?.setOnClickListener {
             if(AndroidUtils.isOnline(this)){
-                textSync = "Syncing data"
-                animated_dots.text = textSync
-                JumpingBeans.with(animated_dots)
-                    .appendJumpingDots()
-                    .build()
                 Toasty.success(this, "Sync started, please hold on!").show()
             }
             hideNotSyncedSuccess()
@@ -207,13 +198,11 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
     private fun showProgress() {
         rv_apps_list?.visibility = View.GONE
-        animated_dots?.visibility = View.VISIBLE
         shimmer_layout?.startShimmer()
         shimmer_layout?.visibility = View.VISIBLE
     }
 
     private fun hideProgress() {
-        animated_dots?.visibility = View.GONE
         rv_apps_list?.visibility = View.VISIBLE
         shimmer_layout?.visibility = View.GONE
         shimmer_layout?.stopShimmer()
@@ -250,11 +239,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         //there should be a logic that if internet is off then show handle sync not success
         //or if loading is happening for more than 6 sec, then show sync not
         runOnUiThread {
-            textSync = "Searching apps"
-            animated_dots.text = textSync
-            JumpingBeans.with(animated_dots)
-                .appendJumpingDots()
-                .build()
             val countDownTimer = object  : CountDownTimer(5000, 1000){
                 override fun onTick(millisUntilFinished: Long) {
                     //skipping the milliseconds as not needed
@@ -291,11 +275,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
     override fun onSyncFailed(message: String) {
         runOnUiThread {
-            textSync = "Searching apps"
-            animated_dots.text = textSync
-            JumpingBeans.with(animated_dots)
-                .appendJumpingDots()
-                .build()
             hideProgress()
             Toasty.error(this, message).show()
         }
