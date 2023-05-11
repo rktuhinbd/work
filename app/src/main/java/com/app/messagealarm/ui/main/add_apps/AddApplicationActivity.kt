@@ -64,6 +64,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         txt_filter_by?.visibility = View.INVISIBLE
         spinner_filter?.visibility = View.INVISIBLE
         spinner_drop_down?.visibility = View.INVISIBLE
+        shimmer_layout_filter?.startShimmer()
         //setup presenter
         addApplicationPresenter = AddApplicationPresenter(this, this)
         filterListener()
@@ -145,6 +146,8 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                 txt_filter_by?.visibility = View.VISIBLE
                 card_view_filter?.visibility = View.VISIBLE
                 spinner_drop_down?.visibility = View.VISIBLE
+                shimmer_layout_filter?.visibility = View.GONE
+                shimmer_layout_filter?.stopShimmer()
             }
 
         }catch (e:TypeCastException){
@@ -293,10 +296,12 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         searchView?.setQuery("", false)
         searchView?.isIconified = true
         shimmer_layout?.startShimmer()
+        shimmer_layout_filter?.startShimmer()
     }
 
     override fun onPause() {
         shimmer_layout?.stopShimmer()
+        shimmer_layout_filter?.stopShimmer()
         super.onPause()
     }
 

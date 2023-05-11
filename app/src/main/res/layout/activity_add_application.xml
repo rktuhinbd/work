@@ -22,6 +22,27 @@
         app:titleTextColor="@color/colorTextRegular" />
 
     <!--    card design for filter...-->
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_layout_filter"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/card_view_filter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toStartOf="@+id/card_view_filter"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardBackgroundColor="@color/shimmer_placeholder"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="5dp"
+            app:cardUseCompatPadding="true" />
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_view_filter"
