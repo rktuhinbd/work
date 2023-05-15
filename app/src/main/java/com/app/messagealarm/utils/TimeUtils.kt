@@ -36,24 +36,24 @@ class TimeUtils private constructor() {
             return System.currentTimeMillis()
         }
 
-        fun getCurrentDayName() : String{
+        fun getCurrentDayName(): String {
             val calendar = Calendar.getInstance()
             val date = calendar.time
-           return SimpleDateFormat("EE", Locale.ENGLISH).format(date.time)
+            return SimpleDateFormat("EE", Locale.ENGLISH).format(date.time)
         }
 
-       private fun getCurrentDayNameBDTime() : String{
+        private fun getCurrentDayNameBDTime(): String {
             val calendar = Calendar.getInstance()
             calendar.timeZone = TimeZone.getTimeZone("Asia/Dhaka")
             val date = calendar.time
             return SimpleDateFormat("EE", Locale.ENGLISH).format(date.time)
         }
 
-       private fun getCurrentHourBDTime() : Int{
-           val calendar = Calendar.getInstance()
-           calendar.timeZone = TimeZone.getTimeZone("Asia/Dhaka")
-           return calendar.get(Calendar.HOUR_OF_DAY)
-       }
+        private fun getCurrentHourBDTime(): Int {
+            val calendar = Calendar.getInstance()
+            calendar.timeZone = TimeZone.getTimeZone("Asia/Dhaka")
+            return calendar.get(Calendar.HOUR_OF_DAY)
+        }
 
         /**
          * Office Time : 30 minutes
@@ -62,7 +62,7 @@ class TimeUtils private constructor() {
          * Weekend Day Time: 2 hour
          * Note: All times are in BST time
          */
-        fun getPossibleReplyTime() : String{
+        fun getPossibleReplyTime(): String {
             var possibleTime: String = ""
             possibleTime = when {
                 getCurrentHourBDTime() in 0..5 -> {
@@ -268,7 +268,7 @@ class TimeUtils private constructor() {
          */
         fun compareTwoDates(date1: String, date2: String): Int {
             return getCalendarFromDate(date1).time
-                    .compareTo(getCalendarFromDate(date2).time)
+                .compareTo(getCalendarFromDate(date2).time)
         }
 
         /**
@@ -359,17 +359,26 @@ class TimeUtils private constructor() {
         }
 
         @SuppressLint("SimpleDateFormat")
-        fun isTimeConstrained(startTime: String, endTime: String):Boolean{
-            return try{
-                    val date = Date()
-                    val dateFormatter = SimpleDateFormat("yyyy/MM/dd")
-                    val startDateWithTime = dateFormatter.format(date) + " " + startTime
-                    val endDateWithTime = dateFormatter.format(date) + " " + endTime
-                    val converterFormat = SimpleDateFormat("yyyy/MM/dd hh:mm a")
-                    converterFormat.parse(startDateWithTime).before(converterFormat.parse(endDateWithTime))
-            }catch (ex: ParseException){
+        fun isTimeConstrained(startTime: String, endTime: String): Boolean {
+            return try {
+                val date = Date()
+                val dateFormatter = SimpleDateFormat("yyyy/MM/dd")
+                val startDateWithTime = dateFormatter.format(date) + " " + startTime
+                val endDateWithTime = dateFormatter.format(date) + " " + endTime
+                val converterFormat = SimpleDateFormat("yyyy/MM/dd h a")
+                converterFormat.parse(startDateWithTime)
+                    .before(converterFormat.parse(endDateWithTime))
+            } catch (ex: ParseException) {
                 false
             }
+        }
+
+        fun convert12HrTo24Hr(time12Hr: String): Float {
+            val dateFormat = SimpleDateFormat("h a", Locale.US)
+            val parsedTime = dateFormat.parse(time12Hr)
+            val calender = Calendar.getInstance()
+            calender.time = parsedTime
+            return calender.get(Calendar.HOUR_OF_DAY).toFloat()
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
@@ -387,29 +396,37 @@ class TimeUtils private constructor() {
             val endTimeUser = endTimeUTC + userTimeZone.getOffset(endTimeUTC)
 
             // Check if the time range falls between 4 to 12
-            val startHourUser = LocalDateTime.ofInstant(Instant.ofEpochMilli(startTimeUser), userTimeZone.toZoneId()).hour
-            val endHourUser = LocalDateTime.ofInstant(Instant.ofEpochMilli(endTimeUser), userTimeZone.toZoneId()).hour
+            val startHourUser = LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(startTimeUser),
+                userTimeZone.toZoneId()
+            ).hour
+            val endHourUser = LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(endTimeUser),
+                userTimeZone.toZoneId()
+            ).hour
             return startHourUser >= 4 && endHourUser <= 12
         }
 
         @SuppressLint("SimpleDateFormat")
-        fun isConstrainedByTime(startTime: String, endTime: String):Boolean{
-            return try{
+        fun isConstrainedByTime(startTime: String, endTime: String): Boolean {
+            return try {
                 val date = Date()
                 val dateFormatter = SimpleDateFormat("yyyy/MM/dd")
                 val startDateWithTime = dateFormatter.format(date) + " " + startTime
                 val endDateWithTime = dateFormatter.format(date) + " " + endTime
                 val converterFormat = SimpleDateFormat("yyyy/MM/dd hh:mm a")
                 val currentTime = converterFormat.format(date)
-                converterFormat.parse(currentTime).after(converterFormat.parse(startDateWithTime)) &&
-                        converterFormat.parse(currentTime).before(converterFormat.parse(endDateWithTime))
-            }catch (ex: ParseException){
+                converterFormat.parse(currentTime)
+                    .after(converterFormat.parse(startDateWithTime)) &&
+                        converterFormat.parse(currentTime)
+                            .before(converterFormat.parse(endDateWithTime))
+            } catch (ex: ParseException) {
                 false
             }
         }
 
         @SuppressLint("SimpleDateFormat")
-         fun getTimeWithAMOrPM(hr: Int, min: Int): String? {
+        fun getTimeWithAMOrPM(hr: Int, min: Int): String? {
             val cal = Calendar.getInstance()
             cal[Calendar.HOUR_OF_DAY] = hr
             cal[Calendar.MINUTE] = min

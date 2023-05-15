@@ -628,243 +628,6 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <!--Custom time-->
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <View
-                            android:id="@+id/view_custom_time"
-                            android:layout_width="0dp"
-                            android:layout_height="60dp"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:foreground="?selectableItemBackground"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:targetApi="m" />
-
-                        <ImageView
-                            android:id="@+id/img_custom_time"
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
-                            android:layout_marginStart="8dp"
-                            android:padding="7dp"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/ic_clock"
-                            app:layout_constraintBottom_toBottomOf="@id/view_custom_time"
-                            app:layout_constraintEnd_toEndOf="@id/view_custom_time"
-                            app:layout_constraintHorizontal_bias="0"
-                            app:layout_constraintStart_toStartOf="@id/view_custom_time"
-                            app:layout_constraintTop_toTopOf="@id/view_custom_time" />
-
-
-                        <TextView
-                            android:id="@+id/txt_custom_time"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="14dp"
-                            android:fontFamily="@font/roboto_regular"
-                            android:text="Custom time"
-                            android:textColor="@color/colorTextRegular"
-                            android:textSize="16sp"
-                            app:layout_constraintBottom_toTopOf="@id/txt_custom_time_value"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0"
-                            app:layout_constraintStart_toEndOf="@id/img_custom_time"
-                            app:layout_constraintTop_toTopOf="@id/view_custom_time"
-                            app:layout_constraintVertical_chainStyle="packed" />
-
-
-                        <TextView
-                            android:id="@+id/txt_custom_time_value"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/roboto_regular"
-                            android:text="Within a single day"
-                            android:textColor="@color/default_text"
-                            android:textSize="14sp"
-                            app:layout_constraintBottom_toBottomOf="@id/view_custom_time"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0"
-                            app:layout_constraintStart_toStartOf="@id/txt_custom_time"
-                            app:layout_constraintTop_toBottomOf="@id/txt_custom_time" />
-
-
-                        <Switch
-                            android:id="@+id/switch_custom_time"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="16dp"
-                            android:trackTint="@color/track_color"
-                            app:layout_constraintBottom_toBottomOf="@id/view_custom_time"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="1"
-                            app:layout_constraintStart_toEndOf="@id/txt_custom_time"
-                            app:layout_constraintTop_toTopOf="@id/view_custom_time"
-                            tools:targetApi="m" />
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="1dp"
-                            android:background="@android:color/darker_gray"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/view_custom_time" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <!--Start time-->
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/layout_start_time"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone">
-
-                        <View
-                            android:id="@+id/view_start_time"
-                            android:layout_width="0dp"
-                            android:layout_height="60dp"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:foreground="?selectableItemBackground"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:targetApi="m" />
-
-                        <ImageView
-                            android:id="@+id/img_start_time"
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
-                            android:layout_marginStart="8dp"
-                            android:padding="7dp"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/ic_start_time"
-                            app:layout_constraintBottom_toBottomOf="@id/view_start_time"
-                            app:layout_constraintEnd_toEndOf="@id/view_start_time"
-                            app:layout_constraintHorizontal_bias="0"
-                            app:layout_constraintStart_toStartOf="@id/view_start_time"
-                            app:layout_constraintTop_toTopOf="@id/view_start_time" />
-
-
-                        <TextView
-                            android:id="@+id/txt_start_time"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:fontFamily="@font/roboto_regular"
-                            android:text="Start time"
-                            android:textColor="@color/colorTextRegular"
-                            android:textSize="16sp"
-                            app:layout_constraintBottom_toTopOf="@id/txt_start_time_value"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0"
-                            app:layout_constraintStart_toEndOf="@id/img_start_time"
-                            app:layout_constraintTop_toTopOf="@id/view_start_time"
-                            app:layout_constraintVertical_chainStyle="packed" />
-
-                        <TextView
-                            android:id="@+id/txt_start_time_value"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/roboto_regular"
-                            android:text="6:00 AM"
-                            android:textColor="@color/default_text"
-                            android:textSize="14sp"
-                            app:layout_constraintBottom_toBottomOf="@id/view_start_time"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0"
-                            app:layout_constraintStart_toStartOf="@id/txt_start_time"
-                            app:layout_constraintTop_toBottomOf="@id/txt_start_time" />
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="1dp"
-                            android:background="@android:color/darker_gray"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/view_start_time" />
-
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <!--End time-->
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/layout_end_time"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone">
-
-                        <View
-                            android:id="@+id/view_end_time"
-                            android:layout_width="0dp"
-                            android:layout_height="60dp"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:foreground="?selectableItemBackground"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:targetApi="m" />
-
-                        <ImageView
-                            android:id="@+id/img_end_time"
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
-                            android:layout_marginStart="8dp"
-                            android:padding="7dp"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/ic_end_time"
-                            app:layout_constraintBottom_toBottomOf="@id/view_end_time"
-                            app:layout_constraintEnd_toEndOf="@id/view_end_time"
-                            app:layout_constraintHorizontal_bias="0"
-                            app:layout_constraintStart_toStartOf="@id/view_end_time"
-                            app:layout_constraintTop_toTopOf="@id/view_end_time" />
-
-
-                        <TextView
-                            android:id="@+id/txt_end_time"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:fontFamily="@font/roboto_regular"
-                            android:text="End time"
-                            android:textColor="@color/colorTextRegular"
-                            android:textSize="16sp"
-                            app:layout_constraintBottom_toTopOf="@id/txt_end_time_value"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0"
-                            app:layout_constraintStart_toEndOf="@id/img_end_time"
-                            app:layout_constraintTop_toTopOf="@id/view_end_time"
-                            app:layout_constraintVertical_chainStyle="packed" />
-
-                        <TextView
-                            android:id="@+id/txt_end_time_value"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/roboto_regular"
-                            android:text="12:00 PM"
-                            android:textColor="@color/default_text"
-                            android:textSize="14sp"
-                            app:layout_constraintBottom_toBottomOf="@id/view_end_time"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0"
-                            app:layout_constraintStart_toStartOf="@id/txt_end_time"
-                            app:layout_constraintTop_toBottomOf="@id/txt_end_time" />
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="1dp"
-                            android:background="@android:color/darker_gray"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/view_end_time" />
-
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
                     <!--Number of play-->
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/layout_number_of_play"
@@ -934,6 +697,161 @@
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+
+
+            <!--Custom time-->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:cardBackgroundColor="@color/card_view_color"
+                app:cardCornerRadius="12dp"
+                app:cardUseCompatPadding="true"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <View
+                            android:id="@+id/view_custom_time"
+                            android:layout_width="0dp"
+                            android:layout_height="60dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?selectableItemBackground"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:targetApi="m" />
+
+                        <ImageView
+                            android:id="@+id/img_custom_time"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginStart="8dp"
+                            android:padding="7dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_clock"
+                            app:layout_constraintBottom_toBottomOf="@id/view_custom_time"
+                            app:layout_constraintEnd_toEndOf="@id/view_custom_time"
+                            app:layout_constraintHorizontal_bias="0"
+                            app:layout_constraintStart_toStartOf="@id/view_custom_time"
+                            app:layout_constraintTop_toTopOf="@id/view_custom_time" />
+
+
+                        <TextView
+                            android:id="@+id/txt_custom_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:fontFamily="@font/roboto_regular"
+                            android:text="Custom time"
+                            android:textColor="@color/colorTextRegular"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toTopOf="@id/txt_custom_time_value"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0"
+                            app:layout_constraintStart_toEndOf="@id/img_custom_time"
+                            app:layout_constraintTop_toTopOf="@id/view_custom_time"
+                            app:layout_constraintVertical_chainStyle="packed" />
+
+
+                        <TextView
+                            android:id="@+id/txt_custom_time_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Within this time range"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textColor="@color/default_text"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="@id/view_custom_time"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0"
+                            app:layout_constraintStart_toStartOf="@id/txt_custom_time"
+                            app:layout_constraintTop_toBottomOf="@id/txt_custom_time" />
+
+
+                        <Switch
+                            android:id="@+id/switch_custom_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:trackTint="@color/track_color"
+                            app:layout_constraintBottom_toBottomOf="@id/view_custom_time"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="1"
+                            app:layout_constraintStart_toEndOf="@id/txt_custom_time"
+                            app:layout_constraintTop_toTopOf="@id/view_custom_time"
+                            tools:targetApi="m" />
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <com.google.android.material.slider.RangeSlider
+                        android:id="@+id/rangeSlider"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:valueFrom="0"
+                        android:valueTo="23"
+                        app:values="@array/custom_time_values"
+                        app:thumbRadius="8dp"
+                        app:thumbElevation="8dp"
+                        app:trackHeight="4dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="12dp"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal"
+                        >
+
+
+                        <TextView
+                            android:id="@+id/txtHour"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="12 AM"
+                            android:layout_weight="1"
+                            android:layout_gravity="center"
+                            android:gravity="start"
+                            android:textSize="14sp"
+                            android:layout_marginStart="12dp"
+                            android:textStyle="normal"
+                            android:textColor="@color/default_text"/>
+
+                        <TextView
+                            android:id="@+id/txtEndHour"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="11 PM"
+                            android:layout_weight="1"
+                            android:layout_gravity="center"
+                            android:gravity="end"
+                            android:textSize="14sp"
+                            android:layout_marginEnd="12dp"
+                            android:textStyle="normal"
+                            android:textColor="@color/default_text"
+                            />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
 
             <!--Filter area-->
 

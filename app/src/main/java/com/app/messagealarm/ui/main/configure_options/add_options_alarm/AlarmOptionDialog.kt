@@ -45,6 +45,36 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_alarm_options.*
+import kotlinx.android.synthetic.main.dialog_alarm_options.btn_close
+import kotlinx.android.synthetic.main.dialog_alarm_options.btn_exclude_sender_name_clear
+import kotlinx.android.synthetic.main.dialog_alarm_options.btn_message_body_clear
+import kotlinx.android.synthetic.main.dialog_alarm_options.btn_save
+import kotlinx.android.synthetic.main.dialog_alarm_options.btn_sender_name_clear
+import kotlinx.android.synthetic.main.dialog_alarm_options.img_custom_time
+import kotlinx.android.synthetic.main.dialog_alarm_options.img_exclude_sender_name
+import kotlinx.android.synthetic.main.dialog_alarm_options.img_message_body
+import kotlinx.android.synthetic.main.dialog_alarm_options.img_number_of_play
+import kotlinx.android.synthetic.main.dialog_alarm_options.img_sender_name
+import kotlinx.android.synthetic.main.dialog_alarm_options.img_sound_level
+import kotlinx.android.synthetic.main.dialog_alarm_options.img_vibrate
+import kotlinx.android.synthetic.main.dialog_alarm_options.progress_bar_option
+import kotlinx.android.synthetic.main.dialog_alarm_options.progress_sound_level
+import kotlinx.android.synthetic.main.dialog_alarm_options.switch_custom_time
+import kotlinx.android.synthetic.main.dialog_alarm_options.switch_vibrate
+import kotlinx.android.synthetic.main.dialog_alarm_options.txt_exclude_sender_name_value
+import kotlinx.android.synthetic.main.dialog_alarm_options.txt_message_body_value
+import kotlinx.android.synthetic.main.dialog_alarm_options.txt_number_of_play_value
+import kotlinx.android.synthetic.main.dialog_alarm_options.txt_percent_sound_level
+import kotlinx.android.synthetic.main.dialog_alarm_options.txt_pro_vibrate
+import kotlinx.android.synthetic.main.dialog_alarm_options.txt_sender_name_value
+import kotlinx.android.synthetic.main.dialog_alarm_options.view_custom_time
+import kotlinx.android.synthetic.main.dialog_alarm_options.view_exclude_sender_name
+import kotlinx.android.synthetic.main.dialog_alarm_options.view_message_body
+import kotlinx.android.synthetic.main.dialog_alarm_options.view_number_of_play
+import kotlinx.android.synthetic.main.dialog_alarm_options.view_sender_name
+import kotlinx.android.synthetic.main.dialog_alarm_options.view_sound_level
+import kotlinx.android.synthetic.main.dialog_alarm_options.view_vibrate
+import kotlinx.android.synthetic.main.dialog_speak_options.*
 import xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity
 import xyz.aprildown.ultimateringtonepicker.UltimateRingtonePicker
 import java.text.ParseException
@@ -91,8 +121,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
             img_number_of_play?.setImageResource(R.drawable.ic_loop_white)
             img_sender_name?.setImageResource(R.drawable.ic_name_white)
             img_message_body?.setImageResource(R.drawable.ic_message_white)
-            img_start_time?.setImageResource(R.drawable.ic_start_time_white)
-            img_end_time?.setImageResource(R.drawable.ic_end_time_white)
             img_exclude_sender_name?.setImageResource(R.drawable.ic_ignore_white)
             img_sound_level?.setImageResource(R.drawable.volume_white)
             img_flash?.setImageResource(R.drawable.flashlight_white)
@@ -108,8 +136,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
             img_number_of_play?.setImageResource(R.drawable.ic_refresh)
             img_sender_name?.setImageResource(R.drawable.ic_name)
             img_message_body?.setImageResource(R.drawable.ic_message)
-            img_start_time?.setImageResource(R.drawable.ic_start_time)
-            img_end_time?.setImageResource(R.drawable.ic_end_time)
             img_exclude_sender_name?.setImageResource(R.drawable.ic_ignore)
             img_flash?.setImageResource(R.drawable.flashlight)
         }
@@ -415,17 +441,58 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         }
 
         switch_custom_time?.setOnCheckedChangeListener { buttonView, isChecked ->
-            /**
-             * set is custom time to data model
-             */
             if (!BaseApplication.isHintShowing) {
                 addApplicationEntity.isCustomTime = isChecked
-                if (isChecked) {
-                    visibleCustomTimeLayout()
-                } else {
-                    hideCustomTimeLayout()
-                }
+                rangeSlider?.isEnabled = isChecked
             }
+        }
+
+        rangeSlider?.isEnabled = false
+        rangeSlider?.stepSize = 1F
+
+        view_custom_time?.setOnClickListener {
+            if (!BaseApplication.isHintShowing) {
+                switch_custom_time?.performClick()
+            }
+        }
+
+        rangeSlider?.setLabelFormatter {
+            (it.toInt() + 1).toString()
+        }
+
+        var updateTimer: Timer? = null
+        val timeZone = TimeZone.getDefault()
+        val dateFormat = SimpleDateFormat("h a", Locale.getDefault())
+        rangeSlider.addOnChangeListener { slider, value, fromUser ->
+            // Cancel any previously scheduled updates
+            updateTimer?.cancel()
+            // Schedule an update in 250 milliseconds
+            updateTimer = Timer()
+            updateTimer?.schedule(object : TimerTask() {
+                override fun run() {
+                    val values = slider.values
+                    dateFormat.timeZone = timeZone
+                    val startTime = Calendar.getInstance()
+                    startTime.set(Calendar.HOUR_OF_DAY, values[0].toInt())
+                    startTime.set(Calendar.MINUTE, 0)
+                    val formattedStartTime = dateFormat.format(startTime.time)
+                    val endTime = Calendar.getInstance()
+                    endTime.set(Calendar.HOUR_OF_DAY, values[1].toInt())
+                    endTime.set(Calendar.MINUTE, 0)
+                    val formattedEndTime = dateFormat.format(endTime.time)
+                    activity?.runOnUiThread {
+                        txtHour?.let {
+                            it.text = formattedStartTime
+                        }
+                        txtEndHour?.text = formattedEndTime
+
+                        if (addApplicationEntity.isCustomTime) {
+                            addApplicationEntity.startTime = formattedStartTime
+                            addApplicationEntity.endTime = formattedEndTime
+                        }
+                    }
+                }
+            }, 200)
         }
 
         switch_flash?.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -473,7 +540,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         }
 
         view_flash?.setOnClickListener {
-            if(!BaseApplication.isHintShowing){
+            if (!BaseApplication.isHintShowing) {
                 switch_flash?.performClick()
             }
         }
@@ -569,24 +636,26 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
 
         view_message_body?.setOnClickListener {
             if (!BaseApplication.isHintShowing) {
-              /*  DialogUtils.showMessageBodyDialog(
-                    requireActivity(),
-                    txt_message_body_value?.text.toString(),
-                    object : DialogUtils.RepeatCallBack {
-                        override fun onClick(name: String) {
-                            if (name.isNotEmpty()) {
-                                txt_message_body_value?.text = name
-                                btn_message_body_clear?.visibility = View.VISIBLE
-                                *//**
-                                 * set message body to data model
-                                 *//*
+                /*  DialogUtils.showMessageBodyDialog(
+                      requireActivity(),
+                      txt_message_body_value?.text.toString(),
+                      object : DialogUtils.RepeatCallBack {
+                          override fun onClick(name: String) {
+                              if (name.isNotEmpty()) {
+                                  txt_message_body_value?.text = name
+                                  btn_message_body_clear?.visibility = View.VISIBLE
+                                  */
+                /**
+                 * set message body to data model
+                 *//*
                                 addApplicationEntity.messageBody = name
                             } else {
                                 btn_message_body_clear?.visibility = View.GONE
                                 txt_message_body_value?.text = "None"
-                                *//**
-                                 * set none to message body data model
-                                 *//*
+                                */
+                /**
+                 * set none to message body data model
+                 *//*
                                 addApplicationEntity.messageBody = "None"
                             }
                         }
@@ -618,7 +687,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                                 } else {
                                     askForPermission()
                                 }
-                            }else if(name.contains("Speak the message")){
+                            } else if (name.contains("Speak the message")) {
                                 txt_ringtone_value?.text = name
                                 /**
                                  * Set SPEAK as flag in the local database
@@ -637,48 +706,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                     })
             }
 
-        }
-
-        view_start_time?.setOnClickListener {
-            val c: Calendar = startTimeCalender()
-            val hour: Int = c.get(Calendar.HOUR_OF_DAY)
-            val minute: Int = c.get(Calendar.MINUTE)
-            val timePickerDialog =
-                TimePickerDialog(
-                    context,
-                    { view, hourOfDay, min ->
-                        txt_start_time_value?.text = TimeUtils.getTimeWithAMOrPM(hourOfDay, min)
-                        /**
-                         * set start time to data model
-                         */
-                        if (addApplicationEntity.isCustomTime) {
-                            addApplicationEntity.startTime = txt_start_time_value?.text.toString()
-                        }
-                    }, hour, minute, false
-                )
-            timePickerDialog.show()
-        }
-
-
-        view_end_time?.setOnClickListener {
-            val c: Calendar = endTimeCalender()
-            val hour: Int = c.get(Calendar.HOUR_OF_DAY)
-            val minute: Int = c.get(Calendar.MINUTE)
-            val timePickerDialog =
-                TimePickerDialog(
-                    context,
-                    { view, hourOfDay, _min ->
-                        txt_end_time_value?.text = TimeUtils.getTimeWithAMOrPM(hourOfDay, _min)
-                        /**
-                         * set end time to data model
-                         */
-                        if (addApplicationEntity.isCustomTime) {
-                            addApplicationEntity.endTime = txt_end_time_value?.text.toString()
-                        }
-                    }, hour, minute, false
-
-                )
-            timePickerDialog.show()
         }
 
 
@@ -931,7 +958,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         }
     }
 
-    private fun showMessageKeywordsDialog(list: ArrayList<String>){
+    private fun showMessageKeywordsDialog(list: ArrayList<String>) {
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
@@ -1151,18 +1178,19 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
      * This function shows the sender name dialog
      */
     private fun senderNameDialog(list: ArrayList<String>) {
-       /* val dialog = Dialog(requireActivity())
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog.setCancelable(false)
-        dialog.setContentView(R.layout.dialog_sender_name)
-        //init views
-        val cancelButton = dialog.findViewById<MaterialButton>(R.id.btn_cancel)
-        val saveButton = dialog.findViewById<MaterialButton>(R.id.btn_save)
-        val placeHolder = dialog.findViewById<ImageView>(R.id.img_placeholder)
-        val etName = dialog.findViewById<EditText>(R.id.et_sender_name)
-        val txtHint = dialog.findViewById<TextView>(R.id.txt_hint_sender_name)
-        *//**
+        /* val dialog = Dialog(requireActivity())
+         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+         dialog.setCancelable(false)
+         dialog.setContentView(R.layout.dialog_sender_name)
+         //init views
+         val cancelButton = dialog.findViewById<MaterialButton>(R.id.btn_cancel)
+         val saveButton = dialog.findViewById<MaterialButton>(R.id.btn_save)
+         val placeHolder = dialog.findViewById<ImageView>(R.id.img_placeholder)
+         val etName = dialog.findViewById<EditText>(R.id.et_sender_name)
+         val txtHint = dialog.findViewById<TextView>(R.id.txt_hint_sender_name)
+         */
+        /**
          * show app name at end of hint and make app name green color
          *//*
         try {
@@ -1654,35 +1682,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         }
     }
 
-    @SuppressLint("SimpleDateFormat")
-    fun startTimeCalender(): Calendar {
-        /**
-         * User will be doing in 12 hours
-         * Background works will be in 24 hours
-         */
-        return try {
-            val dfDate = SimpleDateFormat("hh:mm a")
-            val cal = Calendar.getInstance()
-            cal.time = dfDate.parse(txt_start_time_value?.text.toString())!!
-            cal
-        } catch (ex: ParseException) {
-            return Calendar.getInstance()
-        }
-
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    fun endTimeCalender(): Calendar {
-        return try {
-            val dfDate = SimpleDateFormat("hh:mm a")
-            val cal = Calendar.getInstance()
-            cal.time = dfDate.parse(txt_end_time_value?.text.toString())!!
-            cal
-        } catch (ex: ParseException) {
-            return Calendar.getInstance()
-        }
-    }
-
 
     private fun defaultValuesToDataModel(): ApplicationEntity {
         addApplicationEntity.alarmRepeat = "Always"
@@ -1691,8 +1690,8 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         addApplicationEntity.isJustVibrate = false
         addApplicationEntity.isCustomTime = false
         addApplicationEntity.numberOfPlay = 2
-        addApplicationEntity.startTime = "6:00 AM"
-        addApplicationEntity.endTime = "12:00 PM"
+        addApplicationEntity.startTime = "12 AM"
+        addApplicationEntity.endTime = "11 PM"
         addApplicationEntity.senderNames = "None"
         addApplicationEntity.ignored_names = "None"
         addApplicationEntity.messageBody = "None"
@@ -1734,8 +1733,8 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         holderEntity.isJustVibrate = false
         holderEntity.isCustomTime = false
         holderEntity.numberOfPlay = 2
-        holderEntity.startTime = "6:00 AM"
-        holderEntity.endTime = "12:00 PM"
+        holderEntity.startTime = "12 AM"
+        holderEntity.endTime = "11 PM"
         holderEntity.senderNames = "None"
         holderEntity.ignored_names = "None"
         holderEntity.messageBody = "None"
@@ -1814,7 +1813,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         if (txt_repeat_value?.text.toString().trim() == repeat) {
             if (txt_ringtone_value?.text.toString().trim() == holderEntity.ringTone) {
                 if (switch_vibrate?.isChecked == holderEntity.isVibrateOnAlarm) {
-                    if(switch_flash?.isChecked == holderEntity.isIs_flash_on){
+                    if (switch_flash?.isChecked == holderEntity.isIs_flash_on) {
                         if (switch_just_vibrate?.isChecked == holderEntity.isJustVibrate) {
                             if (switch_custom_time?.isChecked == holderEntity.isCustomTime) {
                                 if (txt_number_of_play_value?.text.toString().split(" ")
@@ -1838,17 +1837,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
             }
         }
         return isDefault
-    }
-
-    private fun visibleCustomTimeLayout() {
-        layout_start_time?.visibility = View.VISIBLE
-        layout_end_time?.visibility = View.VISIBLE
-    }
-
-
-    private fun hideCustomTimeLayout() {
-        layout_start_time?.visibility = View.GONE
-        layout_end_time?.visibility = View.GONE
     }
 
     private fun getWindowHeight(): Int { // Calculate window height for fullscreen use
@@ -1926,8 +1914,8 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         //if start time and end time constrained
         if (switch_custom_time?.isChecked!!) {
             if (isTimeConstrained(
-                    txt_start_time_value?.text.toString(),
-                    txt_end_time_value?.text.toString()
+                    txtHour?.text.toString(),
+                    txtEndHour?.text.toString()
                 )
             ) {
                 optionPresenter?.saveApplication(
@@ -1967,8 +1955,12 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         switch_flash?.isChecked = app.isIs_flash_on
         switch_custom_time?.isChecked = app.isCustomTime
         switch_just_vibrate?.isChecked = app.isJustVibrate
-        txt_start_time_value?.text = app.startTime
-        txt_end_time_value?.text = app.endTime
+        txtHour?.text = app.startTime
+        txtEndHour?.text = app.endTime
+        rangeSlider?.values = listOf(
+            TimeUtils.convert12HrTo24Hr(addApplicationEntity.startTime),
+            TimeUtils.convert12HrTo24Hr(addApplicationEntity.endTime)
+        )
         txt_number_of_play_value?.text = String.format("%d times", app.numberOfPlay)
         txt_sender_name_value?.text = app.senderNames
         txt_exclude_sender_name_value?.text = app.ignored_names
