@@ -20,6 +20,7 @@ import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.ViewUtils
 import com.google.android.material.card.MaterialCardView
+import kotlinx.android.synthetic.main.activity_main.rv_application_list
 import kotlinx.android.synthetic.main.dialog_alarm_options.*
 import kotlinx.android.synthetic.main.item_added_application_new.view.*
 import java.io.File
@@ -41,6 +42,7 @@ class AddedAppsListAdapterNew(
 
     interface ItemClickListener {
         fun onItemClick(app: ApplicationEntity)
+        fun onItemDeleteClick(app: ApplicationEntity, id: Int)
         fun onLongClick(app: ApplicationEntity)
         fun onApplicationSwitch(boolean: Boolean, id: Int)
     }
@@ -147,6 +149,10 @@ class AddedAppsListAdapterNew(
 
                 itemView.btn_confirm_app_option?.setOnClickListener {
                     mItemClickListener.onItemClick(appsList[adapterPosition])
+                }
+
+                itemView.btn_confirm_delete?.setOnClickListener {
+                    mItemClickListener.onItemDeleteClick(appsList[adapterPosition],adapterPosition)
                 }
 
             }catch (e:IndexOutOfBoundsException){

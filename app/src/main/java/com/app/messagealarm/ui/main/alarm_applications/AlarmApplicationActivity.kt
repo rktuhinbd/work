@@ -116,7 +116,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     }
 
 
-    private fun handlePurchaseState(){
+    private fun handlePurchaseState() {
         billingClient = BillingClient.newBuilder(this)
             .enablePendingPurchases()
             .setListener(this)
@@ -134,14 +134,20 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     ) { p0, p1 ->
                         if (p1.size > 0) {
                             handlePurchase(p1)
-                        }else{
-                            if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.WAS_SUBSCRIBED)){
+                        } else {
+                            if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.WAS_SUBSCRIBED)) {
                                 runOnUiThread {
                                     //first time after subscription is cancelled
-                                    Toasty.info(this@AlarmApplicationActivity,
-                                        "Sorry to see you go, Let us know why you canceled your subscription!", Toast.LENGTH_LONG).show()
+                                    Toasty.info(
+                                        this@AlarmApplicationActivity,
+                                        "Sorry to see you go, Let us know why you canceled your subscription!",
+                                        Toast.LENGTH_LONG
+                                    ).show()
                                 }
-                                SharedPrefUtils.write(Constants.PreferenceKeys.WAS_SUBSCRIBED, false)
+                                SharedPrefUtils.write(
+                                    Constants.PreferenceKeys.WAS_SUBSCRIBED,
+                                    false
+                                )
                             }
                             setIsPurchased(false)
                         }
@@ -160,29 +166,29 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
      * Removed by MK
      */
     private fun showFirstSavedAnimation() {
-      /*  viewKonfetti.build()
-            .setDirection(0.0, 359.0)
-            .setSpeed(1f, 2f)
-            .setFadeOutEnabled(true)
-            .setTimeToLive(500L)
-            .addColors(
-                Color.parseColor("#FF3F62"),
-                Color.parseColor("#307E45")
-            )
-            .addShapes(
-                Shape.DrawableShape(
-                    ResourcesCompat.getDrawable(
-                        resources, R.drawable.ic_leaf, null
-                    )!!
-                ), Shape.DrawableShape(
-                    ResourcesCompat.getDrawable(
-                        resources, R.drawable.ic_flower, null
-                    )!!
-                )
-            )
-            .addSizes(Size(18))
-            .setPosition(-50f, viewKonfetti.width + 50f, -50f, -50f)
-            .streamFor(100, 1500)*/
+        /*  viewKonfetti.build()
+              .setDirection(0.0, 359.0)
+              .setSpeed(1f, 2f)
+              .setFadeOutEnabled(true)
+              .setTimeToLive(500L)
+              .addColors(
+                  Color.parseColor("#FF3F62"),
+                  Color.parseColor("#307E45")
+              )
+              .addShapes(
+                  Shape.DrawableShape(
+                      ResourcesCompat.getDrawable(
+                          resources, R.drawable.ic_leaf, null
+                      )!!
+                  ), Shape.DrawableShape(
+                      ResourcesCompat.getDrawable(
+                          resources, R.drawable.ic_flower, null
+                      )!!
+                  )
+              )
+              .addSizes(Size(18))
+              .setPosition(-50f, viewKonfetti.width + 50f, -50f, -50f)
+              .streamFor(100, 1500)*/
     }
 
 
@@ -197,23 +203,25 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         dialog.setContentView(R.layout.dialog_congrats_layout)
         val materialButton = dialog.findViewById<MaterialButton>(R.id.text_done)
         val textView = dialog.findViewById<TextView>(R.id.text_sub_message)
-        try{
+        try {
             val appEntity = (rv_application_list?.adapter as AddedAppsListAdapterNew).getItem(
                 0
             )
             val html = String.format(
-                "<b>%s</b> has been successfully added! You will now receive alarm as needed.", appEntity.appName
+                "<b>%s</b> has been successfully added! You will now receive alarm as needed.",
+                appEntity.appName
             )
             textView.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)
             } else {
                 Html.fromHtml(html)
             }
-        }catch (e: IndexOutOfBoundsException){
+        } catch (e: IndexOutOfBoundsException) {
             /**
              * Here is a bug, handle it by reactive programming. Note by MK
              */
-            textView.text = "Your app has been successfully added, You will receive alarm as needed!"
+            textView.text =
+                "Your app has been successfully added, You will receive alarm as needed!"
         }
         materialButton.setOnClickListener {
             if (dialog.isShowing) {
@@ -428,6 +436,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             R.id.mnu_setting -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
             }
+
             R.id.mnu_buy_pro -> {
                 //one app added now take user to buy
                 val intent = Intent(this, BuyProActivity::class.java)
@@ -460,9 +469,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 //                            )!!
 //                        ) >= 30
 //                    ) {
-                        bottomSheetModel.txt_ringtone_value?.text = fileName
-                        bottomSheetModel.setToneName(fileName)
-                        bottomSheetModel.alarmTonePath = PathUtils.getPath(this, alarmTone[0].uri)!!
+                    bottomSheetModel.txt_ringtone_value?.text = fileName
+                    bottomSheetModel.setToneName(fileName)
+                    bottomSheetModel.alarmTonePath = PathUtils.getPath(this, alarmTone[0].uri)!!
 //                    } else {
 //                        bottomSheetModel.txt_ringtone_value?.text = "Default"
 //                        bottomSheetModel.setToneName("Default")
@@ -501,7 +510,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         } else if (requestCode == Constants.ACTION.ACTION_SAVE_APPLICATION) {
             if (resultCode == Activity.RESULT_OK) {
                 if (rv_application_list?.adapter?.itemCount!! == 0) {
-                 //   showFirstSavedAnimation()
+                    //   showFirstSavedAnimation()
                     Handler(Looper.myLooper()!!).postDelayed({
                         showCongratulationDialog()
                     }, 2500)
@@ -798,11 +807,13 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                         showVideoTutorial()
                         return@OnActionSelectedListener true // false will close it without animation
                     }
+
                     R.id.fab_action2 -> {
                         speedDial.close()
                         fab_button_add_application?.performClick()
                         return@OnActionSelectedListener true
                     }
+
                     R.id.fab_action3 -> {
                         startActivity(
                             Intent(this, AddWebsiteActivity::class.java),
@@ -1196,18 +1207,22 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             //only if app is opened, not from coming from different activity
             if (isFromLauncher && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(
                     this
-                ) && rv_application_list?.adapter?.itemCount!! > 0) {
+                ) && rv_application_list?.adapter?.itemCount!! > 0
+            ) {
                 //for better alarming please enable the permission to draw message alarm on top of other apps
-                DialogUtils.showDialogDrawOverApp(this, "Better Alarming", "Please enable draw over other app " +
-                        "permission for better alarming experience", object : DialogUtils.Callback {
-                    override fun onPositive() {
-                        getWindowManagerPermission()
-                    }
+                DialogUtils.showDialogDrawOverApp(this,
+                    "Better Alarming",
+                    "Please enable draw over other app " +
+                            "permission for better alarming experience",
+                    object : DialogUtils.Callback {
+                        override fun onPositive() {
+                            getWindowManagerPermission()
+                        }
 
-                    override fun onNegative() {
+                        override fun onNegative() {
 
-                    }
-                })
+                        }
+                    })
             }
         }
     }
@@ -1414,6 +1429,24 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         showEditDialog(app)
     }
 
+    override fun onItemDeleteClick(app: ApplicationEntity, id: Int) {
+        DialogUtils.showDialog(this@AlarmApplicationActivity,
+            getString(R.string.delete_app_title),
+            getString(R.string.delete_app_message),
+            object : DialogUtils.Callback {
+                override fun onPositive() {
+                    alarmAppPresenter.deleteApplication(
+                        app,
+                        id
+                    )
+                }
+
+                override fun onNegative() {
+                    rv_application_list?.adapter?.notifyDataSetChanged()
+                }
+            })
+    }
+
     override fun onLongClick(app: ApplicationEntity) {
 
     }
@@ -1452,14 +1485,17 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         }
     }
 
-    override fun onPurchasesUpdated(billingResult: BillingResult, purchases: MutableList<Purchase>?) {
+    override fun onPurchasesUpdated(
+        billingResult: BillingResult,
+        purchases: MutableList<Purchase>?
+    ) {
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-                handlePurchase(purchases)
+            handlePurchase(purchases)
         }
     }
 
     private fun handlePurchase(purchases: MutableList<Purchase>) {
-        for(purchase in purchases){
+        for (purchase in purchases) {
             // Check if the purchase has been completed
             if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
                 // The purchase has been completed
@@ -1470,7 +1506,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                     //first time app open
                     setIsPurchased(true)
                     SharedPrefUtils.write(Constants.PreferenceKeys.WAS_SUBSCRIBED, true)
-                    if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_RESTORED_SHOWED)){
+                    if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_RESTORED_SHOWED)) {
                         Thread.sleep(2000)
                         runOnUiThread {
                             Toasty.success(
@@ -1525,12 +1561,12 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     /**
      * FOR TESTING THE ALARM WINDOW
      * */
-    private fun getWindowManagerPermission(){
-            val intent = Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:$packageName")
-            )
-            startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION)
+    private fun getWindowManagerPermission() {
+        val intent = Intent(
+            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+            Uri.parse("package:$packageName")
+        )
+        startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION)
     }
 
     @Deprecated("Do not use this in production code")
@@ -1545,8 +1581,11 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         intent.putExtra(Constants.IntentKeys.IS_VIBRATE, true)
 //        intent.putExtra(Constants.IntentKeys.TONE, "")
         intent.putExtra(Constants.IntentKeys.IS_JUST_VIBRATE, false)
-        intent.putExtra(Constants.IntentKeys.IMAGE_PATH, "/storage/emulated/0/Android/data/com.app.messagealarm/files/.message_alarm/com.whatsapp.png")
-        intent.putExtra(Constants.IntentKeys.SOUND_LEVEL,100)
+        intent.putExtra(
+            Constants.IntentKeys.IMAGE_PATH,
+            "/storage/emulated/0/Android/data/com.app.messagealarm/files/.message_alarm/com.whatsapp.png"
+        )
+        intent.putExtra(Constants.IntentKeys.SOUND_LEVEL, 100)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
