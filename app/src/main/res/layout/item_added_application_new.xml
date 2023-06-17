@@ -231,17 +231,17 @@
 
                     <LinearLayout
                         android:layout_width="0dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:layout_height="match_parent">
+                        android:visibility="gone">
 
                         <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/card_custom"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            app:cardCornerRadius="12dp"
-                            android:id="@+id/card_custom"
-                            app:cardElevation="2dp"
                             android:layout_margin="4dp"
-                            >
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="2dp">
 
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"
@@ -251,34 +251,32 @@
                                     android:id="@+id/txt_custom"
                                     android:layout_width="0dp"
                                     android:layout_height="0dp"
-                                    android:textColor="@color/default_text"
-                                    app:layout_constraintTop_toTopOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintBottom_toBottomOf="parent"
-                                    android:text="Custom"
-                                    android:maxLines="2"
-                                    android:gravity="center"
-                                    android:textAllCaps="true"
                                     android:fontFamily="@font/roboto_regular"
+                                    android:gravity="center"
+                                    android:maxLines="2"
+                                    android:text="Custom"
                                     android:textAlignment="center"
-                                    />
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/default_text"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
 
                                 <ImageView
                                     android:id="@+id/img_save_flag_custom"
                                     android:layout_width="12dp"
                                     android:layout_height="12dp"
-                                    android:src="@drawable/save_success"
-                                    app:layout_constraintTop_toTopOf="parent"
-                                    app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    android:scaleType="fitCenter"
-                                    app:layout_constraintVertical_bias="0"
                                     android:layout_margin="6dp"
+                                    android:scaleType="fitCenter"
+                                    android:src="@drawable/save_success"
                                     android:visibility="gone"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintHorizontal_bias="1"
-                                    />
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintVertical_bias="0" />
 
                             </androidx.constraintlayout.widget.ConstraintLayout>
 

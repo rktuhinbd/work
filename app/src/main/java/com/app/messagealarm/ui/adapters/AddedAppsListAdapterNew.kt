@@ -41,7 +41,7 @@ class AddedAppsListAdapterNew(
     }
 
     interface ItemClickListener {
-        fun onItemClick(app: ApplicationEntity)
+        fun onItemClick(app: ApplicationEntity, selectedNotifyOption: String)
         fun onItemDeleteClick(app: ApplicationEntity, id: Int)
         fun onLongClick(app: ApplicationEntity)
         fun onApplicationSwitch(boolean: Boolean, id: Int)
@@ -148,7 +148,7 @@ class AddedAppsListAdapterNew(
                 }
 
                 itemView.btn_confirm_app_option?.setOnClickListener {
-                    mItemClickListener.onItemClick(appsList[adapterPosition])
+                    mItemClickListener.onItemClick(appsList[adapterPosition],selectedNotifyOption )
                 }
 
                 itemView.btn_confirm_delete?.setOnClickListener {

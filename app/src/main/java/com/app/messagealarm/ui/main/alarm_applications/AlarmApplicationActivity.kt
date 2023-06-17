@@ -44,6 +44,7 @@ import com.app.messagealarm.ui.buy_pro.BuyProActivity
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.configure_options.add_options_alarm.AlarmOptionDialog
 import com.app.messagealarm.ui.main.add_website.AddWebsiteActivity
+import com.app.messagealarm.ui.main.configure_options.add_options_speak.SpeakOptionDialog
 import com.app.messagealarm.ui.setting.SettingsActivity
 import com.app.messagealarm.ui.widget.BottomSheetFragmentLang
 import com.app.messagealarm.ui.widget.TutorialBottomSheetDialog
@@ -64,6 +65,7 @@ import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_alarm_options.*
 import kotlinx.android.synthetic.main.item_added_applications.view.*
+import org.jetbrains.anko.toast
 import xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity
 import java.io.File
 
@@ -74,6 +76,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     private lateinit var billingClient: BillingClient
     var mMessageReceiver: BroadcastReceiver? = null
     val bottomSheetModel = AlarmOptionDialog()
+    val bottomSpeakOptionDialog = SpeakOptionDialog()
     val REQUEST_CODE_PICK_AUDIO = 1
     var menu: Menu? = null
     val CODE_DRAW_OVER_OTHER_APP_PERMISSION = 111
@@ -1406,16 +1409,28 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         }
     }
 
-    private fun showEditDialog(app: ApplicationEntity) {
+    private fun showEditDialog(app: ApplicationEntity,selectedNotifyOption:String) {
         //refresh adapter first
         if (!isFinishing) {
             try {
-                if (!bottomSheetModel.isAdded) {
-                    val bundle = Bundle()
-                    bundle.putBoolean(Constants.BundleKeys.IS_EDIT_MODE, true)
-                    bundle.putString(Constants.BundleKeys.PACKAGE_NAME, app.packageName)
-                    bottomSheetModel.arguments = bundle
-                    bottomSheetModel.show(supportFragmentManager, "OPTIONS")
+                if (selectedNotifyOption == Constants.NotifyOptions.ALARM) {
+                    if (!bottomSheetModel.isAdded) {
+                        val bundle = Bundle()
+                        bundle.putBoolean(Constants.BundleKeys.IS_EDIT_MODE, true)
+                        bundle.putString(Constants.BundleKeys.PACKAGE_NAME, app.packageName)
+                        bottomSheetModel.arguments = bundle
+                        bottomSheetModel.show(supportFragmentManager, "OPTIONS")
+                    }
+                } else if (selectedNotifyOption == Constants.NotifyOptions.SPEAK) {
+                    if (!bottomSpeakOptionDialog.isAdded) {
+                        val bundle = Bundle()
+                        bundle.putBoolean(Constants.BundleKeys.IS_EDIT_MODE, true)
+                        bundle.putString(Constants.BundleKeys.PACKAGE_NAME, app.packageName)
+                        bottomSpeakOptionDialog.arguments = bundle
+                        bottomSpeakOptionDialog.show(supportFragmentManager, "OPTIONS")
+                    }
+                } else if (selectedNotifyOption == Constants.NotifyOptions.CUSTOM) {
+                    toast("Not available now")
                 }
             } catch (e: java.lang.IllegalStateException) {
                 //skip the crash
@@ -1424,9 +1439,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     }
 
 
-    override fun onItemClick(app: ApplicationEntity) {
+    override fun onItemClick(app: ApplicationEntity, selectedNotifyOption: String) {
         //refresh adapter first
-        showEditDialog(app)
+        showEditDialog(app,selectedNotifyOption)
     }
 
     override fun onItemDeleteClick(app: ApplicationEntity, id: Int) {
