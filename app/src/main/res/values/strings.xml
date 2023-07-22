@@ -108,9 +108,15 @@
     <string name="vibration_and_sound_hint">Vibration and music together, powerful alarm. \n\n<b>Best use case, enough power to awake you up from sleep!</b></string>
     <string name="subscribe_value_txt">Subscribe For\n $0.99/Mo</string>
     <string name="onetime_payment_txt">Onetime Payment\n For $149.99</string>
-    <string name="privacy_policy"><a  href="https://www.messagealarm.app/privacy_policy" style="color: red"><u>Privacy Policy</u></a></string>
-    <string name="terms_condition"><a href="https://www.messagealarm.app/privacy_policy" style="color: red"><u>Terms &amp; Condition</u></a></string>
+    <string name="privacy_policy"><a style="color: red" href="https://www.messagealarm.app/privacy_policy"><u>Privacy Policy</u></a></string>
+    <string name="terms_condition"><a style="color: red" href="https://www.messagealarm.app/privacy_policy"><u>Terms &amp; Condition</u></a></string>
     <string name="txt_details_subscribe">Recurring Billing. Cancel anytime you want.</string>
     <string name="txt_subs_button">Subscribe Now</string>
     <string name="txt_in_app_button">Subscribe Now</string>
+    <string name="setup_alarm">Setup Alarm</string>
+    <string name="only_if_headphone_is_connected">Only if headphone is connected!</string>
+    <string name="set_an_alarm_to_notify_you_when_you_receive_an_important_message">Set an alarm to notify you when you receive an important message</string>
+    <string name="both_can_work_together">Both can work together</string>
+    <string name="speak">Speak</string>
+    <string name="alarm">Alarm</string>
 </resources>

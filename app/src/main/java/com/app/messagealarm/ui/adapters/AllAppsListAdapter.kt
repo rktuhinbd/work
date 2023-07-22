@@ -25,28 +25,30 @@ import java.util.*
 /**
  * @author Mujahid Khan
  */
-class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
-                          val mItemClickListener: ItemClickListener
-):
-    RecyclerView.Adapter<AllAppsListAdapter.AllAppsViewHolder>(){
+class AllAppsListAdapter(
+    private var appsList: ArrayList<InstalledApps>,
+    val mItemClickListener: ItemClickListener
+) :
+    RecyclerView.Adapter<AllAppsListAdapter.AllAppsViewHolder>() {
 
     private var itemsCopy: ArrayList<InstalledApps> = ArrayList()
     private var mExpandedPosition = -1
     private var selectedNotifyOption = Constants.NotifyOptions.ALARM
 
-    interface ItemClickListener{
-        fun onItemClick(app: InstalledApps, type:String)
+    interface ItemClickListener {
+        fun onItemClick(app: InstalledApps, type: String)
         fun onLongClick(app: InstalledApps)
         fun onDataRequest(app: InstalledApps, position: Int)
     }
 
 
     init {
-       itemsCopy.addAll(appsList)
-   }
+        itemsCopy.addAll(appsList)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllAppsViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_all_apps, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_all_apps, parent, false)
         return AllAppsViewHolder(view)
     }
 
@@ -55,13 +57,13 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
     }
 
 
-    fun onRequestedDataReturn(app:InstalledApps, position: Int){
+    fun onRequestedDataReturn(app: InstalledApps, position: Int) {
         appsList[position].isAlarmConfigured = app.isAlarmConfigured
         appsList[position].isSpeakConfigured = app.isSpeakConfigured
         appsList[position].isCustomConfigured = app.isCustomConfigured
     }
 
-    fun updateData(list:ArrayList<InstalledApps>){
+    fun updateData(list: ArrayList<InstalledApps>) {
         //On any update disable any expanded view
         mExpandedPosition = -1
         appsList.clear()
@@ -71,7 +73,7 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
         notifyDataSetChanged()
     }
 
-    public fun cleanList(){
+    public fun cleanList() {
         appsList.clear()
         itemsCopy.clear()
     }
@@ -86,8 +88,11 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
         } else {
             text = text.toLowerCase(Locale.getDefault())
             for (item in itemsCopy) {
-                if (item.appName.toLowerCase(Locale.getDefault()).contains(text) || item.appName.toLowerCase(
-                        Locale.getDefault()).contains(text)) {
+                if (item.appName.toLowerCase(Locale.getDefault())
+                        .contains(text) || item.appName.toLowerCase(
+                        Locale.getDefault()
+                    ).contains(text)
+                ) {
                     appsList.add(item)
                 }
             }
@@ -95,7 +100,7 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
         notifyDataSetChanged()
     }
 
-    public fun adapterSize() : Int{
+    public fun adapterSize(): Int {
         return appsList.size
     }
 
@@ -104,127 +109,122 @@ class AllAppsListAdapter (private var appsList: ArrayList<InstalledApps>,
         holder.bindItems(appsList[position])
     }
 
-   inner class AllAppsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class AllAppsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-            fun bindItems(installedApps: InstalledApps){
-                try{
-                    val rotate = RotateAnimation(
-                        270f,
-                        360f,
-                        Animation.RELATIVE_TO_SELF,
-                        0.5f,
-                        Animation.RELATIVE_TO_SELF,
-                        0.5f
-                    )
-                    rotate.duration = 400
-                    rotate.interpolator = LinearInterpolator()
+        fun bindItems(installedApps: InstalledApps) {
+            try {
+                val rotate = RotateAnimation(
+                    270f,
+                    360f,
+                    Animation.RELATIVE_TO_SELF,
+                    0.5f,
+                    Animation.RELATIVE_TO_SELF,
+                    0.5f
+                )
+                rotate.duration = 400
+                rotate.interpolator = LinearInterpolator()
 
-                    val isExpanded = position == mExpandedPosition
-                    itemView.tv_app_name?.text = installedApps.appName
-                    itemView.iv_app_icon?.setImageDrawable(installedApps.drawableIcon)
-                        if (isExpanded) {
-                            itemView.layout_expand_section.animate().alpha(1.0f).duration = 220
-                            itemView.indicator_item?.startAnimation(rotate)
-                            itemView.layout_expand_section.visibility = View.VISIBLE
-                            itemView.indicator_item?.rotation = 360F
-                            itemView.dotted_condom.visibility = View.VISIBLE
-                        } else{
-                            itemView.layout_expand_section.animate().alpha(0.0f).duration = 220
-                            itemView.indicator_item?.rotation = 270F
-                            itemView.layout_expand_section.visibility = View.GONE
-                            itemView.dotted_condom.visibility = View.GONE
-                        }
+                val isExpanded = position == mExpandedPosition
+                itemView.tv_app_name?.text = installedApps.appName
+                itemView.iv_app_icon?.setImageDrawable(installedApps.drawableIcon)
+                if (isExpanded) {
+                    itemView.layout_expand_section.animate().alpha(1.0f).duration = 220
+                    itemView.indicator_item?.startAnimation(rotate)
+                    itemView.layout_expand_section.visibility = View.VISIBLE
+                    itemView.indicator_item?.rotation = 360F
+                    itemView.dotted_condom.visibility = View.VISIBLE
+                } else {
+                    itemView.layout_expand_section.animate().alpha(0.0f).duration = 220
+                    itemView.indicator_item?.rotation = 270F
+                    itemView.layout_expand_section.visibility = View.GONE
+                    itemView.dotted_condom.visibility = View.GONE
+                }
 
-                    if(installedApps.isAlarmConfigured){
-                        itemView.img_save_flag.visibility = View.VISIBLE
-                        itemView.btn_confirm_app_option?.text = "Edit Alarm Options"
-                    }
-                    if(installedApps.isSpeakConfigured){
-                        itemView.img_save_flag_speak.visibility = View.VISIBLE
-                    }
-                    if(installedApps.isCustomConfigured){
-                        itemView.img_save_flag_custom.visibility = View.VISIBLE
-                    }
+                if (installedApps.isAlarmConfigured) {
+                    itemView.img_save_flag.visibility = View.VISIBLE
+                    itemView.btn_confirm_app_option?.text = "Edit Alarm Options"
+                }
+                if (installedApps.isSpeakConfigured) {
+                    itemView.img_save_flag_speak.visibility = View.VISIBLE
+                }
 
-                    itemView.base_part_of_item.setOnClickListener {
-                         if (isExpanded){
-                             mExpandedPosition =  -1
-                             //If collapsed, reset the selected item to Alarm again
-                            selectedNotifyOption = Constants.NotifyOptions.ALARM
-                        } else{
-                             mExpandedPosition =  position
-                             //should show a loader
-                             mItemClickListener.onDataRequest(appsList[position],position)
-                        }
-                        notifyDataSetChanged()
-                    }
-
-                    itemView.card_alarm?.setOnClickListener {
-                        setSelectedOption( listOf(itemView.txt_alarm, itemView.txt_speak, itemView.txt_custom),
-                            itemView.card_alarm, itemView.card_speak, itemView.card_custom)
-                        itemView.txt_option_notice.text = "Set an alarm to notify you when you receive an important message"
+                itemView.base_part_of_item.setOnClickListener {
+                    if (isExpanded) {
+                        mExpandedPosition = -1
+                        //If collapsed, reset the selected item to Alarm again
                         selectedNotifyOption = Constants.NotifyOptions.ALARM
-                        itemView.btn_confirm_app_option?.text = if (installedApps.isAlarmConfigured) "Edit Alarm Options" else "Setup Alarm"
-                        itemView.img_info?.visibility = View.GONE
-                        itemView.txt_option_three_notice.visibility = View.GONE
+                    } else {
+                        mExpandedPosition = position
+                        //should show a loader
+                        mItemClickListener.onDataRequest(appsList[position], position)
                     }
+                    notifyDataSetChanged()
+                }
 
-                    itemView.card_custom?.setOnClickListener {
-                        setSelectedOption(listOf(itemView.txt_custom, itemView.txt_speak, itemView.txt_alarm),
-                            itemView.card_custom, itemView.card_speak, itemView.card_alarm)
-                        selectedNotifyOption = Constants.NotifyOptions.CUSTOM
-                        itemView.btn_confirm_app_option?.text = if (installedApps.isCustomConfigured) "Edit Custom Options" else "Setup Custom Options"
-                        itemView.txt_option_notice.text = "Enhance functionality by," +
-                                " triggering actions based on message content, integrating custom APIs," +
-                                " providing a visual editor, and a marketplace for pre-made workflows."
-                        itemView.img_info?.visibility = View.GONE
-                        itemView.txt_option_three_notice.visibility = View.GONE
-                    }
+                itemView.card_alarm?.setOnClickListener {
+                    itemView.txt_option_notice.text =
+                        "Set an alarm to notify you when you receive an important message"
+                    selectedNotifyOption = Constants.NotifyOptions.ALARM
+                    itemView.btn_confirm_app_option?.text =
+                        if (installedApps.isAlarmConfigured) "Edit Alarm Options" else "Setup Alarm"
+                    itemView.img_info?.visibility = View.GONE
+                    itemView.txt_option_three_notice.visibility = View.GONE
+                }
 
-                    itemView.card_speak?.setOnClickListener {
-                        setSelectedOption(listOf(itemView.txt_speak, itemView.txt_alarm, itemView.txt_custom),
-                            itemView.card_speak, itemView.card_alarm, itemView.card_custom)
-                        selectedNotifyOption = Constants.NotifyOptions.SPEAK
-                        itemView.txt_option_notice.text = "Have the app speak the contents of the message out loud"
-                        itemView.btn_confirm_app_option?.text = if (installedApps.isSpeakConfigured) "Edit Speaking Options" else "Setup Speaking Options"
-                        itemView.img_info?.visibility = View.VISIBLE
-                        itemView.txt_option_three_notice.visibility = View.VISIBLE
-                    }
+                itemView.card_speak?.setOnClickListener {
+                    selectedNotifyOption = Constants.NotifyOptions.SPEAK
+                    itemView.txt_option_notice.text =
+                        "Have the app speak the contents of the message out loud"
+                    itemView.btn_confirm_app_option?.text =
+                        if (installedApps.isSpeakConfigured) "Edit Speaking Options" else "Setup Speaking Options"
+                    itemView.img_info?.visibility = View.VISIBLE
+                    itemView.txt_option_three_notice.visibility = View.VISIBLE
+                }
 
-                    itemView.btn_confirm_app_option?.setOnClickListener {
-                        mItemClickListener.onItemClick(appsList[adapterPosition], selectedNotifyOption)
-                    }
+                itemView.btn_confirm_app_option?.setOnClickListener {
+                    mItemClickListener.onItemClick(appsList[adapterPosition], selectedNotifyOption)
+                }
 
-                }catch (e:IndexOutOfBoundsException){
-                   //skip the crash
+            } catch (e: IndexOutOfBoundsException) {
+                //skip the crash
+            }
+        }
+
+        /**
+         * First one will be selected, others one will be unselected
+         */
+        private fun setSelectedOption(texts: List<TextView>, vararg cardAlarms: MaterialCardView) {
+            for (i in cardAlarms.indices) {
+                if (i == 0) {
+                    cardAlarms[i].strokeWidth = ViewUtils.dpToPx(3).toInt()
+                    cardAlarms[i].setStrokeColor(
+                        ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                BaseApplication.getBaseApplicationContext(),
+                                R.color.colorAccent
+                            )
+                        )
+                    )
+                    texts[i].setTextColor(
+                        ContextCompat.getColor(
+                            BaseApplication.getBaseApplicationContext(),
+                            R.color.colorTextRegular
+                        )
+                    )
+                    texts[i].setTypeface(null, Typeface.BOLD)
+                } else {
+                    cardAlarms[i].strokeWidth = 0
+                    cardAlarms[i].setStrokeColor(null)
+                    texts[i].setTextColor(
+                        ContextCompat.getColor(
+                            BaseApplication.getBaseApplicationContext(),
+                            R.color.default_text
+                        )
+                    )
+                    texts[i].setTypeface(null, Typeface.NORMAL)
                 }
             }
-
-       /**
-        * First one will be selected, others one will be unselected
-        */
-       private fun setSelectedOption(texts: List<TextView>, vararg cardAlarms: MaterialCardView){
-           for (i in cardAlarms.indices){
-               if(i == 0){
-                   cardAlarms[i].strokeWidth = ViewUtils.dpToPx(3).toInt()
-                   cardAlarms[i].setStrokeColor(
-                       ColorStateList.valueOf(
-                           ContextCompat.getColor(
-                               BaseApplication.getBaseApplicationContext(),
-                               R.color.colorAccent
-                           )
-                       )
-                   )
-                   texts[i].setTextColor(ContextCompat.getColor(BaseApplication.getBaseApplicationContext(),R.color.colorTextRegular))
-                   texts[i].setTypeface(null, Typeface.BOLD)
-               }else{
-                   cardAlarms[i].strokeWidth = 0
-                   cardAlarms[i].setStrokeColor(null)
-                   texts[i].setTextColor(ContextCompat.getColor(BaseApplication.getBaseApplicationContext(),R.color.default_text))
-                   texts[i].setTypeface(null, Typeface.NORMAL)
-               }
-           }
-       }
+        }
 
     }
 

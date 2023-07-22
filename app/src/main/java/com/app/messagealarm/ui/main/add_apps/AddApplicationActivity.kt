@@ -30,22 +30,16 @@ import com.google.android.material.appbar.MaterialToolbar
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_add_application.*
 import kotlinx.android.synthetic.main.dialog_alarm_options.*
-import net.frakbot.jumpingbeans.JumpingBeans
 import xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity
 import java.io.File
 import java.io.Serializable
-import java.lang.IllegalArgumentException
-import java.lang.IndexOutOfBoundsException
-import java.lang.NullPointerException
 import java.util.*
-import kotlin.Comparator
-import kotlin.collections.ArrayList
 
 
 class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     AllAppsListAdapter.ItemClickListener {
 
-    var addApplicationPresenter:AddApplicationPresenter? = null
+    var addApplicationPresenter: AddApplicationPresenter? = null
     val alarmModal = AlarmOptionDialog()
     val speakModal = SpeakOptionDialog()
     val customModal = CustomOptionDialog()
@@ -74,32 +68,32 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
     }
 
-    private fun handleRefund(){
+    private fun handleRefund() {
         //Check if user has opted for any refund
         //if yes, then disable PRO feature option for that user
         //if no, keep the access
 
     }
 
-    private fun deleteList(){
+    private fun deleteList() {
         (rv_apps_list?.adapter as AllAppsListAdapter).cleanList()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if(rv_apps_list != null){
-            if(rv_apps_list?.adapter != null){
+        if (rv_apps_list != null) {
+            if (rv_apps_list?.adapter != null) {
                 deleteList()
             }
         }
 
     }
 
-    private fun darkModePre(){
-        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
+    private fun darkModePre() {
+        if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)) {
             spinner_drop_down?.setImageResource(R.drawable.ic_arrow_drop_down_white)
             search_not_found?.setImageResource(R.drawable.ic_search_no_found_dark)
-        }else{
+        } else {
             spinner_drop_down?.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp)
             search_not_found?.setImageResource(R.drawable.ic_search_no_found_white)
         }
@@ -118,9 +112,9 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         }
     }
 
-    private fun setListener(){
+    private fun setListener() {
         btn_sync_now?.setOnClickListener {
-            if(AndroidUtils.isOnline(this)){
+            if (AndroidUtils.isOnline(this)) {
                 Toasty.success(this, "Sync started, please hold on!").show()
             }
             hideNotSyncedSuccess()
@@ -150,16 +144,16 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                 shimmer_layout_filter?.stopShimmer()
             }
 
-        }catch (e:TypeCastException){
+        } catch (e: TypeCastException) {
             e.printStackTrace()
-        }catch (e:NullPointerException){
+        } catch (e: NullPointerException) {
             e.printStackTrace()
         }
     }
 
 
     @SuppressLint("ResourceType")
-    private fun setupSpinner(){
+    private fun setupSpinner() {
         val spinnerList = ArrayList<String>()
         spinnerList.add("All Apps")
         spinnerList.add("Messaging")
@@ -216,11 +210,11 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         setSupportActionBar(toolbar)
         supportActionBar?.title = getString(R.string.txt_add_app)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
+        if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 toolbar.navigationIcon?.setTint(resources.getColor(R.color.color_white, theme))
                 toolbar.collapseIcon?.setTint(resources.getColor(R.color.color_white, theme))
-            }else{
+            } else {
                 toolbar.navigationIcon?.setTint(resources.getColor(R.color.color_white))
                 toolbar.collapseIcon?.setTint(resources.getColor(R.color.color_white))
             }
@@ -242,19 +236,20 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         //there should be a logic that if internet is off then show handle sync not success
         //or if loading is happening for more than 6 sec, then show sync not
         runOnUiThread {
-            val countDownTimer = object  : CountDownTimer(5000, 1000){
+            val countDownTimer = object : CountDownTimer(5000, 1000) {
                 override fun onTick(millisUntilFinished: Long) {
                     //skipping the milliseconds as not needed
                 }
+
                 override fun onFinish() {
-                    if(holderList.isEmpty()){
+                    if (holderList.isEmpty()) {
                         handleSyncedNotSuccess()
                     }
                 }
             }
             countDownTimer.start()
         }
-        try{
+        try {
             mainList.sortWith(Comparator { lhs, rhs -> lhs.appName.compareTo(rhs.appName) })
             runOnUiThread {
                 (rv_apps_list?.adapter as AllAppsListAdapter).updateData(mainList)
@@ -271,7 +266,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             }
         } catch (e: NullPointerException) {
             e.printStackTrace()
-        }catch (e:TypeCastException){
+        } catch (e: TypeCastException) {
             e.printStackTrace()
         }
     }
@@ -305,7 +300,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         super.onPause()
     }
 
-    private fun hideNotSyncedSuccess(){
+    private fun hideNotSyncedSuccess() {
         runOnUiThread {
             gif_no_internet?.visibility = View.GONE
             txt_no_internet?.visibility = View.GONE
@@ -313,17 +308,17 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         }
     }
 
-    private fun showSearchNotFound(){
+    private fun showSearchNotFound() {
         search_not_found?.visibility = View.VISIBLE
         txt_search_no_found?.visibility = View.VISIBLE
     }
 
-    private fun hideSearchNotFound(){
+    private fun hideSearchNotFound() {
         search_not_found?.visibility = View.GONE
         txt_search_no_found?.visibility = View.GONE
     }
 
-    private fun handleSyncedNotSuccess(){
+    private fun handleSyncedNotSuccess() {
         runOnUiThread {
             hideProgress()
             rv_apps_list?.visibility = View.GONE
@@ -339,7 +334,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         menuInflater.inflate(R.menu.menu_add_app, menu)
         val searchItem: MenuItem? = menu?.findItem(R.id.mnu_search)
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-         searchView = searchItem?.actionView as SearchView
+        searchView = searchItem?.actionView as SearchView
         // Assumes current activity is the searchable activity
         searchView?.setSearchableInfo(searchManager.getSearchableInfo(componentName))
         setSearchViewEditTextBackgroundColor(this, searchView!!)
@@ -347,46 +342,59 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
             androidx.appcompat.widget.SearchView.OnQueryTextListener,
             SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                try{
+                try {
                     (rv_apps_list?.adapter as AllAppsListAdapter).filter(query!!)
-                    if((rv_apps_list?.adapter as AllAppsListAdapter).adapterSize() == 0 &&
+                    if ((rv_apps_list?.adapter as AllAppsListAdapter).adapterSize() == 0 &&
                         !gif_no_internet?.isVisibile()!! &&
                         !shimmer_layout?.isVisibile()!!
                     ) {
                         showSearchNotFound()
-                    }else{
+                    } else {
                         hideSearchNotFound()
                     }
-                }catch (e:TypeCastException){
+                } catch (e: TypeCastException) {
                     e.printStackTrace()
-                }catch (e:NullPointerException){
+                } catch (e: NullPointerException) {
                     e.printStackTrace()
                 }
                 return true
             }
+
             override fun onQueryTextChange(newText: String?): Boolean {
-                try{
+                try {
                     (rv_apps_list?.adapter as AllAppsListAdapter).filter(newText!!)
-                    if((rv_apps_list?.adapter as AllAppsListAdapter).adapterSize() == 0 &&
+                    if ((rv_apps_list?.adapter as AllAppsListAdapter).adapterSize() == 0 &&
                         !gif_no_internet?.isVisibile()!! &&
                         !shimmer_layout?.isVisibile()!!
                     ) {
                         showSearchNotFound()
-                    }else{
+                    } else {
                         hideSearchNotFound()
                     }
-                }catch (e:TypeCastException){
+                } catch (e: TypeCastException) {
                     e.printStackTrace()
-                }catch (e:NullPointerException){
+                } catch (e: NullPointerException) {
                     e.printStackTrace()
                 }
                 return true
             }
         })
-        if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)){
-            val clearButton = searchView?.context?.resources?.getIdentifier("android:id/search_close_btn",null,null)
-            val buttonId = searchView?.context?.resources?.getIdentifier("android:id/search_button",null, null)
-            val id = searchView?.context?.resources?.getIdentifier("android:id/search_src_text", null, null);
+        if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_DARK_MODE)) {
+            val clearButton = searchView?.context?.resources?.getIdentifier(
+                "android:id/search_close_btn",
+                null,
+                null
+            )
+            val buttonId = searchView?.context?.resources?.getIdentifier(
+                "android:id/search_button",
+                null,
+                null
+            )
+            val id = searchView?.context?.resources?.getIdentifier(
+                "android:id/search_src_text",
+                null,
+                null
+            );
             val textView = searchView?.findViewById<TextView>(id!!)
             val imageView = searchView?.findViewById<ImageView>(buttonId!!)
             val clearImage = searchView?.findViewById<ImageView>(clearButton!!)
@@ -411,26 +419,28 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                      * @author Mortuza Hossain
                      * To go back to previous code uncomment the if..else condition
                      */
-                        alarmModal.txt_ringtone_value?.text = fileName
-                        alarmModal.setToneName(fileName)
-                        alarmModal.alarmTonePath = PathUtils.getPath(this, alarmTone[0].uri)!!
+                    alarmModal.txt_ringtone_value?.text = fileName
+                    alarmModal.setToneName(fileName)
+                    alarmModal.alarmTonePath = PathUtils.getPath(this, alarmTone[0].uri)!!
 
-                }catch (e:IllegalArgumentException){
+                } catch (e: IllegalArgumentException) {
                     alarmModal.txt_ringtone_value?.text = "Default"
                     alarmModal.setToneName("Default")
                     alarmModal.alarmTonePath = null
-                    DialogUtils.showSimpleDialog(this, getString(R.string.txt_music),
-                        getString(R.string.txt_try_again))
-                }catch (e:IndexOutOfBoundsException){
+                    DialogUtils.showSimpleDialog(
+                        this, getString(R.string.txt_music),
+                        getString(R.string.txt_try_again)
+                    )
+                } catch (e: IndexOutOfBoundsException) {
                     alarmModal.txt_ringtone_value?.text = "Default"
                     alarmModal.setToneName("Default")
                     alarmModal.alarmTonePath = null
                     alarmModal.askForPermission()
                 }
             }
-        }else if(requestCode == Constants.ACTION.ACTION_PURCHASE_FROM_ADD){
+        } else if (requestCode == Constants.ACTION.ACTION_PURCHASE_FROM_ADD) {
             //purchased
-            if(isPurchased()){
+            if (isPurchased()) {
                 Toasty.success(this, "Thanks for purchase! You are now pro user!").show()
             }
         }
@@ -438,9 +448,9 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     }
 
 
-   private fun isPurchased() : Boolean{
-       return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
-   }
+    private fun isPurchased(): Boolean {
+        return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
+    }
 
     private fun setSearchViewEditTextBackgroundColor(
         context: Context,
@@ -453,8 +463,8 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         viewGroup.setBackgroundColor(Color.TRANSPARENT)
     }
 
-    override fun onItemClick(app: InstalledApps, type:String) {
-        when(type){
+    override fun onItemClick(app: InstalledApps, type: String) {
+        when (type) {
             Constants.NotifyOptions.ALARM -> {
                 if (!alarmModal.isAdded) {
                     val bundle = Bundle()
@@ -465,6 +475,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                     alarmModal.show(supportFragmentManager, "OPTIONS")
                 }
             }
+
             Constants.NotifyOptions.SPEAK -> {
                 if (!speakModal.isAdded) {
                     val bundle = Bundle()
@@ -475,6 +486,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                     speakModal.show(supportFragmentManager, "SPEAK_OPTIONS")
                 }
             }
+
             Constants.NotifyOptions.CUSTOM -> {
                 if (!customModal.isAdded) {
                     val bundle = Bundle()
@@ -493,12 +505,11 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         Toasty.info(this, app.appName).show()
     }
 
-    override fun onDataRequest(app:InstalledApps, position:Int) {
+    override fun onDataRequest(app: InstalledApps, position: Int) {
         //query data and know if $app has alarm, speak, custom configured
         //and pass to adapter for that position
         addApplicationPresenter?.getRequestAppFlagAdded(app, position)
     }
-
 
 
     override fun onRequestPermissionsResult(
