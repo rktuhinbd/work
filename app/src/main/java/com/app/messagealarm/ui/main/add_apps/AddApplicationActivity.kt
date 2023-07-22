@@ -23,7 +23,6 @@ import com.app.messagealarm.R
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.ui.adapters.AllAppsListAdapter
 import com.app.messagealarm.ui.main.configure_options.add_options_alarm.AlarmOptionDialog
-import com.app.messagealarm.ui.main.configure_options.add_options_custom.CustomOptionDialog
 import com.app.messagealarm.ui.main.configure_options.add_options_speak.SpeakOptionDialog
 import com.app.messagealarm.utils.*
 import com.google.android.material.appbar.MaterialToolbar
@@ -42,7 +41,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     var addApplicationPresenter: AddApplicationPresenter? = null
     val alarmModal = AlarmOptionDialog()
     val speakModal = SpeakOptionDialog()
-    val customModal = CustomOptionDialog()
     val REQUEST_CODE_PICK_AUDIO = 1
     var searchView: SearchView? = null
 
@@ -484,17 +482,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                     speakModal.arguments = bundle
                     speakModal.isCancelable = false
                     speakModal.show(supportFragmentManager, "SPEAK_OPTIONS")
-                }
-            }
-
-            Constants.NotifyOptions.CUSTOM -> {
-                if (!customModal.isAdded) {
-                    val bundle = Bundle()
-                    bundle.putBoolean(Constants.BundleKeys.IS_EDIT_MODE, false)
-                    bundle.putSerializable(Constants.BundleKeys.APP, app as Serializable)
-                    customModal.arguments = bundle
-                    customModal.isCancelable = false
-                    customModal.show(supportFragmentManager, "CUSTOM_OPTIONS")
                 }
             }
         }

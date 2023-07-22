@@ -3,7 +3,6 @@ package com.app.messagealarm.ui.main.configure_options.add_options_alarm
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
-import android.app.TimePickerDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.media.RingtoneManager
@@ -77,10 +76,8 @@ import kotlinx.android.synthetic.main.dialog_alarm_options.view_vibrate
 import kotlinx.android.synthetic.main.dialog_speak_options.*
 import xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity
 import xyz.aprildown.ultimateringtonepicker.UltimateRingtonePicker
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
