@@ -10,6 +10,7 @@ import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.text.style.ForegroundColorSpan
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.content.ContextCompat
@@ -34,6 +35,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.gson.GsonBuilder
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_alarm_options.*
 import kotlinx.android.synthetic.main.dialog_speak_options.*
@@ -69,6 +71,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
     private var addApplicationEntity = ApplicationEntity()
     private var holderEntity = ApplicationEntity()
     private var optionPresenter: OptionPresenter? = null
+    private var isNewData: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -326,12 +329,18 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
                 addApplicationEntity.packageName = app.packageName
                 Thread(Runnable {
                     try {
+
+                        val existingData = optionPresenter?.getAppByPackageName(app.packageName)
+
+                        isNewData = existingData == null
+
                         val bitmap = app.drawableIcon
                         optionPresenter?.saveBitmapToFile(
                             requireActivity(),
                             app.packageName,
                             bitmap.toBitmap()
                         )
+
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -1049,6 +1058,13 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
     }
 
     override fun onApplicationUpdateSuccess() {
+        requireActivity().runOnUiThread {
+            Toasty.success(requireActivity(), "Application updated successfully!")
+                .show()
+            dismissAllowingStateLoss()
+            requireActivity().setResult(Activity.RESULT_OK)
+            requireActivity().finish()
+        }
 
     }
 
@@ -1061,7 +1077,13 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         /**
          * End of other values
          */
-        optionPresenter?.saveApplication(addApplicationEntity, null)
+
+        if(isNewData){
+            optionPresenter?.saveApplication(addApplicationEntity, null)
+        } else {
+            optionPresenter?.updateExistingApplication(addApplicationEntity, null)
+        }
+
         if (isAdded) {
             requireActivity().runOnUiThread {
                 hideProgressBar()

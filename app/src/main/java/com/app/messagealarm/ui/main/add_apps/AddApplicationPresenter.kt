@@ -26,11 +26,11 @@ class AddApplicationPresenter(
     fun getAllApplicationList() {
         Thread(Runnable {
             try {
-                if(BaseApplication.installedApps.isEmpty()){
+                if (BaseApplication.installedApps.isEmpty()) {
                     addApplicationView.onAllApplicationGetSuccess(
                         AppsReader.getInstalledApps(false, activity)!!
                     )
-                }else{
+                } else {
                     addApplicationView.onAllApplicationGetSuccess(
                         BaseApplication.installedApps as ArrayList<InstalledApps>
                     )
@@ -41,7 +41,7 @@ class AddApplicationPresenter(
         }).start()
     }
 
-    fun getRequestAppFlagAdded(installedApps: InstalledApps, position:Int){
+    fun getRequestAppFlagAdded(installedApps: InstalledApps, position: Int) {
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread(Runnable {
             try {
@@ -51,27 +51,29 @@ class AddApplicationPresenter(
                 installedApps.isCustomConfigured = appTypes.isCustomConfigured
                 installedApps.isSpeakConfigured = appTypes.isSpeakConfigured
                 addApplicationView.onAdapterRequestedDataReturn(installedApps, position)
-            }catch (e: java.lang.Exception){
+            } catch (e: java.lang.Exception) {
                 e.printStackTrace()
             }
 
         }).start()
     }
 
-    fun sync(){
+    fun sync() {
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread(Runnable {
             appDatabase.languageDao().cleanLanguage()
             appDatabase.appDao().cleanMessagingApp()
             appDatabase.appConstrainDao().cleanAppConstrain()
-            RetrofitClient.getApiService().syncData(0, 0, 0,
-                AndroidUtils.getCurrentLangCode(BaseApplication.getBaseApplicationContext()))
-                .enqueue(object : Callback<SyncResponse>{
+            RetrofitClient.getApiService().syncData(
+                0, 0, 0,
+                AndroidUtils.getCurrentLangCode(BaseApplication.getBaseApplicationContext())
+            )
+                .enqueue(object : Callback<SyncResponse> {
                     override fun onResponse(
                         call: Call<SyncResponse>,
                         response: Response<SyncResponse>
                     ) {
-                        if(response.isSuccessful){
+                        if (response.isSuccessful) {
                             BGSyncDataSavingService.saveData(response.body()!!)
                             //wait let's get it saved
                             android.os.Handler(Looper.getMainLooper()).postDelayed(
@@ -81,6 +83,7 @@ class AddApplicationPresenter(
                             )
                         }
                     }
+
                     override fun onFailure(call: Call<SyncResponse>, t: Throwable) {
                         addApplicationView.onSyncFailed("Sync not success, Try again!")
                     }
@@ -96,7 +99,8 @@ class AddApplicationPresenter(
                 BaseApplication.installedApps
             }
             try {
-                val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
+                val appDatabase =
+                    AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
                 val appList = appDatabase.appDao().appsList.associateBy { it.appPackageName }
                 val holder = HashSet<InstalledApps>()
                 for (x in installedAppsList) {

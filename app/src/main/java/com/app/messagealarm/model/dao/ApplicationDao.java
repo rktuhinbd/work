@@ -41,6 +41,9 @@ public interface ApplicationDao {
     @Delete
     void deleteApplication(ApplicationEntity applicationEntity);
 
+    @Query("SELECT * FROM applications WHERE package_name = :packageName")
+    ApplicationEntity getAppByPackageName(String packageName);
+
     @Query("SELECT * FROM applications WHERE package_name = :packageName AND alert_type = :type")
     ApplicationEntity getAppByPackageNameAndType(String packageName, String type);
 

@@ -97,6 +97,25 @@ class OptionPresenter(private val optionView: OptionView) {
         }).start()
     }
 
+    fun getAppByPackageName(packageName: String?) {
+        val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
+        Thread(Runnable {
+            try {
+                if (packageName != null) {
+                    optionView.onApplicationGetSuccess(
+                        appDatabase.applicationDao().getAppByPackageName(packageName)
+                    )
+                }
+            } catch (ex: NullPointerException) {
+                optionView.onApplicationGetError(DataUtils.getString(R.string.something_wrong))
+            } catch (ex: SQLiteException) {
+                optionView.onApplicationGetError(DataUtils.getString(R.string.something_wrong))
+            } catch (ex: IllegalStateException) {
+                optionView.onIllegalState()
+            }
+        }).start()
+    }
+
     private fun updateApplication(app: ApplicationEntity) {
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread(Runnable {
@@ -109,6 +128,49 @@ class OptionPresenter(private val optionView: OptionView) {
                 optionView.onApplicationUpdateError(DataUtils.getString(R.string.update_error))
             }
         }).start()
+    }
+
+    fun updateExistingApplication(
+        addApplicationEntity: ApplicationEntity,
+        firebaseAnalytics: FirebaseAnalytics?
+    ) {
+        //send data to analytics
+        if(firebaseAnalytics != null){
+            val bundle = Bundle()
+            bundle.putString("app_name", addApplicationEntity.appName)
+            bundle.putString("package_name", addApplicationEntity.packageName)
+            bundle.putString("alarm_repeat", addApplicationEntity.alarmRepeat)
+            bundle.putString("repeat_days", addApplicationEntity.repeatDays)
+            bundle.putString("sender_names", addApplicationEntity.senderNames)
+            bundle.putString("message_body", addApplicationEntity.messageBody)
+            bundle.putString("is_custom_time", addApplicationEntity.isCustomTime.toString())
+            bundle.putString("is_just_vibrate", addApplicationEntity.isJustVibrate.toString())
+            bundle.putString("is_vibrate", addApplicationEntity.isVibrateOnAlarm.toString())
+            bundle.putString("start_time", addApplicationEntity.startTime.toString())
+            bundle.putString("end_time", addApplicationEntity.endTime.toString())
+            bundle.putString("number_of_play", addApplicationEntity.numberOfPlay.toString())
+            bundle.putString("sound_level", addApplicationEntity.sound_level.toString())
+            firebaseAnalytics.logEvent("save_application", bundle)
+        }
+        //save application
+        val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
+        Thread(
+            Runnable {
+                try {
+                    appDatabase.applicationDao().updateApplication(addApplicationEntity)
+                    optionView.onApplicationSaveSuccess()
+                } catch (e: NullPointerException) {
+                    optionView.onApplicationSaveError(DataUtils.getString(R.string.something_wrong))
+                } catch (e: SQLiteConstraintException) {
+                    /**
+                     * If the app is already in database then just update it
+                     */
+                    updateApplication(addApplicationEntity)
+                } catch (e: SQLiteException) {
+                    optionView.onApplicationSaveError(DataUtils.getString(R.string.something_wrong))
+                }
+            }
+        ).start()
     }
 
     fun checkForUnknownApp(context: Activity, appName: String, packageName: String) {
