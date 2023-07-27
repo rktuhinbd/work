@@ -19,6 +19,7 @@ import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
@@ -30,12 +31,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.billingclient.api.*
 import com.app.messagealarm.BaseActivity
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
+import com.app.messagealarm.databinding.ActivityMainBinding
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.service.app_reader_intent_service.AppsReaderIntentService
 import com.app.messagealarm.service.notification_service.NotificationListener
@@ -51,12 +52,12 @@ import com.app.messagealarm.ui.widget.TutorialBottomSheetDialog
 import com.app.messagealarm.utils.*
 import com.app.messagealarm.window.WindowManagerService
 import com.app.messagealarm.work_manager.WorkManagerUtils
-import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
+import com.google.gson.GsonBuilder
 import com.judemanutd.autostarter.AutoStartPermissionHelper
 import com.leinardi.android.speeddial.SpeedDialActionItem
 import com.leinardi.android.speeddial.SpeedDialView
@@ -73,6 +74,8 @@ import java.io.File
 class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, PurchasesUpdatedListener,
     AddedAppsListAdapterNew.ItemClickListener {
 
+    private lateinit var binding : ActivityMainBinding
+
     private lateinit var billingClient: BillingClient
     var mMessageReceiver: BroadcastReceiver? = null
     val bottomSheetModel = AlarmOptionDialog()
@@ -87,7 +90,11 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     override fun onCreate(savedInstanceState: Bundle?) {
         changeTheme()
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
+
         setToolBar()
         setListener()
         lookForTablesSize()
@@ -349,7 +356,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
      * end of handling push notification
      */
 
-
     private fun lookForTablesSize() {
         // alarmAppPresenter.getRequiredTableSize()
         alarmAppPresenter.getSyncedLowerLoaded(this)
@@ -411,7 +417,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     }
 
     private fun setToolBar() {
-        setSupportActionBar(findViewById(R.id.toolbar))
+        setSupportActionBar(binding.toolbar)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
@@ -1021,7 +1027,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         }
     }
 
-    public fun changeStateOfSpeedDial() {
+    fun changeStateOfSpeedDial() {
         try {
             if (speedDial != null) {
                 if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_VIDEO_SHOWED)) {
@@ -1186,7 +1192,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
 
     private fun setupAppsRecyclerView() {
-        rv_application_list?.layoutManager = LinearLayoutManager(this)
         rv_application_list?.isVerticalScrollBarEnabled = true
         val arraylist = ArrayList<ApplicationEntity>()
         rv_application_list?.adapter = AddedAppsListAdapterNew(arraylist, this)
@@ -1197,8 +1202,28 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         runOnUiThread {
             try {
                 if (appsList.isNotEmpty()) {
+
+                    Log.d("MainActivity", "onGetAlarmApplicationSuccess: ${GsonBuilder().setPrettyPrinting().create().toJson(appsList)}")
+
+                    val applicationList : ArrayList<ApplicationEntity> = arrayListOf()
+
+                    for(i in 0 until appsList.size){
+
+                        if(applicationList.isEmpty()){
+                            applicationList.add(appsList[i])
+                        } else {
+                            for(j in 0 until applicationList.size){
+                                if(appsList[i].packageName != applicationList[j].packageName){
+                                    applicationList.add(appsList[i])
+                                }
+                            }
+                        }
+                    }
+
+                    Log.d("MainActivity", "Manipulated List: ${GsonBuilder().setPrettyPrinting().create().toJson(applicationList)}")
+
                     dataState()
-                    (rv_application_list?.adapter as AddedAppsListAdapterNew).addItems(appsList)
+                    (rv_application_list?.adapter as AddedAppsListAdapterNew).addItems(applicationList)
                     recyclerViewSwipeHandler()
                 } else {
                     emptyState()
@@ -1272,7 +1297,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         rv_application_list?.gone(false)
         img_empty_state?.visible(false)
         transparent_status_bar?.gone(false)
-        findViewById<MaterialToolbar>(R.id.toolbar).visible(false)
+        binding.toolbar.visible(false)
         txt_applications?.gone(false)
         layout_top_part?.gone(false)
         txt_empty_state_title?.visible(false)
@@ -1285,7 +1310,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         img_empty_state?.gone(false)
         layout_top_part?.visible(true)
         transparent_status_bar?.visible(false)
-        findViewById<MaterialToolbar>(R.id.toolbar).gone(false)
+        binding.toolbar.gone(false)
         txt_applications?.visible(false)
         txt_empty_state_title?.gone(false)
         txt_empty_state_desc?.gone(false)

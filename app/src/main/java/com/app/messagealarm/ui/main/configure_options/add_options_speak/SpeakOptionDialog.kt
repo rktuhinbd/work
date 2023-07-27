@@ -10,7 +10,6 @@ import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.text.style.ForegroundColorSpan
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.content.ContextCompat
@@ -35,7 +34,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.gson.GsonBuilder
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_alarm_options.*
 import kotlinx.android.synthetic.main.dialog_speak_options.*
@@ -71,7 +69,6 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
     private var addApplicationEntity = ApplicationEntity()
     private var holderEntity = ApplicationEntity()
     private var optionPresenter: OptionPresenter? = null
-    private var isNewData: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -298,8 +295,6 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
             //save the app
             try {
                 addApplicationEntity.alertType = Constants.NotifyOptions.SPEAK
-                //save application and turn switch on
-                addApplicationEntity.isRunningStatus = true
                 saveApplication()
             } catch (e: java.lang.NullPointerException) {
             }
@@ -329,18 +324,12 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
                 addApplicationEntity.packageName = app.packageName
                 Thread(Runnable {
                     try {
-
-                        val existingData = optionPresenter?.getAppByPackageName(app.packageName)
-
-                        isNewData = existingData == null
-
                         val bitmap = app.drawableIcon
                         optionPresenter?.saveBitmapToFile(
                             requireActivity(),
                             app.packageName,
                             bitmap.toBitmap()
                         )
-
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -1054,22 +1043,15 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
     }
 
     override fun onApplicationSaveError(message: String) {
-
+        TODO("Not yet implemented")
     }
 
     override fun onApplicationUpdateSuccess() {
-        requireActivity().runOnUiThread {
-            Toasty.success(requireActivity(), "Application updated successfully!")
-                .show()
-            dismissAllowingStateLoss()
-            requireActivity().setResult(Activity.RESULT_OK)
-            requireActivity().finish()
-        }
-
+        TODO("Not yet implemented")
     }
 
     override fun onApplicationUpdateError(message: String) {
-
+        TODO("Not yet implemented")
     }
 
     override fun onBitmapSaveSuccess(path: String) {
@@ -1077,13 +1059,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         /**
          * End of other values
          */
-
-        if(isNewData){
-            optionPresenter?.saveApplication(addApplicationEntity, null)
-        } else {
-            optionPresenter?.updateExistingApplication(addApplicationEntity, null)
-        }
-
+        optionPresenter?.saveApplication(addApplicationEntity, null)
         if (isAdded) {
             requireActivity().runOnUiThread {
                 hideProgressBar()
@@ -1102,15 +1078,15 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
     }
 
     override fun onApplicationGetSuccess(app: ApplicationEntity) {
-
+        TODO("Not yet implemented")
     }
 
     override fun onApplicationGetError(message: String) {
-
+        TODO("Not yet implemented")
     }
 
     override fun onIllegalState() {
-
+        TODO("Not yet implemented")
     }
 
 }

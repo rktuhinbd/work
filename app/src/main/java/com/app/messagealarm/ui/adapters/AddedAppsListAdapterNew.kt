@@ -6,23 +6,35 @@ import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.LinearInterpolator
-import android.view.animation.RotateAnimation
-import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
-import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.ViewUtils
 import com.google.android.material.card.MaterialCardView
-import kotlinx.android.synthetic.main.activity_main.rv_application_list
-import kotlinx.android.synthetic.main.dialog_alarm_options.*
-import kotlinx.android.synthetic.main.item_added_application_new.view.*
+import kotlinx.android.synthetic.main.item_added_application_new.view.base_part_of_item
+import kotlinx.android.synthetic.main.item_added_application_new.view.btn_confirm_app_option
+import kotlinx.android.synthetic.main.item_added_application_new.view.btn_confirm_delete
+import kotlinx.android.synthetic.main.item_added_application_new.view.card_alarm
+import kotlinx.android.synthetic.main.item_added_application_new.view.card_custom
+import kotlinx.android.synthetic.main.item_added_application_new.view.card_speak
+import kotlinx.android.synthetic.main.item_added_application_new.view.dotted_condom
+import kotlinx.android.synthetic.main.item_added_application_new.view.img_info
+import kotlinx.android.synthetic.main.item_added_application_new.view.img_save_flag
+import kotlinx.android.synthetic.main.item_added_application_new.view.img_save_flag_custom
+import kotlinx.android.synthetic.main.item_added_application_new.view.img_save_flag_speak
+import kotlinx.android.synthetic.main.item_added_application_new.view.iv_app_icon
+import kotlinx.android.synthetic.main.item_added_application_new.view.layout_expand_section
+import kotlinx.android.synthetic.main.item_added_application_new.view.switch_app_status
+import kotlinx.android.synthetic.main.item_added_application_new.view.tv_app_name
+import kotlinx.android.synthetic.main.item_added_application_new.view.txt_alarm
+import kotlinx.android.synthetic.main.item_added_application_new.view.txt_custom
+import kotlinx.android.synthetic.main.item_added_application_new.view.txt_option_notice
+import kotlinx.android.synthetic.main.item_added_application_new.view.txt_option_three_notice
+import kotlinx.android.synthetic.main.item_added_application_new.view.txt_speak
 import java.io.File
 
 class AddedAppsListAdapterNew(
@@ -78,47 +90,51 @@ class AddedAppsListAdapterNew(
         }
 
         fun bindItems(installedApps: ApplicationEntity) {
-            try{
+            try {
                 val isExpanded = position == mExpandedPosition
                 itemView.tv_app_name?.text = installedApps.appName
                 if (isExpanded) {
                     itemView.layout_expand_section.animate().alpha(1.0f).duration = 220
                     itemView.layout_expand_section.visibility = View.VISIBLE
                     itemView.dotted_condom.visibility = View.VISIBLE
-                } else{
+                } else {
                     itemView.layout_expand_section.animate().alpha(0.0f).duration = 220
                     itemView.layout_expand_section.visibility = View.GONE
                     itemView.dotted_condom.visibility = View.GONE
                 }
 
-                    if(installedApps.alertType == Constants.NotifyOptions.ALARM){
-                        itemView.img_save_flag.visibility = View.VISIBLE
-                        itemView.btn_confirm_app_option?.text = "Edit Alarm"
-                    }
-                    if(installedApps.alertType == Constants.NotifyOptions.SPEAK){
-                        itemView.img_save_flag_speak.visibility = View.VISIBLE
-                    }
+                if (installedApps.alertType == Constants.NotifyOptions.ALARM) {
+                    itemView.img_save_flag.visibility = View.VISIBLE
+                    itemView.btn_confirm_app_option?.text = "Edit Alarm"
+                }
+                if (installedApps.alertType == Constants.NotifyOptions.SPEAK) {
+                    itemView.img_save_flag_speak.visibility = View.VISIBLE
+                }
 
-                if(installedApps.alertType == Constants.NotifyOptions.CUSTOM){
+                if (installedApps.alertType == Constants.NotifyOptions.CUSTOM) {
                     itemView.img_save_flag_custom.visibility = View.VISIBLE
                 }
+
                 itemView.base_part_of_item.setOnClickListener {
-                    if (isExpanded){
-                        mExpandedPosition =  -1
+                    if (isExpanded) {
+                        mExpandedPosition = -1
                         //If collapsed, reset the selected item to Alarm again
                         selectedNotifyOption = Constants.NotifyOptions.ALARM
-                    } else{
-                        mExpandedPosition =  position
+                    } else {
+                        mExpandedPosition = position
                         //should show a loader
-                      //  mItemClickListener.onDataRequest(appsList[position],position)
+                        //  mItemClickListener.onDataRequest(appsList[position],position)
                     }
                     notifyDataSetChanged()
                 }
 
                 itemView.card_alarm?.setOnClickListener {
-                    setSelectedOption( listOf(itemView.txt_alarm, itemView.txt_speak, itemView.txt_custom),
-                        itemView.card_alarm, itemView.card_speak, itemView.card_custom)
-                    itemView.txt_option_notice.text = "Set an alarm to notify you when you receive an important message"
+                    setSelectedOption(
+                        listOf(itemView.txt_alarm, itemView.txt_speak, itemView.txt_custom),
+                        itemView.card_alarm, itemView.card_speak, itemView.card_custom
+                    )
+                    itemView.txt_option_notice.text =
+                        "Set an alarm to notify you when you receive an important message"
                     selectedNotifyOption = Constants.NotifyOptions.ALARM
                     itemView.btn_confirm_app_option?.text = "Edit Alarm"
                     itemView.img_info?.visibility = View.GONE
@@ -126,10 +142,12 @@ class AddedAppsListAdapterNew(
                 }
 
                 itemView.card_custom?.setOnClickListener {
-                    setSelectedOption(listOf(itemView.txt_custom, itemView.txt_speak, itemView.txt_alarm),
-                        itemView.card_custom, itemView.card_speak, itemView.card_alarm)
+                    setSelectedOption(
+                        listOf(itemView.txt_custom, itemView.txt_speak, itemView.txt_alarm),
+                        itemView.card_custom, itemView.card_speak, itemView.card_alarm
+                    )
                     selectedNotifyOption = Constants.NotifyOptions.CUSTOM
-                    itemView.btn_confirm_app_option?.text =  "Edit Custom"
+                    itemView.btn_confirm_app_option?.text = "Edit Custom"
                     itemView.txt_option_notice.text = "Enhance functionality by," +
                             " triggering actions based on message content, integrating custom APIs," +
                             " providing a visual editor, and a marketplace for pre-made workflows."
@@ -138,24 +156,27 @@ class AddedAppsListAdapterNew(
                 }
 
                 itemView.card_speak?.setOnClickListener {
-                    setSelectedOption(listOf(itemView.txt_speak, itemView.txt_alarm, itemView.txt_custom),
-                        itemView.card_speak, itemView.card_alarm, itemView.card_custom)
+                    setSelectedOption(
+                        listOf(itemView.txt_speak, itemView.txt_alarm, itemView.txt_custom),
+                        itemView.card_speak, itemView.card_alarm, itemView.card_custom
+                    )
                     selectedNotifyOption = Constants.NotifyOptions.SPEAK
-                    itemView.txt_option_notice.text = "Have the app speak the contents of the message out loud"
-                    itemView.btn_confirm_app_option?.text =  "Edit Speaking"
+                    itemView.txt_option_notice.text =
+                        "Have the app speak the contents of the message out loud"
+                    itemView.btn_confirm_app_option?.text = "Edit Speaking"
                     itemView.img_info?.visibility = View.VISIBLE
                     itemView.txt_option_three_notice.visibility = View.VISIBLE
                 }
 
                 itemView.btn_confirm_app_option?.setOnClickListener {
-                    mItemClickListener.onItemClick(appsList[adapterPosition],selectedNotifyOption )
+                    mItemClickListener.onItemClick(appsList[adapterPosition], selectedNotifyOption)
                 }
 
                 itemView.btn_confirm_delete?.setOnClickListener {
-                    mItemClickListener.onItemDeleteClick(appsList[adapterPosition],adapterPosition)
+                    mItemClickListener.onItemDeleteClick(appsList[adapterPosition], adapterPosition)
                 }
 
-            }catch (e:IndexOutOfBoundsException){
+            } catch (e: IndexOutOfBoundsException) {
                 //skip the crash
             }
             itemView.switch_app_status?.isChecked = installedApps.isRunningStatus
@@ -178,9 +199,9 @@ class AddedAppsListAdapterNew(
         /**
          * First one will be selected, others one will be unselected
          */
-        private fun setSelectedOption(texts: List<TextView>, vararg cardAlarms: MaterialCardView){
-            for (i in cardAlarms.indices){
-                if(i == 0){
+        private fun setSelectedOption(texts: List<TextView>, vararg cardAlarms: MaterialCardView) {
+            for (i in cardAlarms.indices) {
+                if (i == 0) {
                     cardAlarms[i].strokeWidth = ViewUtils.dpToPx(3).toInt()
                     cardAlarms[i].setStrokeColor(
                         ColorStateList.valueOf(
@@ -190,12 +211,22 @@ class AddedAppsListAdapterNew(
                             )
                         )
                     )
-                    texts[i].setTextColor(ContextCompat.getColor(BaseApplication.getBaseApplicationContext(),R.color.colorTextRegular))
+                    texts[i].setTextColor(
+                        ContextCompat.getColor(
+                            BaseApplication.getBaseApplicationContext(),
+                            R.color.colorTextRegular
+                        )
+                    )
                     texts[i].setTypeface(null, Typeface.BOLD)
-                }else{
+                } else {
                     cardAlarms[i].strokeWidth = 0
                     cardAlarms[i].setStrokeColor(null)
-                    texts[i].setTextColor(ContextCompat.getColor(BaseApplication.getBaseApplicationContext(),R.color.default_text))
+                    texts[i].setTextColor(
+                        ContextCompat.getColor(
+                            BaseApplication.getBaseApplicationContext(),
+                            R.color.default_text
+                        )
+                    )
                     texts[i].setTypeface(null, Typeface.NORMAL)
                 }
             }

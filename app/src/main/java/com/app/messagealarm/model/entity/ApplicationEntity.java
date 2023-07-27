@@ -161,7 +161,7 @@ public class ApplicationEntity implements Serializable {
      * Setter methods
      */
 
-    public void setIs_flash_on(boolean isFlashOn){
+    public void setIs_flash_on(boolean isFlashOn) {
         this.is_flash_on = isFlashOn;
     }
 

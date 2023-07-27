@@ -267,6 +267,7 @@
             android:layout_marginBottom="16dp"
             android:scrollbars="vertical"
             android:visibility="gone"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@id/fab_button_add_application"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

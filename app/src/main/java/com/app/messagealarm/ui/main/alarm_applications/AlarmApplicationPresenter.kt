@@ -1,30 +1,22 @@
 package com.app.messagealarm.ui.main.alarm_applications
 
-import android.app.Activity
 import android.content.Context
 import android.database.sqlite.SQLiteException
 import android.os.Build
-import android.os.Bundle
 import android.os.PowerManager
-import com.android.billingclient.api.Purchase
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.BuildConfig
 import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.model.response.TokenResponse
-import com.app.messagealarm.model.response.VerifyPurchaseResponse
 import com.app.messagealarm.networking.RetrofitClient
 import com.app.messagealarm.utils.AndroidUtils
 import com.app.messagealarm.utils.Constants
-import com.app.messagealarm.utils.ProgressDialogUtils
 import com.app.messagealarm.utils.SharedPrefUtils
-import com.app.messagealarm.work_manager.WorkManagerUtils
 import com.judemanutd.autostarter.AutoStartPermissionHelper
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.Exception
-import java.lang.NullPointerException
 
 class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicationView) {
 
@@ -48,7 +40,8 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread {
             try {
-                appDatabase.applicationDao().rollBackAppsFromDefaultSoundLevel(AndroidUtils.getSoundLevel())
+                appDatabase.applicationDao()
+                    .rollBackAppsFromDefaultSoundLevel(AndroidUtils.getSoundLevel())
                 SharedPrefUtils.write(Constants.PreferenceKeys.IS_DB_ROLLED_BACK, true)
             } catch (e: NullPointerException) {
 
@@ -92,7 +85,8 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
      * return true if in App's Battery settings "Not optimized" and false if "Optimizing battery use"
      */
     private fun isIgnoringBatteryOptimizations(context: Context): Boolean {
-        val pwrm = context.applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
+        val pwrm =
+            context.applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
         val name = context.applicationContext.packageName
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return pwrm.isIgnoringBatteryOptimizations(name)
@@ -111,32 +105,32 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
                     if (AutoStartPermissionHelper.getInstance()
                             .isAutoStartPermissionAvailable(context, true)
                     ) {
-                        if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_AUTO_STARTED)){
+                        if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_AUTO_STARTED)) {
                             alarmApplicationView.onAutoStartTextShow()
-                        }else{
+                        } else {
                             alarmApplicationView.onAutoStartTextHide()
                         }
-                    }else{
+                    } else {
                         alarmApplicationView.onAutoStartTextHide()
                     }
                     /**
                      * handle battery restriction
                      */
-                    if(!isIgnoringBatteryOptimizations(context)){
-                        if(!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_BATTERY_RESTRICTED)){
+                    if (!isIgnoringBatteryOptimizations(context)) {
+                        if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_BATTERY_RESTRICTED)) {
                             alarmApplicationView.onBatteryTextShow()
-                        }else{
+                        } else {
                             alarmApplicationView.onBatteryTextHide()
                         }
-                    }else{
+                    } else {
                         alarmApplicationView.onBatteryTextHide()
                     }
-                }else{
+                } else {
                     //no app added yet
                     alarmApplicationView.onAutoStartTextHide()
                     alarmApplicationView.onBatteryTextHide()
                 }
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 //skip crashes
             }
         }.start()
@@ -169,14 +163,14 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
                 val appSize = appDatabase.appDao().totalCountOfApp
                 val langSize = appDatabase.languageDao().totalCountOfLanguage
                 val appConstrainSize = appDatabase.appConstrainDao().totalCountOfAppConstrain
-                    if (SharedPrefUtils.contains(Constants.PreferenceKeys.CONSTRAIN_COUNT)) {
-                        if (appConstrainSize < SharedPrefUtils.readInt(Constants.PreferenceKeys.CONSTRAIN_COUNT)) {
-                            alarmApplicationView.onTablesSizeRequestSuccess(
-                                appSize,
-                                langSize,
-                                appConstrainSize
-                            )
-                        }
+                if (SharedPrefUtils.contains(Constants.PreferenceKeys.CONSTRAIN_COUNT)) {
+                    if (appConstrainSize < SharedPrefUtils.readInt(Constants.PreferenceKeys.CONSTRAIN_COUNT)) {
+                        alarmApplicationView.onTablesSizeRequestSuccess(
+                            appSize,
+                            langSize,
+                            appConstrainSize
+                        )
+                    }
                 }
             } catch (e: SQLiteException) {
 
