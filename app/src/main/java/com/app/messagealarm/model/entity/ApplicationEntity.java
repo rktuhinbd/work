@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 
-@Entity(tableName = "applications", indices = {@Index(value = {"package_name", "app_name", "alert_type"}, unique = true)})
+@Entity(tableName = "applications", indices = {@Index(value = {"package_name", "app_name"}, unique = true)})
 public class ApplicationEntity implements Serializable {
 
     /**
@@ -22,8 +22,15 @@ public class ApplicationEntity implements Serializable {
     /**
      * New Addition By MK
      */
-    @ColumnInfo(name = "alert_type")
-    private String alertType;
+//    @ColumnInfo(name = "alert_type")
+//    private String alertType;
+
+    @ColumnInfo(name = "is_alarm_enabled")
+    private Boolean isAlarmEnabled;
+
+    @ColumnInfo(name = "is_speak_enabled")
+    private Boolean isSpeakEnabled;
+
     @ColumnInfo(name = "app_name")
     private String appName;
     @ColumnInfo(name = "package_name")
@@ -186,8 +193,24 @@ public class ApplicationEntity implements Serializable {
         this.id = id;
     }
 
-    public void setAlertType(String alertType) {
-        this.alertType = alertType;
+//    public void setAlertType(String alertType) {
+//        this.alertType = alertType;
+//    }
+
+    public Boolean getAlarmEnabled() {
+        return isAlarmEnabled;
+    }
+
+    public void setAlarmEnabled(Boolean alarmEnabled) {
+        isAlarmEnabled = alarmEnabled;
+    }
+
+    public Boolean getSpeakEnabled() {
+        return isSpeakEnabled;
+    }
+
+    public void setSpeakEnabled(Boolean speakEnabled) {
+        isSpeakEnabled = speakEnabled;
     }
 
     public void setRunningStatus(boolean runningStatus) {
@@ -246,16 +269,17 @@ public class ApplicationEntity implements Serializable {
         this.tone_path = tone_path;
     }
 
-    public String getAlertType() {
-        return alertType;
-    }
+//    public String getAlertType() {
+//        return alertType;
+//    }
 
     @Override
     public String toString() {
         return "ApplicationEntity{" +
                 "id=" + id +
                 ", runningStatus=" + runningStatus +
-                ", alertType='" + alertType + '\'' +
+                ", isAlarmEnabled='" + isAlarmEnabled + '\'' +
+                ", isSpeakEnabled='" + isSpeakEnabled + '\'' +
                 ", appName='" + appName + '\'' +
                 ", packageName='" + packageName + '\'' +
                 ", alarmRepeat='" + alarmRepeat + '\'' +

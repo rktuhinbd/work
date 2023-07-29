@@ -294,7 +294,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         btn_save?.setOnClickListener {
             //save the app
             try {
-                addApplicationEntity.alertType = Constants.NotifyOptions.SPEAK
+                addApplicationEntity.speakEnabled = true
                 saveApplication()
             } catch (e: java.lang.NullPointerException) {
             }
@@ -1043,15 +1043,21 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
     }
 
     override fun onApplicationSaveError(message: String) {
-        TODO("Not yet implemented")
+//        TODO("Not yet implemented")
     }
 
     override fun onApplicationUpdateSuccess() {
-        TODO("Not yet implemented")
+        requireActivity().runOnUiThread {
+            Toasty.success(requireActivity(), getString(R.string.application_updated_success))
+                .show()
+            dismissAllowingStateLoss()
+            requireActivity().setResult(Activity.RESULT_OK)
+            requireActivity().finish()
+        }
     }
 
     override fun onApplicationUpdateError(message: String) {
-        TODO("Not yet implemented")
+//        TODO("Not yet implemented")
     }
 
     override fun onBitmapSaveSuccess(path: String) {
@@ -1060,20 +1066,16 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
          * End of other values
          */
         optionPresenter?.saveApplication(addApplicationEntity, null)
-        if (isAdded) {
-            requireActivity().runOnUiThread {
-                hideProgressBar()
-            }
+        requireActivity().runOnUiThread {
+            hideProgressBar()
         }
     }
 
     override fun onBitmapSaveError() {
-        if (isAdded) {
-            requireActivity().runOnUiThread {
-                Toasty.error(requireActivity(), DataUtils.getString(R.string.something_wrong))
-                    .show()
-                hideProgressBar()
-            }
+        requireActivity().runOnUiThread {
+            Toasty.error(requireActivity(), DataUtils.getString(R.string.something_wrong))
+                .show()
+            hideProgressBar()
         }
     }
 

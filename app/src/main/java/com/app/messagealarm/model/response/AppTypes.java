@@ -7,12 +7,10 @@ public class AppTypes {
     private String packageName;
     private boolean isAlarmConfigured;
     private boolean isSpeakConfigured;
-    private boolean isCustomConfigured;
 
-    public AppTypes(boolean isAlarmConfigured, boolean isSpeakConfigured, boolean isCustomConfigured) {
+    public AppTypes(boolean isAlarmConfigured, boolean isSpeakConfigured) {
         this.isAlarmConfigured = isAlarmConfigured;
         this.isSpeakConfigured = isSpeakConfigured;
-        this.isCustomConfigured = isCustomConfigured;
     }
 
     public String getPackageName() {
@@ -27,7 +25,4 @@ public class AppTypes {
         return isSpeakConfigured;
     }
 
-    public boolean isCustomConfigured() {
-        return isCustomConfigured;
-    }
 }

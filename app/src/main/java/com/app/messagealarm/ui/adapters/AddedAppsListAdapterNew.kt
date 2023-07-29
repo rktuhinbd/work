@@ -100,12 +100,12 @@ class AddedAppsListAdapterNew(
                     itemView.dotted_condom.visibility = View.GONE
                 }
 
-                if (installedApps.alertType == Constants.NotifyOptions.ALARM) {
+                if (installedApps.alarmEnabled == true) {
                     itemView.img_save_flag.visibility = View.VISIBLE
                     itemView.btn_confirm_app_option?.text = "Edit Alarm"
                 }
 
-                if (installedApps.alertType == Constants.NotifyOptions.SPEAK) {
+                if (installedApps.speakEnabled == true) {
                     itemView.img_save_flag_speak.visibility = View.VISIBLE
                 }
 

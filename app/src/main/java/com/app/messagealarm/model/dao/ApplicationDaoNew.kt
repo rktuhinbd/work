@@ -8,11 +8,12 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.app.messagealarm.model.entity.ApplicationEntityNew
+import com.app.messagealarm.model.entity.ApplicationTable
 
 @Dao
 interface ApplicationDaoNew {
 
-    @Query("SELECT * FROM applications")
+    @Query("SELECT * FROM ${ApplicationTable.TABLE_NAME}")
     fun getAll(): LiveData<List<ApplicationEntityNew>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -23,4 +24,7 @@ interface ApplicationDaoNew {
 
     @Delete
     suspend fun delete(application: ApplicationEntityNew)
+
+    @Query("SELECT * FROM ${ApplicationTable.TABLE_NAME} WHERE ${ApplicationTable.PACKAGE_NAME} = :packageName")
+    suspend fun getAppByPackageName(packageName: String): ApplicationEntityNew
 }

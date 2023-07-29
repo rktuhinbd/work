@@ -1,8 +1,10 @@
 package com.app.messagealarm.model.repository
 
 import androidx.lifecycle.LiveData
+import androidx.room.Query
 import com.app.messagealarm.model.dao.ApplicationDaoNew
 import com.app.messagealarm.model.entity.ApplicationEntityNew
+import com.app.messagealarm.model.entity.ApplicationTable
 
 class ApplicationRepository(private val applicationDao: ApplicationDaoNew) {
 
@@ -18,5 +20,9 @@ class ApplicationRepository(private val applicationDao: ApplicationDaoNew) {
 
     suspend fun delete(application: ApplicationEntityNew) {
         applicationDao.delete(application)
+    }
+
+    suspend fun getAppByPackageName(packageName: String): ApplicationEntityNew{
+        return applicationDao.getAppByPackageName(packageName)
     }
 }

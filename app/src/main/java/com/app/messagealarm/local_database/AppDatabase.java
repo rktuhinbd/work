@@ -1,7 +1,6 @@
 package com.app.messagealarm.local_database;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteTransactionListener;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
@@ -20,8 +19,6 @@ import com.app.messagealarm.model.entity.AppEntity;
 import com.app.messagealarm.model.entity.ApplicationEntity;
 import com.app.messagealarm.model.entity.ApplicationEntityNew;
 import com.app.messagealarm.model.entity.LanguageEntity;
-import com.app.messagealarm.utils.Constants;
-import com.app.messagealarm.utils.SharedPrefUtils;
 
 @Database(entities = {
         ApplicationEntity.class,
@@ -44,16 +41,16 @@ public abstract class AppDatabase extends RoomDatabase {
                  * users perfectly and no one will have a problem.
                  */
                 //This below two migration are for version 2.0.2 currently live in Google play store
-               // database.execSQL("ALTER TABLE applications ADD COLUMN ignored_names TEXT DEFAULT 'None'");
-               // database.execSQL("ALTER TABLE applications ADD COLUMN sound_level INTEGER NOT NULL DEFAULT 100");
+                // database.execSQL("ALTER TABLE applications ADD COLUMN ignored_names TEXT DEFAULT 'None'");
+                // database.execSQL("ALTER TABLE applications ADD COLUMN sound_level INTEGER NOT NULL DEFAULT 100");
                 //This below migration is for version 2.0.4 our next version
                 database.execSQL("ALTER TABLE applications ADD COLUMN is_flash_on BOOLEAN NOT NULL DEFAULT 0");
             }
         };
         if (appDatabase == null) {
             appDatabase = Room.databaseBuilder(context,
-                    AppDatabase.class,
-                    DATABASE_NAME)
+                            AppDatabase.class,
+                            DATABASE_NAME)
                     .fallbackToDestructiveMigration()
                     .addMigrations(migration)
                     .build();
@@ -63,12 +60,16 @@ public abstract class AppDatabase extends RoomDatabase {
 
     /**
      * DAO of application table
+     *
      * @return
      */
     public abstract ApplicationDao applicationDao();
 
     public abstract ApplicationDaoNew applicationDaoNew();
+
     public abstract AppConstrainDao appConstrainDao();
+
     public abstract LanguageDao languageDao();
+
     public abstract AppDao appDao();
 }

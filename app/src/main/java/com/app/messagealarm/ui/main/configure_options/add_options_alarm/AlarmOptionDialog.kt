@@ -163,6 +163,13 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
     @SuppressLint("SetTextI18n")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        applicationRepository =
+            ApplicationRepository(AppDatabase.getInstance(requireContext()).applicationDaoNew())
+        viewModel = ViewModelProvider(this, OptionViewModelFactory(applicationRepository)).get(
+            OptionViewModel::class.java
+        )
+
         setListener()
         handleEditAndViewMode()
         enableProMode()
@@ -176,12 +183,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                        img_sender_name, img_exclude_sender_name, img_message_body)
               }
           },500)*/
-
-        applicationRepository =
-            ApplicationRepository(AppDatabase.getInstance(requireActivity()).applicationDaoNew())
-        viewModel = ViewModelProvider(this, OptionViewModelFactory(applicationRepository)).get(
-            OptionViewModel::class.java
-        )
 
         initObserver()
 
@@ -289,19 +290,27 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                 if (arguments?.getSerializable(Constants.BundleKeys.APP) != null) {
                     val app =
                         (arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps)
-                    optionPresenter?.getAppByPackageNameAndType(
-                        app.packageName,
-                        Constants.NotifyOptions.ALARM
+                    optionPresenter?.getAppByPackageNameAndAlarm(
+                        app.packageName
                     )
+
+                    viewModel.getAppByPackageName(app.packageName)
+
                     this.appName = app.appName
                 }
             } else {
                 //edit mode from home
                 if (arguments?.getString(Constants.BundleKeys.PACKAGE_NAME) != null) {
-                    optionPresenter?.getAppByPackageNameAndType(
+                    optionPresenter?.getAppByPackageNameAndAlarm(
                         arguments?.getString(
                             Constants.BundleKeys.PACKAGE_NAME
-                        )!!, Constants.NotifyOptions.ALARM
+                        ) ?: ""
+                    )
+
+                    viewModel.getAppByPackageName(
+                        arguments?.getString(
+                            Constants.BundleKeys.PACKAGE_NAME
+                        )!!
                     )
                 }
             }
@@ -431,7 +440,8 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
             if (!BaseApplication.isHintShowing) {
                 try {
                     addApplicationEntityNew.isAlarmEnabled = true
-                    addApplicationEntity.alertType = Constants.NotifyOptions.ALARM
+                    addApplicationEntity.alarmEnabled = true
+//                    addApplicationEntity.alertType = Constants.NotifyOptions.ALARM
                     if (checkForDefault()) {
                         shouldOnStatus = false
                     } else {
@@ -1894,11 +1904,17 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                          * @date 27th Feb 22
                          * This call going on every single alarm to sync the data
                          */
+                        viewModel.checkForLatestUpdate()
                         optionPresenter?.checkForLatestUpdate()
 
                         /**
                          * Check for unknown app
                          */
+                        viewModel.checkForUnknownApp(
+                            requireActivity(),
+                            addApplicationEntity.appName,
+                            addApplicationEntity.packageName
+                        )
                         optionPresenter?.checkForUnknownApp(
                             requireActivity(),
                             addApplicationEntity.appName,
@@ -2060,6 +2076,12 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                 }
             }
         } else {
+
+            viewModel.saveApplication(
+                addApplicationEntityNew,
+                firebaseAnalytics
+            )
+
             optionPresenter?.saveApplication(addApplicationEntity, firebaseAnalytics)
         }
     }

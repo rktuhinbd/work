@@ -13,7 +13,6 @@ public class InstalledApps implements Serializable {
 
     private boolean isAlarmConfigured;
     private boolean isSpeakConfigured;
-    private boolean isCustomConfigured;
 
     public InstalledApps(String appName, String packageName, String versionName, Drawable drawableIcon) {
         this.appName = appName;
@@ -31,10 +30,6 @@ public class InstalledApps implements Serializable {
         isSpeakConfigured = speakConfigured;
     }
 
-    public void setCustomConfigured(boolean customConfigured) {
-        isCustomConfigured = customConfigured;
-    }
-
     public boolean isAlarmConfigured() {
         return isAlarmConfigured;
     }
@@ -43,9 +38,6 @@ public class InstalledApps implements Serializable {
         return isSpeakConfigured;
     }
 
-    public boolean isCustomConfigured() {
-        return isCustomConfigured;
-    }
 
     public String getAppName() {
         return appName;

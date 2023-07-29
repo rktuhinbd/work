@@ -48,7 +48,6 @@ class AddApplicationPresenter(
                 val appTypes =
                     appDatabase.applicationDao().getAppTypesByPackage(installedApps.packageName)
                 installedApps.isAlarmConfigured = appTypes.isAlarmConfigured
-                installedApps.isCustomConfigured = appTypes.isCustomConfigured
                 installedApps.isSpeakConfigured = appTypes.isSpeakConfigured
                 addApplicationView.onAdapterRequestedDataReturn(installedApps, position)
             } catch (e: java.lang.Exception) {

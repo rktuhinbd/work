@@ -78,13 +78,33 @@ class OptionPresenter(private val optionView: OptionView) {
     }
 
 
-    fun getAppByPackageNameAndType(packageName: String?, type:String) {
+    fun getAppByPackageNameAndAlarm(packageName: String?) {
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread(Runnable {
             try {
                 if (packageName != null) {
                     optionView.onApplicationGetSuccess(
-                        appDatabase.applicationDao().getAppByPackageNameAndType(packageName, type)
+                        appDatabase.applicationDao().getAppByPackageNameAndAlarm(packageName, true)
+                    )
+                }
+            } catch (ex: NullPointerException) {
+                optionView.onApplicationGetError(DataUtils.getString(R.string.something_wrong))
+            } catch (ex: SQLiteException) {
+                optionView.onApplicationGetError(DataUtils.getString(R.string.something_wrong))
+            } catch (ex: IllegalStateException) {
+                optionView.onIllegalState()
+            }
+        }).start()
+    }
+
+
+    fun getAppByPackageNameAndSpeak(packageName: String?) {
+        val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
+        Thread(Runnable {
+            try {
+                if (packageName != null) {
+                    optionView.onApplicationGetSuccess(
+                        appDatabase.applicationDao().getAppByPackageNameAndSpeak(packageName, true)
                     )
                 }
             } catch (ex: NullPointerException) {

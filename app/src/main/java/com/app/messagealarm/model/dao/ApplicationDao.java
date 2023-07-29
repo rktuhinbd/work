@@ -44,12 +44,15 @@ public interface ApplicationDao {
     @Query("SELECT * FROM applications WHERE package_name = :packageName")
     ApplicationEntity getAppByPackageName(String packageName);
 
-    @Query("SELECT * FROM applications WHERE package_name = :packageName AND alert_type = :type")
-    ApplicationEntity getAppByPackageNameAndType(String packageName, String type);
+    @Query("SELECT * FROM applications WHERE package_name = :packageName AND is_alarm_enabled = :isAlarmEnabled")
+    ApplicationEntity getAppByPackageNameAndAlarm(String packageName, Boolean isAlarmEnabled);
 
-    @Query("SELECT package_name, MAX(alert_type = 'alarm') as isAlarmConfigured, " +
-            "MAX(alert_type = 'speak') as isSpeakConfigured, MAX(alert_type = 'custom') as " +
-            "isCustomConfigured FROM applications WHERE package_name = :packageName GROUP BY package_name")
+    @Query("SELECT * FROM applications WHERE package_name = :packageName AND is_speak_enabled = :isSpeakEnabled")
+    ApplicationEntity getAppByPackageNameAndSpeak(String packageName, Boolean isSpeakEnabled);
+
+    @Query("SELECT package_name, MAX(is_alarm_enabled = 'true') as isAlarmConfigured, " +
+            "MAX(is_speak_enabled = 'true') as isSpeakConfigured" +
+            " FROM applications WHERE package_name = :packageName GROUP BY package_name")
     AppTypes getAppTypesByPackage(String packageName);
 
     @Query("SELECT COUNT(*) FROM applications")

@@ -18,8 +18,21 @@ import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.utils.Constants
 import com.app.messagealarm.utils.ViewUtils
 import com.google.android.material.card.MaterialCardView
-import kotlinx.android.synthetic.main.item_all_apps.view.*
-import java.util.*
+import kotlinx.android.synthetic.main.item_all_apps.view.base_part_of_item
+import kotlinx.android.synthetic.main.item_all_apps.view.btn_confirm_app_option
+import kotlinx.android.synthetic.main.item_all_apps.view.card_alarm
+import kotlinx.android.synthetic.main.item_all_apps.view.card_speak
+import kotlinx.android.synthetic.main.item_all_apps.view.dotted_condom
+import kotlinx.android.synthetic.main.item_all_apps.view.img_info
+import kotlinx.android.synthetic.main.item_all_apps.view.img_save_flag
+import kotlinx.android.synthetic.main.item_all_apps.view.img_save_flag_speak
+import kotlinx.android.synthetic.main.item_all_apps.view.indicator_item
+import kotlinx.android.synthetic.main.item_all_apps.view.iv_app_icon
+import kotlinx.android.synthetic.main.item_all_apps.view.layout_expand_section
+import kotlinx.android.synthetic.main.item_all_apps.view.tv_app_name
+import kotlinx.android.synthetic.main.item_all_apps.view.txt_option_notice
+import kotlinx.android.synthetic.main.item_all_apps.view.txt_option_three_notice
+import java.util.Locale
 
 
 /**
@@ -60,7 +73,6 @@ class AllAppsListAdapter(
     fun onRequestedDataReturn(app: InstalledApps, position: Int) {
         appsList[position].isAlarmConfigured = app.isAlarmConfigured
         appsList[position].isSpeakConfigured = app.isSpeakConfigured
-        appsList[position].isCustomConfigured = app.isCustomConfigured
     }
 
     fun updateData(list: ArrayList<InstalledApps>) {
@@ -225,7 +237,5 @@ class AllAppsListAdapter(
                 }
             }
         }
-
     }
-
 }
