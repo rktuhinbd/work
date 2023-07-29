@@ -97,6 +97,10 @@ dependencies {
     //room
     implementation "androidx.room:room-runtime:2.4.2"
     annotationProcessor "androidx.room:room-compiler:2.4.2"
+
+    // Coroutine support
+    implementation "androidx.room:room-ktx:2.4.2"
+
     implementation('dev.doubledot.doki:library:0.0.1@aar') {
         transitive = true
     }
@@ -161,5 +165,7 @@ dependencies {
     // for shimmer
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
 
 }
