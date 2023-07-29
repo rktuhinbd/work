@@ -154,10 +154,41 @@ class AllAppsListAdapter(
 
                 if (installedApps.isAlarmConfigured) {
                     itemView.img_save_flag.visibility = View.VISIBLE
+                    itemView.card_alarm.setStrokeColor(
+                        ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                BaseApplication.getBaseApplicationContext(),
+                                R.color.colorAccent
+                            )
+                        )
+                    )
+                    itemView.card_alarm.strokeWidth = ViewUtils.dpToPx(2).toInt()
+
                     itemView.btn_confirm_app_option?.text = "Edit Alarm Options"
+                } else {
+                    itemView.card_alarm.setStrokeColor(null)
+                    itemView.card_alarm.strokeWidth = 0
+                    itemView.img_save_flag.visibility = View.GONE
                 }
+
+
                 if (installedApps.isSpeakConfigured) {
+                    itemView.card_speak.setStrokeColor(
+                        ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                BaseApplication.getBaseApplicationContext(),
+                                R.color.colorAccent
+                            )
+                        )
+                    )
+                    itemView.card_speak.strokeWidth = ViewUtils.dpToPx(2).toInt()
                     itemView.img_save_flag_speak.visibility = View.VISIBLE
+
+                    itemView.btn_confirm_app_option?.text = "Edit Speak Options"
+                } else {
+                    itemView.card_speak.setStrokeColor(null)
+                    itemView.card_speak.strokeWidth = 0
+                    itemView.img_save_flag_speak.visibility = View.GONE
                 }
 
                 itemView.base_part_of_item.setOnClickListener {
@@ -208,7 +239,7 @@ class AllAppsListAdapter(
         private fun setSelectedOption(texts: List<TextView>, vararg cardAlarms: MaterialCardView) {
             for (i in cardAlarms.indices) {
                 if (i == 0) {
-                    cardAlarms[i].strokeWidth = ViewUtils.dpToPx(3).toInt()
+                    cardAlarms[i].strokeWidth = ViewUtils.dpToPx(2).toInt()
                     cardAlarms[i].setStrokeColor(
                         ColorStateList.valueOf(
                             ContextCompat.getColor(

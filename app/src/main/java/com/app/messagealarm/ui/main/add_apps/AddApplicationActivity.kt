@@ -11,7 +11,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.provider.Telephony
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -19,20 +18,14 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.messagealarm.R
-import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.InstalledApps
-import com.app.messagealarm.model.repository.ApplicationRepository
 import com.app.messagealarm.ui.adapters.AllAppsListAdapter
 import com.app.messagealarm.ui.main.configure_options.add_options_alarm.AlarmOptionDialog
 import com.app.messagealarm.ui.main.configure_options.add_options_speak.SpeakOptionDialog
 import com.app.messagealarm.utils.*
-import com.app.messagealarm.viewmodel.ApplicationViewModel
-import com.app.messagealarm.viewmodel.ApplicationViewModelFactory
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.gson.GsonBuilder
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_add_application.*
 import kotlinx.android.synthetic.main.dialog_alarm_options.*
@@ -44,8 +37,6 @@ import java.util.*
 
 class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     AllAppsListAdapter.ItemClickListener {
-
-    private lateinit var applicationViewModel: ApplicationViewModel
 
     var addApplicationPresenter: AddApplicationPresenter? = null
     val alarmModal = AlarmOptionDialog()
@@ -67,10 +58,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         spinner_drop_down?.visibility = View.INVISIBLE
         shimmer_layout_filter?.startShimmer()
 
-        val dao = AppDatabase.getInstance(application).applicationDaoNew()
-        val repository = ApplicationRepository(dao)
-        val factory = ApplicationViewModelFactory(repository)
-        applicationViewModel = ViewModelProvider(this, factory).get(ApplicationViewModel::class.java)
 
         //setup presenter
         addApplicationPresenter = AddApplicationPresenter(this, this)
@@ -79,20 +66,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
         setListener()
         handleRefund()
 
-
-        dao.getAll()
-        setObserver()
-
-    }
-
-    private fun setObserver() {
-        applicationViewModel.allApplications.observe(this) { applications ->
-            // Update the cached copy of the words in the adapter.
-            applications?.let {
-                // Update your UI here
-                Log.d("MainActivity", "setObserver: ${GsonBuilder().setPrettyPrinting().create().toJson(it)}")
-            }
-        }
     }
 
     private fun handleRefund() {

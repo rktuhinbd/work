@@ -43,8 +43,8 @@ import com.app.messagealarm.service.notification_service.NotificationListener
 import com.app.messagealarm.ui.adapters.AddedAppsListAdapterNew
 import com.app.messagealarm.ui.buy_pro.BuyProActivity
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
-import com.app.messagealarm.ui.main.configure_options.add_options_alarm.AlarmOptionDialog
 import com.app.messagealarm.ui.main.add_website.AddWebsiteActivity
+import com.app.messagealarm.ui.main.configure_options.add_options_alarm.AlarmOptionDialog
 import com.app.messagealarm.ui.main.configure_options.add_options_speak.SpeakOptionDialog
 import com.app.messagealarm.ui.setting.SettingsActivity
 import com.app.messagealarm.ui.widget.BottomSheetFragmentLang
@@ -74,7 +74,7 @@ import java.io.File
 class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, PurchasesUpdatedListener,
     AddedAppsListAdapterNew.ItemClickListener {
 
-    private lateinit var binding : ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
 
     private lateinit var billingClient: BillingClient
     var mMessageReceiver: BroadcastReceiver? = null
@@ -1203,27 +1203,39 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             try {
                 if (appsList.isNotEmpty()) {
 
-                    Log.d("MainActivity", "onGetAlarmApplicationSuccess: ${GsonBuilder().setPrettyPrinting().create().toJson(appsList)}")
+                    Log.d(
+                        "MainActivity",
+                        "onGetAlarmApplicationSuccess: ${
+                            GsonBuilder().setPrettyPrinting().create().toJson(appsList)
+                        }"
+                    )
 
-                    val applicationList : ArrayList<ApplicationEntity> = arrayListOf()
+                    val applicationList: ArrayList<ApplicationEntity> = arrayListOf()
 
-                    for(i in 0 until appsList.size){
+                    for (i in 0 until appsList.size) {
 
-                        if(applicationList.isEmpty()){
+                        if (applicationList.isEmpty()) {
                             applicationList.add(appsList[i])
                         } else {
-                            for(j in 0 until applicationList.size){
-                                if(appsList[i].packageName != applicationList[j].packageName){
+                            for (j in 0 until applicationList.size) {
+                                if (appsList[i].packageName != applicationList[j].packageName) {
                                     applicationList.add(appsList[i])
                                 }
                             }
                         }
                     }
 
-                    Log.d("MainActivity", "Manipulated List: ${GsonBuilder().setPrettyPrinting().create().toJson(applicationList)}")
+                    Log.d(
+                        "MainActivity",
+                        "Manipulated List: ${
+                            GsonBuilder().setPrettyPrinting().create().toJson(applicationList)
+                        }"
+                    )
 
                     dataState()
-                    (rv_application_list?.adapter as AddedAppsListAdapterNew).addItems(applicationList)
+                    (rv_application_list?.adapter as AddedAppsListAdapterNew).addItems(
+                        applicationList
+                    )
                     recyclerViewSwipeHandler()
                 } else {
                     emptyState()
@@ -1434,7 +1446,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         }
     }
 
-    private fun showEditDialog(app: ApplicationEntity,selectedNotifyOption:String) {
+    private fun showEditDialog(app: ApplicationEntity, selectedNotifyOption: String) {
         //refresh adapter first
         if (!isFinishing) {
             try {
@@ -1466,7 +1478,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     override fun onItemClick(app: ApplicationEntity, selectedNotifyOption: String) {
         //refresh adapter first
-        showEditDialog(app,selectedNotifyOption)
+        showEditDialog(app, selectedNotifyOption)
     }
 
     override fun onItemDeleteClick(app: ApplicationEntity, id: Int) {

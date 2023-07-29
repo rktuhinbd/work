@@ -12,17 +12,14 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.app.messagealarm.model.dao.AppConstrainDao;
 import com.app.messagealarm.model.dao.AppDao;
 import com.app.messagealarm.model.dao.ApplicationDao;
-import com.app.messagealarm.model.dao.ApplicationDaoNew;
 import com.app.messagealarm.model.dao.LanguageDao;
 import com.app.messagealarm.model.entity.AppConstrainEntity;
 import com.app.messagealarm.model.entity.AppEntity;
 import com.app.messagealarm.model.entity.ApplicationEntity;
-import com.app.messagealarm.model.entity.ApplicationEntityNew;
 import com.app.messagealarm.model.entity.LanguageEntity;
 
 @Database(entities = {
         ApplicationEntity.class,
-        ApplicationEntityNew.class,
         AppConstrainEntity.class,
         AppEntity.class, LanguageEntity.class
 }, exportSchema = false, version = 3)
@@ -64,8 +61,6 @@ public abstract class AppDatabase extends RoomDatabase {
      * @return
      */
     public abstract ApplicationDao applicationDao();
-
-    public abstract ApplicationDaoNew applicationDaoNew();
 
     public abstract AppConstrainDao appConstrainDao();
 
