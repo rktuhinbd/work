@@ -34,6 +34,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.analytics.FirebaseAnalytics
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_alarm_options.*
 import kotlinx.android.synthetic.main.dialog_speak_options.*
@@ -60,6 +61,7 @@ import kotlinx.android.synthetic.main.dialog_speak_options.view_sender_name
 import kotlinx.android.synthetic.main.dialog_speak_options.view_vibrate
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
 
@@ -75,7 +77,6 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         setStyle(STYLE_NORMAL, R.style.BottomSheetDialog)
         optionPresenter = OptionPresenter(this)
     }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -83,7 +84,6 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
     ): View? {
         return inflater.inflate(R.layout.dialog_speak_options, container, false)
     }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         init()
@@ -103,7 +103,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         }
     }
 
-    private fun setListener() {
+    private fun setListener(){
         btn_close?.setOnClickListener {
             dismiss()
         }
@@ -295,8 +295,10 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
             //save the app
             try {
                 addApplicationEntity.speakEnabled = true
+                //save application and turn switch on
+                addApplicationEntity.isRunningStatus = true
                 saveApplication()
-            } catch (e: java.lang.NullPointerException) {
+            }catch (e: java.lang.NullPointerException){
             }
         }
     }
@@ -718,7 +720,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
     }
 
 
-    private fun showMessageKeywordsDialog(list: ArrayList<String>) {
+    private fun showMessageKeywordsDialog(list: ArrayList<String>){
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
@@ -907,7 +909,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
     }
 
-    fun init() {
+    fun init(){
         var updateTimer: Timer? = null
         val timeZone = TimeZone.getDefault()
         // Create a SimpleDateFormat with the desired output format
@@ -1003,7 +1005,6 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         }
         return dialog
     }
-
     private fun setupFullHeight(bottomSheetDialog: BottomSheetDialog) {
         try {
             val bottomSheet =
@@ -1022,14 +1023,12 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
 
         }
     }
-
     private fun getWindowHeight(): Int { // Calculate window height for fullscreen use
         val displayMetrics = DisplayMetrics()
         (context as Activity?)!!.windowManager.defaultDisplay
             .getMetrics(displayMetrics)
         return displayMetrics.heightPixels
     }
-
     override fun onApplicationSaveSuccess() {
         if (isAdded) {
             requireActivity().runOnUiThread {
@@ -1041,54 +1040,44 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
             }
         }
     }
-
     override fun onApplicationSaveError(message: String) {
-//        TODO("Not yet implemented")
-    }
 
+    }
     override fun onApplicationUpdateSuccess() {
-        requireActivity().runOnUiThread {
-            Toasty.success(requireActivity(), getString(R.string.application_updated_success))
-                .show()
-            dismissAllowingStateLoss()
-            requireActivity().setResult(Activity.RESULT_OK)
-            requireActivity().finish()
-        }
-    }
 
+    }
     override fun onApplicationUpdateError(message: String) {
-//        TODO("Not yet implemented")
-    }
 
+    }
     override fun onBitmapSaveSuccess(path: String) {
         addApplicationEntity.bitmapPath = path
         /**
          * End of other values
          */
         optionPresenter?.saveApplication(addApplicationEntity, null)
-        requireActivity().runOnUiThread {
-            hideProgressBar()
+        if (isAdded) {
+            requireActivity().runOnUiThread {
+                hideProgressBar()
+            }
         }
     }
-
     override fun onBitmapSaveError() {
-        requireActivity().runOnUiThread {
-            Toasty.error(requireActivity(), DataUtils.getString(R.string.something_wrong))
-                .show()
-            hideProgressBar()
+        if (isAdded) {
+            requireActivity().runOnUiThread {
+                Toasty.error(requireActivity(), DataUtils.getString(R.string.something_wrong))
+                    .show()
+                hideProgressBar()
+            }
         }
     }
-
     override fun onApplicationGetSuccess(app: ApplicationEntity) {
-        TODO("Not yet implemented")
-    }
 
+    }
     override fun onApplicationGetError(message: String) {
-        TODO("Not yet implemented")
-    }
 
+    }
     override fun onIllegalState() {
-        TODO("Not yet implemented")
+
     }
 
 }

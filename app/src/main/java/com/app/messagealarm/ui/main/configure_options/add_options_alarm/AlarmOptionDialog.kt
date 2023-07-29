@@ -16,11 +16,9 @@ import android.view.*
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
-import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.Hint
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
@@ -395,14 +393,12 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         btn_save?.setOnClickListener {
             if (!BaseApplication.isHintShowing) {
                 try {
-//                    addApplicationEntityNew.isAlarmEnabled = true
                     addApplicationEntity.alarmEnabled = true
 //                    addApplicationEntity.alertType = Constants.NotifyOptions.ALARM
                     if (checkForDefault()) {
                         shouldOnStatus = false
                     } else {
                         //save application and turn switch on
-//                        addApplicationEntityNew.isRunningStatus = true
                         addApplicationEntity.isRunningStatus = true
                         shouldOnStatus = true
                     }
@@ -416,8 +412,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                         val app =
                             arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
                         packageName = app.packageName
-                        senderName = addApplicationEntity.senderNames
-//                        senderName = addApplicationEntityNew.senderNames ?: ""
+                        senderName = addApplicationEntity.senderNames ?: ""
                     } else {
                         if (holderEntity.packageName != null) {
                             packageName = holderEntity.packageName
@@ -450,7 +445,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
 
         switch_custom_time?.setOnCheckedChangeListener { buttonView, isChecked ->
             if (!BaseApplication.isHintShowing) {
-//                addApplicationEntityNew.isCustomTime = isChecked
                 addApplicationEntity.isCustomTime = isChecked
                 rangeSlider?.isEnabled = isChecked
             }
@@ -499,11 +493,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                             addApplicationEntity.startTime = formattedStartTime
                             addApplicationEntity.endTime = formattedEndTime
                         }
-
-//                        if (addApplicationEntityNew.isCustomTime) {
-//                            addApplicationEntityNew.startTime = formattedStartTime
-//                            addApplicationEntityNew.endTime = formattedEndTime
-//                        }
                     }
                 }
             }, 200)
@@ -514,7 +503,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
              * Set flash option to the data model
              */
             addApplicationEntity.isIs_flash_on = isChecked
-//            addApplicationEntityNew.isFlashOn = isChecked
         }
 
         switch_vibrate?.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -523,7 +511,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
              */
             if (!BaseApplication.isHintShowing) {
                 addApplicationEntity.isVibrateOnAlarm = isChecked
-//                addApplicationEntityNew.isVibrateOnAlarm = isChecked
                 if (switch_vibrate.isChecked) {
                     switch_just_vibrate.isChecked = false
                     progress_sound_level.isEnabled = true
@@ -536,7 +523,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         switch_just_vibrate?.setOnCheckedChangeListener { buttonView, isChecked ->
             if (!BaseApplication.isHintShowing) {
                 addApplicationEntity.isJustVibrate = isChecked
-//                addApplicationEntityNew.isJustVibrate = isChecked
                 if (isChecked) {
                     progress_sound_level.progress = 0
                     switch_vibrate.isChecked = false
@@ -579,7 +565,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
             @SuppressLint("SetTextI18n")
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 addApplicationEntity.sound_level = progress
-//                addApplicationEntityNew.soundLevel = progress
                 txt_percent_sound_level?.text = "${progress}%"
             }
 
@@ -702,7 +687,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                                      * set custom alarm tone type to data model
                                      */
                                     addApplicationEntity.ringTone = "Default"
-//                                    addApplicationEntityNew.ringTone = "Default"
                                 } else {
                                     askForPermission()
                                 }
@@ -712,7 +696,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                                  * Set SPEAK as flag in the local database
                                  */
                                 addApplicationEntity.ringTone = "SPEAK"
-//                                addApplicationEntityNew.ringTone = "SPEAK"
                                 alarmTonePath = "SPEAK"
                             } else {
                                 txt_ringtone_value?.text = name
@@ -720,7 +703,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                                  * set default alarm tone type to data model
                                  */
                                 addApplicationEntity.ringTone = name
-//                                addApplicationEntityNew.ringTone = name
                                 alarmTonePath = null
                             }
                         }
@@ -742,7 +724,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                              * set number of play to data model
                              */
                             addApplicationEntity.numberOfPlay = name.trim().toInt()
-//                            addApplicationEntityNew.numberOfPlay = name.trim().toInt()
                             txt_number_of_play_value?.text = """$name times"""
                         }
                     })
@@ -755,7 +736,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                 getString(R.string.txt_desc_clear_message), object : DialogUtils.Callback {
                     override fun onPositive() {
                         addApplicationEntity.messageBody = "None"
-//                        addApplicationEntityNew.messageBody = "None"
                         txt_message_body_value?.text = "None"
                         btn_message_body_clear?.visibility = View.GONE
                     }
@@ -777,7 +757,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
 
                         }
                         addApplicationEntity.senderNames = "None"
-//                        addApplicationEntityNew.senderNames = "None"
                         txt_sender_name_value?.text = "None"
                         btn_sender_name_clear?.visibility = View.GONE
                     }
@@ -797,7 +776,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                             holderEntity.ignored_names = "None"
                         }
                         addApplicationEntity.ignored_names = "None"
-//                        addApplicationEntityNew.ignoredNames = "None"
                         txt_exclude_sender_name_value?.text = "None"
                         btn_exclude_sender_name_clear?.visibility = View.GONE
                     }
@@ -820,7 +798,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                              * set alarm repeat value to data model
                              */
                             addApplicationEntity.alarmRepeat = name
-//                            addApplicationEntityNew.alarmRepeat = name
                             if (name.contains("Custom")) {
                                 DialogUtils.showCheckedItemListDialog(
                                     addApplicationEntity.repeatDays,
@@ -835,7 +812,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                                                 ).show()
                                                 txt_repeat_value?.text = "Always"
                                                 addApplicationEntity.alarmRepeat = "Always"
-//                                                addApplicationEntityNew.alarmRepeat = "Always"
                                             } else {
                                                 var selectedDays: String = ""
                                                 list.forEach {
@@ -853,12 +829,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                                                         0,
                                                         selectedDays.length - 2
                                                     )
-
-//                                                addApplicationEntityNew.repeatDays =
-//                                                    selectedDays.substring(
-//                                                        0,
-//                                                        selectedDays.length - 2
-//                                                    )
                                             }
                                         }
                                     },
@@ -872,11 +842,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                                                 txt_repeat_value?.text = "Always"
                                                 addApplicationEntity.alarmRepeat = "Always"
                                             }
-
-//                                            if (addApplicationEntityNew.repeatDays == null) {
-//                                                txt_repeat_value?.text = "Always"
-//                                                addApplicationEntityNew.alarmRepeat = "Always"
-//                                            }
                                         }
                                     }
                                 )
@@ -897,10 +862,8 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
     fun setToneName(name: String) {
         if (name.length > 29) {
             addApplicationEntity.ringTone = name.substring(0, 29)
-//            addApplicationEntityNew.ringTone = name.substring(0, 29)
         } else {
             addApplicationEntity.ringTone = name
-//            addApplicationEntityNew.ringTone = name
         }
 
     }
@@ -1147,7 +1110,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                 txt_message_body_value?.text = name
                 btn_message_body_clear?.visibility = View.VISIBLE
                 addApplicationEntity.messageBody = name
-//                addApplicationEntityNew.messageBody = name
                 if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
                     holderEntity.messageBody = name
                 }
@@ -1156,7 +1118,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                 btn_message_body_clear?.visibility = View.GONE
                 txt_message_body_value?.text = "None"
                 addApplicationEntity.messageBody = "None"
-//                addApplicationEntityNew.messageBody = "None"
                 dialog.dismiss()
             }
             /**
@@ -1179,7 +1140,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
 
         val window: Window = dialog.window!!
         window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        //
+
         if (!dialog.isShowing) {
             dialog.show()
         }
@@ -1497,7 +1458,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                 txt_sender_name_value?.text = name
                 btn_sender_name_clear?.visibility = View.VISIBLE
                 addApplicationEntity.senderNames = name
-//                addApplicationEntityNew.senderNames = name
                 if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
                     holderEntity.senderNames = name
                 }
@@ -1506,7 +1466,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                 btn_sender_name_clear?.visibility = View.GONE
                 txt_sender_name_value?.text = "None"
                 addApplicationEntity.senderNames = "None"
-//                addApplicationEntityNew.senderNames = "None"
                 dialog.dismiss()
             }
             /**
@@ -1690,7 +1649,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                 txt_exclude_sender_name_value?.text = name
                 btn_exclude_sender_name_clear?.visibility = View.VISIBLE
                 addApplicationEntity.ignored_names = name
-//                addApplicationEntityNew.ignoredNames = name
                 if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
                     holderEntity.ignored_names = name
                 }
@@ -1699,7 +1657,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                 btn_exclude_sender_name_clear?.visibility = View.GONE
                 txt_exclude_sender_name_value?.text = "None"
                 addApplicationEntity.ignored_names = "None"
-//                addApplicationEntityNew.ignoredNames = "None"
                 dialog.dismiss()
             }
             /**
@@ -1732,6 +1689,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
     private fun defaultValuesToDataModel(): ApplicationEntity {
         addApplicationEntity.alarmRepeat = "Always"
         addApplicationEntity.ringTone = "Default"
+        addApplicationEntity.alarmEnabled = true
         addApplicationEntity.isVibrateOnAlarm = false
         addApplicationEntity.isJustVibrate = false
         addApplicationEntity.isCustomTime = false
@@ -1775,6 +1733,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         //set this to holder object for checking default
         holderEntity.alarmRepeat = "Always"
         holderEntity.ringTone = "Default"
+        holderEntity.alarmEnabled = true
         holderEntity.isVibrateOnAlarm = false
         holderEntity.isJustVibrate = false
         holderEntity.isCustomTime = false
@@ -1789,43 +1748,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         return addApplicationEntity
     }
 
-//    private fun defaultValuesToDataModelNew(): ApplicationEntityNew {
-//        addApplicationEntityNew.alarmRepeat = "Always"
-//        addApplicationEntityNew.ringTone = "Default"
-//        addApplicationEntityNew.isVibrateOnAlarm = false
-//        addApplicationEntityNew.isJustVibrate = false
-//        addApplicationEntityNew.isCustomTime = false
-//        addApplicationEntityNew.numberOfPlay = 2
-//        addApplicationEntityNew.startTime = "12 AM"
-//        addApplicationEntityNew.endTime = "11 PM"
-//        addApplicationEntityNew.senderNames = "None"
-//        addApplicationEntityNew.ignoredNames = "None"
-//        addApplicationEntityNew.messageBody = "None"
-//        addApplicationEntityNew.isRunningStatus = true
-//
-//        if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
-//            holderEntityNew.sound_level = 100
-//            addApplicationEntity.sound_level = 100
-//        } else {
-//            holderEntityNew.sound_level = AndroidUtils.getSoundLevel()
-//            addApplicationEntity.sound_level = AndroidUtils.getSoundLevel()
-//        }
-//        //set this to holder object for checking default
-//        holderEntityNew.alarmRepeat = "Always"
-//        holderEntityNew.ringTone = "Default"
-//        holderEntityNew.isVibrateOnAlarm = false
-//        holderEntityNew.isJustVibrate = false
-//        holderEntityNew.isCustomTime = false
-//        holderEntityNew.numberOfPlay = 2
-//        holderEntityNew.startTime = "12 AM"
-//        holderEntityNew.endTime = "11 PM"
-//        holderEntityNew.senderNames = "None"
-//        holderEntityNew.ignored_names = "None"
-//        holderEntityNew.messageBody = "None"
-//        holderEntityNew.isRunningStatus = true
-//
-//        return addApplicationEntityNew
-//    }
 
     private fun saveApplication() {
         /**
@@ -2003,12 +1925,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                     txtEndHour?.text.toString()
                 )
             ) {
-
-//                viewModel.saveApplication(
-//                    addApplicationEntityNew,
-//                    firebaseAnalytics
-//                )
-
                 optionPresenter?.saveApplication(
                     addApplicationEntity,
                     firebaseAnalytics
@@ -2020,12 +1936,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                 }
             }
         } else {
-
-//            viewModel.saveApplication(
-//                addApplicationEntityNew,
-//                firebaseAnalytics
-//            )
-
             optionPresenter?.saveApplication(addApplicationEntity, firebaseAnalytics)
         }
     }
@@ -2067,33 +1977,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         txt_percent_sound_level?.text = "${app.sound_level}%"
     }
 
-//    @SuppressLint("SetTextI18n")
-//    private fun setPresetValueToUiNew(app: ApplicationEntityNew) {
-//        if (app.alarmRepeat == "Custom") {
-//            txt_repeat_value?.text = app.repeatDays
-//        } else {
-//            txt_repeat_value?.text = app.alarmRepeat
-//        }
-//        txt_ringtone_value?.text = app.ringTone
-//        switch_vibrate?.isChecked = app.isVibrateOnAlarm
-//        switch_flash?.isChecked = app.isFlashOn
-//        switch_custom_time?.isChecked = app.isCustomTime
-//        switch_just_vibrate?.isChecked = app.isJustVibrate
-//        txtHour?.text = app.startTime
-//        txtEndHour?.text = app.endTime
-//        rangeSlider?.values = listOf(
-//            TimeUtils.convert12HrTo24Hr(addApplicationEntity.startTime),
-//            TimeUtils.convert12HrTo24Hr(addApplicationEntity.endTime)
-//        )
-//        txt_number_of_play_value?.text = String.format("%d times", app.numberOfPlay)
-//        txt_sender_name_value?.text = app.senderNames
-//        txt_exclude_sender_name_value?.text = app.ignoredNames
-//        txt_message_body_value?.text = app.messageBody
-//        //new added
-//        progress_sound_level?.progress = app.soundLevel
-//        txt_percent_sound_level?.text = "${app.soundLevel}%"
-//    }
-
     override fun onApplicationGetSuccess(app: ApplicationEntity) {
 
         return
@@ -2111,7 +1994,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         addApplicationEntity = app
         alarmTonePath = app.tone_path
         this.appName = app.appName
-//        convertToHolderEntity(addApplicationEntityNew)
         if (isAdded) {
             requireActivity().runOnUiThread {
                 setPresetValueToUi(app)
@@ -2119,57 +2001,12 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         }
     }
 
-//    fun onApplicationGetSuccessNew(app: ApplicationEntityNew) {
-//        //show edited value to
-//        if (app.senderNames != "None") {
-//            btn_sender_name_clear?.visibility = View.VISIBLE
-//        }
-//        if (app.messageBody != "None") {
-//            btn_message_body_clear?.visibility = View.VISIBLE
-//        }
-//        if (app.ignoredNames != "None") {
-//            btn_exclude_sender_name_clear?.visibility = View.VISIBLE
-//        }
-////        addApplicationEntityNew = app
-//        alarmTonePath = app.tonePath
-//        this.appName = app.appName
-////        convertToHolderEntity(addApplicationEntityNew)
-//        if (isAdded) {
-//            requireActivity().runOnUiThread {
-//                setPresetValueToUi(app)
-//            }
-//        }
-//    }
-
-//    private fun convertToHolderEntity(app: ApplicationEntityNew) {
-//        holderEntity.appName = app.appName
-//        holderEntity.packageName = app.packageName
-//        holderEntity.endTime = app.endTime
-//        holderEntity.startTime = app.startTime
-//        holderEntity.ringTone = app.ringTone
-//        holderEntity.numberOfPlay = app.numberOfPlay
-//        holderEntity.bitmapPath = app.bitmapPath
-//        holderEntity.messageBody = app.messageBody
-//        holderEntity.senderNames = app.senderNames
-//        holderEntity.ignored_names = app.ignoredNames
-//        holderEntity.isCustomTime = app.isCustomTime
-//        holderEntity.isJustVibrate = app.isJustVibrate
-//        holderEntity.isVibrateOnAlarm = app.isVibrateOnAlarm
-//        holderEntity.tone_path = app.tonePath
-//        holderEntity.alarmRepeat = app.alarmRepeat
-//        holderEntity.repeatDays = app.repeatDays
-//        holderEntity.sound_level = app.soundLevel
-//        holderEntity.isIs_flash_on = app.isFlashOn
-//    }
-
     override fun onApplicationGetError(message: String) {
         defaultValuesToDataModel()
-//        defaultValuesToDataModelNew()
     }
 
     override fun onIllegalState() {
         defaultValuesToDataModel()
-//        defaultValuesToDataModelNew()
     }
 
 
