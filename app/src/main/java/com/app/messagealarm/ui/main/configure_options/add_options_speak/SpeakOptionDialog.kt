@@ -116,7 +116,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
             /**
              * set vibrate option to data model
              */
-            addApplicationEntity.isVibrateOnAlarm = isChecked
+            addApplicationEntity.vibrateOnAlarm = isChecked
         }
 
         view_vibrate?.setOnClickListener {
@@ -134,7 +134,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         progress_sound_level?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             @SuppressLint("SetTextI18n")
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                addApplicationEntity.sound_level = progress
+                addApplicationEntity.soundLevel = progress
                 txt_percent_sound_level?.text = "${progress}%"
             }
 
@@ -225,7 +225,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
                         if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
                             //  holderEntity.ignored_names = "None"
                         }
-                        addApplicationEntity.ignored_names = "None"
+                        addApplicationEntity.ignoredNames = "None"
                         txt_exclude_sender_name_value?.text = "None"
                         btn_exclude_sender_name_clear?.visibility = View.GONE
                     }
@@ -294,9 +294,9 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         btn_save?.setOnClickListener {
             //save the app
             try {
-                addApplicationEntity.speakEnabled = true
+                addApplicationEntity.isSpeakEnabled = true
                 //save application and turn switch on
-                addApplicationEntity.isRunningStatus = true
+                addApplicationEntity.runningStatus = true
                 saveApplication()
             }catch (e: java.lang.NullPointerException){
             }
@@ -682,7 +682,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
             if (name.isNotEmpty()) {
                 txt_exclude_sender_name_value?.text = name
                 btn_exclude_sender_name_clear?.visibility = View.VISIBLE
-                addApplicationEntity.ignored_names = name
+                addApplicationEntity.ignoredNames = name
                 if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
                     //holderEntity.ignored_names = name
                 }
@@ -690,7 +690,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
             } else {
                 btn_exclude_sender_name_clear?.visibility = View.GONE
                 txt_exclude_sender_name_value?.text = "None"
-                addApplicationEntity.ignored_names = "None"
+                addApplicationEntity.ignoredNames = "None"
                 dialog.dismiss()
             }
             /**
@@ -1054,7 +1054,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         /**
          * End of other values
          */
-        optionPresenter?.saveApplication(addApplicationEntity, null)
+//        optionPresenter?.saveApplication(addApplicationEntity, null) //Todo: uncomment this
         if (isAdded) {
             requireActivity().runOnUiThread {
                 hideProgressBar()

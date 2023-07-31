@@ -25,7 +25,7 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
         Thread {
             try {
                 alarmApplicationView.onGetAlarmApplicationSuccess(
-                    appDatabase.applicationDao().allApplicationList
+                    appDatabase.applicationDao().getAllApplications()
                             as ArrayList<ApplicationEntity>
                 )
             } catch (e: NullPointerException) {
@@ -40,8 +40,8 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread {
             try {
-                appDatabase.applicationDao()
-                    .rollBackAppsFromDefaultSoundLevel(AndroidUtils.getSoundLevel())
+//                appDatabase.applicationDao()
+//                    .rollBackAppsFromDefaultSoundLevel(AndroidUtils.getSoundLevel())
                 SharedPrefUtils.write(Constants.PreferenceKeys.IS_DB_ROLLED_BACK, true)
             } catch (e: NullPointerException) {
 
@@ -140,7 +140,7 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread(Runnable {
             try {
-                appDatabase.applicationDao().updateAppStatus(boolean, id)
+//                appDatabase.applicationDao().updateAppStatus(boolean, id)//Todo: check
                 alarmApplicationView.onAppStatusUpdateSuccess()
             } catch (e: NullPointerException) {
                 e.printStackTrace()
@@ -206,7 +206,7 @@ class AlarmApplicationPresenter(private val alarmApplicationView: AlarmApplicati
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread(Runnable {
             try {
-                appDatabase.applicationDao().deleteApplication(applicationEntity)
+                appDatabase.applicationDao().delete(applicationEntity)
                 alarmApplicationView.onApplicationDeleteSuccess(position)
             } catch (e: NullPointerException) {
                 alarmApplicationView.onApplicationDeleteError()

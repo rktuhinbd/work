@@ -9,6 +9,7 @@ import android.media.RingtoneManager
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ForegroundColorSpan
 import android.util.DisplayMetrics
@@ -16,14 +17,22 @@ import android.view.*
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
+import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.Hint
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.service.AlarmServicePresenter
 import com.app.messagealarm.ui.buy_pro.BuyProActivity
+import com.app.messagealarm.ui.main.ApplicationRepository
+import com.app.messagealarm.ui.main.ApplicationViewModel
+import com.app.messagealarm.ui.main.ApplicationViewModelFactory
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.ui.main.configure_options.adapter.SenderNameAdapter
@@ -74,6 +83,8 @@ import kotlinx.android.synthetic.main.dialog_alarm_options.view_sender_name
 import kotlinx.android.synthetic.main.dialog_alarm_options.view_sound_level
 import kotlinx.android.synthetic.main.dialog_alarm_options.view_vibrate
 import kotlinx.android.synthetic.main.dialog_speak_options.*
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import xyz.aprildown.ultimateringtonepicker.RingtonePickerActivity
 import xyz.aprildown.ultimateringtonepicker.UltimateRingtonePicker
 import java.text.SimpleDateFormat
@@ -91,7 +102,12 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
     private var addApplicationEntity = ApplicationEntity()
     private var holderEntity = ApplicationEntity()
 
+
+    private lateinit var viewModel: ApplicationViewModel
+
+
     private var optionPresenter: OptionPresenter? = null
+
     val REQUEST_CODE_PICK_AUDIO = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,8 +117,46 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         once = Once()
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
+
+
+        // Initialize ViewModel
+        val applicationDao = AppDatabase.getInstance(requireContext()).applicationDao()
+        val repository = ApplicationRepository(applicationDao)
+        val viewModelFactory = ApplicationViewModelFactory(repository)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(ApplicationViewModel::class.java)
+
+        initObserver()
     }
 
+    private fun initObserver() {
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.applicationEntity.collectLatest {
+
+                    if(it == null) return@collectLatest
+
+                    if (it.senderNames != "None") {
+                        btn_sender_name_clear?.visibility = View.VISIBLE
+                    }
+                    if (it.messageBody != "None") {
+                        btn_message_body_clear?.visibility = View.VISIBLE
+                    }
+                    if (it.ignoredNames != "None") {
+                        btn_exclude_sender_name_clear?.visibility = View.VISIBLE
+                    }
+                    addApplicationEntity = it
+                    alarmTonePath = it.tonePath
+                    appName = it.appName
+                    if (isAdded) {
+                        requireActivity().runOnUiThread {
+                            setPresetValueToUi(it)
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * Flash light option added on version 2.0.4
@@ -142,7 +196,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.dialog_alarm_options, container, false)
     }
@@ -252,16 +306,24 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                 if (arguments?.getSerializable(Constants.BundleKeys.APP) != null) {
                     val app =
                         (arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps)
-                    optionPresenter?.getAppByPackageNameAndAlarm(
-                        app.packageName
-                    )
+//                    optionPresenter?.getAppByPackageNameAndAlarm(
+//                        app.packageName
+//                    )
+
+                    viewModel.getAppByPackageName(app.packageName)
 
                     this.appName = app.appName
                 }
             } else {
                 //edit mode from home
                 if (arguments?.getString(Constants.BundleKeys.PACKAGE_NAME) != null) {
-                    optionPresenter?.getAppByPackageNameAndAlarm(
+//                    optionPresenter?.getAppByPackageNameAndAlarm(
+//                        arguments?.getString(
+//                            Constants.BundleKeys.PACKAGE_NAME
+//                        ) ?: ""
+//                    )
+
+                    viewModel.getAppByPackageName(
                         arguments?.getString(
                             Constants.BundleKeys.PACKAGE_NAME
                         ) ?: ""
@@ -280,7 +342,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         dialog!!.setOnKeyListener(object : DialogInterface.OnKeyListener {
             override fun onKey(
                 dialog: DialogInterface?, keyCode: Int,
-                event: KeyEvent
+                event: KeyEvent,
             ): Boolean {
                 return if (keyCode == KeyEvent.KEYCODE_BACK) {
                     //This is the filter
@@ -393,13 +455,13 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         btn_save?.setOnClickListener {
             if (!BaseApplication.isHintShowing) {
                 try {
-                    addApplicationEntity.alarmEnabled = true
+                    addApplicationEntity.isAlarmEnabled = true
 //                    addApplicationEntity.alertType = Constants.NotifyOptions.ALARM
                     if (checkForDefault()) {
                         shouldOnStatus = false
                     } else {
                         //save application and turn switch on
-                        addApplicationEntity.isRunningStatus = true
+                        addApplicationEntity.runningStatus = true
                         shouldOnStatus = true
                     }
                     var packageName = ""
@@ -415,9 +477,9 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                         senderName = addApplicationEntity.senderNames ?: ""
                     } else {
                         if (holderEntity.packageName != null) {
-                            packageName = holderEntity.packageName
+                            packageName = holderEntity.packageName ?: ""
                         }
-                        senderName = holderEntity.senderNames
+                        senderName = holderEntity.senderNames ?: ""
                     }
                     /**
                      * When in edit mode, and cleaning the name. then need to clean the holder entity. the bug is in edit mode
@@ -489,7 +551,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                         }
                         txtEndHour?.text = formattedEndTime
 
-                        if (addApplicationEntity.isCustomTime) {
+                        if (addApplicationEntity.isCustomTime == true) {
                             addApplicationEntity.startTime = formattedStartTime
                             addApplicationEntity.endTime = formattedEndTime
                         }
@@ -502,7 +564,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
             /**
              * Set flash option to the data model
              */
-            addApplicationEntity.isIs_flash_on = isChecked
+            addApplicationEntity.isFlashOn = isChecked
         }
 
         switch_vibrate?.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -510,7 +572,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
              * set vibrate option to data model
              */
             if (!BaseApplication.isHintShowing) {
-                addApplicationEntity.isVibrateOnAlarm = isChecked
+                addApplicationEntity.vibrateOnAlarm = isChecked
                 if (switch_vibrate.isChecked) {
                     switch_just_vibrate.isChecked = false
                     progress_sound_level.isEnabled = true
@@ -564,7 +626,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         progress_sound_level?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             @SuppressLint("SetTextI18n")
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                addApplicationEntity.sound_level = progress
+                addApplicationEntity.soundLevel = progress
                 txt_percent_sound_level?.text = "${progress}%"
             }
 
@@ -686,7 +748,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                                     /**
                                      * set custom alarm tone type to data model
                                      */
-                                    addApplicationEntity.ringTone = "Default"
+                                    addApplicationEntity.ringtone = "Default"
                                 } else {
                                     askForPermission()
                                 }
@@ -695,14 +757,14 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                                 /**
                                  * Set SPEAK as flag in the local database
                                  */
-                                addApplicationEntity.ringTone = "SPEAK"
+                                addApplicationEntity.ringtone = "SPEAK"
                                 alarmTonePath = "SPEAK"
                             } else {
                                 txt_ringtone_value?.text = name
                                 /**
                                  * set default alarm tone type to data model
                                  */
-                                addApplicationEntity.ringTone = name
+                                addApplicationEntity.ringtone = name
                                 alarmTonePath = null
                             }
                         }
@@ -773,9 +835,9 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                 getString(R.string.txt_desc_clear_ignored_namne), object : DialogUtils.Callback {
                     override fun onPositive() {
                         if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
-                            holderEntity.ignored_names = "None"
+                            holderEntity.ignoredNames = "None"
                         }
-                        addApplicationEntity.ignored_names = "None"
+                        addApplicationEntity.ignoredNames = "None"
                         txt_exclude_sender_name_value?.text = "None"
                         btn_exclude_sender_name_clear?.visibility = View.GONE
                     }
@@ -861,9 +923,9 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
 
     fun setToneName(name: String) {
         if (name.length > 29) {
-            addApplicationEntity.ringTone = name.substring(0, 29)
+            addApplicationEntity.ringtone = name.substring(0, 29)
         } else {
-            addApplicationEntity.ringTone = name
+            addApplicationEntity.ringtone = name
         }
 
     }
@@ -1648,15 +1710,15 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
             if (name.isNotEmpty()) {
                 txt_exclude_sender_name_value?.text = name
                 btn_exclude_sender_name_clear?.visibility = View.VISIBLE
-                addApplicationEntity.ignored_names = name
+                addApplicationEntity.ignoredNames = name
                 if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
-                    holderEntity.ignored_names = name
+                    holderEntity.ignoredNames = name
                 }
                 dialog.dismiss()
             } else {
                 btn_exclude_sender_name_clear?.visibility = View.GONE
                 txt_exclude_sender_name_value?.text = "None"
-                addApplicationEntity.ignored_names = "None"
+                addApplicationEntity.ignoredNames = "None"
                 dialog.dismiss()
             }
             /**
@@ -1688,62 +1750,62 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
 
     private fun defaultValuesToDataModel(): ApplicationEntity {
         addApplicationEntity.alarmRepeat = "Always"
-        addApplicationEntity.ringTone = "Default"
-        addApplicationEntity.alarmEnabled = true
-        addApplicationEntity.isVibrateOnAlarm = false
+        addApplicationEntity.ringtone = "Default"
+        addApplicationEntity.isAlarmEnabled = true
+        addApplicationEntity.vibrateOnAlarm = false
         addApplicationEntity.isJustVibrate = false
         addApplicationEntity.isCustomTime = false
         addApplicationEntity.numberOfPlay = 2
         addApplicationEntity.startTime = "12 AM"
         addApplicationEntity.endTime = "11 PM"
         addApplicationEntity.senderNames = "None"
-        addApplicationEntity.ignored_names = "None"
+        addApplicationEntity.ignoredNames = "None"
         addApplicationEntity.messageBody = "None"
-        addApplicationEntity.isRunningStatus = true
+        addApplicationEntity.runningStatus = true
         //previous code
         /* if(SharedPrefUtils.contains(Constants.PreferenceKeys.COUNTRY_CODE)){
              if(SharedPrefUtils.readString(Constants.PreferenceKeys.COUNTRY_CODE) == "BD"){
-                 addApplicationEntity.sound_level = 100
-                 holderEntity.sound_level = 100
+                 addApplicationEntity.soundLevel = 100
+                 holderEntity.soundLevel = 100
              }else{
                  if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)){
-                     holderEntity.sound_level = 100
-                     addApplicationEntity.sound_level = 100
+                     holderEntity.soundLevel = 100
+                     addApplicationEntity.soundLevel = 100
                  }else{
-                     holderEntity.sound_level = 80
-                     addApplicationEntity.sound_level = 80
+                     holderEntity.soundLevel = 80
+                     addApplicationEntity.soundLevel = 80
                  }
              }
          }else{
              if(SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)){
-                 holderEntity.sound_level = 100
-                 addApplicationEntity.sound_level = 100
+                 holderEntity.soundLevel = 100
+                 addApplicationEntity.soundLevel = 100
              }else{
-                 holderEntity.sound_level = 80
-                 addApplicationEntity.sound_level = 80
+                 holderEntity.soundLevel = 80
+                 addApplicationEntity.soundLevel = 80
              }
          }*/
         if (SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)) {
-            holderEntity.sound_level = 100
-            addApplicationEntity.sound_level = 100
+            holderEntity.soundLevel = 100
+            addApplicationEntity.soundLevel = 100
         } else {
-            holderEntity.sound_level = AndroidUtils.getSoundLevel()
-            addApplicationEntity.sound_level = AndroidUtils.getSoundLevel()
+            holderEntity.soundLevel = AndroidUtils.getSoundLevel()
+            addApplicationEntity.soundLevel = AndroidUtils.getSoundLevel()
         }
         //set this to holder object for checking default
         holderEntity.alarmRepeat = "Always"
-        holderEntity.ringTone = "Default"
-        holderEntity.alarmEnabled = true
-        holderEntity.isVibrateOnAlarm = false
+        holderEntity.ringtone = "Default"
+        holderEntity.isAlarmEnabled = true
+        holderEntity.vibrateOnAlarm = false
         holderEntity.isJustVibrate = false
         holderEntity.isCustomTime = false
         holderEntity.numberOfPlay = 2
         holderEntity.startTime = "12 AM"
         holderEntity.endTime = "11 PM"
         holderEntity.senderNames = "None"
-        holderEntity.ignored_names = "None"
+        holderEntity.ignoredNames = "None"
         holderEntity.messageBody = "None"
-        holderEntity.isRunningStatus = true
+        holderEntity.runningStatus = true
 
         return addApplicationEntity
     }
@@ -1761,7 +1823,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                 val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
                 addApplicationEntity.appName = app.appName
                 addApplicationEntity.packageName = app.packageName
-                addApplicationEntity.tone_path = alarmTonePath
+                addApplicationEntity.tonePath = alarmTonePath
                 Thread(Runnable {
                     try {
                         val bitmap = app.drawableIcon
@@ -1781,11 +1843,14 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                         /**
                          * Check for unknown app
                          */
-                        optionPresenter?.checkForUnknownApp(
-                            requireActivity(),
-                            addApplicationEntity.appName,
-                            addApplicationEntity.packageName
-                        )
+
+                        if(!TextUtils.isEmpty(addApplicationEntity.appName) && !TextUtils.isEmpty(addApplicationEntity.packageName)){
+                            optionPresenter?.checkForUnknownApp(
+                                requireActivity(),
+                                addApplicationEntity.appName!!,
+                                addApplicationEntity.packageName!!
+                            )
+                        }
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -1812,15 +1877,15 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         var isDefault = false
         var repeat = ""
         repeat = if (holderEntity.alarmRepeat == "Custom") {
-            holderEntity.repeatDays
+            holderEntity.repeatDays?:""
         } else {
-            holderEntity.alarmRepeat
+            holderEntity.alarmRepeat?:""
         }
 
         if (txt_repeat_value?.text.toString().trim() == repeat) {
-            if (txt_ringtone_value?.text.toString().trim() == holderEntity.ringTone) {
-                if (switch_vibrate?.isChecked == holderEntity.isVibrateOnAlarm) {
-                    if (switch_flash?.isChecked == holderEntity.isIs_flash_on) {
+            if (txt_ringtone_value?.text.toString().trim() == holderEntity.ringtone) {
+                if (switch_vibrate?.isChecked == holderEntity.vibrateOnAlarm) {
+                    if (switch_flash?.isChecked == holderEntity.isFlashOn) {
                         if (switch_just_vibrate?.isChecked == holderEntity.isJustVibrate) {
                             if (switch_custom_time?.isChecked == holderEntity.isCustomTime) {
                                 if (txt_number_of_play_value?.text.toString().split(" ")
@@ -1828,9 +1893,9 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                                     holderEntity.numberOfPlay.toString()
                                 ) {
                                     if (txt_sender_name_value?.text.toString() == holderEntity.senderNames) {
-                                        if (txt_exclude_sender_name_value?.text.toString() == holderEntity.ignored_names) {
+                                        if (txt_exclude_sender_name_value?.text.toString() == holderEntity.ignoredNames) {
                                             if (txt_message_body_value?.text.toString() == holderEntity.messageBody) {
-                                                if (progress_sound_level?.progress == holderEntity.sound_level) {
+                                                if (progress_sound_level?.progress == holderEntity.soundLevel) {
                                                     isDefault = true
                                                 }
                                             }
@@ -1879,13 +1944,13 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                 Toasty.success(requireActivity(), getString(R.string.update_successful)).show()
                 if (!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
                     if (shouldOnStatus) {
-                        AlarmServicePresenter.updateAppStatus(true, holderEntity.id)
+                        holderEntity.id?.let { AlarmServicePresenter.updateAppStatus(true, it) }
                     }
                     dismissAllowingStateLoss()
                     requireActivity().finish()
                 } else {
                     if (shouldOnStatus) {
-                        AlarmServicePresenter.updateAppStatus(true, holderEntity.id)
+                        holderEntity.id?.let { AlarmServicePresenter.updateAppStatus(true, it) }
                         //notify adapter
                         (activity as AlarmApplicationActivity).notifyCurrentAdapter()
                     }
@@ -1917,7 +1982,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
     }
 
     private fun saveWithTimeConstrain() {
-        addApplicationEntity.tone_path = alarmTonePath
+        addApplicationEntity.tonePath = alarmTonePath
         //if start time and end time constrained
         if (switch_custom_time?.isChecked!!) {
             if (isTimeConstrained(
@@ -1925,10 +1990,12 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                     txtEndHour?.text.toString()
                 )
             ) {
-                optionPresenter?.saveApplication(
-                    addApplicationEntity,
-                    firebaseAnalytics
-                )
+//                optionPresenter?.saveApplication(
+//                    addApplicationEntity,
+//                    firebaseAnalytics
+//                )
+
+                viewModel.insert(addApplicationEntity)
             } else {
                 requireActivity().runOnUiThread {
                     hideProgressBar()
@@ -1936,7 +2003,9 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                 }
             }
         } else {
-            optionPresenter?.saveApplication(addApplicationEntity, firebaseAnalytics)
+//            optionPresenter?.saveApplication(addApplicationEntity, firebaseAnalytics)
+
+            viewModel.insert(addApplicationEntity)
         }
     }
 
@@ -1957,29 +2026,27 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         } else {
             txt_repeat_value?.text = app.alarmRepeat
         }
-        txt_ringtone_value?.text = app.ringTone
-        switch_vibrate?.isChecked = app.isVibrateOnAlarm
-        switch_flash?.isChecked = app.isIs_flash_on
-        switch_custom_time?.isChecked = app.isCustomTime
-        switch_just_vibrate?.isChecked = app.isJustVibrate
+        txt_ringtone_value?.text = app.ringtone
+        switch_vibrate?.isChecked = app.vibrateOnAlarm == true
+        switch_flash?.isChecked = app.isFlashOn?:false
+        switch_custom_time?.isChecked = app.isCustomTime == true
+        switch_just_vibrate?.isChecked = app.isJustVibrate == true
         txtHour?.text = app.startTime
         txtEndHour?.text = app.endTime
         rangeSlider?.values = listOf(
-            TimeUtils.convert12HrTo24Hr(addApplicationEntity.startTime),
-            TimeUtils.convert12HrTo24Hr(addApplicationEntity.endTime)
+            TimeUtils.convert12HrTo24Hr(addApplicationEntity.startTime?:""),
+            TimeUtils.convert12HrTo24Hr(addApplicationEntity.endTime?:"")
         )
         txt_number_of_play_value?.text = String.format("%d times", app.numberOfPlay)
         txt_sender_name_value?.text = app.senderNames
-        txt_exclude_sender_name_value?.text = app.ignored_names
+        txt_exclude_sender_name_value?.text = app.ignoredNames
         txt_message_body_value?.text = app.messageBody
         //new added
-        progress_sound_level?.progress = app.sound_level
-        txt_percent_sound_level?.text = "${app.sound_level}%"
+        progress_sound_level?.progress = app.soundLevel?:0
+        txt_percent_sound_level?.text = "${app.soundLevel}%"
     }
 
     override fun onApplicationGetSuccess(app: ApplicationEntity) {
-
-        return
 
         //show edited value to
         if (app.senderNames != "None") {
@@ -1988,11 +2055,11 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         if (app.messageBody != "None") {
             btn_message_body_clear?.visibility = View.VISIBLE
         }
-        if (app.ignored_names != "None") {
+        if (app.ignoredNames != "None") {
             btn_exclude_sender_name_clear?.visibility = View.VISIBLE
         }
         addApplicationEntity = app
-        alarmTonePath = app.tone_path
+        alarmTonePath = app.tonePath
         this.appName = app.appName
         if (isAdded) {
             requireActivity().runOnUiThread {

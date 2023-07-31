@@ -1,7 +1,7 @@
 package com.app.messagealarm.model.entity
 
 object ApplicationTable {
-    const val TABLE_NAME = "applications_new"
+    const val TABLE_NAME = "applications"
     const val PACKAGE_NAME = "package_name"
     const val APP_NAME = "app_name"
     const val ID = "id"
@@ -9,6 +9,7 @@ object ApplicationTable {
     const val IS_ALARM_ENABLED = "_is_alarm_enabled"
     const val IS_SPEAK_ENABLED = "_is_speak_enabled"
     const val ALARM_REPEAT = "alarm_repeat"
+    const val REPEAT_DAYS = "repeat_days"
     const val RINGTONE = "ringtone"
     const val VIBRATE_ON_ALARM = "vibrate_on_alarm"
     const val JUST_VIBRATE = "just_vibrate"
@@ -18,7 +19,6 @@ object ApplicationTable {
     const val NUMBER_OF_PLAY = "number_of_play"
     const val SENDER_NAMES = "sender_names"
     const val MESSAGE_BODY = "message_body"
-    const val REPEAT_DAYS = "repeat_days"
     const val TONE_PATH = "tone_path"
     const val BITMAP_PATH = "bitmap_path"
     const val IGNORED_NAMES = "ignored_names"

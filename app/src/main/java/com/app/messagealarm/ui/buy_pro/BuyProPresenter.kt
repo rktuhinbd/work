@@ -26,8 +26,8 @@ class BuyProPresenter(private val buyProView: BuyProView, private val firebaseAn
     private fun turnOfVibrateAndJustVibrateFromAllAddedApp(){
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread {
-            appDatabase.applicationDao().disableJustVibrateToAllApp(false)
-            appDatabase.applicationDao().disableVibrateToAllApp(false)
+//            appDatabase.applicationDao().disableJustVibrateToAllApp(false)
+//            appDatabase.applicationDao().disableVibrateToAllApp(false)
         }.start()
     }
 
@@ -108,7 +108,7 @@ class BuyProPresenter(private val buyProView: BuyProView, private val firebaseAn
     private fun deleteAddedApps(){
         val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
         Thread(Runnable {
-            appDatabase.applicationDao().deleteAllAppsWithoutTheFirstOne()
+            appDatabase.applicationDao().deleteAllApplications()
         }).start()
     }
 

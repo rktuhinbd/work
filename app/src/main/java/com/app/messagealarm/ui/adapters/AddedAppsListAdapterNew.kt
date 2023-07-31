@@ -91,11 +91,11 @@ class AddedAppsListAdapterNew(
                     itemView.dotted_condom.visibility = View.GONE
                 }
 
-                    if(installedApps.alarmEnabled == true){
+                    if(installedApps.isAlarmEnabled == true){
                         itemView.img_save_flag.visibility = View.VISIBLE
                         itemView.btn_confirm_app_option?.text = "Edit Alarm"
                     }
-                    if(installedApps.speakEnabled == true){
+                    if(installedApps.isSpeakEnabled == true){
                         itemView.img_save_flag_speak.visibility = View.VISIBLE
                     }
 
@@ -139,9 +139,9 @@ class AddedAppsListAdapterNew(
             }catch (e:IndexOutOfBoundsException){
                 //skip the crash
             }
-            itemView.switch_app_status?.isChecked = installedApps.isRunningStatus
+            itemView.switch_app_status?.isChecked = installedApps.runningStatus == true
             itemView.switch_app_status?.setOnCheckedChangeListener { buttonView, isChecked ->
-                mItemClickListener.onApplicationSwitch(isChecked, installedApps.id)
+                installedApps.id?.let { mItemClickListener.onApplicationSwitch(isChecked, it) }
             }
             itemView.iv_app_icon?.setImageBitmap(
                 BitmapFactory.decodeFile(

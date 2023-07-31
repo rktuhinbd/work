@@ -56,14 +56,14 @@ class AlarmService {
                                         if (checkByMessageBody(app, sbn)) {
                                             //check if app is in not muted
                                             if (!SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_MUTED)) {
-                                                if (alarmRepeatOutput(app.alarmRepeat, app)) {
+                                                if (alarmRepeatOutput(app.alarmRepeat?:"", app)) {
                                                     if (!MediaUtils.isPlaying()) {
                                                         //save activity started as false
                                                         SharedPrefUtils.write(
                                                             Constants.PreferenceKeys.IS_ACTIVITY_STARTED,
                                                             false
                                                         )
-                                                        magicPlay(app.ringTone, service, sbn, app)
+                                                        magicPlay(app.ringtone?:"", service, sbn, app)
                                                     }
                                                 }
                                             }
@@ -102,8 +102,8 @@ class AlarmService {
                         val appDatabase =
                             AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
                         try {
-                            appDatabase.applicationDao()
-                                .rollBackAppsFromDefaultSoundLevel(AndroidUtils.getSoundLevel())
+//                            appDatabase.applicationDao()
+//                                .rollBackAppsFromDefaultSoundLevel(AndroidUtils.getSoundLevel())//Todo: check this
                         } catch (e: NullPointerException) {
 
                         } catch (e: SQLiteException) {
@@ -134,7 +134,7 @@ class AlarmService {
              * set alarm record
              */
             Thread {
-                alarmRecord(app.appName, title, app.bitmapPath)
+                alarmRecord(app.appName?:"", title, app.bitmapPath?:"")
             }.start()
 
             /**
@@ -142,23 +142,23 @@ class AlarmService {
              */
             if (!ringtone.contains("Default")) {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                    startAlarmActivity(service, app.tone_path, sbn, app)
+                    startAlarmActivity(service, app.tonePath, sbn, app)
                 } else {
                     //check if activity is not open
                     FloatingNotification.showFloatingNotification(
-                        app.sound_level,
+                        app.soundLevel?:0,
                         title,
-                        app.isJustVibrate,
-                        app.appName,
-                        app.packageName,
-                        app.numberOfPlay,
-                        app.isVibrateOnAlarm,
+                        app.isJustVibrate?:false,
+                        app.appName?:"",
+                        app.packageName?:"",
+                        app.numberOfPlay?:1,
+                        app.vibrateOnAlarm?:false,
                         service,
-                        app.tone_path,
+                        app.tonePath,
                         // Added this 2 extra param for window notification - Mortuza
-                        app.isIs_flash_on,
+                        app.isFlashOn?:false,
                         desc,
-                        app.bitmapPath
+                        app.bitmapPath?:""
                     )
                 }
             } else {
@@ -167,18 +167,18 @@ class AlarmService {
                 } else {
                     //check activity is not open
                     FloatingNotification.showFloatingNotification(
-                        app.sound_level,
+                        app.soundLevel?:100,
                         title,
-                        app.isJustVibrate,
-                        app.appName,
-                        app.packageName,
-                        app.numberOfPlay,
-                        app.isVibrateOnAlarm,
+                        app.isJustVibrate?:false,
+                        app.appName?:"",
+                        app.packageName?:"",
+                        app.numberOfPlay?:1,
+                        app.vibrateOnAlarm?:false,
                         service,
                         null,
-                        app.isIs_flash_on,
+                        app.isAlarmEnabled?:false,
                         desc,
-                        app.bitmapPath
+                        app.bitmapPath?:""
                     )
                 }
             }
@@ -189,8 +189,8 @@ class AlarmService {
          * Check by time constrain, via start time and end time
          */
         private fun checkByTimeConstrain(app: ApplicationEntity): Boolean {
-            return if (app.isCustomTime) {
-                TimeUtils.isConstrainedByTime(app.startTime, app.endTime)
+            return if (app.isCustomTime == true) {
+                TimeUtils.isConstrainedByTime(app.startTime?:"", app.endTime?:"")
             } else {
                 true
             }
@@ -205,22 +205,24 @@ class AlarmService {
         ): Boolean {
             var result = false
             val title = sbn?.notification?.extras!!["android.title"]
-            val nameArray = app.senderNames.trim().split(", ")
+            val nameArray = app.senderNames?.trim()?.split(", ")
             if (app.senderNames != "None") {
-                for (x in nameArray) {
-                    if (title.toString().trim().toLowerCase(Locale.getDefault())
-                            .contains(
-                                x.trim().toLowerCase(Locale.getDefault())
-                            )
-                        || x.trim().toLowerCase(Locale.getDefault())
-                            .contains(
-                                title.toString().trim().toLowerCase(Locale.getDefault())
-                            )
-                    ) {
-                        result = true
-                        break
-                    } else {
-                        continue
+                if (nameArray != null) {
+                    for (x in nameArray) {
+                        if (title.toString().trim().toLowerCase(Locale.getDefault())
+                                .contains(
+                                    x.trim().toLowerCase(Locale.getDefault())
+                                )
+                            || x.trim().toLowerCase(Locale.getDefault())
+                                .contains(
+                                    title.toString().trim().toLowerCase(Locale.getDefault())
+                                )
+                        ) {
+                            result = true
+                            break
+                        } else {
+                            continue
+                        }
                     }
                 }
             } else {
@@ -240,22 +242,24 @@ class AlarmService {
         ): Boolean {
             var result = true
             val title = sbn?.notification?.extras!!["android.title"]
-            val nameArray = app.ignored_names.trim().split(", ")
-            if (app.ignored_names != "None") {
-                for (x in nameArray) {
-                    if (title.toString().trim().toLowerCase(Locale.getDefault())
-                            .contains(
-                                x.trim().toLowerCase(Locale.getDefault())
-                            )
-                        || x.trim().toLowerCase(Locale.getDefault())
-                            .contains(
-                                title.toString().trim().toLowerCase(Locale.getDefault())
-                            )
-                    ) {
-                        result = false
-                        break
-                    } else {
-                        continue
+            val nameArray = app.ignoredNames?.trim()?.split(", ")
+            if (app.ignoredNames != "None") {
+                if (nameArray != null) {
+                    for (x in nameArray) {
+                        if (title.toString().trim().toLowerCase(Locale.getDefault())
+                                .contains(
+                                    x.trim().toLowerCase(Locale.getDefault())
+                                )
+                            || x.trim().toLowerCase(Locale.getDefault())
+                                .contains(
+                                    title.toString().trim().toLowerCase(Locale.getDefault())
+                                )
+                        ) {
+                            result = false
+                            break
+                        } else {
+                            continue
+                        }
                     }
                 }
             } else {
@@ -274,16 +278,18 @@ class AlarmService {
             var result = false
             val messageBody = sbn?.notification!!.extras["android.text"].toString()
             if (app.messageBody != "None") {
-                val keywordArray = app.messageBody.trim().split(", ")
-                for (x in keywordArray) {
-                    if (messageBody.trim().toLowerCase(Locale.getDefault())
-                            .contains(
-                                x.trim().toLowerCase(Locale.getDefault())
-                            )) {
-                        result = true
-                        break
-                    } else {
-                        continue
+                val keywordArray = app.messageBody?.trim()?.split(", ")
+                if (keywordArray != null) {
+                    for (x in keywordArray) {
+                        if (messageBody.trim().toLowerCase(Locale.getDefault())
+                                .contains(
+                                    x.trim().toLowerCase(Locale.getDefault())
+                                )) {
+                            result = true
+                            break
+                        } else {
+                            continue
+                        }
                     }
                 }
             } else {
@@ -304,21 +310,21 @@ class AlarmService {
             when (repeat) {
                 "Once" -> {
                     //play one time and switch off the status
-                    if (app.isRunningStatus) {
+                    if (app.runningStatus == true) {
                         isPlayAble = true
-                        AlarmServicePresenter.updateAppStatus(false, app.id)
+                        app.id?.let { AlarmServicePresenter.updateAppStatus(false, it) }
                     }
                 }
                 "Always" -> {
                     //play every date and every time
-                    if (app.isRunningStatus) {
+                    if (app.runningStatus == true) {
                         isPlayAble = true
                     }
                 }
                 "Custom" -> {
                     //check the for the days, if the day match then please
-                    if (app.isRunningStatus) {
-                        if (checkWithCurrentDay(app.repeatDays)) {
+                    if (app.runningStatus == true) {
+                        if (checkWithCurrentDay(app.repeatDays?:"")) {
                             isPlayAble = true
                         }
                     }
@@ -361,18 +367,18 @@ class AlarmService {
 
                         val desc = sbn.notification!!.extras["android.text"].toString()
                         FloatingNotification.showFloatingNotification(
-                            app.sound_level,
+                            app.soundLevel?:0,
                             titleName.toString(),
-                            app.isJustVibrate,
-                            app.appName,
-                            app.packageName,
-                            app.numberOfPlay,
-                            app.isVibrateOnAlarm,
+                            app.isJustVibrate?:false,
+                            app.appName?:"",
+                            app.packageName?:"",
+                            app.numberOfPlay?:1,
+                            app.vibrateOnAlarm?:false,
                             service,
-                            app.tone_path,
-                            app.isIs_flash_on,
+                            app.tonePath,
+                            app.isFlashOn ?:false,
                             desc,
-                            app.bitmapPath
+                            app.bitmapPath?:""
                         )
                     }
                 }).execute()
@@ -385,15 +391,15 @@ class AlarmService {
                 val intent = Intent(service, AlarmActivity::class.java)
                 intent.putExtra(Constants.IntentKeys.NUMBER_OF_PLAY, app.numberOfPlay)
                 intent.putExtra(Constants.IntentKeys.APP_NAME, app.appName)
-                intent.putExtra(Constants.IntentKeys.IS_VIBRATE, app.isVibrateOnAlarm)
+                intent.putExtra(Constants.IntentKeys.IS_VIBRATE, app.vibrateOnAlarm)
                 intent.putExtra(Constants.IntentKeys.PACKAGE_NAME, app.packageName)
                 intent.putExtra(Constants.IntentKeys.TONE, tone)
                 intent.putExtra(Constants.IntentKeys.IS_JUST_VIBRATE, app.isJustVibrate)
-                intent.putExtra(Constants.IntentKeys.IS_FLASH_LIGHT, app.isIs_flash_on)
+                intent.putExtra(Constants.IntentKeys.IS_FLASH_LIGHT, app.isFlashOn)
                 intent.putExtra(Constants.IntentKeys.IMAGE_PATH, app.bitmapPath)
                 intent.putExtra(Constants.IntentKeys.TITLE, title)
                 intent.putExtra(Constants.IntentKeys.DESC, desc)
-                intent.putExtra(Constants.IntentKeys.SOUND_LEVEL, app.sound_level)
+                intent.putExtra(Constants.IntentKeys.SOUND_LEVEL, app.soundLevel)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)

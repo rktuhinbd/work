@@ -15,7 +15,7 @@ class NotificationListenerPresenter(private val view: NotificationListenerView) 
         Thread {
             try {
                 view.onApplicationListGetSuccess(
-                    appDatabase.applicationDao().allApplicationList,
+                    appDatabase.applicationDao().getAllApplications(),
                     sbn
                 )
             } catch (e: NullPointerException) {

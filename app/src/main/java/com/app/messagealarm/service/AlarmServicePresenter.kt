@@ -11,7 +11,7 @@ class AlarmServicePresenter {
             val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
             Thread(Runnable {
                 try{
-                    appDatabase.applicationDao().updateAppStatus(boolean, id)
+//                    appDatabase.applicationDao().updateAppStatus(boolean, id)//Todo: Uncomment this line
                 }catch (e: NullPointerException){
                     e.printStackTrace()
                 }catch (e: SQLiteException){

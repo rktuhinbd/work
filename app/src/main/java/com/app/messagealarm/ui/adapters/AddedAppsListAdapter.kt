@@ -64,9 +64,9 @@ class AddedAppsListAdapter(
 
         fun bindItems(app: ApplicationEntity) {
             itemView.tv_app_name?.text = app.appName
-            itemView.switch_app_status?.isChecked = app.isRunningStatus
+            itemView.switch_app_status?.isChecked = app.runningStatus == true
                 itemView.switch_app_status?.setOnCheckedChangeListener { buttonView, isChecked ->
-                    mItemClickListener.onApplicationSwitch(isChecked, app.id)
+                    app.id?.let { mItemClickListener.onApplicationSwitch(isChecked, it) }
             }
             itemView.iv_app_icon?.setImageBitmap(
                 BitmapFactory.decodeFile(
