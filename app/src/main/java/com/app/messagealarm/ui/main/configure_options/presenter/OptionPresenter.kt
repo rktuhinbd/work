@@ -27,9 +27,6 @@ import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.lang.Exception
-import java.lang.IllegalStateException
-import java.lang.NullPointerException
 import java.net.SocketTimeoutException
 
 class OptionPresenter(private val optionView: OptionView) {
@@ -39,7 +36,7 @@ class OptionPresenter(private val optionView: OptionView) {
         firebaseAnalytics: FirebaseAnalytics?
     ) {
         //send data to analytics
-        if(firebaseAnalytics != null){
+        if (firebaseAnalytics != null) {
             val bundle = Bundle()
             bundle.putString("app_name", addApplicationEntity.appName)
             bundle.putString("package_name", addApplicationEntity.packageName)
