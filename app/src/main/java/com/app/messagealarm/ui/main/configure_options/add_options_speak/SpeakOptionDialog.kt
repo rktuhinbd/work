@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ForegroundColorSpan
 import android.util.DisplayMetrics
@@ -14,12 +15,20 @@ import android.view.*
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.app.messagealarm.BaseApplication
 import com.app.messagealarm.R
+import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
 import com.app.messagealarm.ui.buy_pro.BuyProActivity
+import com.app.messagealarm.ui.main.ApplicationRepository
+import com.app.messagealarm.ui.main.ApplicationViewModel
+import com.app.messagealarm.ui.main.ApplicationViewModelFactory
 import com.app.messagealarm.ui.main.add_apps.AddApplicationActivity
 import com.app.messagealarm.ui.main.alarm_applications.AlarmApplicationActivity
 import com.app.messagealarm.ui.main.configure_options.adapter.SenderNameAdapter
@@ -34,7 +43,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.analytics.FirebaseAnalytics
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_alarm_options.*
 import kotlinx.android.synthetic.main.dialog_speak_options.*
@@ -59,9 +67,10 @@ import kotlinx.android.synthetic.main.dialog_speak_options.view_message_body
 import kotlinx.android.synthetic.main.dialog_speak_options.view_number_of_play
 import kotlinx.android.synthetic.main.dialog_speak_options.view_sender_name
 import kotlinx.android.synthetic.main.dialog_speak_options.view_vibrate
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.roundToInt
 
 class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
 
@@ -72,23 +81,40 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
     private var holderEntity = ApplicationEntity()
     private var optionPresenter: OptionPresenter? = null
 
+    private lateinit var viewModel: ApplicationViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.BottomSheetDialog)
         optionPresenter = OptionPresenter(this)
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.dialog_speak_options, container, false)
     }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         init()
         setListener()
         enableProMode()
+
+        // Initialize ViewModel
+        val applicationDao = AppDatabase.getInstance(requireContext()).applicationDao()
+        val repository = ApplicationRepository(applicationDao)
+        val viewModelFactory = ApplicationViewModelFactory(repository)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(ApplicationViewModel::class.java)
+
+        val packageName = arguments?.getString(Constants.BundleKeys.PACKAGE_NAME)
+        if (!TextUtils.isEmpty(packageName)) {
+            viewModel.getAppByPackageName(packageName!!)
+        }
+
+        initObserver()
     }
 
 
@@ -103,7 +129,8 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         }
     }
 
-    private fun setListener(){
+    private fun setListener() {
+
         btn_close?.setOnClickListener {
             dismiss()
         }
@@ -128,6 +155,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
                 }
             }
         }
+
         /**
          * Sound level seekbar
          */
@@ -297,8 +325,62 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
                 addApplicationEntity.isSpeakEnabled = true
                 //save application and turn switch on
                 addApplicationEntity.runningStatus = true
-                saveApplication()
-            }catch (e: java.lang.NullPointerException){
+
+                if (TextUtils.isEmpty(addApplicationEntity.packageName)) {
+                    saveBitmap()
+                } else {
+                    viewModel.update(addApplicationEntity)
+                }
+
+            } catch (e: java.lang.NullPointerException) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun initObserver() {
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.applicationByPackageObserver.collectLatest {
+                    addApplicationEntity = it ?: ApplicationEntity()
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.applicationInsertObserver.collectLatest {
+                    if (it == true) {
+                        hideProgressBar()
+                        requireActivity().runOnUiThread {
+                            Toasty.success(
+                                requireActivity(),
+                                getString(R.string.application_save_success)
+                            ).show()
+                            dismissAllowingStateLoss()
+                            requireActivity().setResult(Activity.RESULT_OK)
+                            requireActivity().finish()
+                        }
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.applicationUpdateObserver.collectLatest {
+                    if (it == true) {
+                        hideProgressBar()
+                        requireActivity().runOnUiThread {
+                            Toasty.success(
+                                requireActivity(),
+                                getString(R.string.update_successful)
+                            ).show()
+                            requireActivity().onBackPressed()
+                        }
+                    }
+                }
             }
         }
     }
@@ -312,7 +394,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
     }
 
 
-    private fun saveApplication() {
+    private fun saveBitmap() {
         /**
          * Populate Application entity from UI controller data
          * with start of other values
@@ -339,8 +421,8 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
             }
         } catch (e: NullPointerException) {
             //skip the crash
+            e.printStackTrace()
         }
-
     }
 
 
@@ -720,7 +802,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
     }
 
 
-    private fun showMessageKeywordsDialog(list: ArrayList<String>){
+    private fun showMessageKeywordsDialog(list: ArrayList<String>) {
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
@@ -909,7 +991,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         return SharedPrefUtils.readBoolean(Constants.PreferenceKeys.IS_PURCHASED)
     }
 
-    fun init(){
+    fun init() {
         var updateTimer: Timer? = null
         val timeZone = TimeZone.getDefault()
         // Create a SimpleDateFormat with the desired output format
@@ -1005,6 +1087,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         }
         return dialog
     }
+
     private fun setupFullHeight(bottomSheetDialog: BottomSheetDialog) {
         try {
             val bottomSheet =
@@ -1023,12 +1106,14 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
 
         }
     }
+
     private fun getWindowHeight(): Int { // Calculate window height for fullscreen use
         val displayMetrics = DisplayMetrics()
         (context as Activity?)!!.windowManager.defaultDisplay
             .getMetrics(displayMetrics)
         return displayMetrics.heightPixels
     }
+
     override fun onApplicationSaveSuccess() {
         if (isAdded) {
             requireActivity().runOnUiThread {
@@ -1040,27 +1125,33 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
             }
         }
     }
+
     override fun onApplicationSaveError(message: String) {
 
     }
+
     override fun onApplicationUpdateSuccess() {
 
     }
+
     override fun onApplicationUpdateError(message: String) {
 
     }
+
     override fun onBitmapSaveSuccess(path: String) {
         addApplicationEntity.bitmapPath = path
         /**
          * End of other values
          */
-//        optionPresenter?.saveApplication(addApplicationEntity, null) //Todo: uncomment this
+        viewModel.insert(addApplicationEntity)
+
         if (isAdded) {
             requireActivity().runOnUiThread {
                 hideProgressBar()
             }
         }
     }
+
     override fun onBitmapSaveError() {
         if (isAdded) {
             requireActivity().runOnUiThread {
@@ -1070,12 +1161,15 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
             }
         }
     }
+
     override fun onApplicationGetSuccess(app: ApplicationEntity) {
 
     }
+
     override fun onApplicationGetError(message: String) {
 
     }
+
     override fun onIllegalState() {
 
     }

@@ -1,15 +1,12 @@
 package com.app.messagealarm.ui.main
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.messagealarm.model.entity.ApplicationEntity
-import com.app.messagealarm.ui.main.configure_options.view.OptionView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ApplicationViewModel(private val repository: ApplicationRepository) : ViewModel() {
@@ -23,20 +20,28 @@ class ApplicationViewModel(private val repository: ApplicationRepository) : View
     /**
      * Launching a new coroutine to insert the data in a non-blocking way
      */
+
+    private val _applicationInsertEntity = MutableStateFlow<Boolean?>(null)
+    val applicationInsertObserver: StateFlow<Boolean?> = _applicationInsertEntity
+
     fun insert(application: ApplicationEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.insert(application)
-//            insertStatusLiveData.postValue(true)
+            _applicationInsertEntity.emit(true)
         }
     }
 
     /**
      * Launching a new coroutine to update the data in a non-blocking way
      */
+
+    private val _applicationUpdateEntity = MutableStateFlow<Boolean?>(null)
+    val applicationUpdateObserver: StateFlow<Boolean?> = _applicationUpdateEntity
+
     fun update(application: ApplicationEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.update(application)
-//            updateStatusLiveData.postValue(true)
+            val applicationEntity = repository.update(application)
+            _applicationUpdateEntity.emit(applicationEntity)
         }
     }
 
@@ -53,10 +58,8 @@ class ApplicationViewModel(private val repository: ApplicationRepository) : View
     /**
      * Launching a new coroutine to get an application by package name in a non-blocking way
      */
-
-
     private val _applicationEntity = MutableStateFlow<ApplicationEntity?>(null)
-    val applicationEntity: StateFlow<ApplicationEntity?> = _applicationEntity
+    val applicationByPackageObserver: StateFlow<ApplicationEntity?> = _applicationEntity
 
     fun getAppByPackageName(packageName: String) {
         viewModelScope.launch(Dispatchers.IO) {

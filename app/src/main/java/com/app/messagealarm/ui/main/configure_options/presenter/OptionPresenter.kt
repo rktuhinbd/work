@@ -67,7 +67,6 @@ class OptionPresenter(private val optionView: OptionView) {
 //        ).start()
 //    }
 
-
 //    fun getAppByPackageNameAndAlarm(packageName: String?) {
 //        val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
 //        Thread(Runnable {
@@ -86,8 +85,7 @@ class OptionPresenter(private val optionView: OptionView) {
 //            }
 //        }).start()
 //    }
-//
-//
+
 //    fun getAppByPackageNameAndSpeak(packageName: String?) {
 //        val appDatabase = AppDatabase.getInstance(BaseApplication.getBaseApplicationContext())
 //        Thread(Runnable {
@@ -193,15 +191,14 @@ class OptionPresenter(private val optionView: OptionView) {
         })
     }
 
-    /*
-      * this method save a bitmap to file
-      * */
+    /**
+     * this method save a bitmap to file
+     **/
     fun saveBitmapToFile(context: Context, packageName: String, bitmap: Bitmap) {
         var file_path = ""
         var imageName = ""
         try {
-            file_path = context.getExternalFilesDir(null)!!.absolutePath +
-                    "/.message_alarm"
+            file_path = context.getExternalFilesDir(null)?.absolutePath + "/.message_alarm"
             val dir = File(file_path)
             if (!dir.exists()) {
                 dir.mkdirs()
@@ -228,5 +225,4 @@ class OptionPresenter(private val optionView: OptionView) {
         }
         optionView.onBitmapSaveSuccess("$file_path/$imageName")
     }
-
 }

@@ -102,9 +102,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
     private var addApplicationEntity = ApplicationEntity()
     private var holderEntity = ApplicationEntity()
 
-
     private lateinit var viewModel: ApplicationViewModel
-
 
     private var optionPresenter: OptionPresenter? = null
 
@@ -125,6 +123,11 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         val viewModelFactory = ApplicationViewModelFactory(repository)
         viewModel = ViewModelProvider(this, viewModelFactory).get(ApplicationViewModel::class.java)
 
+        val packageName = arguments?.getString(Constants.BundleKeys.PACKAGE_NAME)
+        if (!TextUtils.isEmpty(packageName)) {
+            viewModel.getAppByPackageName(packageName!!)
+        }
+
         initObserver()
     }
 
@@ -132,9 +135,51 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.applicationEntity.collectLatest {
+                viewModel.applicationByPackageObserver.collectLatest {
+                    addApplicationEntity = it ?: ApplicationEntity()
+                }
+            }
+        }
 
-                    if(it == null) return@collectLatest
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.applicationInsertObserver.collectLatest {
+                    if (it == true) {
+                        requireActivity().runOnUiThread {
+                            Toasty.success(
+                                requireActivity(),
+                                getString(R.string.application_save_success)
+                            ).show()
+                            dismissAllowingStateLoss()
+                            requireActivity().setResult(Activity.RESULT_OK)
+                            requireActivity().finish()
+                        }
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.applicationUpdateObserver.collectLatest {
+                    if (it == true) {
+                        requireActivity().runOnUiThread {
+                            Toasty.success(requireActivity(), getString(R.string.update_successful))
+                                .show()
+                            dismissAllowingStateLoss()
+                            requireActivity().setResult(Activity.RESULT_OK)
+                            requireActivity().finish()
+                        }
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.applicationByPackageObserver.collectLatest {
+
+                    if (it == null) return@collectLatest
 
                     if (it.senderNames != "None") {
                         btn_sender_name_clear?.visibility = View.VISIBLE
@@ -554,6 +599,9 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                         if (addApplicationEntity.isCustomTime == true) {
                             addApplicationEntity.startTime = formattedStartTime
                             addApplicationEntity.endTime = formattedEndTime
+                        } else {
+                            addApplicationEntity.startTime = "12 AM"
+                            addApplicationEntity.endTime = "11 PM"
                         }
                     }
                 }
@@ -1844,7 +1892,10 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                          * Check for unknown app
                          */
 
-                        if(!TextUtils.isEmpty(addApplicationEntity.appName) && !TextUtils.isEmpty(addApplicationEntity.packageName)){
+                        if (!TextUtils.isEmpty(addApplicationEntity.appName) && !TextUtils.isEmpty(
+                                addApplicationEntity.packageName
+                            )
+                        ) {
                             optionPresenter?.checkForUnknownApp(
                                 requireActivity(),
                                 addApplicationEntity.appName!!,
@@ -1877,9 +1928,9 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         var isDefault = false
         var repeat = ""
         repeat = if (holderEntity.alarmRepeat == "Custom") {
-            holderEntity.repeatDays?:""
+            holderEntity.repeatDays ?: ""
         } else {
-            holderEntity.alarmRepeat?:""
+            holderEntity.alarmRepeat ?: ""
         }
 
         if (txt_repeat_value?.text.toString().trim() == repeat) {
@@ -1990,11 +2041,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                     txtEndHour?.text.toString()
                 )
             ) {
-//                optionPresenter?.saveApplication(
-//                    addApplicationEntity,
-//                    firebaseAnalytics
-//                )
-
                 viewModel.insert(addApplicationEntity)
             } else {
                 requireActivity().runOnUiThread {
@@ -2003,8 +2049,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                 }
             }
         } else {
-//            optionPresenter?.saveApplication(addApplicationEntity, firebaseAnalytics)
-
             viewModel.insert(addApplicationEntity)
         }
     }
@@ -2028,21 +2072,25 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         }
         txt_ringtone_value?.text = app.ringtone
         switch_vibrate?.isChecked = app.vibrateOnAlarm == true
-        switch_flash?.isChecked = app.isFlashOn?:false
+        switch_flash?.isChecked = app.isFlashOn ?: false
         switch_custom_time?.isChecked = app.isCustomTime == true
         switch_just_vibrate?.isChecked = app.isJustVibrate == true
         txtHour?.text = app.startTime
         txtEndHour?.text = app.endTime
-        rangeSlider?.values = listOf(
-            TimeUtils.convert12HrTo24Hr(addApplicationEntity.startTime?:""),
-            TimeUtils.convert12HrTo24Hr(addApplicationEntity.endTime?:"")
-        )
+        rangeSlider?.values = if (addApplicationEntity.isCustomTime == true) {
+            listOf(
+                TimeUtils.convert12HrTo24Hr(addApplicationEntity.startTime ?: ""),
+                TimeUtils.convert12HrTo24Hr(addApplicationEntity.endTime ?: "")
+            )
+        } else {
+            listOf(0f, 23f)
+        }
         txt_number_of_play_value?.text = String.format("%d times", app.numberOfPlay)
         txt_sender_name_value?.text = app.senderNames
         txt_exclude_sender_name_value?.text = app.ignoredNames
         txt_message_body_value?.text = app.messageBody
         //new added
-        progress_sound_level?.progress = app.soundLevel?:0
+        progress_sound_level?.progress = app.soundLevel ?: 0
         txt_percent_sound_level?.text = "${app.soundLevel}%"
     }
 

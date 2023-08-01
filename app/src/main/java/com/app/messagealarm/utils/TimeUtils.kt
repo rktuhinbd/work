@@ -373,12 +373,24 @@ class TimeUtils private constructor() {
             }
         }
 
-        fun convert12HrTo24Hr(time12Hr: String): Float {
-            val dateFormat = SimpleDateFormat("h a", Locale.US)
-            val parsedTime = dateFormat.parse(time12Hr)
-            val calender = Calendar.getInstance()
-            calender.time = parsedTime
-            return calender.get(Calendar.HOUR_OF_DAY).toFloat()
+        fun convert12HrTo24Hr(time12Hr: String): Float? {
+            if (time12Hr.isEmpty()) {
+                // Log an error, throw an exception, or return a default value
+                println("Error: Input time string is empty")
+                return null
+            }
+
+            return try {
+                val dateFormat = SimpleDateFormat("h a", Locale.US)
+                val parsedTime = dateFormat.parse(time12Hr)
+                val calender = Calendar.getInstance()
+                calender.time = parsedTime
+                calender.get(Calendar.HOUR_OF_DAY).toFloat()
+            } catch (e: ParseException) {
+                // Log an error, throw an exception, or return a default value
+                println("Error: Input time string $time12Hr does not match expected format (\"h a\")")
+                null
+            }
         }
 
         @RequiresApi(Build.VERSION_CODES.O)

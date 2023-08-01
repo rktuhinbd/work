@@ -11,7 +11,6 @@
     <string name="txt_empty_state_desc">Click the + button to add your app or website, and I will keep a lookout for any important updates. You\'ll receive alarm from me!</string>
     <string name="txt_play_number_out_of_range">Out of range, Should be between 1 to 10!</string>
     <string name="application_save_success">Application saved successfully!</string>
-    <string name="application_updated_success">Application updated successfully!</string>
     <string name="txt_application_exists">Application already added!</string>
     <string name="app_delete_success">Application deleted successfully!</string>
     <string name="app_delete_error">Can\'t delete application, Try again!</string>

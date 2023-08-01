@@ -19,7 +19,6 @@ import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
@@ -57,7 +56,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
-import com.google.gson.GsonBuilder
 import com.judemanutd.autostarter.AutoStartPermissionHelper
 import com.leinardi.android.speeddial.SpeedDialActionItem
 import com.leinardi.android.speeddial.SpeedDialView
@@ -280,7 +278,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
     private fun showPushNotificationDialog(
         isWebUrl: Boolean,
         isBuyPRO: Boolean, title: String,
-        desc: String, image: ByteArray?, webUrl: String?
+        desc: String, image: ByteArray?, webUrl: String?,
     ) {
         var bitmap: Bitmap? = null
         if (image != null) {
@@ -585,7 +583,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
+                target: RecyclerView.ViewHolder,
             ): Boolean {
                 return false
             }
@@ -597,7 +595,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                 dX: Float,
                 dY: Float,
                 actionState: Int,
-                isCurrentlyActive: Boolean
+                isCurrentlyActive: Boolean,
             ) {
                 RecyclerViewSwipeDecorator.Builder(
                     c,
@@ -629,7 +627,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
             override fun onSwiped(
                 viewHolder: RecyclerView.ViewHolder,
-                direction: Int
+                direction: Int,
             ) { // Take action for the swiped item
                 DialogUtils.showDialog(this@AlarmApplicationActivity,
                     getString(R.string.delete_app_title),
@@ -1203,13 +1201,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
             try {
                 if (appsList.isNotEmpty()) {
 
-                    Log.d(
-                        "MainActivity",
-                        "onGetAlarmApplicationSuccess: ${
-                            GsonBuilder().setPrettyPrinting().create().toJson(appsList)
-                        }"
-                    )
-
                     val applicationList: ArrayList<ApplicationEntity> = arrayListOf()
 
                     for (i in 0 until appsList.size) {
@@ -1225,16 +1216,9 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
                         }
                     }
 
-                    Log.d(
-                        "MainActivity",
-                        "Manipulated List: ${
-                            GsonBuilder().setPrettyPrinting().create().toJson(applicationList)
-                        }"
-                    )
-
                     dataState()
                     (rv_application_list?.adapter as AddedAppsListAdapterNew).addItems(
-                        applicationList
+                        appsList
                     )
                     recyclerViewSwipeHandler()
                 } else {
@@ -1475,7 +1459,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         }
     }
 
-
     override fun onItemClick(app: ApplicationEntity, selectedNotifyOption: String) {
         //refresh adapter first
         showEditDialog(app, selectedNotifyOption)
@@ -1517,11 +1500,10 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         }
     }
 
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         var isGranted = true
@@ -1539,7 +1521,7 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
 
     override fun onPurchasesUpdated(
         billingResult: BillingResult,
-        purchases: MutableList<Purchase>?
+        purchases: MutableList<Purchase>?,
     ) {
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
             handlePurchase(purchases)
@@ -1609,7 +1591,6 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         invalidateOptionsMenu()
     }
 
-
     /**
      * FOR TESTING THE ALARM WINDOW
      * */
@@ -1644,6 +1625,5 @@ class AlarmApplicationActivity : BaseActivity(), AlarmApplicationView, Purchases
         startService(intent)
         finish()
     }
-
 
 }

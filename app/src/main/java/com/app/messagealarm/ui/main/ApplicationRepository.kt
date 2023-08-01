@@ -10,19 +10,22 @@ class ApplicationRepository(private val applicationDao: ApplicationDao) {
     // Observed LiveData will notify the observer when the data has changed.
     val allApplications: LiveData<List<ApplicationEntity>> = applicationDao.allApplications()
 
-    suspend fun insert(application: ApplicationEntity) {
+    suspend fun insert(application: ApplicationEntity): Boolean {
         applicationDao.insert(application)
+        return true
     }
 
-    suspend fun update(application: ApplicationEntity) {
+    suspend fun update(application: ApplicationEntity): Boolean {
         applicationDao.update(application)
+        return true
     }
 
-    suspend fun delete(application: ApplicationEntity) {
+    suspend fun delete(application: ApplicationEntity): Boolean {
         applicationDao.delete(application)
+        return true
     }
 
-    fun getAppByPackageName(packageName: String): ApplicationEntity {
+    suspend fun getAppByPackageName(packageName: String): ApplicationEntity {
         return applicationDao.getAppByPackageName(packageName)
     }
 
