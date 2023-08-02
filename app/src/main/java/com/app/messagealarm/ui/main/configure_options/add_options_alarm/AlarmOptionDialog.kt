@@ -144,15 +144,37 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.applicationInsertObserver.collectLatest {
+                    hideProgressBar()
                     if (it == true) {
                         requireActivity().runOnUiThread {
                             Toasty.success(
                                 requireActivity(),
                                 getString(R.string.application_save_success)
                             ).show()
-                            dismissAllowingStateLoss()
-                            requireActivity().setResult(Activity.RESULT_OK)
-                            requireActivity().finish()
+                            if (!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                                if (shouldOnStatus) {
+                                    holderEntity.id?.let {
+                                        AlarmServicePresenter.updateAppStatus(
+                                            true,
+                                            it
+                                        )
+                                    }
+                                }
+                                dismissAllowingStateLoss()
+                                requireActivity().finish()
+                            } else {
+                                if (shouldOnStatus) {
+                                    holderEntity.id?.let {
+                                        AlarmServicePresenter.updateAppStatus(
+                                            true,
+                                            it
+                                        )
+                                    }
+                                    //notify adapter
+                                    (activity as AlarmApplicationActivity).notifyCurrentAdapter()
+                                }
+                                dismissAllowingStateLoss()
+                            }
                         }
                     }
                 }
@@ -162,13 +184,35 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.applicationUpdateObserver.collectLatest {
+                    hideProgressBar()
                     if (it == true) {
                         requireActivity().runOnUiThread {
                             Toasty.success(requireActivity(), getString(R.string.update_successful))
                                 .show()
-                            dismissAllowingStateLoss()
-                            requireActivity().setResult(Activity.RESULT_OK)
-                            requireActivity().finish()
+                            if (!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                                if (shouldOnStatus) {
+                                    holderEntity.id?.let {
+                                        AlarmServicePresenter.updateAppStatus(
+                                            true,
+                                            it
+                                        )
+                                    }
+                                }
+                                dismissAllowingStateLoss()
+                                requireActivity().finish()
+                            } else {
+                                if (shouldOnStatus) {
+                                    holderEntity.id?.let {
+                                        AlarmServicePresenter.updateAppStatus(
+                                            true,
+                                            it
+                                        )
+                                    }
+                                    //notify adapter
+                                    (activity as AlarmApplicationActivity).notifyCurrentAdapter()
+                                }
+                                dismissAllowingStateLoss()
+                            }
                         }
                     }
                 }

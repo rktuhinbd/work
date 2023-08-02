@@ -25,6 +25,7 @@ import com.app.messagealarm.R
 import com.app.messagealarm.local_database.AppDatabase
 import com.app.messagealarm.model.InstalledApps
 import com.app.messagealarm.model.entity.ApplicationEntity
+import com.app.messagealarm.service.AlarmServicePresenter
 import com.app.messagealarm.ui.buy_pro.BuyProActivity
 import com.app.messagealarm.ui.main.ApplicationRepository
 import com.app.messagealarm.ui.main.ApplicationViewModel
@@ -351,16 +352,37 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.applicationInsertObserver.collectLatest {
+                    hideProgressBar()
                     if (it == true) {
-                        hideProgressBar()
                         requireActivity().runOnUiThread {
                             Toasty.success(
                                 requireActivity(),
                                 getString(R.string.application_save_success)
                             ).show()
-                            dismissAllowingStateLoss()
-                            requireActivity().setResult(Activity.RESULT_OK)
-                            requireActivity().finish()
+                            if (!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                                if (shouldOnStatus) {
+                                    holderEntity.id?.let {
+                                        AlarmServicePresenter.updateAppStatus(
+                                            true,
+                                            it
+                                        )
+                                    }
+                                }
+                                dismissAllowingStateLoss()
+                                requireActivity().finish()
+                            } else {
+                                if (shouldOnStatus) {
+                                    holderEntity.id?.let {
+                                        AlarmServicePresenter.updateAppStatus(
+                                            true,
+                                            it
+                                        )
+                                    }
+                                    //notify adapter
+                                    (activity as AlarmApplicationActivity).notifyCurrentAdapter()
+                                }
+                                dismissAllowingStateLoss()
+                            }
                         }
                     }
                 }
@@ -370,14 +392,35 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.applicationUpdateObserver.collectLatest {
+                    hideProgressBar()
                     if (it == true) {
-                        hideProgressBar()
                         requireActivity().runOnUiThread {
-                            Toasty.success(
-                                requireActivity(),
-                                getString(R.string.update_successful)
-                            ).show()
-                            requireActivity().onBackPressed()
+                            Toasty.success(requireActivity(), getString(R.string.update_successful))
+                                .show()
+                            if (!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                                if (shouldOnStatus) {
+                                    holderEntity.id?.let {
+                                        AlarmServicePresenter.updateAppStatus(
+                                            true,
+                                            it
+                                        )
+                                    }
+                                }
+                                dismissAllowingStateLoss()
+                                requireActivity().finish()
+                            } else {
+                                if (shouldOnStatus) {
+                                    holderEntity.id?.let {
+                                        AlarmServicePresenter.updateAppStatus(
+                                            true,
+                                            it
+                                        )
+                                    }
+                                    //notify adapter
+                                    (activity as AlarmApplicationActivity).notifyCurrentAdapter()
+                                }
+                                dismissAllowingStateLoss()
+                            }
                         }
                     }
                 }
