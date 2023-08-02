@@ -1,5 +1,6 @@
 package com.app.messagealarm.ui.main
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,6 +27,7 @@ class ApplicationViewModel(private val repository: ApplicationRepository) : View
 
     fun insert(application: ApplicationEntity) {
         viewModelScope.launch(Dispatchers.IO) {
+            Log.d("ApplicationViewModel", "inserted data ")
             repository.insert(application)
             _applicationInsertEntity.emit(true)
         }

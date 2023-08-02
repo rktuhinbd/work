@@ -17,6 +17,9 @@ interface ApplicationDao {
     @Delete
     fun delete(application: ApplicationEntity)
 
+    @Query("UPDATE applications SET running_status = :status WHERE id = :id")
+    fun updateAppStatus(status: Boolean, id: Int)
+
     @Query("SELECT * FROM ${ApplicationTable.TABLE_NAME}")
     fun allApplications(): LiveData<List<ApplicationEntity>>
 

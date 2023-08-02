@@ -101,12 +101,12 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
     var ringtoneName: String? = null
     private var addApplicationEntity = ApplicationEntity()
     private var holderEntity = ApplicationEntity()
-
+    private var optionPresenter: OptionPresenter? = null
     private lateinit var viewModel: ApplicationViewModel
 
-    private var optionPresenter: OptionPresenter? = null
-
     val REQUEST_CODE_PICK_AUDIO = 1
+
+    private var isApplicationAlreadyExists: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,137 +115,8 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         once = Once()
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
-
-
-        // Initialize ViewModel
-        val applicationDao = AppDatabase.getInstance(requireContext()).applicationDao()
-        val repository = ApplicationRepository(applicationDao)
-        val viewModelFactory = ApplicationViewModelFactory(repository)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(ApplicationViewModel::class.java)
-
-        val packageName = arguments?.getString(Constants.BundleKeys.PACKAGE_NAME)
-        if (!TextUtils.isEmpty(packageName)) {
-            viewModel.getAppByPackageName(packageName!!)
-        }
-
-        initObserver()
     }
 
-    private fun initObserver() {
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.applicationByPackageObserver.collectLatest {
-                    addApplicationEntity = it ?: ApplicationEntity()
-                }
-            }
-        }
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.applicationInsertObserver.collectLatest {
-                    hideProgressBar()
-                    if (it == true) {
-                        requireActivity().runOnUiThread {
-                            Toasty.success(
-                                requireActivity(),
-                                getString(R.string.application_save_success)
-                            ).show()
-                            if (!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
-                                if (shouldOnStatus) {
-                                    holderEntity.id?.let {
-                                        AlarmServicePresenter.updateAppStatus(
-                                            true,
-                                            it
-                                        )
-                                    }
-                                }
-                                dismissAllowingStateLoss()
-                                requireActivity().finish()
-                            } else {
-                                if (shouldOnStatus) {
-                                    holderEntity.id?.let {
-                                        AlarmServicePresenter.updateAppStatus(
-                                            true,
-                                            it
-                                        )
-                                    }
-                                    //notify adapter
-                                    (activity as AlarmApplicationActivity).notifyCurrentAdapter()
-                                }
-                                dismissAllowingStateLoss()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.applicationUpdateObserver.collectLatest {
-                    hideProgressBar()
-                    if (it == true) {
-                        requireActivity().runOnUiThread {
-                            Toasty.success(requireActivity(), getString(R.string.update_successful))
-                                .show()
-                            if (!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
-                                if (shouldOnStatus) {
-                                    holderEntity.id?.let {
-                                        AlarmServicePresenter.updateAppStatus(
-                                            true,
-                                            it
-                                        )
-                                    }
-                                }
-                                dismissAllowingStateLoss()
-                                requireActivity().finish()
-                            } else {
-                                if (shouldOnStatus) {
-                                    holderEntity.id?.let {
-                                        AlarmServicePresenter.updateAppStatus(
-                                            true,
-                                            it
-                                        )
-                                    }
-                                    //notify adapter
-                                    (activity as AlarmApplicationActivity).notifyCurrentAdapter()
-                                }
-                                dismissAllowingStateLoss()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.applicationByPackageObserver.collectLatest {
-
-                    if (it == null) return@collectLatest
-
-                    if (it.senderNames != "None") {
-                        btn_sender_name_clear?.visibility = View.VISIBLE
-                    }
-                    if (it.messageBody != "None") {
-                        btn_message_body_clear?.visibility = View.VISIBLE
-                    }
-                    if (it.ignoredNames != "None") {
-                        btn_exclude_sender_name_clear?.visibility = View.VISIBLE
-                    }
-                    addApplicationEntity = it
-                    alarmTonePath = it.tonePath
-                    appName = it.appName
-                    if (isAdded) {
-                        requireActivity().runOnUiThread {
-                            setPresetValueToUi(it)
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     /**
      * Flash light option added on version 2.0.4
@@ -293,7 +164,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
     @SuppressLint("SetTextI18n")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         setListener()
         handleEditAndViewMode()
         enableProMode()
@@ -307,16 +177,106 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
               }
           },500)*/
 
-//        initObserver()
+        // Initialize ViewModel
+        val applicationDao = AppDatabase.getInstance(requireContext()).applicationDao()
+        val repository = ApplicationRepository(applicationDao)
+        val viewModelFactory = ApplicationViewModelFactory(repository)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(ApplicationViewModel::class.java)
 
+        val packageName = arguments?.getString(Constants.BundleKeys.PACKAGE_NAME)
+        if (!TextUtils.isEmpty(packageName)) {
+            viewModel.getAppByPackageName(packageName!!)
+        }
+
+        initObserver()
+    }
+
+    private fun initObserver() {
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.applicationByPackageObserver.collectLatest {
+                    isApplicationAlreadyExists = it != null
+                    addApplicationEntity = it ?: ApplicationEntity()
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.applicationInsertObserver.collectLatest {
+                    hideProgressBar()
+                    if (it == true) {
+                        requireActivity().runOnUiThread {
+                            Toasty.success(
+                                requireActivity(), getString(R.string.application_save_success)
+                            ).show()
+
+                            if (shouldOnStatus) {
+                                holderEntity.id?.let {
+                                    AlarmServicePresenter.updateAppStatus(
+                                        true, it
+                                    )
+                                }
+                            }
+
+                            if (!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                                dismissAllowingStateLoss()
+                                requireActivity().finish()
+                            } else {
+                                if (shouldOnStatus) {
+                                    (activity as AlarmApplicationActivity).notifyCurrentAdapter()
+                                }
+                                dismissAllowingStateLoss()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.applicationUpdateObserver.collectLatest {
+                    hideProgressBar()
+                    if (it == true) {
+                        requireActivity().runOnUiThread {
+                            Toasty.success(requireActivity(), getString(R.string.update_successful))
+                                .show()
+                            if (!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                                if (shouldOnStatus) {
+                                    holderEntity.id?.let {
+                                        AlarmServicePresenter.updateAppStatus(
+                                            true, it
+                                        )
+                                    }
+                                }
+                                dismissAllowingStateLoss()
+                                requireActivity().finish()
+                            } else {
+                                if (shouldOnStatus) {
+                                    holderEntity.id?.let {
+                                        AlarmServicePresenter.updateAppStatus(
+                                            true, it
+                                        )
+                                    }
+                                    //notify adapter
+                                    (activity as AlarmApplicationActivity).notifyCurrentAdapter()
+                                }
+                                dismissAllowingStateLoss()
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
      * probably in next update insa-Allah
      */
     private fun getOptionTutorialHintText(): List<Hint> {
-        val map = ArrayList<Hint>()
-        /*map.add(Hint("Alarm Repeat", "Select how often the Alarm should repeat"))
+        val map = ArrayList<Hint>()/*map.add(Hint("Alarm Repeat", "Select how often the Alarm should repeat"))
         map.add(Hint("Alarm Tone", "Select the music for your Alarm"))
         map.add(Hint("Vibrate With Sound", "Vibrate phone with music on Alarm"))
         map.add(Hint("Just Vibrate, No Sound", "Vibrate phone without music on Alarm"))
@@ -395,28 +355,20 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                 if (arguments?.getSerializable(Constants.BundleKeys.APP) != null) {
                     val app =
                         (arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps)
-//                    optionPresenter?.getAppByPackageNameAndAlarm(
-//                        app.packageName
+//                    optionPresenter?.getAppByPackageNameAndType(
+//                        app.packageName,
+//                        Constants.NotifyOptions.ALARM
 //                    )
-
-                    viewModel.getAppByPackageName(app.packageName)
-
                     this.appName = app.appName
                 }
             } else {
                 //edit mode from home
                 if (arguments?.getString(Constants.BundleKeys.PACKAGE_NAME) != null) {
-//                    optionPresenter?.getAppByPackageNameAndAlarm(
+//                    optionPresenter?.getAppByPackageNameAndType(
 //                        arguments?.getString(
 //                            Constants.BundleKeys.PACKAGE_NAME
-//                        ) ?: ""
+//                        )!!, Constants.NotifyOptions.ALARM
 //                    )
-
-                    viewModel.getAppByPackageName(
-                        arguments?.getString(
-                            Constants.BundleKeys.PACKAGE_NAME
-                        ) ?: ""
-                    )
                 }
             }
         } catch (e: NullPointerException) {
@@ -449,17 +401,14 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
             dismissAllowingStateLoss()
             val intent = Intent(activity, BuyProActivity::class.java)
             requireActivity().startActivityForResult(
-                intent,
-                Constants.ACTION.ACTION_PURCHASE_FROM_MAIN
+                intent, Constants.ACTION.ACTION_PURCHASE_FROM_MAIN
             )
         } else if (activity is AddApplicationActivity) {
             dismissAllowingStateLoss()
             requireActivity().startActivityForResult(
                 Intent(
-                    requireActivity(),
-                    BuyProActivity::class.java
-                ),
-                Constants.ACTION.ACTION_PURCHASE_FROM_ADD
+                    requireActivity(), BuyProActivity::class.java
+                ), Constants.ACTION.ACTION_PURCHASE_FROM_ADD
             )
         }
 
@@ -500,18 +449,15 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                     systemRingtonePicker = UltimateRingtonePicker.SystemRingtonePicker(
                         customSection = UltimateRingtonePicker.SystemRingtonePicker.CustomSection(),
                         defaultSection = UltimateRingtonePicker.SystemRingtonePicker.DefaultSection(
-                            showSilent = false,
-                            defaultTitle = "Default Ringtone"
+                            showSilent = false, defaultTitle = "Default Ringtone"
                         ),
                         ringtoneTypes = listOf(
                             RingtoneManager.TYPE_RINGTONE
                         )
-                    ),
-                    deviceRingtonePicker = UltimateRingtonePicker.DeviceRingtonePicker(
+                    ), deviceRingtonePicker = UltimateRingtonePicker.DeviceRingtonePicker(
                         deviceRingtoneTypes = listOf(
                             UltimateRingtonePicker.RingtoneCategoryType.All
-                        ),
-                        false
+                        ), false
                     )
                 )
                 requireActivity().startActivityForResult(
@@ -520,8 +466,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                         context = requireActivity(),
                         settings = settings,
                         windowTitle = "Alarm Tone"
-                    ),
-                    REQUEST_CODE_PICK_AUDIO
+                    ), REQUEST_CODE_PICK_AUDIO
                 )
             }
         } catch (e: Exception) {
@@ -545,7 +490,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
             if (!BaseApplication.isHintShowing) {
                 try {
                     addApplicationEntity.isAlarmEnabled = true
-//                    addApplicationEntity.alertType = Constants.NotifyOptions.ALARM
                     if (checkForDefault()) {
                         shouldOnStatus = false
                     } else {
@@ -565,8 +509,8 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                         packageName = app.packageName
                         senderName = addApplicationEntity.senderNames ?: ""
                     } else {
-                        if (holderEntity.packageName != null) {
-                            packageName = holderEntity.packageName ?: ""
+                        if (!TextUtils.isEmpty(holderEntity.packageName)) {
+                            packageName = holderEntity.packageName!!
                         }
                         senderName = holderEntity.senderNames ?: ""
                     }
@@ -577,8 +521,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                         if (senderName == "None") {
                             Toasty.info(
                                 requireActivity(),
-                                "IMO can send notification without real message," +
-                                        " please add at least one sender name!"
+                                "IMO can send notification without real message," + " please add at least one sender name!"
                             ).show()
                         } else {
                             saveApplication()
@@ -643,9 +586,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                         if (addApplicationEntity.isCustomTime == true) {
                             addApplicationEntity.startTime = formattedStartTime
                             addApplicationEntity.endTime = formattedEndTime
-                        } else {
-                            addApplicationEntity.startTime = "12 AM"
-                            addApplicationEntity.endTime = "11 PM"
                         }
                     }
                 }
@@ -759,8 +699,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                     }
                 } else {
                     Toasty.info(
-                        requireActivity(),
-                        "Please clear the Ignored sender name first!"
+                        requireActivity(), "Please clear the Ignored sender name first!"
                     ).show()
                 }
             }
@@ -782,8 +721,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                     }
                 } else {
                     Toasty.info(
-                        requireActivity(),
-                        "Please clear the Sender name first!"
+                        requireActivity(), "Please clear the Sender name first!"
                     ).show()
                 }
 
@@ -792,8 +730,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
 
 
         view_message_body?.setOnClickListener {
-            if (!BaseApplication.isHintShowing) {
-                /*  DialogUtils.showMessageBodyDialog(
+            if (!BaseApplication.isHintShowing) {/*  DialogUtils.showMessageBodyDialog(
                       requireActivity(),
                       txt_message_body_value?.text.toString(),
                       object : DialogUtils.RepeatCallBack {
@@ -830,8 +767,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
 
         view_ringtone?.setOnClickListener {
             if (!BaseApplication.isHintShowing) {
-                DialogUtils.showRingToneSelectDialog(
-                    requireActivity(),
+                DialogUtils.showRingToneSelectDialog(requireActivity(),
                     object : DialogUtils.RepeatCallBack {
                         override fun onClick(name: String) {
                             if (name.contains("Select a song")) {
@@ -886,8 +822,10 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
 
 
         btn_message_body_clear?.setOnClickListener {
-            DialogUtils.showDialog(requireActivity(), getString(R.string.txt_clear_message_body),
-                getString(R.string.txt_desc_clear_message), object : DialogUtils.Callback {
+            DialogUtils.showDialog(requireActivity(),
+                getString(R.string.txt_clear_message_body),
+                getString(R.string.txt_desc_clear_message),
+                object : DialogUtils.Callback {
                     override fun onPositive() {
                         addApplicationEntity.messageBody = "None"
                         txt_message_body_value?.text = "None"
@@ -903,8 +841,10 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
 
 
         btn_sender_name_clear?.setOnClickListener {
-            DialogUtils.showDialog(requireActivity(), getString(R.string.txt_clear_sender_name),
-                getString(R.string.txt_desc_clear_sender_namne), object : DialogUtils.Callback {
+            DialogUtils.showDialog(requireActivity(),
+                getString(R.string.txt_clear_sender_name),
+                getString(R.string.txt_desc_clear_sender_namne),
+                object : DialogUtils.Callback {
                     override fun onPositive() {
                         if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
                             holderEntity.senderNames = "None"
@@ -923,8 +863,10 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         }
 
         btn_exclude_sender_name_clear?.setOnClickListener {
-            DialogUtils.showDialog(requireActivity(), getString(R.string.txt_clear_ignore_name),
-                getString(R.string.txt_desc_clear_ignored_namne), object : DialogUtils.Callback {
+            DialogUtils.showDialog(requireActivity(),
+                getString(R.string.txt_clear_ignore_name),
+                getString(R.string.txt_desc_clear_ignored_namne),
+                object : DialogUtils.Callback {
                     override fun onPositive() {
                         if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
                             holderEntity.ignoredNames = "None"
@@ -943,8 +885,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
 
         view_repeat_bg?.setOnClickListener {
             if (!BaseApplication.isHintShowing) {
-                DialogUtils.showSimpleListDialog(
-                    requireActivity(),
+                DialogUtils.showSimpleListDialog(requireActivity(),
                     object : DialogUtils.RepeatCallBack {
                         override fun onClick(name: String) {
                             txt_repeat_value?.text = name
@@ -953,8 +894,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                              */
                             addApplicationEntity.alarmRepeat = name
                             if (name.contains("Custom")) {
-                                DialogUtils.showCheckedItemListDialog(
-                                    addApplicationEntity.repeatDays,
+                                DialogUtils.showCheckedItemListDialog(addApplicationEntity.repeatDays,
                                     activity!!,
                                     object : DialogUtils.CheckedListCallback {
                                         @SuppressLint("SetTextI18n")
@@ -972,16 +912,14 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                                                     selectedDays += "${it.substring(0, 3)}, "
                                                 }
                                                 txt_repeat_value?.text = selectedDays.substring(
-                                                    0,
-                                                    selectedDays.length - 2
+                                                    0, selectedDays.length - 2
                                                 )
                                                 /**
                                                  * set alarm repeat days to data model
                                                  */
                                                 addApplicationEntity.repeatDays =
                                                     selectedDays.substring(
-                                                        0,
-                                                        selectedDays.length - 2
+                                                        0, selectedDays.length - 2
                                                     )
                                             }
                                         }
@@ -997,8 +935,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                                                 addApplicationEntity.alarmRepeat = "Always"
                                             }
                                         }
-                                    }
-                                )
+                                    })
                             }
                         }
                     })
@@ -1008,8 +945,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
 
     fun askForPermission() {
         PermissionUtils.requestPermission(
-            requireActivity(),
-            android.Manifest.permission.READ_EXTERNAL_STORAGE
+            requireActivity(), android.Manifest.permission.READ_EXTERNAL_STORAGE
         )
     }
 
@@ -1137,22 +1073,16 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
          * show app name at end of hint and make app name green color
          */
         try {
-            val text =
-                String.format(
-                    "If this keywords are in message, alarm will play. Add keywords for %s",
-                    appName
-                )
+            val text = String.format(
+                "If this keywords are in message, alarm will play. Add keywords for %s", appName
+            )
             val spannable: Spannable = SpannableString(text)
             spannable.setSpan(
                 ForegroundColorSpan(
                     ContextCompat.getColor(
-                        requireActivity(),
-                        R.color.success_color
+                        requireActivity(), R.color.success_color
                     )
-                ),
-                66,
-                text.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                ), 66, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             txtHint.setText(spannable, TextView.BufferType.SPANNABLE)
             txtHint.movementMethod = LinkMovementMethod.getInstance()
@@ -1294,7 +1224,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
 
         val window: Window = dialog.window!!
         window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-
+        //
         if (!dialog.isShowing) {
             dialog.show()
         }
@@ -1334,8 +1264,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
      * @param List of String
      * This function shows the sender name dialog
      */
-    private fun senderNameDialog(list: ArrayList<String>) {
-        /* val dialog = Dialog(requireActivity())
+    private fun senderNameDialog(list: ArrayList<String>) {/* val dialog = Dialog(requireActivity())
          dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
          dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
          dialog.setCancelable(false)
@@ -1485,22 +1414,16 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
          * show app name at end of hint and make app name green color
          */
         try {
-            val text =
-                String.format(
-                    "Only messages from this users will play alarm, add username from %s",
-                    appName
-                )
+            val text = String.format(
+                "Only messages from this users will play alarm, add username from %s", appName
+            )
             val spannable: Spannable = SpannableString(text)
             spannable.setSpan(
                 ForegroundColorSpan(
                     ContextCompat.getColor(
-                        requireActivity(),
-                        R.color.success_color
+                        requireActivity(), R.color.success_color
                     )
-                ),
-                64,
-                text.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                ), 64, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             txtHint.setText(spannable, TextView.BufferType.SPANNABLE)
             txtHint.movementMethod = LinkMovementMethod.getInstance()
@@ -1676,22 +1599,16 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
          * show app name at end of hint and make app name green color
          */
         try {
-            val text =
-                String.format(
-                    "Messages from this users will not play alarm, add username from %s",
-                    appName
-                )
+            val text = String.format(
+                "Messages from this users will not play alarm, add username from %s", appName
+            )
             val spannable: Spannable = SpannableString(text)
             spannable.setSpan(
                 ForegroundColorSpan(
                     ContextCompat.getColor(
-                        requireActivity(),
-                        R.color.success_color
+                        requireActivity(), R.color.success_color
                     )
-                ),
-                64,
-                text.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                ), 64, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             txtHint.setText(spannable, TextView.BufferType.SPANNABLE)
             txtHint.movementMethod = LinkMovementMethod.getInstance()
@@ -1843,7 +1760,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
     private fun defaultValuesToDataModel(): ApplicationEntity {
         addApplicationEntity.alarmRepeat = "Always"
         addApplicationEntity.ringtone = "Default"
-        addApplicationEntity.isAlarmEnabled = true
         addApplicationEntity.vibrateOnAlarm = false
         addApplicationEntity.isJustVibrate = false
         addApplicationEntity.isCustomTime = false
@@ -1887,7 +1803,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         //set this to holder object for checking default
         holderEntity.alarmRepeat = "Always"
         holderEntity.ringtone = "Default"
-        holderEntity.isAlarmEnabled = true
         holderEntity.vibrateOnAlarm = false
         holderEntity.isJustVibrate = false
         holderEntity.isCustomTime = false
@@ -1902,7 +1817,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         return addApplicationEntity
     }
 
-
     private fun saveApplication() {
         /**
          * Populate Application entity from UI controller data
@@ -1910,53 +1824,55 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
          */
         //start progress bar
         showProgressBar()
-        try {
-            if (!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
-                val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
-                addApplicationEntity.appName = app.appName
-                addApplicationEntity.packageName = app.packageName
-                addApplicationEntity.tonePath = alarmTonePath
-                Thread(Runnable {
-                    try {
-                        val bitmap = app.drawableIcon
 
-                        optionPresenter?.saveBitmapToFile(
-                            requireActivity(),
-                            app.packageName,
-                            bitmap.toBitmap()
-                        )
-                        /**
-                         * Check for latest version
-                         * @date 27th Feb 22
-                         * This call going on every single alarm to sync the data
-                         */
-                        optionPresenter?.checkForLatestUpdate()
-
-                        /**
-                         * Check for unknown app
-                         */
-
-                        if (!TextUtils.isEmpty(addApplicationEntity.appName) && !TextUtils.isEmpty(
-                                addApplicationEntity.packageName
+        if (isApplicationAlreadyExists) {
+            viewModel.update(application = addApplicationEntity)
+        } else {
+            try {
+                if (!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                    val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
+                    addApplicationEntity.appName = app.appName
+                    addApplicationEntity.packageName = app.packageName
+                    addApplicationEntity.tonePath = alarmTonePath
+                    Thread(Runnable {
+                        try {
+                            val bitmap = app.drawableIcon
+                            optionPresenter?.saveBitmapToFile(
+                                requireActivity(), app.packageName, bitmap.toBitmap()
                             )
-                        ) {
-                            optionPresenter?.checkForUnknownApp(
-                                requireActivity(),
-                                addApplicationEntity.appName!!,
-                                addApplicationEntity.packageName!!
-                            )
+                            /**
+                             * Check for latest version
+                             * @date 27th Feb 22
+                             * This call going on every single alarm to sync the data
+                             */
+                            optionPresenter?.checkForLatestUpdate()
+
+                            /**
+                             * Check for unknown app
+                             */
+
+                            if (!TextUtils.isEmpty(addApplicationEntity.appName) && !TextUtils.isEmpty(
+                                    addApplicationEntity.packageName
+                                )
+                            ) {
+                                optionPresenter?.checkForUnknownApp(
+                                    requireActivity(),
+                                    addApplicationEntity.appName!!,
+                                    addApplicationEntity.packageName!!
+                                )
+                            }
+
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }).start()
-            } else {
-                saveWithTimeConstrain()
+                    }).start()
+                } else {
+                    saveWithTimeConstrain()
+                }
+            } catch (e: NullPointerException) {
+                //skip the crash
             }
-        } catch (e: NullPointerException) {
-            //skip the crash
         }
-
     }
 
     private fun showProgressBar() {
@@ -1983,9 +1899,8 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                     if (switch_flash?.isChecked == holderEntity.isFlashOn) {
                         if (switch_just_vibrate?.isChecked == holderEntity.isJustVibrate) {
                             if (switch_custom_time?.isChecked == holderEntity.isCustomTime) {
-                                if (txt_number_of_play_value?.text.toString().split(" ")
-                                        [0].trim() ==
-                                    holderEntity.numberOfPlay.toString()
+                                if (txt_number_of_play_value?.text.toString()
+                                        .split(" ")[0].trim() == holderEntity.numberOfPlay.toString()
                                 ) {
                                     if (txt_sender_name_value?.text.toString() == holderEntity.senderNames) {
                                         if (txt_exclude_sender_name_value?.text.toString() == holderEntity.ignoredNames) {
@@ -2008,8 +1923,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
 
     private fun getWindowHeight(): Int { // Calculate window height for fullscreen use
         val displayMetrics = DisplayMetrics()
-        (context as Activity?)!!.windowManager.defaultDisplay
-            .getMetrics(displayMetrics)
+        (context as Activity?)!!.windowManager.defaultDisplay.getMetrics(displayMetrics)
         return displayMetrics.heightPixels
     }
 
@@ -2081,8 +1995,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         //if start time and end time constrained
         if (switch_custom_time?.isChecked!!) {
             if (isTimeConstrained(
-                    txtHour?.text.toString(),
-                    txtEndHour?.text.toString()
+                    txtHour?.text.toString(), txtEndHour?.text.toString()
                 )
             ) {
                 viewModel.insert(addApplicationEntity)
@@ -2139,7 +2052,6 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
     }
 
     override fun onApplicationGetSuccess(app: ApplicationEntity) {
-
         //show edited value to
         if (app.senderNames != "None") {
             btn_sender_name_clear?.visibility = View.VISIBLE
@@ -2153,11 +2065,33 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         addApplicationEntity = app
         alarmTonePath = app.tonePath
         this.appName = app.appName
+        convertToHolderEntity(addApplicationEntity)
         if (isAdded) {
             requireActivity().runOnUiThread {
                 setPresetValueToUi(app)
             }
         }
+    }
+
+    private fun convertToHolderEntity(app: ApplicationEntity) {
+        holderEntity.appName = app.appName
+        holderEntity.packageName = app.packageName
+        holderEntity.endTime = app.endTime
+        holderEntity.startTime = app.startTime
+        holderEntity.ringtone = app.ringtone
+        holderEntity.numberOfPlay = app.numberOfPlay
+        holderEntity.bitmapPath = app.bitmapPath
+        holderEntity.messageBody = app.messageBody
+        holderEntity.senderNames = app.senderNames
+        holderEntity.ignoredNames = app.ignoredNames
+        holderEntity.isCustomTime = app.isCustomTime
+        holderEntity.isJustVibrate = app.isJustVibrate
+        holderEntity.vibrateOnAlarm = app.vibrateOnAlarm
+        holderEntity.tonePath = app.tonePath
+        holderEntity.alarmRepeat = app.alarmRepeat
+        holderEntity.repeatDays = app.repeatDays
+        holderEntity.soundLevel = app.soundLevel
+        holderEntity.isFlashOn = app.isFlashOn
     }
 
     override fun onApplicationGetError(message: String) {
