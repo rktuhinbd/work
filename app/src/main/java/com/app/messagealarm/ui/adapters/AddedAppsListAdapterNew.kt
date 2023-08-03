@@ -97,6 +97,7 @@ class AddedAppsListAdapterNew(
                     }
                     if(installedApps.isSpeakEnabled == true){
                         itemView.img_save_flag_speak.visibility = View.VISIBLE
+                        itemView.btn_confirm_app_option?.text = "Edit Speak"
                     }
 
                 itemView.base_part_of_item.setOnClickListener {
@@ -118,6 +119,8 @@ class AddedAppsListAdapterNew(
                     itemView.btn_confirm_app_option?.text = "Edit Alarm"
                     itemView.img_info?.visibility = View.GONE
                     itemView.txt_option_three_notice.visibility = View.GONE
+
+                    setSelectedOption(listOf(itemView.txt_speak, itemView.txt_alarm), itemView.card_alarm, itemView.card_speak)
                 }
 
                 itemView.card_speak?.setOnClickListener {
@@ -126,6 +129,8 @@ class AddedAppsListAdapterNew(
                     itemView.btn_confirm_app_option?.text =  "Edit Speaking"
                     itemView.img_info?.visibility = View.VISIBLE
                     itemView.txt_option_three_notice.visibility = View.VISIBLE
+
+                    setSelectedOption(listOf(itemView.txt_alarm, itemView.txt_speak), itemView.card_speak, itemView.card_alarm)
                 }
 
                 itemView.btn_confirm_app_option?.setOnClickListener {

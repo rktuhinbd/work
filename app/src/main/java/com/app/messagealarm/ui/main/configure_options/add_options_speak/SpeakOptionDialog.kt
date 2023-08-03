@@ -81,8 +81,9 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
     private var addApplicationEntity = ApplicationEntity()
     private var holderEntity = ApplicationEntity()
     private var optionPresenter: OptionPresenter? = null
-
     private lateinit var viewModel: ApplicationViewModel
+
+    private var isApplicationAlreadySaved: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -304,7 +305,6 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
                         "Please clear the Sender name first!"
                     ).show()
                 }
-
             }
         }
 
@@ -327,10 +327,10 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
                 //save application and turn switch on
                 addApplicationEntity.runningStatus = true
 
-                if (TextUtils.isEmpty(addApplicationEntity.packageName)) {
-                    saveBitmap()
-                } else {
+                if (isApplicationAlreadySaved) {
                     viewModel.update(addApplicationEntity)
+                } else {
+                    saveBitmap()
                 }
 
             } catch (e: java.lang.NullPointerException) {
@@ -344,6 +344,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 viewModel.applicationByPackageObserver.collectLatest {
+                    isApplicationAlreadySaved = it != null
                     addApplicationEntity = it ?: ApplicationEntity()
                 }
             }
