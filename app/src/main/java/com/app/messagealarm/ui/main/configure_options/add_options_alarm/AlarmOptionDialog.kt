@@ -13,6 +13,7 @@ import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ForegroundColorSpan
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.core.content.ContextCompat
@@ -1829,7 +1830,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
             viewModel.update(application = addApplicationEntity)
         } else {
             try {
-                if (!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+                if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE) == false) {
                     val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
                     addApplicationEntity.appName = app.appName
                     addApplicationEntity.packageName = app.packageName
@@ -1867,7 +1868,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                         }
                     }).start()
                 } else {
-                    saveWithTimeConstrain()
+                    saveWithTimeConstrain("saveApp")
                 }
             } catch (e: NullPointerException) {
                 //skip the crash
@@ -1982,7 +1983,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         /**
          * End of other values
          */
-        saveWithTimeConstrain()
+        saveWithTimeConstrain("bitmapSaveSuccess")
         if (isAdded) {
             requireActivity().runOnUiThread {
                 hideProgressBar()
@@ -1990,7 +1991,10 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         }
     }
 
-    private fun saveWithTimeConstrain() {
+    private fun saveWithTimeConstrain(s: String) {
+
+        Log.d("ALArm", "saveWithTimeConstrain: $s")
+
         addApplicationEntity.tonePath = alarmTonePath
         //if start time and end time constrained
         if (switch_custom_time?.isChecked!!) {
@@ -2013,8 +2017,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
     override fun onBitmapSaveError() {
         if (isAdded) {
             requireActivity().runOnUiThread {
-                Toasty.error(requireActivity(), DataUtils.getString(R.string.something_wrong))
-                    .show()
+                Toasty.error(requireActivity(), DataUtils.getString(R.string.something_wrong)).show()
                 hideProgressBar()
             }
         }

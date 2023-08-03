@@ -446,7 +446,7 @@ class SpeakOptionDialog : BottomSheetDialogFragment(), OptionView {
         //start progress bar
         showProgressBar()
         try {
-            if (!arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE)!!) {
+            if (arguments?.getBoolean(Constants.BundleKeys.IS_EDIT_MODE) == false) {
                 val app = arguments?.getSerializable(Constants.BundleKeys.APP) as InstalledApps
                 addApplicationEntity.appName = app.appName
                 addApplicationEntity.packageName = app.packageName

@@ -69,6 +69,7 @@ class ApplicationViewModel(private val repository: ApplicationRepository) : View
             _applicationEntity.emit(applicationEntity) // post the fetched entity to LiveData
         }
     }
+
     /**
      * Launching a new coroutine to get an application by id in a non-blocking way
      */
