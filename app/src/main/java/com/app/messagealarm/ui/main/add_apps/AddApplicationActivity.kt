@@ -454,7 +454,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
 
     private fun setSearchViewEditTextBackgroundColor(
         context: Context,
-        searchView: SearchView
+        searchView: SearchView,
     ) {
         val searchPlateId =
             context.resources.getIdentifier("android:id/search_plate", null, null)
@@ -469,6 +469,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                 if (!alarmModal.isAdded) {
                     val bundle = Bundle()
                     bundle.putBoolean(Constants.BundleKeys.IS_EDIT_MODE, false)
+                    bundle.putString(Constants.BundleKeys.PACKAGE_NAME, app.packageName)
                     bundle.putSerializable(Constants.BundleKeys.APP, app as Serializable)
                     alarmModal.arguments = bundle
                     alarmModal.isCancelable = false
@@ -480,6 +481,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                 if (!speakModal.isAdded) {
                     val bundle = Bundle()
                     bundle.putBoolean(Constants.BundleKeys.IS_EDIT_MODE, false)
+                    bundle.putString(Constants.BundleKeys.PACKAGE_NAME, app.packageName)
                     bundle.putSerializable(Constants.BundleKeys.APP, app as Serializable)
                     speakModal.arguments = bundle
                     speakModal.isCancelable = false
@@ -487,7 +489,6 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
                 }
             }
         }
-
     }
 
     override fun onLongClick(app: InstalledApps) {
@@ -504,7 +505,7 @@ class AddApplicationActivity : AppCompatActivity(), AddApplicationView,
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         var isGranted = true

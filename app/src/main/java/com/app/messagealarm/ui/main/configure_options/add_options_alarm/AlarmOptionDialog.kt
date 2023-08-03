@@ -52,6 +52,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
+import com.google.gson.GsonBuilder
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.dialog_alarm_options.*
 import kotlinx.android.synthetic.main.dialog_alarm_options.btn_close
@@ -185,6 +186,9 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         viewModel = ViewModelProvider(this, viewModelFactory).get(ApplicationViewModel::class.java)
 
         val packageName = arguments?.getString(Constants.BundleKeys.PACKAGE_NAME)
+
+        Log.d("_update_", "package_name : $packageName")
+
         if (!TextUtils.isEmpty(packageName)) {
             viewModel.getAppByPackageName(packageName!!)
         }
@@ -195,8 +199,10 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
     private fun initObserver() {
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.applicationByPackageObserver.collectLatest {
+                    Log.d("_update_", "getAppByPkg: ${GsonBuilder().setPrettyPrinting().create().toJson(it)}")
+
                     isApplicationAlreadyExists = it != null
                     addApplicationEntity = it ?: ApplicationEntity()
                 }
@@ -237,7 +243,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         }
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.applicationUpdateObserver.collectLatest {
                     hideProgressBar()
                     if (it == true) {
@@ -525,10 +531,10 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                                 "IMO can send notification without real message," + " please add at least one sender name!"
                             ).show()
                         } else {
-                            saveApplication()
+                            saveApplication("Else Imo")
                         }
                     } else {
-                        saveApplication()
+                        saveApplication("Just else")
                     }
                 } catch (e: NullPointerException) {
                     //skip the crash
@@ -1818,15 +1824,19 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
         return addApplicationEntity
     }
 
-    private fun saveApplication() {
+    private fun saveApplication(s: String) {
         /**
          * Populate Application entity from UI controller data
          * with start of other values
          */
+
+        Log.d("_update_", "Save App $s")
+
         //start progress bar
         showProgressBar()
 
         if (isApplicationAlreadyExists) {
+            Log.d("_update_", "AppExist $isApplicationAlreadyExists")
             viewModel.update(application = addApplicationEntity)
         } else {
             try {
@@ -1868,7 +1878,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                         }
                     }).start()
                 } else {
-                    saveWithTimeConstrain("saveApp")
+                    saveWithTimeConstrain(s)
                 }
             } catch (e: NullPointerException) {
                 //skip the crash
@@ -1993,7 +2003,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
 
     private fun saveWithTimeConstrain(s: String) {
 
-        Log.d("ALArm", "saveWithTimeConstrain: $s")
+        Log.d("_update_", "saveWithTimeConstrain: $s")
 
         addApplicationEntity.tonePath = alarmTonePath
         //if start time and end time constrained
@@ -2002,6 +2012,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                     txtHour?.text.toString(), txtEndHour?.text.toString()
                 )
             ) {
+                Log.d("_update_", "TimeConstrained 1")
                 viewModel.insert(addApplicationEntity)
             } else {
                 requireActivity().runOnUiThread {
@@ -2010,6 +2021,7 @@ class AlarmOptionDialog : BottomSheetDialogFragment(), OptionView {
                 }
             }
         } else {
+            Log.d("_update_", "TimeConstrained 2")
             viewModel.insert(addApplicationEntity)
         }
     }

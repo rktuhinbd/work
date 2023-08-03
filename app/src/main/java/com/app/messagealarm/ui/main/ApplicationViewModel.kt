@@ -27,7 +27,7 @@ class ApplicationViewModel(private val repository: ApplicationRepository) : View
 
     fun insert(application: ApplicationEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("ApplicationViewModel", "inserted data ")
+            Log.d("_update_", "vm inserted data")
             repository.insert(application)
             _applicationInsertEntity.emit(true)
         }
@@ -42,6 +42,7 @@ class ApplicationViewModel(private val repository: ApplicationRepository) : View
 
     fun update(application: ApplicationEntity) {
         viewModelScope.launch(Dispatchers.IO) {
+            Log.d("_update_", "vm updated data")
             val applicationEntity = repository.update(application)
             _applicationUpdateEntity.emit(applicationEntity)
         }
@@ -66,7 +67,7 @@ class ApplicationViewModel(private val repository: ApplicationRepository) : View
     fun getAppByPackageName(packageName: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val applicationEntity = repository.getAppByPackageName(packageName)
-            _applicationEntity.emit(applicationEntity) // post the fetched entity to LiveData
+            _applicationEntity.emit(applicationEntity)
         }
     }
 

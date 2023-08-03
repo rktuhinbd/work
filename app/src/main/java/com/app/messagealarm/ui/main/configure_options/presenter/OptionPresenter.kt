@@ -223,6 +223,6 @@ class OptionPresenter(private val optionView: OptionView) {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        optionView.onBitmapSaveSuccess("$file_path/$imageName")
+//        optionView.onBitmapSaveSuccess("$file_path/$imageName") //Todo this is the bug
     }
 }
